@@ -17,7 +17,11 @@ let mouse = { x: -1, y: -1, inside: false }, drag = null;
 let Z = 1; // touch pinch zoom: the canvas backing store is viewport/Z and CSS-stretched to the viewport (desktop Z=1: unchanged)
 function resize() { canvas.width = Math.round(innerWidth / Z); canvas.height = Math.round(innerHeight / Z); canvas.style.width = innerWidth + 'px'; canvas.style.height = innerHeight + 'px'; if (world) clampCamera(cam, canvas.width, canvas.height, world); } resize(); addEventListener('resize', resize);
 addEventListener('blur', () => { keys.clear(); drag = null; });   // no stuck pan keys after alt-tab
-addEventListener('keydown', e => { if (e.target.tagName === 'INPUT') return; keys.add(e.key.toLowerCase()); if (e.key === 'Escape') cancelPlacing(ui); });
+addEventListener('keydown', e => { if (e.target.tagName === 'INPUT') return;
+  if (world && /^Digit[1-9]$/.test(e.code)) { const n = +e.code.slice(5); if (e.ctrlKey || e.metaKey) { e.preventDefault(); saveGroup(n); } else recallGroup(n); return; }
+  if (world && e.key.toLowerCase() === 'q') { qb.amove = !qb.amove; syncQb(); return; }
+  if (world && e.key === '.') { idleVillager(); return; } if (world && e.key === ',') { selectArmy(); return; }
+  keys.add(e.key.toLowerCase()); if (e.key === 'Escape') { cancelPlacing(ui); qb.amove = false; syncQb(); } });
 addEventListener('keyup', e => keys.delete(e.key.toLowerCase()));
 canvas.addEventListener('contextmenu', e => e.preventDefault());
 const toWorld = (sx, sy) => screenToWorld(sx / Z, sy / Z, cam);
@@ -47,19 +51,22 @@ canvas.addEventListener('mouseleave', () => { mouse.inside = false; drag = null;
 canvas.addEventListener('mousedown', e => {
   if (!world) return; const p = toWorld(e.clientX, e.clientY);
   if (e.button === 1) { drag = { x: e.clientX, y: e.clientY, cx: cam.x, cy: cam.y }; e.preventDefault(); return; }
+  if (e.button === 0 && qb.amove && !ui.placing) { rightClick(p.x, p.y, { queue: e.shiftKey }); qb.skipUp = true; return; }
   if (e.button === 0) { pointerDown(ui, e.clientX, e.clientY); return; }
-  if (e.button === 2) { if (ui.placing) { cancelPlacing(ui); return; } rightClick(p.x, p.y); }
+  if (e.button === 2) { if (ui.placing) { cancelPlacing(ui); return; } rightClick(p.x, p.y, { queue: e.shiftKey }); }
 });
-function rightClick(x, y) {
+function rightClick(x, y, mods = {}) {
+  const amove = qb.amove || !!mods.amove, queue = !!mods.queue; if (qb.amove) { qb.amove = false; syncQb(); }
   const b = selectedBuilding(world);
   if (b) { if (!isFoe(b) && b.trains.length && b.complete) { issue('rally', { id: b.id, x, y }); } return; }
   const us = selectedUnits(world); if (!us.length) return;
-  issue('order', { ids: us.map(u => u.id), x, y });
+  issue('order', { ids: us.map(u => u.id), x, y, ...(amove ? { amove: true } : {}), ...(queue ? { queue: true } : {}) });
   if (net) world.lastOrder = { kind: hoverEnemy() ? 'attack' : 'move', x, y, t: world.time };   // instant local feedback
 }
 addEventListener('mouseup', e => {
   if (e.button === 1) drag = null;
-  if (e.button === 0 && world) { const r = pointerUp(ui, world, toWorld, issue);
+  if (e.button === 0 && qb.skipUp) { qb.skipUp = false; return; }
+  if (e.button === 0 && world) { const r = pointerUp(ui, world, toWorld, issue); if (r && r.kind === 'select') dblSelect(e.clientX, e.clientY);
     const s = world.selection; // fog: cannot select what you cannot see
     if (r && r.kind === 'select' && s && (s.kind === 'unit' || s.kind === 'building')) { const o = s.kind === 'unit' ? SIM.mobile(world, s.id) : world.buildings.find(q => q.id === s.id); if (o && !seen(o)) { world.selection = null; world.selected = null; } } }
 });
@@ -97,14 +104,46 @@ const touchEnd = e => { e.preventDefault(); if (!world || !tp) return;
   if (g.done) return;
   if (ui.placing) { if (g.moved && Math.hypot(x - g.x, y - g.y) > 10) { mouse = { x, y, inside: false }; refreshGhost(); } pointerDown(ui, x, y); pointerUp(ui, world, toWorld, issue); return; }
   if (g.moved) return;
-  if (touchUi.command) { touchCommand(x, y); return; }
-  pointerDown(ui, x, y); const r = pointerUp(ui, world, toWorld, issue); const s = world.selection;
+ 
+  if (touchUi.command || qb.amove) { touchCommand(x, y); return; }
+  pointerDown(ui, x, y); const r = pointerUp(ui, world, toWorld, issue); if (r && r.kind === "select") dblSelect(x, y); const s = world.selection;
   if (r && r.kind === 'select' && s && (s.kind === 'unit' || s.kind === 'building')) { const o = s.kind === 'unit' ? SIM.mobile(world, s.id) : world.buildings.find(q => q.id === s.id); if (o && !seen(o)) { world.selection = null; world.selected = null; } }
 };
 canvas.addEventListener('touchend', touchEnd, { passive: false }); canvas.addEventListener('touchcancel', e => { clearTimeout(tp?.lp); tp = null; ui.press = null; ui.box = null; e.preventDefault(); }, { passive: false });
 for (const t of ['gesturestart', 'dblclick']) document.addEventListener(t, e => e.preventDefault());
 const orient = () => { document.documentElement.dataset.orient = innerWidth >= innerHeight ? 'landscape' : 'portrait'; scrollTo(0, 0); };
 addEventListener('resize', orient); addEventListener('orientationchange', () => setTimeout(() => { resize(); orient(); }, 100)); orient();
+// ---- quick selection: double-click/tap same type on screen, idle villager cycle, all army, control groups, attack-move ----
+const qb = { amove: false, skipUp: false, groups: {}, idleIdx: 0 }; let lastSel = { t: 0, type: null, id: null };
+const qbEl = $('quickbar');
+const onScreen = u => { const q = worldToScreen(u.x, u.y, cam); return q.x >= 0 && q.y >= 0 && q.x <= canvas.width && q.y <= canvas.height; };
+const mineU = () => world.units.filter(u => u.owner === viewer());
+function dblSelect(x, y) { const s = world.selection, now = performance.now();
+  if (!s || s.kind !== 'unit') { lastSel = { t: 0 }; return; } const u = SIM.mobile(world, s.id); if (!u || u.owner !== viewer()) return;
+  if (now - lastSel.t < 450 && lastSel.type === u.type) { SIM.selectUnits(world, mineU().filter(o => o.type === u.type && onScreen(o))); lastSel = { t: 0 }; }
+  else lastSel = { t: now, type: u.type, id: u.id }; }
+const centerOn = u => { cam.x = u.x * TILE - canvas.width / 2; cam.y = u.y * TILE - canvas.height / 2; clampCamera(cam, canvas.width, canvas.height, world); };
+function idleVillager() { const idle = mineU().filter(u => u.type === 'villager' && u.state === 'idle'); if (!idle.length) return;
+  const u = idle[qb.idleIdx++ % idle.length]; SIM.selectUnits(world, [u]); centerOn(u); }
+function selectArmy() { SIM.selectUnits(world, mineU().filter(u => u.type !== 'villager')); }
+function saveGroup(n) { const ids = selectedUnits(world).filter(u => u.owner === viewer()).map(u => u.id); qb.groups[n] = ids; world.message = { text: ids.length ? `Group ${n}: ${ids.length} units` : `Group ${n} cleared`, until: world.time + 1.5 }; syncQb(); }
+function recallGroup(n) { const ids = qb.groups[n] || []; const us = mineU().filter(u => ids.includes(u.id)); if (!us.length) return; qb.groups[n] = us.map(u => u.id);
+  const again = world.selection && world.selection.kind === 'units' && JSON.stringify(world.selection.ids) === JSON.stringify(qb.groups[n]);
+  SIM.selectUnits(world, us); if (again || us.length === 1 && world.selection.id === us[0].id && lastSel.grp === n) centerOn(us[0]); lastSel.grp = n; }
+function syncQb() { if (!world) return; const idle = mineU().filter(u => u.type === 'villager' && u.state === 'idle').length;
+  qbEl.querySelector('[data-q=idle]').innerHTML = `Idle 🐕 <b>${idle}</b>`; qbEl.querySelector('[data-q=idle]').classList.toggle('hot', idle > 0);
+  qbEl.querySelector('[data-q=amove]').classList.toggle('active', qb.amove);
+  for (const b of qbEl.querySelectorAll('[data-g]')) { const n = +b.dataset.g, c = (qb.groups[n] || []).length; b.innerHTML = c ? `${n}<small>${c}</small>` : `${n}`; b.classList.toggle('set', c > 0); }
+  if (window.game) window.game.qb = { amove: qb.amove, groups: { ...qb.groups } }; }
+let gPress = null;
+qbEl.addEventListener('pointerdown', e => { const b = e.target.closest('[data-g]'); if (!b) return; e.preventDefault();
+  gPress = { n: +b.dataset.g, long: false, t: setTimeout(() => { gPress.long = true; saveGroup(+b.dataset.g); navigator.vibrate?.(20); }, 500) }; });
+qbEl.addEventListener('pointerup', e => { if (!gPress) return; clearTimeout(gPress.t); if (!gPress.long) recallGroup(gPress.n); gPress = null; });
+qbEl.addEventListener('pointercancel', () => { if (gPress) clearTimeout(gPress.t); gPress = null; });
+let qbDown = null; qbEl.addEventListener('pointerdown', e => { qbDown = e.target.closest('[data-q]'); }, true);
+qbEl.addEventListener('click', e => { const b = e.target.closest('[data-q]'); if (!b || !world || b !== qbDown) return; qbDown = null; // ignore ghost clicks not started on this button const q = b.dataset.q;
+  if (q === 'idle') idleVillager(); else if (q === 'army') selectArmy(); else if (q === 'amove') { qb.amove = !qb.amove; } syncQb(); });
+setInterval(syncQb, 250);
 // ---- HUD / panels ----
 const bannerEl = $('banner'), hud = $('hud'), infoEl = $('info'), cmdEl = $('commands'), msgEl = $('msg'), netEl = $('net'), stallEl = $('stall'), desyncEl = $('desync');
 let lastCmd = '';
@@ -180,6 +219,7 @@ function startGame({ mp = false, seed = 1, me = 0, cfg = {}, session = null } = 
   const c = mp ? { x: tc.x + 2, y: tc.y + 2 } : { x: 34, y: 34 };
   cam.x = c.x * TILE - canvas.width / 2; cam.y = c.y * TILE - canvas.height / 2; clampCamera(cam, canvas.width, canvas.height, world);
   Object.assign(window.game, { world, cam, ui, mode: mp ? 'mp' : 'sp' });
+  document.body.classList.add('ingame');
   for (const id of ['menu', 'lobby', 'title-bg']) $(id).style.display = 'none';
   last = performance.now(); requestAnimationFrame(frame);
 }

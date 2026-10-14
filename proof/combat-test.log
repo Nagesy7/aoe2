@@ -1,4 +1,4 @@
-combat test 2026-10-14T12:07:13.993Z
+combat test 2026-10-14T12:26:44.444Z
 --- stats & damage formula ---
 PASS: Militia: 40 HP, 4 atk, 0/1 armor, 2.0s reload
 PASS: Archer: 30 HP, 4 pierce atk, range 4, 2.0s reload
@@ -35,7 +35,7 @@ PASS: blocked waypoint detected, re-pathed (1) and arrived
 --- group move: formation, no stacking ---
 PASS: group right-click ground = move
 PASS: 9 distinct formation goal tiles
-PASS: 9 units on 9 distinct tiles after the move (31,46 31,45 31,44 30,46 30,45 29,44 29,46 29,45 32,44)
+PASS: 9 units on 9 distinct tiles after the move (31,46 31,45 31,44 30,46 29,45 30,43 29,46 28,45 32,44)
 PASS: formation is a compact block around the click
 PASS: 4 units spawned on one tile separate to 4 tiles (20,20 21,20 19,20 20,21)
 PASS: 4 attackers surround target on distinct tiles (16,10 16,9 16,11 17,11)

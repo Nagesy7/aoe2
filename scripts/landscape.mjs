@@ -34,7 +34,7 @@ for (const [name, tag] of [['iPhone 13 landscape', 'iphone'], ['Pixel 7 landscap
   await tap(v.q); let sel = await S(() => window.game.world.selection);
   check(sel && sel.kind === 'unit' && sel.id === v.id, `${name}: tap selects villager #${v.id} (${JSON.stringify(sel)})`);
   // HUD / info / build menu / touchbar fit without overlapping
-  const boxes = { hud: await bb('#hud'), info: await bb('#info'), commands: await bb('#commands'), touchbar: await bb('#touchbar') };
+  const boxes = { hud: await bb('#hud'), info: await bb('#info'), commands: await bb('#commands'), touchbar: await bb('#touchbar'), quickbar: await bb('#quickbar') };
   check(boxes.info && boxes.commands, `${name}: info panel and build menu shown`);
   const ks = Object.keys(boxes); for (let i = 0; i < ks.length; i++) for (let j = i + 1; j < ks.length; j++) check(!over(boxes[ks[i]], boxes[ks[j]]), `${name}: ${ks[i]} and ${ks[j]} do not overlap`);
   for (const k of ks) { const b = boxes[k]; check(b.x >= 0 && b.y >= 0 && b.x + b.width <= vp.width + 1 && b.y + b.height <= vp.height + 1, `${name}: ${k} inside viewport`); }

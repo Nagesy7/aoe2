@@ -187,7 +187,7 @@ export function planTo(world, u, goals, grid = buildGrid(world), strict = false)
   return true;
 }
 export function moveAlong(u, dt) {
-  let s = u.speed * dt;
+  let s = (u.groupSpeed && u.state === 'moving' ? Math.min(u.speed, u.groupSpeed) : u.speed) * dt;
   while (u.path.length && s > 0) { const t = u.path[0], dx = t.x - u.x, dy = t.y - u.y, d = hyp(dx, dy);
     if (d <= s) { u.x = t.x; u.y = t.y; s -= d; u.path.shift(); } else { u.x += dx / d * s; u.y += dy / d * s; s = 0; } }
   return u.path.length === 0;
@@ -309,10 +309,10 @@ function planDrop(world, u) {
   const goals = dropsitesFor(world, u.carry.res).flatMap(b => ringTiles(b.x, b.y, b.size));
   return goals.length > 0 && planTo(world, u, goals);
 }
-function idle(u, note = null) { u.state = 'idle'; u.path = []; u.note = note; u.target = null; u.build = null; u.attack = null; u.nudge = false; }
+function idle(u, note = null) { u.groupSpeed = null; u.amove = false; u.state = 'idle'; u.path = []; u.note = note; u.target = null; u.build = null; u.attack = null; u.nudge = false; }
 export const idleUnit = idle;
 export function orderMove(world, u, x, y, tile = null) {
-  u.attack = null; u.nudge = false; u.target = null; u.build = null; u.note = null; u.dest = tile ? [...tile] : [Math.floor(x), Math.floor(y)];
+  u.groupSpeed = null; u.attack = null; u.nudge = false; u.target = null; u.build = null; u.note = null; u.dest = tile ? [...tile] : [Math.floor(x), Math.floor(y)];
   // try the target tile, then the closest walkable tiles around it (handles blocked/enclosed targets)
   const cands = tile ? [tile, ...nearestWalkable(world, tile[0], tile[1], 24).slice(1)] : nearestWalkable(world, Math.floor(x), Math.floor(y), 24);
   const grid = buildGrid(world);
@@ -336,6 +336,8 @@ export function orderMoveGroup(world, units, x, y) {
   for (const t of tiles) { if (!left.length) break; left.sort((a, b) => hyp(a.x - t[0], a.y - t[1]) - hyp(b.x - t[0], b.y - t[1]));
     if (orderMove(world, left.shift(), 0, 0, t)) ok++; }
   for (const u of left) idle(u, 'unreachable');
+  // formation moves at the speed of its slowest member
+  const slow = Math.min(...units.map(u => u.speed)); for (const u of units) if (u.state === 'moving') u.groupSpeed = slow;
   return ok;
 }
 // Never discards carried resources: on a type change with carry > 0 the villager first
@@ -370,6 +372,9 @@ export function commandAt(world, x, y) {
   const farmNode = tb && tb.type === 'farm' && tb.complete ? world.resources.find(n => n.farm === tb.id && n.amount > 0) : null;
   const n = farmNode || (tb ? null : findResourceAt(world, x, y));
   if (n && vills.length) { for (const u of vills) orderGather(world, u, n); moveOthers(); return 'gather'; }
+  if (tb && tb.complete && mine(world, tb) && tb.dropsite && vills.some(u => u.carry.amount > 0 && tb.accepts.includes(u.carry.res))) {
+    for (const u of vills) if (u.carry.amount > 0 && tb.accepts.includes(u.carry.res)) { u.attack = null; u.build = null; u.note = null; u.state = 'to_drop'; if (!planTo(world, u, ringTiles(tb.x, tb.y, tb.size))) idle(u, 'unreachable'); }
+    moveOthers(); return 'dropoff'; }
   if (tb && !tb.complete && vills.length) { for (const u of vills) orderBuild(world, u, tb); moveOthers(); return 'build'; }
   if (us.length === 1) orderMove(world, us[0], x, y); else orderMoveGroup(world, us, x, y);
   return 'move';
@@ -576,7 +581,12 @@ export function tick(world, dt) {
     switch (u.state) {
       case 'idle': break;
       case 'attacking': tickAttack(world, u, dt); break;
-      case 'moving': if (u.type === 'villager' ? moveAlong(u, dt) : stepWithStuckCheck(world, u, dt, () => replan(world, u))) { u.state = 'idle'; } break;
+      case 'moving': {
+        if (u.amove && world.tick % 5 === u.id % 5) { const foe = nearestFoe(world, u, 6); if (foe && orderAttack(world, u, foe, true)) { u.amove = false; break; } }
+        if (u.type === 'villager' ? moveAlong(u, dt) : stepWithStuckCheck(world, u, dt, () => replan(world, u))) {
+          const wp = u.waypoints && u.waypoints.shift(); const gs = u.groupSpeed;
+          if (wp) { orderMove(world, u, wp.x, wp.y); u.groupSpeed = gs; u.amove = wp.amove && u.type !== 'villager'; } else { u.state = 'idle'; u.groupSpeed = null; u.amove = false; } }
+        break; }
       case 'to_resource': case 'gathering': {
         let node = world.resources.find(n => n.id === u.target);
         if (!node || node.amount <= 0) {
@@ -710,7 +720,11 @@ export function applyCommand(world, cmd) {
     switch (cmd.type) {
       case 'order': { if (!finite(a.x, a.y)) return null; const ids = ownUnits(world, a.ids).map(u => u.id); if (!ids.length) return null;
         const sel = world.selection, sid = world.selected; world.selection = { kind: 'units', ids };
-        try { return commandAt(world, a.x, a.y); } finally { world.selection = sel; world.selected = sid; } }
+        if (a.queue) { const us = ownUnits(world, ids).filter(u => u.state === 'moving' && u.path.length); // shift-queue waypoint behind a current move
+          if (us.length === ids.length) { for (const u of us) (u.waypoints ||= []).push({ x: a.x, y: a.y, amove: !!a.amove }); return 'queue'; } }
+        let r; try { r = commandAt(world, a.x, a.y); } finally { world.selection = sel; world.selected = sid; }
+        for (const u of ownUnits(world, ids)) { u.waypoints = []; if (a.amove && r === 'move' && u.state === 'moving' && u.type !== 'villager') u.amove = true; }
+        return a.amove && r === 'move' ? 'amove' : r; }
       case 'rally': { const b = ownBuilding(world, a.id); if (!b || !b.trains.length || !b.complete || !finite(a.x, a.y)) return null; b.rally = { x: a.x, y: a.y }; return 'rally'; }
       case 'build': { if (!BUILDING_DEFS[a.type] || BUILDING_DEFS[a.type].menu === false || !Number.isInteger(a.tx) || !Number.isInteger(a.ty)) return null;
         return placeBuilding(world, a.type, a.tx, a.ty, ownUnits(world, a.ids).filter(u => u.type === 'villager')); }
@@ -748,3 +762,9 @@ export function stateHash(world) {
   for (const p of world.projectiles || []) { num(p.x); num(p.y); num(p.dmg); }
   return h.toString(16).padStart(8, '0');
 }
+
+// nearest visible-or-not enemy unit/building within r tiles (deterministic: ties by id order of the arrays)
+function nearestFoe(world, u, r) { let best = null, bd = r;
+  for (const o of world.units) if (o.owner && o.owner !== u.owner && o.hp > 0) { const d = hyp(o.x - u.x, o.y - u.y); if (d < bd) { bd = d; best = o; } }
+  if (!best) for (const b of world.buildings) if (b.owner && b.owner !== u.owner) { const d = hyp(b.x + b.size / 2 - u.x, b.y + b.size / 2 - u.y); if (d < bd) { bd = d; best = b; } }
+  return best; }
