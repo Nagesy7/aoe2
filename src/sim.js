@@ -8,9 +8,9 @@ import { AGES, AGE_NAMES, AGE_UPS, BUILDINGS, UNITS, TECHS, BUILD_MENU as TT_MEN
 export { AGES, AGE_NAMES, AGE_UPS, TECHS, techsAt };
 export const UNIT_DEFS = UNITS;
 export const COSTS = Object.fromEntries([...Object.entries(UNITS), ...Object.entries(BUILDINGS)].map(([k, d]) => [k, d.cost]));
-// Base gather rates (resource units / second / villager). Scaffold speeds, ~2.5x AoE2, but keeping AoE2's ordering:
-// foraging berries is slower than farming, which is slower than butchering a carcass. Techs multiply these.
-export const GATHER_RATES = { berries: 0.75, farm: 0.9, carcass: 1.2, tree: 1.0, gold_mine: 1.0, stone_mine: 1.0 };
+// Base gather rates (resource units / second / villager), AoE2 Dark Age values:
+// forager 0.31, shepherd 0.33, farmer 0.32, lumberjack 0.39, gold miner 0.38, stone miner 0.36. Techs multiply these.
+export const GATHER_RATES = { berries: 0.31, farm: 0.32, carcass: 0.33, tree: 0.39, gold_mine: 0.38, stone_mine: 0.36 };
 export const FARM_FOOD = 175, CARCASS_FOOD = 100;
 export const TRAIN_TIME = 25, HOUSE_BUILD_TIME = 25, POP_MAX = 200, QUEUE_MAX = 5;
 export const CARRY_MAX = 10, GATHER_RATE = 1.0, REACH = 0.9;

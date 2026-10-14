@@ -27,6 +27,25 @@ for (const res of RES_TYPES) {
   assert(RES_TYPES.filter(r => r !== res).every(r => w.stockpile[r] === 0), `only ${res} collected`);
 }
 
+log('--- AoE2 Dark Age gather/deposit math ---');
+{
+  const expect = { berries: 0.31, carcass: 0.33, tree: 0.39, gold_mine: 0.38, stone_mine: 0.36 };
+  for (const [k, r] of Object.entries(expect)) assert(GATHER_RATES[k] === r, `${k} rate ${GATHER_RATES[k]} == ${r}/s`);
+  for (const res of RES_TYPES) {
+    const w = legacyWorld(); const u = w.units[0];
+    const node = w.resources.filter(n => n.res === res).sort((a, b) => Math.hypot(a.x - u.x, a.y - u.y) - Math.hypot(b.x - u.x, b.y - u.y))[0];
+    orderGather(w, u, node); let t = 0;
+    while (u.state !== 'gathering' && t < 60) { tick(w, 0.05); t += 0.05; }
+    const t0 = t; while (u.carry.amount < 10 && t < 200) { tick(w, 0.05); t += 0.05; }
+    const secs = t - t0, ideal = 10 / GATHER_RATES[node.kind];
+    assert(u.carry.amount === 10 && Math.abs(secs - ideal) < 1, `${res}: 10 carried in ${secs.toFixed(2)}s (ideal ${ideal.toFixed(2)}s)`);
+    while (w.stockpile[res] === 0 && t < 400) { tick(w, 0.05); t += 0.05; }
+    assert(w.stockpile[res] === 10, `${res}: deposit adds exactly 10 to stockpile (${w.stockpile[res]})`);
+    while (u.state !== 'gathering' && t < 500) { tick(w, 0.05); t += 0.05; }
+    assert(u.state === 'gathering', `${res}: villager returned to gather after deposit`);
+  }
+}
+
 log('--- selection hit-testing ---');
 {
   const w = legacyWorld(); const u = w.units[0], tc = w.buildings[0];
@@ -259,7 +278,7 @@ const rich = () => createWorld({ stockpile: { food: 2000, wood: 2000, gold: 1000
   assert(a.lastDrop === lc.id, `woodcutter used nearest lumber camp (drop at ${w.buildings.find(o => o.id === a.lastDrop)?.type})`);
   assert(c.lastDrop === mc.id, `gold miner used mining camp (drop at ${w.buildings.find(o => o.id === c.lastDrop)?.type})`);
   assert(b.lastDrop === w.buildings[0].id, 'forager without a mill uses the TC');
-  const mill = placeBuilding(w, 'mill', 40, 28, [b]); complete(w, mill); orderGather(w, b, food); run(w, 30);
+  const mill = placeBuilding(w, 'mill', 40, 28, [b]); complete(w, mill); orderGather(w, b, food); run(w, 70);
   assert(mill.complete && b.lastDrop === mill.id, 'after a mill is built the forager drops at the mill');
   // path distance preferred: camp behind a wall is farther by path than TC even if closer in a straight line
   const w2 = rich(); const v = w2.units[0];
@@ -305,7 +324,7 @@ const rich = () => createWorld({ stockpile: { food: 2000, wood: 2000, gold: 1000
   run(w, 10); const carcass = w.resources.find(n => n.kind === 'carcass');
   assert(!w.animals.includes(sh) && carcass && Math.floor(carcass.x) === 26 && Math.floor(carcass.y) === 26, 'sheep killed where it stood -> carcass at (26,26)');
   assert(w.ledger.created - created0 === CARCASS_FOOD, 'carcass holds 100 food');
-  for (let t = 0; t < 200 && carcass.amount > 0; t += 0.05) tick(w, 0.05); run(w, 15);
+  for (let t = 0; t < 600 && carcass.amount > 0; t += 0.05) tick(w, 0.05); run(w, 15);
   assert(carcass.amount === 0 && w.stockpile.food - base + v.carry.amount >= CARCASS_FOOD, `butcher yield 100 delivered (+${w.stockpile.food - base}, carrying ${v.carry.amount})`);
   const w2 = createWorld({ villagers: 1 }); const s2 = w2.animals[0]; const h2 = butcher(w2, s2);
   assert(h2.amount === 100 && h2.kind === 'carcass', 'butcher() yields a 100-food carcass');

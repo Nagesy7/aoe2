@@ -113,12 +113,13 @@ log('--- eco tech numeric effects (live) ---');
   // Double-Bit Axe +20% wood: measured gathered amount over a fixed window while standing at a tree
   const woodIn = techs => { const w = rich(); w.age = 'imperial'; for (const t of techs) w.researched[t] = 0;
     const u = w.units[0], tree = w.resources.find(n => n.kind === 'tree' && Math.floor(n.y) === 22); orderGather(w, u, tree);
-    for (let k = 0; k < 2000 && u.state !== 'gathering'; k++) tick(w, 0.05); const a0 = tree.amount; run(w, 5); return a0 - tree.amount; };
-  assert(gatherRate(rich(), 'tree') === 1 && (() => { const w = rich(); w.researched.double_bit_axe = 0; return Math.abs(gatherRate(w, 'tree') - 1.2) < 1e-9; })(), 'Double-Bit Axe: wood rate 1.0 -> 1.2 (+20%)');
+    for (let k = 0; k < 2000 && u.state !== 'gathering'; k++) tick(w, 0.05); const a0 = tree.amount; run(w, 20); return a0 - tree.amount; };
+  const RT = gatherRate(rich(), 'tree'), RG = gatherRate(rich(), 'gold_mine'), RS = gatherRate(rich(), 'stone_mine');
+  assert(RT === 0.39 && (() => { const w = rich(); w.researched.double_bit_axe = 0; return Math.abs(gatherRate(w, 'tree') - RT * 1.2) < 1e-9; })(), 'Double-Bit Axe: wood rate 0.39 -> x1.2 (+20%)');
   const base = woodIn([]), dba = woodIn(['double_bit_axe']), bs = woodIn(['double_bit_axe', 'bow_saw']), tms = woodIn(['double_bit_axe', 'bow_saw', 'two_man_saw']);
-  assert(base === 5 && dba === 6 && bs === 7, `measured wood in 5s at a tree: base ${base}, DBA ${dba}, +Bow Saw ${bs}, +Two-Man Saw ${tms}`);
-  { const w = rich(); w.researched.double_bit_axe = 0; w.researched.bow_saw = 0; w.researched.two_man_saw = 0; assert(Math.abs(gatherRate(w, 'tree') - 1.5) < 1e-9, 'wood bonuses stack additively: +20 +20 +10 = 1.5x'); }
-  { const w = rich(); w.researched.gold_mining = 0; assert(Math.abs(gatherRate(w, 'gold_mine') - 1.15) < 1e-9, 'Gold Mining: gold rate +15%'); w.researched.gold_shaft_mining = 0; assert(Math.abs(gatherRate(w, 'gold_mine') - 1.3) < 1e-9, 'Gold Shaft Mining: +15% more (1.3x)'); assert(gatherRate(w, 'stone_mine') === 1, 'gold techs do not affect stone'); }
+  assert(base === 7 && dba === 9 && bs === 10, `measured wood in 20s (capped by carry 10) at a tree: base ${base}, DBA ${dba}, +Bow Saw ${bs}, +Two-Man Saw ${tms}`);
+  { const w = rich(); w.researched.double_bit_axe = 0; w.researched.bow_saw = 0; w.researched.two_man_saw = 0; assert(Math.abs(gatherRate(w, 'tree') - RT * 1.5) < 1e-9, 'wood bonuses stack additively: +20 +20 +10 = 1.5x'); }
+  { const w = rich(); w.researched.gold_mining = 0; assert(Math.abs(gatherRate(w, 'gold_mine') - RG * 1.15) < 1e-9, 'Gold Mining: gold rate +15%'); w.researched.gold_shaft_mining = 0; assert(Math.abs(gatherRate(w, 'gold_mine') - RG * 1.3) < 1e-9, 'Gold Shaft Mining: +15% more (1.3x)'); assert(gatherRate(w, 'stone_mine') === RS, 'gold techs do not affect stone'); }
   // Wheelbarrow: carry 10 -> 13 (+25%, rounded); Hand Cart -> 15; delivered per trip changes live
   { const w = rich(); assert(carryMax(w) === 10, 'base carry 10');
     const u = w.units[0], bush = w.resources.find(n => n.kind === 'berries'); orderGather(w, u, bush);
