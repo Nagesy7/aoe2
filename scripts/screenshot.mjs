@@ -20,6 +20,8 @@ const browser = await chromium.launch();
 const page = await browser.newPage({ viewport: { width: 1280, height: 720 } });
 page.on('pageerror', e => { console.error('pageerror', e); fails++; });
 await page.goto(url); await page.waitForFunction(() => window.game);
+// the bare URL now opens the title menu (no world yet); start single player with a real click like a player would
+await page.click('#btn-sp'); await page.waitForFunction(() => window.game.world);
 const scr = (x, y) => page.evaluate(([x, y]) => window.game.toScreen(x, y), [x, y]);
 const info = async () => { await page.waitForTimeout(120); return page.evaluate(() => { const e = document.getElementById('info'); return e.style.display === 'none' ? null : { kind: e.dataset.kind, text: e.innerText.replace(/\n/g, ' | ') }; }); };
 

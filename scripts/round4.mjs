@@ -38,7 +38,7 @@ const trainBtn = page.locator('button[data-action=train]');
 await trainBtn.click(); await trainBtn.click();
 await advance(6);
 check((await S(() => window.game.world.buildings[0].queue.length)) === 2 && /Food: 100/.test(await hud()), `2 villagers queued, food 200 -> 100: ${await hud()}`);
-check(/Queue: 2\/5 .*Training Villager: 2\d%/.test(await text('#info')) && await page.locator('#info .bar div').count() === 1 && await page.locator('#info .qi').count() === 2, `TC panel: ${await text('#info')}`);
+check(/Queue: 2\/5 .*Training Shiba Villager: 2\d%/.test(await text('#info')) && await page.locator('#info .bar div').count() === 1 && await page.locator('#info .qi').count() === 2, `TC panel: ${await text('#info')}`);
 await shot('round4-01-tc-train-queue.png');
 
 // --- rally point: right-click ground with TC selected ---

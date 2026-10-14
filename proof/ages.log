@@ -1,4 +1,4 @@
-ages browser proof 2026-10-14T10:04:47.288Z
+ages browser proof 2026-10-14T10:17:16.779Z
 PASS: HUD shows age: Inu Empires | Food: 200 | Wood: 200 | Gold: 100 | Stone: 100 | Pop 3/5 | Dark Age
 PASS: Feudal buildings greyed: Archery Range Requires Feudal Age; Watch Tower Requires Feudal Age
 PASS: Castle/Imperial greyed: Castle Requires Castle Age; Wonder Requires Imperial Age
@@ -12,43 +12,43 @@ PASS: wood for Mining Camp + House
 PASS: mining camp at (40,41)
 PASS: mining camp built
 PASS: house built by the miner
-PASS: 500+ food gathered: {"food":555,"wood":195,"gold":300,"stone":100,"age":"dark","t":330.950000000041}
+PASS: 500+ food gathered: {"food":555,"wood":195,"gold":300,"stone":100,"age":"dark","t":330.1000000000408}
 PASS: requirements met: "Advance to Feudal Age 500 food, 130s"
 PASS: Feudal research started (-500 food)
 PASS: research progress: Town Center | HP: 2400/2400 | Armor 3/5 | Queue: 1/5 | Researching Feudal Age: 30% | Rally: (41, 31) | A
   saved proof/ages-03-feudal-research-progress.png
 PASS: Feudal Age reached
-PASS: banner: "You have advanced to the Feudal Age!"; HUD Inu Empires | Food: 75 | Wood: 639 | Gold: 430 | Stone: 100 | Pop 8/10 | Feudal Age
+PASS: banner: "You have advanced to the Feudal Age!"; HUD Inu Empires | Food: 75 | Wood: 547 | Gold: 430 | Stone: 100 | Pop 8/10 | Feudal Age
   saved proof/ages-04-feudal-banner.png
 PASS: unlocked in Feudal: "Archery Range 175 wood", "Blacksmith 150 wood"; still locked: "Castle Requires Castle Age"
   saved proof/ages-05-feudal-unlocked-menu.png
 PASS: Mining Camp tech button: Gold Mining 100 food, 75 wood, 30s
 PASS: Gold Shaft Mining greyed: Requires Castle Age
 PASS: Gold Mining researched
-PASS: Gold Mining effect: rate 1.00 -> 1.15; measured miner rate 0.947 -> 1.091 /s (x1.15)
+PASS: Gold Mining effect: rate 1.00 -> 1.15; measured miner rate 0.947 -> 1.071 /s (x1.13)
   saved proof/ages-06-tech-gold-mining-researched.png
 PASS: Loom researched
 PASS: Loom effect on villager panel: Shiba Villager | Task: Gathering | Carrying: 8 food/10 | HP: 40/40 | Attack 3 Armor 0/0
   saved proof/ages-07-loom-villager-hp.png
-PASS: wood for Blacksmith + Market: {"food":205,"wood":1150,"gold":700,"stone":100,"age":"feudal","t":655.1499999999519}
+PASS: wood for Blacksmith + Market: {"food":205,"wood":1003,"gold":700,"stone":100,"age":"feudal","t":654.3999999999526}
 PASS: Blacksmith at (46,30), Market at (46,37)
 PASS: Blacksmith + Market built (Feudal buildings)
 PASS: Blacksmith offers Forging
   saved proof/ages-08-feudal-building-built.png
-PASS: 800 food + 200 gold: {"food":805,"wood":1801,"gold":1340,"stone":100,"age":"feudal","t":1034.0999999996072}
+PASS: 800 food + 200 gold: {"food":805,"wood":1667,"gold":1340,"stone":100,"age":"feudal","t":1033.4999999996078}
 PASS: castle button: "Advance to Castle Age 800 food, 200 gold, 160s"
 PASS: Castle Age reached
 PASS: banner: You have advanced to the Castle Age!
   saved proof/ages-09-castle-banner.png
-PASS: wood for Monastery + University: {"food":255,"wood":2185,"gold":1501,"stone":100,"age":"castle","t":1196.4999999994595}
+PASS: wood for Monastery + University: {"food":255,"wood":2065,"gold":1491,"stone":100,"age":"castle","t":1193.9499999994619}
 PASS: Monastery at (45,24), University at (50,32)
 PASS: Monastery + University built
   imperial button: "Advance to Imperial Age 1000 food, 800 gold, 190s | need 685 food"
-PASS: 1000 food + 800 gold: {"food":1010,"wood":2939,"gold":2047,"stone":100,"age":"castle","t":1675.6999999990237}
+PASS: 1000 food + 800 gold: {"food":1010,"wood":2882,"gold":2047,"stone":100,"age":"castle","t":1678.3499999990213}
 PASS: Imperial Age reached
-PASS: banner: You have advanced to the Imperial Age!; HUD Inu Empires | Food: 310 | Wood: 3070 | Gold: 1457 | Stone: 100 | Pop 8/10 | Imperial Age
+PASS: banner: You have advanced to the Imperial Age!; HUD Inu Empires | Food: 300 | Wood: 3097 | Gold: 1467 | Stone: 100 | Pop 8/10 | Imperial Age
   saved proof/ages-10-imperial-banner.png
 PASS: Wonder unlocked in Imperial: "Wonder need 900 stone"
   saved proof/ages-11-imperial-menu.png
-  final: {"food":310,"wood":3070,"gold":1457,"stone":100,"age":"imperial","t":1867.4999999988493}, villagers 8, sim time 1867s
+  final: {"food":310,"wood":3097,"gold":1467,"stone":100,"age":"imperial","t":1869.899999998847}, villagers 8, sim time 1870s
 RESULT: ALL PASSED

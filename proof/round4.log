@@ -1,8 +1,8 @@
-round4 browser proof 2026-10-14T10:05:08.447Z
+round4 browser proof 2026-10-14T10:17:38.365Z
 PASS: start HUD: Inu Empires | Food: 200 | Wood: 200 | Gold: 100 | Stone: 100 | Pop 3/5 | Dark Age
   saved proof/round4-00-start.png
 PASS: 2 villagers queued, food 200 -> 100: Inu Empires | Food: 100 | Wood: 200 | Gold: 100 | Stone: 100 | Pop 3/5 | Dark Age
-PASS: TC panel: Town Center | HP: 2400/2400 | Armor 3/5 | Queue: 2/5 | Training Villager: 25% | V | V
+PASS: TC panel: Town Center | HP: 2400/2400 | Armor 3/5 | Queue: 2/5 | Training Shiba Villager: 25% | S | S
   saved proof/round4-01-tc-train-queue.png
 PASS: rally point set by right-click
 PASS: 2 trained villagers walked to rally: [["44.5","36.5"],["45.5","36.5"]]

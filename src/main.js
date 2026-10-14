@@ -2,7 +2,7 @@ import { screenToWorld, worldToScreen, createWorld, TILE, pickAt, selectionInfo,
   selectedUnits, selectedBuilding, popCount, popCap, RES_TYPES, BUILD_MENU, BUILDING_DEFS, UNIT_DEFS, missingFor, canAgeUp, canResearch, ageStatus, techsAt, TECHS, AGE_UPS, AGE_NAMES, isLocked, requiresText,
   stepTick, applyCommand, makeCommand, stateHash, TICK_DT, OWNERS, hyp } from './sim.js';
 import { render, computeFog } from './render.js';
-import { BREEDS, unitLabel } from './inu.js';
+import { BREEDS, unitLabel, breedText, queueIcon } from './inu.js';
 import { startTitle } from './title.js';
 import * as SIM from './sim.js';
 import { Lockstep } from './lockstep.js';
@@ -15,6 +15,7 @@ let world = null, cam = { x: 0, y: 0 }, ui = createUi(), net = null, fog = null;
 const keys = new Set(); addEventListener('blur', () => keys.clear());
 let mouse = { x: -1, y: -1, inside: false }, drag = null;
 function resize() { canvas.width = innerWidth; canvas.height = innerHeight; if (world) clampCamera(cam, canvas.width, canvas.height, world); } resize(); addEventListener('resize', resize);
+addEventListener('blur', () => { keys.clear(); drag = null; });   // no stuck pan keys after alt-tab
 addEventListener('keydown', e => { if (e.target.tagName === 'INPUT') return; keys.add(e.key.toLowerCase()); if (e.key === 'Escape') cancelPlacing(ui); });
 addEventListener('keyup', e => keys.delete(e.key.toLowerCase()));
 canvas.addEventListener('contextmenu', e => e.preventDefault());
@@ -77,23 +78,23 @@ function updateHud() {
   hud.innerHTML = '<span id="brand">Inu Empires</span>' + RES_TYPES.map(r => `<span id="res-${r}">${r[0].toUpperCase() + r.slice(1)}: ${world.stockpile[r]}</span>`).join('') +
     `<span id="pop" class="${pop >= cap ? 'capped' : ''}">Pop ${pop}/${cap}</span>` + (net ? `<span id="side" class="${net.me ? 'p2' : 'p1'}">Player ${net.me + 1} (${net.me ? 'Red' : 'Blue'})</span>` : '') + `<span id="age">${AGE_NAMES[world.age]}</span>`;
   bannerEl.textContent = world.banner ? world.banner.text : ''; bannerEl.style.display = world.banner ? 'block' : 'none';
-  msgEl.textContent = world.message ? world.message.text : ''; msgEl.style.display = world.message ? 'block' : 'none';
+  msgEl.textContent = world.message ? breedText(world.message.text) : ''; msgEl.style.display = world.message ? 'block' : 'none';
   const info = selectionInfo(world);
   infoEl.style.display = info ? 'block' : 'none';
   if (info) { infoEl.dataset.kind = info.kind; const title = info.kind === 'unit' && BREEDS[info.type] ? info.title.replace(UNIT_DEFS[info.type].name, unitLabel(info.type)) : info.title;
-    infoEl.innerHTML = `<b>${title}</b>` + info.lines.map(l => info.kind === 'units' ? l.replace(/^(\d+) × (\w+)$/, (m, n, t) => `${n} × ${unitLabel(t, t)}`) : l).map(l => `<div>${l}</div>`).join('') +
+    infoEl.innerHTML = `<b>${title}</b>` + info.lines.map(l => info.kind === 'units' ? l.replace(/^(\d+) × (\w+)$/, (m, n, t) => `${n} × ${unitLabel(t, t)}`) : breedText(l)).map(l => `<div>${l}</div>`).join('') +
     (info.hp != null ? `<div class="bar hp${info.enemy ? ' enemy' : ''}"><div style="width:${Math.round(Math.max(0, info.hp) * 100)}%"></div></div>` : '') +
     (info.progress != null ? `<div class="bar"><div style="width:${Math.round(info.progress * 100)}%"></div></div>` : '') +
-    (info.queue ? `<div class="queue">${info.queueTypes.map(t => `<span class="qi" title="${t}">${t.startsWith('age:') ? 'A' : t.startsWith('tech:') ? 'T' : t === 'villager' ? 'V' : t === 'militia' ? 'M' : UNIT_DEFS[t].name[0]}</span>`).join('')}</div>` : ''); }
+    (info.queue ? `<div class="queue">${info.queueTypes.map(t => `<span class="qi" title="${breedText(SIM.itemName(t))}">${queueIcon(t)}</span>`).join('')}</div>` : ''); }
   const b = SIM.selectedOwnBuilding(world), us = selectedUnits(world);
   let cmd = '';
   const button = (action, label, sub, { disabled = false, grey = false, title = '' } = {}) =>
     `<button data-action="${action}" ${disabled ? 'disabled' : ''} class="${grey ? 'unaffordable' : ''}${ui.placing === action ? ' active' : ''}" title="${title}">${label}<br><small>${sub}</small></button>`;
   if (b && b.complete && (b.trains.length || techsAt(b.type).length)) {
     const parts = b.trains.map(t => { const d = UNIT_DEFS[t], up = Object.keys(world.researched).map(k => TECHS[k].effect.upgrade?.[t]).find(Boolean), shown = up ? UNIT_DEFS[up] : d;
-      if (isLocked(world, d.age)) return button(t === 'villager' ? 'train' : t, `Train ${unitLabel(t, d.name)}`, requiresText(d.age), { disabled: true, title: `${d.name}: ${costText(d.cost)}, ${d.time}s` });
+      if (isLocked(world, d.age)) return button(t === 'villager' ? 'train' : t, `Train ${unitLabel(t, d.name)}`, requiresText(d.age), { disabled: true, title: `${unitLabel(t, d.name)}: ${costText(d.cost)}, ${d.time}s` });
       const miss = missingFor(world, shown.cost);
-      return button(t === 'villager' ? 'train' : t, `Train ${unitLabel(up || t, shown.name)}`, miss || `${costText(shown.cost)}, ${shown.time}s`, { grey: !!miss, title: `${shown.name}: HP ${shown.hp}, attack ${shown.attack}, armor ${shown.armor}` }); });
+      return button(t === 'villager' ? 'train' : t, `Train ${unitLabel(up || t, shown.name)}`, miss || `${costText(shown.cost)}, ${shown.time}s`, { grey: !!miss, title: `${unitLabel(up || t, shown.name)}: HP ${shown.hp}, attack ${shown.attack}, armor ${shown.armor}` }); });
     for (const id of techsAt(b.type)) { const t = TECHS[id]; if (id in world.researched) continue;
       const c = canResearch(world, b, id); const queued = c.reason === 'queued';
       const sub = c.ok ? `${costText(t.cost)}, ${t.time}s` : c.reason === 'age' ? requiresText(t.age) : queued ? 'researching…' : c.reason === 'cost' ? c.text : c.text;
@@ -102,7 +103,7 @@ function updateHud() {
       if (st.next) { const c = canAgeUp(world, b), up = AGE_UPS[st.next];
         const sub = `${costText(up.cost)}, ${up.time}s` + (c.ok ? '' : ` | ${c.reason === 'queued' ? 'researching…' : c.text}`);
         parts.push(button('age-up', `Advance to ${AGE_NAMES[st.next]}`, sub, { disabled: !c.ok && c.reason !== 'cost', grey: c.reason === 'cost', title: `${AGE_NAMES[st.next]}: ${costText(up.cost)}, ${up.time}s; ${st.missing || 'requirements met'}` })); } }
-    if (b.queue.length) parts.push(button('cancel', 'Cancel last', `refund ${SIM.itemName(b.queue[b.queue.length - 1])}`, { title: 'Remove the last queued item and refund its cost' }));
+    if (b.queue.length) parts.push(button('cancel', 'Cancel last', `refund ${breedText(SIM.itemName(b.queue[b.queue.length - 1]))}`, { title: 'Remove the last queued item and refund its cost' }));
     cmd = parts.join('');
   } else if (us.some(u => u.type === 'villager')) cmd = BUILD_MENU.map(t => { const d = BUILDING_DEFS[t];
     if (isLocked(world, d.age)) return button(t, t === 'house' ? 'Build House' : d.name, requiresText(d.age), { disabled: true, title: `${d.name}: ${costText(d.cost)}` });

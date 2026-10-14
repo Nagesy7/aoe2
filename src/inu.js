@@ -130,3 +130,13 @@ export function paw(ctx, x, y, r, col) {
   circ(ctx, x, y + r * 0.35, r * 0.55, col);
   for (const [dx, dy] of [[-0.6, -0.35], [-0.2, -0.65], [0.2, -0.65], [0.6, -0.35]]) circ(ctx, x + dx * r, y + dy * r, r * 0.22, col);
 }
+// UI-only display names: swap original unit names in player-visible text for breed labels (sim ids/state untouched).
+const ORIG = { villager: 'Villager', militia: 'Militia', spearman: 'Spearman', archer: 'Archer', crossbowman: 'Crossbowman', scout_cavalry: 'Scout Cavalry', knight: 'Knight', monk: 'Monk', trebuchet: 'Trebuchet' };
+const NAME_MAP = Object.entries(ORIG).map(([t, n]) => [n, BREEDS[t].label]).sort((a, b) => b[0].length - a[0].length);
+const NAME_RE = new RegExp(`\\b(${NAME_MAP.map(e => e[0]).join('|')})\\b(?!s\\b)`, 'g');
+export function breedText(text) {
+  if (!text) return text;
+  return text.replace(NAME_RE, (m, n, off, s) => { const label = NAME_MAP.find(e => e[0] === n)[1];
+    return s.slice(Math.max(0, off - label.length + n.length), off + n.length) === label ? m : label; });
+}
+export const queueIcon = item => item.startsWith('age:') ? 'A' : item.startsWith('tech:') ? 'T' : (BREEDS[item]?.breed || item)[0];

@@ -16,7 +16,8 @@
     "round6": "node scripts/round6.mjs",
     "gather-verify": "node scripts/gather-verify.mjs",
     "ages": "node scripts/ages.mjs",
-    "inu": "node scripts/inu.mjs"
+    "inu": "node scripts/inu.mjs",
+    "camera": "node scripts/camera.mjs"
   },
   "devDependencies": {
     "playwright": "^1.64.0",

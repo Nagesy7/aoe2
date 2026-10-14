@@ -135,7 +135,7 @@ const res0 = await S(() => ({ ...window.game.world.stockpile }));
 await btn('militia').click(); await btn('militia').click(); await advance(5);
 const res1 = await S(() => ({ ...window.game.world.stockpile }));
 check(res0.food - res1.food >= 120 && res0.gold - res1.gold === 40, `2 militia queued: gold ${res0.gold} -> ${res1.gold}`);
-check(/Queue: 2\/5 .*Training Militia: 2\d%/.test(await text('#info')) && await page.locator('#info .qi').allInnerTexts().then(a => a.join('')) === 'MM', `barracks panel: ${await text('#info')}`);
+check(/Queue: 2\/5 .*Training Kai Militia: 2\d%/.test(await text('#info')) && await page.locator('#info .qi').allInnerTexts().then(a => a.join('')) === 'KK', `barracks panel: ${await text('#info')}`);
 await at(br.x + 6.5, br.y + 4.5, 'right');
 await shot('round6-16-barracks-queue.png');
 check(await until(`window.game.world.units.filter(u => u.type === 'militia').length === 2`, 50), '2 militia trained');

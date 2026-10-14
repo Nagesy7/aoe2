@@ -1,4 +1,4 @@
-round6 browser proof 2026-10-14T10:05:17.457Z
+round6 browser proof 2026-10-14T10:17:47.492Z
 PASS: drag-box: 3 Villagers selected | 3 × Idle | Carrying: 0 total
 PASS: build menu: Build House 25 wood | Lumber Camp 100 wood | Mining Camp 100 wood | Mill 100 wood | Farm 60 wood | Barracks 175 wood | Archery Range Requires Feudal Age | Stable Requires Feudal Age | Blacksmith Requires Feudal Age | Market Requires Feudal Age | Watch Tower Requires Feudal Age | Castle Requires Castle Age | Monastery Requires Castle Age | University Requires Castle Age | Wonder Requires Imperial Age
   saved proof/round6-01-build-menu.png
@@ -47,7 +47,7 @@ PASS: barracks foundation at (44,36)
 PASS: barracks built
 PASS: barracks button: Train Kai Militia 60 food, 20 gold, 21s
 PASS: 2 militia queued: gold 111 -> 71
-PASS: barracks panel: Barracks | HP: 1200/1200 | Armor 0/7 | Queue: 2/5 | Training Militia: 25% | M | M
+PASS: barracks panel: Barracks | HP: 1200/1200 | Armor 0/7 | Queue: 2/5 | Training Kai Militia: 25% | K | K
   saved proof/round6-16-barracks-queue.png
 PASS: 2 militia trained
 PASS: HUD Inu Empires | Food: 285 | Wood: 1235 | Gold: 71 | Stone: 100 | Pop 5/5 | Dark Age
