@@ -1,3 +1,5 @@
+import { drawUnitArt, drawBuildingArt } from './art.js';
+const ART_B = new WeakSet();
 import { drawTerrain } from './terrain.js';
 import { drawInu, paw, TEAM } from './inu.js';
 import { TILE, camPixel, selectedUnits, itemTime, unitStats } from './sim.js';
@@ -38,13 +40,16 @@ export function render(ctx, world, cam, ui = {}, fog = null) {
   else for (let y = y0; y < y1; y++) for (let x = x0; x < x1; x++) { ctx.fillStyle = GRASS[world.tiles[y * world.width + x]]; ctx.fillRect(x * TILE, y * TILE, TILE, TILE); }
   const sel = world.selection, selUnits = new Set(selectedUnits(world).map(u => u.id));
   if (sel && sel.kind === 'tile') { ctx.strokeStyle = '#fff'; ctx.lineWidth = 2; ctx.strokeRect(sel.x * TILE + 1, sel.y * TILE + 1, TILE - 2, TILE - 2); ctx.lineWidth = 1; }
-  for (const b of world.buildings) {
-    if (fog && foe(b) && !fog.sees(b) && !fog.seenBuildings.has(b.id)) continue;
+  const D = []; // depth-sorted by bottom y
+  for (const b of world.buildings) D.push([(b.y + b.size) * TILE, () => {
+    if (fog && foe(b) && !fog.sees(b) && !fog.seenBuildings.has(b.id)) return;
     const px = b.x * TILE, py = b.y * TILE, s = b.size * TILE;
     if (!b.complete) {
       ctx.fillStyle = '#c8a86a88'; ctx.fillRect(px, py, s, s); ctx.strokeStyle = '#6b4a20'; ctx.setLineDash([4, 3]); ctx.strokeRect(px + 1, py + 1, s - 2, s - 2); ctx.setLineDash([]);
       const f = b.progress / b.buildTime; ctx.fillStyle = '#8b6b43'; ctx.fillRect(px + 4, py + s - 4 - (s - 8) * f, s - 8, (s - 8) * f);
       bar(ctx, px, py - 9, s, f, '#e8c040');
+    } else if (drawBuildingArt(ctx, b, b.owner ? (TEAM[b.owner] || TEAM.player) : null) && ART_B.add(b)) {
+      if (b.queue && b.queue.length) bar(ctx, px, py - 18, s, b.trainProgress / itemTime(b.queue[0]), b.blocked ? '#d33' : '#4fd34f');
     } else if (b.type === 'farm') {
       const n = world.resources.find(r => r.farm === b.id), f = n ? n.amount / 175 : 0;
       ctx.fillStyle = '#7a5a2a'; ctx.fillRect(px, py, s, s); ctx.fillStyle = `rgb(${150 + 60 * f | 0},${130 + 70 * f | 0},40)`;
@@ -79,15 +84,15 @@ export function render(ctx, world, cam, ui = {}, fog = null) {
       ctx.fillStyle = '#fff'; ctx.font = '12px sans-serif'; ctx.textAlign = 'center'; ctx.fillText(b.name, px + s / 2, py + s + 14);
       if (b.queue.length) bar(ctx, px, py - 18, s, b.trainProgress / itemTime(b.queue[0]), b.blocked ? '#d33' : '#4fd34f');
     }
-    if (b.complete && b.type !== 'farm' && b.owner) { const tc = TEAM[b.owner] || TEAM.player; ctx.fillStyle = '#4a3018'; ctx.fillRect(px + s - 8, py - 14, 2, 20); ctx.fillStyle = tc; ctx.fillRect(px + s - 6, py - 14, 13, 10); paw(ctx, px + s + 0.5, py - 9, 4.5, '#f6e6c8'); }
+    if (b.complete && b.type !== 'farm' && b.owner && !ART_B.has(b)) { const tc = TEAM[b.owner] || TEAM.player; ctx.fillStyle = '#4a3018'; ctx.fillRect(px + s - 8, py - 14, 2, 20); ctx.fillStyle = tc; ctx.fillRect(px + s - 6, py - 14, 13, 10); paw(ctx, px + s + 0.5, py - 9, 4.5, '#f6e6c8'); }
     if (red(b)) { ctx.fillStyle = '#c02020'; ctx.fillRect(px + 2, py + 2, 4, 14); ctx.fillRect(px + 6, py + 2, 9, 6); ctx.strokeStyle = '#e04040'; ctx.strokeRect(px + 0.5, py + 0.5, s - 1, s - 1); }
     if (b.complete && (b.hp < b.maxHp || foe(b) || (sel && sel.kind === 'building' && sel.id === b.id))) bar(ctx, px, py - (b.queue.length ? 26 : 9), s, b.hp / b.maxHp, red(b) ? '#e04040' : '#4fd34f');
     if (sel && sel.kind === 'building' && sel.id === b.id) { ctx.strokeStyle = '#fff'; ctx.lineWidth = 2; ctx.strokeRect(px - 3, py - 3, s + 6, s + 6); ctx.lineWidth = 1;
       if (b.rally) { const rx = b.rally.x * TILE, ry = b.rally.y * TILE; ctx.strokeStyle = '#fff8'; ctx.setLineDash([5, 5]); ctx.beginPath(); ctx.moveTo(px + s / 2, py + s / 2); ctx.lineTo(rx, ry); ctx.stroke(); ctx.setLineDash([]);
         ctx.fillStyle = '#5a3a1a'; ctx.fillRect(rx - 1, ry - 20, 2, 20); ctx.fillStyle = '#2a50c8'; ctx.fillRect(rx + 1, ry - 20, 12, 8); } }
-  }
-  for (const n of world.resources) {
-    if (n.amount <= 0) continue;
+  }]);
+  for (const n of world.resources) D.push([n.y * TILE + 10, () => {
+    if (n.amount <= 0) return;
     const px = n.x * TILE, py = n.y * TILE;
     if (sel && sel.kind === 'resource' && sel.id === n.id) { ctx.strokeStyle = '#fff'; ctx.lineWidth = 2; ctx.beginPath(); ctx.ellipse(px, py + 8, 15, 7, 0, 0, 7); ctx.stroke(); ctx.lineWidth = 1; }
     if (n.res === 'wood') { ctx.fillStyle = '#5a3a1a'; ctx.fillRect(px - 3, py, 6, 12); ctx.fillStyle = '#1f5a1f'; ctx.beginPath(); ctx.arc(px, py - 4, 12, 0, 7); ctx.fill(); }
@@ -96,13 +101,13 @@ export function render(ctx, world, cam, ui = {}, fog = null) {
       bar(ctx, px - 12, py - 10, 24, n.amount / 100, '#e0a040'); }
     else if (n.res === 'food') { ctx.fillStyle = '#2d6b2d'; ctx.beginPath(); ctx.arc(px, py, 11, 0, 7); ctx.fill(); ctx.fillStyle = '#c0203a'; for (let i = 0; i < 5; i++) { ctx.beginPath(); ctx.arc(px - 6 + (i * 5) % 13, py - 5 + (i * 7) % 11, 2.5, 0, 7); ctx.fill(); } }
     else { ctx.fillStyle = n.res === 'gold' ? '#e0b83a' : '#9a9a9a'; ctx.beginPath(); ctx.moveTo(px - 13, py + 9); ctx.lineTo(px - 4, py - 11); ctx.lineTo(px + 6, py - 6); ctx.lineTo(px + 13, py + 9); ctx.fill(); ctx.strokeStyle = '#333'; ctx.stroke(); }
-  }
-  for (const a of world.animals) { if (fog && !fog.visible[Math.floor(a.y) * world.width + Math.floor(a.x)]) continue; const px = a.x * TILE, py = a.y * TILE;
+  }]);
+  for (const a of world.animals) D.push([a.y * TILE + 6, () => { if (fog && !fog.visible[Math.floor(a.y) * world.width + Math.floor(a.x)]) return; const px = a.x * TILE, py = a.y * TILE;
     if (selUnits.has(a.id) || (sel && sel.kind === 'unit' && sel.id === a.id)) { ctx.strokeStyle = '#fff'; ctx.lineWidth = 2; ctx.beginPath(); ctx.ellipse(px, py + 5, 11, 6, 0, 0, 7); ctx.stroke(); ctx.lineWidth = 1; }
     ctx.fillStyle = '#f4f0e6'; ctx.beginPath(); ctx.ellipse(px, py, 9, 6, 0, 0, 7); ctx.fill(); ctx.fillStyle = '#333'; ctx.beginPath(); ctx.arc(px + 8, py - 2, 3.5, 0, 7); ctx.fill();
-    if (a.owner) { ctx.fillStyle = red(a) ? '#c02020' : '#2a50c8'; ctx.fillRect(px + 4, py - 6, 3, 8); } }
-  for (const u of world.units) {
-    if (fog && foe(u) && !fog.sees(u)) continue;
+    if (a.owner) { ctx.fillStyle = red(a) ? '#c02020' : '#2a50c8'; ctx.fillRect(px + 4, py - 6, 3, 8); } }]);
+  for (const u of [...world.units, ...dyingUnits(world)]) D.push([u.y * TILE + 6, () => {
+    if (fog && foe(u) && !fog.sees(u)) return;
     const px = u.x * TILE, py = u.y * TILE;
     if (u.type !== 'villager' || red(u)) { ctx.fillStyle = red(u) ? '#ff2020d0' : '#3060ffb0'; ctx.beginPath(); ctx.ellipse(px, py + 6, 10, 5, 0, 0, 7); ctx.fill(); }
     if (u.type !== 'villager' || u.hp < u.maxHp || selUnits.has(u.id)) bar(ctx, px - 11, py - 30, 22, u.hp / u.maxHp, red(u) ? '#e04040' : '#4fd34f');
@@ -111,8 +116,9 @@ export function render(ctx, world, cam, ui = {}, fog = null) {
       if (u.path.length) { ctx.strokeStyle = '#ffffffaa'; ctx.setLineDash([3, 4]); ctx.beginPath(); ctx.moveTo(px, py); for (const q of u.path) ctx.lineTo(q.x * TILE, q.y * TILE); ctx.stroke(); ctx.setLineDash([]); }
       ctx.strokeStyle = '#fff'; ctx.lineWidth = 2; ctx.beginPath(); ctx.ellipse(px, py + 6, 11, 6, 0, 0, 7); ctx.stroke(); ctx.lineWidth = 1; }
     { let res = null, kind = null; if (u.type === 'villager' && u.target != null && !u.carry.amount) { const n = world.resources.find(r => r.id === u.target); if (n) { res = n.res; kind = n.kind; } }
-      drawInu(ctx, u, px, py, world.time || 0, { res, kind, attacking: u.lastAttackAt != null && world.time - u.lastAttackAt < 0.6 }); }
-  }
+      if (!drawUnitArt(ctx, u, px, py, world.time || 0, TEAM[u.owner] || TEAM.player, u.lastAttackAt != null && world.time - u.lastAttackAt < 0.6)) drawInu(ctx, u, px, py, world.time || 0, { res, kind, attacking: u.lastAttackAt != null && world.time - u.lastAttackAt < 0.6 }); }
+  }]);
+  D.sort((a, b) => a[0] - b[0]); for (const d of D) d[1]();
   for (const p of world.projectiles || []) { if (fog && !fog.visible[Math.floor(p.y) * world.width + Math.floor(p.x)]) continue; const x = p.x * TILE, y = p.y * TILE, a = p.dir ? Math.atan2(p.dir[1], p.dir[0]) : 0;
     ctx.strokeStyle = '#3a2410'; ctx.lineWidth = 2; ctx.beginPath(); ctx.moveTo(x - Math.cos(a) * 8, y - Math.sin(a) * 8); ctx.lineTo(x, y); ctx.stroke(); ctx.lineWidth = 1; }
   const lo = world.lastOrder; if (lo && world.time - lo.t < 0.8) { const k = 1 - (world.time - lo.t) / 0.8, x = lo.x * TILE, y = lo.y * TILE;
@@ -127,4 +133,15 @@ export function render(ctx, world, cam, ui = {}, fog = null) {
     ctx.strokeStyle = '#ffa500'; ctx.lineWidth = 3; for (const [x, y] of g.units || []) ctx.strokeRect(x * TILE + 2, y * TILE + 2, TILE - 4, TILE - 4); ctx.lineWidth = 1; }
   ctx.restore();
   if (ui.box) { const b = ui.box; ctx.strokeStyle = '#fff'; ctx.fillStyle = '#ffffff20'; ctx.fillRect(b.x0, b.y0, b.x1 - b.x0, b.y1 - b.y0); ctx.strokeRect(b.x0 + 0.5, b.y0 + 0.5, b.x1 - b.x0, b.y1 - b.y0); }
+}
+
+// visual-only death animation: units removed by the sim linger for 0.6s (render state, not sim state)
+const ghosts = new Map(); let lastSeen = new Map(), lastWorld = null;
+function dyingUnits(world) {
+  if (world !== lastWorld) { ghosts.clear(); lastSeen = new Map(); lastWorld = world; }
+  const now = world.time || 0, cur = new Map(world.units.map(u => [u.id, u]));
+  for (const [id, u] of lastSeen) if (!cur.has(id) && !ghosts.has(id)) ghosts.set(id, { ...u, path: [], t0: now });
+  lastSeen = new Map([...cur].map(([id, u]) => [id, { id, type: u.type, owner: u.owner, x: u.x, y: u.y, face: u.face, hp: 0, maxHp: u.maxHp, carry: u.carry, state: 'idle' }]));
+  const out = []; for (const [id, g] of ghosts) { const d = now - g.t0; if (d > 0.6 || d < 0) ghosts.delete(id); else out.push({ ...g, dying: d }); }
+  return out;
 }

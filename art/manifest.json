@@ -1,0 +1,661 @@
+{
+ "tile": 32,
+ "team_layer_convention": "white+alpha mask; multiply/tint with player colour and draw over main sprite",
+ "unit_sheet_layout": "rows = directions S,W,E,N; columns = idle(2) walk(4) attack(3) death(4); anchor = unit world pos (px, py+6)",
+ "units": [
+  {
+   "id": "villager",
+   "kind": "unit",
+   "file": "units/villager.png",
+   "team_layer": "units/villager_team.png",
+   "frame_size": {
+    "w": 48,
+    "h": 48
+   },
+   "sheet_size": {
+    "w": 624,
+    "h": 192
+   },
+   "rows_directions": [
+    "S",
+    "W",
+    "E",
+    "N"
+   ],
+   "animations": {
+    "idle": {
+     "start_col": 0,
+     "frames": 2
+    },
+    "walk": {
+     "start_col": 2,
+     "frames": 4
+    },
+    "attack": {
+     "start_col": 6,
+     "frames": 3
+    },
+    "death": {
+     "start_col": 9,
+     "frames": 4
+    }
+   },
+   "anchor": {
+    "x": 24,
+    "y": 46
+   },
+   "footprint": null,
+   "base_colour": "golden"
+  },
+  {
+   "id": "militia",
+   "kind": "unit",
+   "file": "units/militia.png",
+   "team_layer": "units/militia_team.png",
+   "frame_size": {
+    "w": 48,
+    "h": 48
+   },
+   "sheet_size": {
+    "w": 624,
+    "h": 192
+   },
+   "rows_directions": [
+    "S",
+    "W",
+    "E",
+    "N"
+   ],
+   "animations": {
+    "idle": {
+     "start_col": 0,
+     "frames": 2
+    },
+    "walk": {
+     "start_col": 2,
+     "frames": 4
+    },
+    "attack": {
+     "start_col": 6,
+     "frames": 3
+    },
+    "death": {
+     "start_col": 9,
+     "frames": 4
+    }
+   },
+   "anchor": {
+    "x": 24,
+    "y": 46
+   },
+   "footprint": null,
+   "base_colour": "dark"
+  },
+  {
+   "id": "spearman",
+   "kind": "unit",
+   "file": "units/spearman.png",
+   "team_layer": "units/spearman_team.png",
+   "frame_size": {
+    "w": 48,
+    "h": 48
+   },
+   "sheet_size": {
+    "w": 624,
+    "h": 192
+   },
+   "rows_directions": [
+    "S",
+    "W",
+    "E",
+    "N"
+   ],
+   "animations": {
+    "idle": {
+     "start_col": 0,
+     "frames": 2
+    },
+    "walk": {
+     "start_col": 2,
+     "frames": 4
+    },
+    "attack": {
+     "start_col": 6,
+     "frames": 3
+    },
+    "death": {
+     "start_col": 9,
+     "frames": 4
+    }
+   },
+   "anchor": {
+    "x": 24,
+    "y": 46
+   },
+   "footprint": null,
+   "base_colour": "cream"
+  },
+  {
+   "id": "archer",
+   "kind": "unit",
+   "file": "units/archer.png",
+   "team_layer": "units/archer_team.png",
+   "frame_size": {
+    "w": 48,
+    "h": 48
+   },
+   "sheet_size": {
+    "w": 624,
+    "h": 192
+   },
+   "rows_directions": [
+    "S",
+    "W",
+    "E",
+    "N"
+   ],
+   "animations": {
+    "idle": {
+     "start_col": 0,
+     "frames": 2
+    },
+    "walk": {
+     "start_col": 2,
+     "frames": 4
+    },
+    "attack": {
+     "start_col": 6,
+     "frames": 3
+    },
+    "death": {
+     "start_col": 9,
+     "frames": 4
+    }
+   },
+   "anchor": {
+    "x": 24,
+    "y": 46
+   },
+   "footprint": null,
+   "base_colour": "tan"
+  },
+  {
+   "id": "crossbowman",
+   "kind": "unit",
+   "file": "units/crossbowman.png",
+   "team_layer": "units/crossbowman_team.png",
+   "frame_size": {
+    "w": 48,
+    "h": 48
+   },
+   "sheet_size": {
+    "w": 624,
+    "h": 192
+   },
+   "rows_directions": [
+    "S",
+    "W",
+    "E",
+    "N"
+   ],
+   "animations": {
+    "idle": {
+     "start_col": 0,
+     "frames": 2
+    },
+    "walk": {
+     "start_col": 2,
+     "frames": 4
+    },
+    "attack": {
+     "start_col": 6,
+     "frames": 3
+    },
+    "death": {
+     "start_col": 9,
+     "frames": 4
+    }
+   },
+   "anchor": {
+    "x": 24,
+    "y": 46
+   },
+   "footprint": null,
+   "base_colour": "red"
+  },
+  {
+   "id": "scout_cavalry",
+   "kind": "unit",
+   "file": "units/scout_cavalry.png",
+   "team_layer": "units/scout_cavalry_team.png",
+   "frame_size": {
+    "w": 64,
+    "h": 56
+   },
+   "sheet_size": {
+    "w": 832,
+    "h": 224
+   },
+   "rows_directions": [
+    "S",
+    "W",
+    "E",
+    "N"
+   ],
+   "animations": {
+    "idle": {
+     "start_col": 0,
+     "frames": 2
+    },
+    "walk": {
+     "start_col": 2,
+     "frames": 4
+    },
+    "attack": {
+     "start_col": 6,
+     "frames": 3
+    },
+    "death": {
+     "start_col": 9,
+     "frames": 4
+    }
+   },
+   "anchor": {
+    "x": 32,
+    "y": 54
+   },
+   "footprint": null,
+   "base_colour": "cream"
+  },
+  {
+   "id": "knight",
+   "kind": "unit",
+   "file": "units/knight.png",
+   "team_layer": "units/knight_team.png",
+   "frame_size": {
+    "w": 64,
+    "h": 56
+   },
+   "sheet_size": {
+    "w": 832,
+    "h": 224
+   },
+   "rows_directions": [
+    "S",
+    "W",
+    "E",
+    "N"
+   ],
+   "animations": {
+    "idle": {
+     "start_col": 0,
+     "frames": 2
+    },
+    "walk": {
+     "start_col": 2,
+     "frames": 4
+    },
+    "attack": {
+     "start_col": 6,
+     "frames": 3
+    },
+    "death": {
+     "start_col": 9,
+     "frames": 4
+    }
+   },
+   "anchor": {
+    "x": 32,
+    "y": 54
+   },
+   "footprint": null,
+   "base_colour": "red"
+  },
+  {
+   "id": "monk",
+   "kind": "unit",
+   "file": "units/monk.png",
+   "team_layer": "units/monk_team.png",
+   "frame_size": {
+    "w": 48,
+    "h": 48
+   },
+   "sheet_size": {
+    "w": 624,
+    "h": 192
+   },
+   "rows_directions": [
+    "S",
+    "W",
+    "E",
+    "N"
+   ],
+   "animations": {
+    "idle": {
+     "start_col": 0,
+     "frames": 2
+    },
+    "walk": {
+     "start_col": 2,
+     "frames": 4
+    },
+    "attack": {
+     "start_col": 6,
+     "frames": 3
+    },
+    "death": {
+     "start_col": 9,
+     "frames": 4
+    }
+   },
+   "anchor": {
+    "x": 24,
+    "y": 46
+   },
+   "footprint": null,
+   "base_colour": "cream"
+  },
+  {
+   "id": "trebuchet",
+   "kind": "unit",
+   "file": "units/trebuchet.png",
+   "team_layer": "units/trebuchet_team.png",
+   "frame_size": {
+    "w": 64,
+    "h": 64
+   },
+   "sheet_size": {
+    "w": 832,
+    "h": 256
+   },
+   "rows_directions": [
+    "S",
+    "W",
+    "E",
+    "N"
+   ],
+   "animations": {
+    "idle": {
+     "start_col": 0,
+     "frames": 2
+    },
+    "walk": {
+     "start_col": 2,
+     "frames": 4
+    },
+    "attack": {
+     "start_col": 6,
+     "frames": 3
+    },
+    "death": {
+     "start_col": 9,
+     "frames": 4
+    }
+   },
+   "anchor": {
+    "x": 32,
+    "y": 62
+   },
+   "footprint": null,
+   "base_colour": "golden"
+  }
+ ],
+ "buildings": [
+  {
+   "id": "town_center",
+   "kind": "building",
+   "file": "buildings/town_center.png",
+   "team_layer": "buildings/town_center_team.png",
+   "size": {
+    "w": 128,
+    "h": 192
+   },
+   "footprint": {
+    "w": 4,
+    "h": 4
+   },
+   "frames": 1,
+   "anchor": "bottom-left of image at footprint bottom-left (b.x*32, (b.y+4)*32); draw at y=(b.y+4)*32-192"
+  },
+  {
+   "id": "house",
+   "kind": "building",
+   "file": "buildings/house.png",
+   "team_layer": "buildings/house_team.png",
+   "size": {
+    "w": 64,
+    "h": 128
+   },
+   "footprint": {
+    "w": 2,
+    "h": 2
+   },
+   "frames": 1,
+   "anchor": "bottom-left of image at footprint bottom-left (b.x*32, (b.y+2)*32); draw at y=(b.y+2)*32-128"
+  },
+  {
+   "id": "lumber_camp",
+   "kind": "building",
+   "file": "buildings/lumber_camp.png",
+   "team_layer": "buildings/lumber_camp_team.png",
+   "size": {
+    "w": 64,
+    "h": 128
+   },
+   "footprint": {
+    "w": 2,
+    "h": 2
+   },
+   "frames": 1,
+   "anchor": "bottom-left of image at footprint bottom-left (b.x*32, (b.y+2)*32); draw at y=(b.y+2)*32-128"
+  },
+  {
+   "id": "mining_camp",
+   "kind": "building",
+   "file": "buildings/mining_camp.png",
+   "team_layer": "buildings/mining_camp_team.png",
+   "size": {
+    "w": 64,
+    "h": 128
+   },
+   "footprint": {
+    "w": 2,
+    "h": 2
+   },
+   "frames": 1,
+   "anchor": "bottom-left of image at footprint bottom-left (b.x*32, (b.y+2)*32); draw at y=(b.y+2)*32-128"
+  },
+  {
+   "id": "mill",
+   "kind": "building",
+   "file": "buildings/mill.png",
+   "team_layer": "buildings/mill_team.png",
+   "size": {
+    "w": 64,
+    "h": 128
+   },
+   "footprint": {
+    "w": 2,
+    "h": 2
+   },
+   "frames": 1,
+   "anchor": "bottom-left of image at footprint bottom-left (b.x*32, (b.y+2)*32); draw at y=(b.y+2)*32-128"
+  },
+  {
+   "id": "farm",
+   "kind": "building",
+   "file": "buildings/farm.png",
+   "team_layer": "buildings/farm_team.png",
+   "size": {
+    "w": 96,
+    "h": 96
+   },
+   "footprint": {
+    "w": 3,
+    "h": 3
+   },
+   "frames": 1,
+   "anchor": "bottom-left of image at footprint bottom-left (b.x*32, (b.y+3)*32); draw at y=(b.y+3)*32-96"
+  },
+  {
+   "id": "barracks",
+   "kind": "building",
+   "file": "buildings/barracks.png",
+   "team_layer": "buildings/barracks_team.png",
+   "size": {
+    "w": 96,
+    "h": 128
+   },
+   "footprint": {
+    "w": 3,
+    "h": 3
+   },
+   "frames": 1,
+   "anchor": "bottom-left of image at footprint bottom-left (b.x*32, (b.y+3)*32); draw at y=(b.y+3)*32-128"
+  },
+  {
+   "id": "archery_range",
+   "kind": "building",
+   "file": "buildings/archery_range.png",
+   "team_layer": "buildings/archery_range_team.png",
+   "size": {
+    "w": 96,
+    "h": 128
+   },
+   "footprint": {
+    "w": 3,
+    "h": 3
+   },
+   "frames": 1,
+   "anchor": "bottom-left of image at footprint bottom-left (b.x*32, (b.y+3)*32); draw at y=(b.y+3)*32-128"
+  },
+  {
+   "id": "stable",
+   "kind": "building",
+   "file": "buildings/stable.png",
+   "team_layer": "buildings/stable_team.png",
+   "size": {
+    "w": 96,
+    "h": 128
+   },
+   "footprint": {
+    "w": 3,
+    "h": 3
+   },
+   "frames": 1,
+   "anchor": "bottom-left of image at footprint bottom-left (b.x*32, (b.y+3)*32); draw at y=(b.y+3)*32-128"
+  },
+  {
+   "id": "blacksmith",
+   "kind": "building",
+   "file": "buildings/blacksmith.png",
+   "team_layer": "buildings/blacksmith_team.png",
+   "size": {
+    "w": 96,
+    "h": 128
+   },
+   "footprint": {
+    "w": 3,
+    "h": 3
+   },
+   "frames": 1,
+   "anchor": "bottom-left of image at footprint bottom-left (b.x*32, (b.y+3)*32); draw at y=(b.y+3)*32-128"
+  },
+  {
+   "id": "market",
+   "kind": "building",
+   "file": "buildings/market.png",
+   "team_layer": "buildings/market_team.png",
+   "size": {
+    "w": 128,
+    "h": 192
+   },
+   "footprint": {
+    "w": 4,
+    "h": 4
+   },
+   "frames": 1,
+   "anchor": "bottom-left of image at footprint bottom-left (b.x*32, (b.y+4)*32); draw at y=(b.y+4)*32-192"
+  },
+  {
+   "id": "watch_tower",
+   "kind": "building",
+   "file": "buildings/watch_tower.png",
+   "team_layer": "buildings/watch_tower_team.png",
+   "size": {
+    "w": 32,
+    "h": 96
+   },
+   "footprint": {
+    "w": 1,
+    "h": 1
+   },
+   "frames": 1,
+   "anchor": "bottom-left of image at footprint bottom-left (b.x*32, (b.y+1)*32); draw at y=(b.y+1)*32-96"
+  },
+  {
+   "id": "castle",
+   "kind": "building",
+   "file": "buildings/castle.png",
+   "team_layer": "buildings/castle_team.png",
+   "size": {
+    "w": 128,
+    "h": 192
+   },
+   "footprint": {
+    "w": 4,
+    "h": 4
+   },
+   "frames": 1,
+   "anchor": "bottom-left of image at footprint bottom-left (b.x*32, (b.y+4)*32); draw at y=(b.y+4)*32-192"
+  },
+  {
+   "id": "monastery",
+   "kind": "building",
+   "file": "buildings/monastery.png",
+   "team_layer": "buildings/monastery_team.png",
+   "size": {
+    "w": 96,
+    "h": 128
+   },
+   "footprint": {
+    "w": 3,
+    "h": 3
+   },
+   "frames": 1,
+   "anchor": "bottom-left of image at footprint bottom-left (b.x*32, (b.y+3)*32); draw at y=(b.y+3)*32-128"
+  },
+  {
+   "id": "university",
+   "kind": "building",
+   "file": "buildings/university.png",
+   "team_layer": "buildings/university_team.png",
+   "size": {
+    "w": 96,
+    "h": 128
+   },
+   "footprint": {
+    "w": 3,
+    "h": 3
+   },
+   "frames": 1,
+   "anchor": "bottom-left of image at footprint bottom-left (b.x*32, (b.y+3)*32); draw at y=(b.y+3)*32-128"
+  },
+  {
+   "id": "wonder",
+   "kind": "building",
+   "file": "buildings/wonder.png",
+   "team_layer": "buildings/wonder_team.png",
+   "size": {
+    "w": 160,
+    "h": 224
+   },
+   "footprint": {
+    "w": 5,
+    "h": 5
+   },
+   "frames": 1,
+   "anchor": "bottom-left of image at footprint bottom-left (b.x*32, (b.y+5)*32); draw at y=(b.y+5)*32-224"
+  }
+ ]
+}

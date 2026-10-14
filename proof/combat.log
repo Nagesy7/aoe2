@@ -1,4 +1,4 @@
-combat browser proof 2026-10-14T12:02:48.213Z url=http://localhost:35251/?scenario=skirmish
+combat browser proof 2026-10-14T12:08:07.178Z url=http://localhost:37409/?scenario=skirmish
 PASS: skirmish start: 7 player military (militia,militia,militia,spearman,spearman,archer,archer), 4 enemy guards
   saved proof/combat-01-start.png
 PASS: archer info panel: Shikoku Archer | Task: Idle | HP 30/30 Attack 4 Armor 0/0 Range 4 Speed 2.4 | Ranged (pierce damage) Reload 2s
@@ -17,13 +17,13 @@ PASS: attack cursor over enemy unit: attack,crosshair
 PASS: right-click enemy militia = attack order (target 170)
 PASS: all 7 selected units ordered to attack it
   saved proof/combat-05-attack-order.png
-  first contact t=20.6s: enemy militia:31:attacking militia:40:attacking spearman:45:attacking archer:30:attacking | own militia:40:attacking militia:40:attacking militia:40:attacking spearman:30:attacking spearman:45:attacking archer:30:attacking archer:30:attacking
+  first contact t=21.1s: enemy militia:31:attacking militia:40:attacking spearman:45:attacking archer:30:attacking | own militia:40:attacking militia:40:attacking militia:40:attacking spearman:30:attacking spearman:45:attacking archer:30:attacking archer:30:attacking
 PASS: enemy guards auto-acquired (aggro) without orders
 PASS: combat log has 7 hits
   saved proof/combat-06-melee-and-arrows.png
 PASS: archer arrows landed (3 dmg vs militia)
 PASS: all enemy guards killed; 6/7 own soldiers survive
-  deaths: enemy:militia@23.8 player:spearman@26.1 enemy:spearman@29.8 enemy:militia@33.8 enemy:archer@35.5
+  deaths: enemy:militia@24.3 player:spearman@26.6 enemy:spearman@29.6 enemy:militia@32.6 enemy:archer@35.8
 PASS: dead units removed from the world (no 0-HP units remain)
 PASS: survivors auto-acquired follow-up targets after the first kill
 PASS: no stacking after the fight
@@ -31,11 +31,11 @@ PASS: no stacking after the fight
 PASS: re-selected 6 survivors
 PASS: attack cursor over enemy Barracks
 PASS: right-click enemy Barracks = attack order
-PASS: Barracks HP 1200 -> 1122
-PASS: enemy Barracks info: Barracks (Enemy) | HP: 1121/1200 | Armor 0/7
+PASS: Barracks HP 1200 -> 1118
+PASS: enemy Barracks info: Barracks (Enemy) | HP: 1118/1200 | Armor 0/7
 PASS: no train buttons for an enemy building
   saved proof/combat-08-attacking-building.png
-PASS: enemy Barracks destroyed at t=191s and removed
+PASS: enemy Barracks destroyed at t=187s and removed
   saved proof/combat-09-barracks-destroyed.png
 PASS: queued Militia + Spearman from the Barracks UI
 PASS: Militia and Spearman trained
