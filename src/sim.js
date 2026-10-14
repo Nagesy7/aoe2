@@ -37,7 +37,9 @@ export function setupSkirmish(world) {
     newVillager(world, x, y, t);
 }
 export function spawnEnemy(world, type, x, y) { return newVillager(world, x, y, type, 'enemy'); }
-function rng(seed) { let s = seed >>> 0; return () => ((s = (s * 1664525 + 1013904223) >>> 0) / 4294967296); }
+// Deterministic helpers: sqrt is correctly rounded by IEEE-754 (Math.hypot is not guaranteed to be), so every client gets bit-identical results.
+export const hyp = (dx, dy) => Math.sqrt(dx * dx + dy * dy);
+export function rng(seed) { let s = seed >>> 0; return () => ((s = (s * 1664525 + 1013904223) >>> 0) / 4294967296); }
 
 export function addBuilding(world, type, x, y, complete = true, owner = 'player') {
   const d = BUILDING_DEFS[type];
@@ -47,19 +49,63 @@ export function addBuilding(world, type, x, y, complete = true, owner = 'player'
   world.buildings.push(b); return b;
 }
 function newVillager(world, x, y, type = 'villager', owner = 'player') {
-  const d = UNIT_DEFS[type], fx = owner === 'player' ? techEffects(world) : techEffects({}), vil = type === 'villager';
+  const d = UNIT_DEFS[type], fx = techEffects(world, owner), vil = type === 'villager';
   const maxHp = d.hp + (vil ? fx.villagerHp : 0);
   const u = { id: world.nextId++, type, owner, x, y, speed: d.speed * (vil ? 1 + fx.villagerSpeedPct / 100 : 1), hp: maxHp, maxHp, state: 'idle', target: null, build: null,
     path: [], goal: null, carry: { res: null, amount: 0 }, gatherTimer: 0, note: null };
   world.units.push(u); return u;
 }
 
-export function createWorld({ width = 64, height = 64, seed = 1, stockpile = START_STOCKPILE, villagers = 3, enemy = false, raids = false, scenario = null } = {}) {
+// ---------- players ----------
+// Lockstep player index -> owner id. In 1v1 player 2 plays the side that is the computer camp in single player ('enemy').
+export const OWNERS = ['player', 'enemy'];
+// Per-player economy. world.stockpile / world.age / world.researched are views onto the player in world.cur, so all the
+// single-player rules (afford, pay, ages, techs) apply unchanged to whichever player a command or unit update belongs to.
+function attachPlayers(world, stockpile) {
+  world.players = {}; for (const o of OWNERS) world.players[o] = { stockpile: { ...stockpile }, age: 'dark', researched: {} };
+  world.cur = 'player';
+  for (const k of ['stockpile', 'age', 'researched']) Object.defineProperty(world, k, { enumerable: true, configurable: true,
+    get() { return this.players[this.cur || 'player'][k]; }, set(v) { this.players[this.cur || 'player'][k] = v; } });
+}
+export function withPlayer(world, owner, fn) { const prev = world.cur; world.cur = owner; try { return fn(); } finally { world.cur = prev; } }
+
+// 1v1 map: two identical bases, point-mirrored through the map centre (player 1 top-left, player 2 bottom-right).
+export const MP_SIZE = 88, MP_TC = 20;
+export function createMpWorld({ seed = 1, stockpile = START_STOCKPILE } = {}) {
+  const width = MP_SIZE, height = MP_SIZE, rand = rng(seed), tiles = new Uint8Array(width * height);
+  for (let i = 0; i < tiles.length; i++) tiles[i] = Math.floor(rand() * 4);
+  const world = { width, height, tiles, seed, mp: true, tick: 0, time: 0, nextId: 1,
+    buildings: [], resources: [], units: [], animals: [], selection: null, selected: null, message: null, ledger: { created: 0 }, banner: null, projectiles: [] };
+  attachPlayers(world, stockpile);
+  const used = new Set(), O = MP_TC, M = width - MP_TC - 4;
+  const add = (res, tx, ty) => { const k = ty * width + tx; if (used.has(k) || tx < 0 || ty < 0 || tx >= width || ty >= height) return; used.add(k);
+    world.resources.push({ id: world.nextId++, res, kind: NODE_KIND[res], x: tx + 0.5, y: ty + 0.5, amount: NODE_AMOUNT[res] }); };
+  for (const [owner, mir] of [['player', false], ['enemy', true]]) {
+    const T = (dx, dy) => mir ? [width - 1 - (O + dx), height - 1 - (O + dy)] : [O + dx, O + dy];   // 1x1 tile
+    const P = (dx, dy) => mir ? [width - (O + dx), height - (O + dy)] : [O + dx, O + dy];           // point
+    addBuilding(world, 'town_center', mir ? M : O, mir ? M : O, true, owner);
+    for (const [x, y] of [[8, -2], [9, -2], [10, -2], [8, -1], [9, -1]]) add('food', ...T(x, y));
+    for (let dy = -14; dy <= -10; dy++) for (let dx = -12; dx <= -5; dx++) add('wood', ...T(dx, dy));
+    for (const [x, y] of [[6, 10], [7, 10], [6, 11], [7, 11]]) add('gold', ...T(x, y));
+    for (const [x, y] of [[-6, 10], [-5, 10], [-4, 10]]) add('stone', ...T(x, y));
+    for (const [x, y] of [[4.5, 2.5], [4.5, 3.5], [-0.5, 3.5]]) newVillager(world, ...P(x, y), 'villager', owner);
+    for (const [x, y] of [[-2.5, -1.5], [-1.5, -2.5], [-2.5, -2.5], [-3.5, -0.5], [-17.5, 8.5], [18.5, -7.5], [13.5, 20.5]]) { const [px, py] = P(x, y);
+      world.animals.push({ id: world.nextId++, type: 'sheep', owner: null, x: px, y: py, speed: 1.2, state: 'idle', path: [], goal: null, carry: { res: null, amount: 0 }, target: null, build: null, note: null }); }
+  }
+  const c1 = O + 2, c2 = M + 2;
+  for (let i = 0; i < 150; i++) { const x = Math.floor(rand() * width), y = Math.floor(rand() * height), mx = width - 1 - x, my = height - 1 - y;
+    if (hyp(x - c1, y - c1) > 14 && hyp(x - c2, y - c2) > 14) { add('wood', x, y); add('wood', mx, my); } }
+  return world;
+}
+
+export function createWorld({ width = 64, height = 64, seed = 1, stockpile = START_STOCKPILE, villagers = 3, enemy = false, raids = false, scenario = null, mp = false } = {}) {
+  if (mp) return createMpWorld({ seed, stockpile });
   const rand = rng(seed);
   const tiles = new Uint8Array(width * height);
   for (let i = 0; i < tiles.length; i++) tiles[i] = Math.floor(rand() * 4);
-  const world = { width, height, tiles, time: 0, nextId: 1, stockpile: { ...stockpile },
-    buildings: [], resources: [], units: [], animals: [], selection: null, selected: null, message: null, ledger: { created: 0 }, age: 'dark', researched: {}, banner: null, projectiles: [] };
+  const world = { width, height, tiles, seed, tick: 0, time: 0, nextId: 1,
+    buildings: [], resources: [], units: [], animals: [], selection: null, selected: null, message: null, ledger: { created: 0 }, banner: null, projectiles: [] };
+  attachPlayers(world, stockpile);
   addBuilding(world, 'town_center', 32, 32, true);
   const used = new Set();
   const add = (res, tx, ty) => { const k = ty * width + tx; if (used.has(k)) return; used.add(k);
@@ -69,7 +115,7 @@ export function createWorld({ width = 64, height = 64, seed = 1, stockpile = STA
   for (const [x, y] of [[38, 42], [39, 42], [38, 43], [39, 43]]) add('gold', x, y);
   for (const [x, y] of [[26, 42], [27, 42], [28, 42]]) add('stone', x, y);
   for (let i = 0; i < 120; i++) { const x = Math.floor(rand() * width), y = Math.floor(rand() * height);
-    if (Math.hypot(x - 34, y - 34) > 14) add('wood', x, y); }
+    if (hyp(x - 34, y - 34) > 14) add('wood', x, y); }
   for (const [x, y] of [[36.5, 34.5], [36.5, 35.5], [31.5, 35.5]].slice(0, villagers)) newVillager(world, x, y);
   // sheep: 4 near the TC, 3 scattered. Neutral until a villager touches them. Kept in world.animals (not pop).
   for (const [x, y] of [[29.5, 30.5], [30.5, 29.5], [29.5, 29.5], [28.5, 31.5], [12.5, 40.5], [50.5, 24.5], [45.5, 52.5]])
@@ -142,7 +188,7 @@ export function planTo(world, u, goals, grid = buildGrid(world), strict = false)
 }
 export function moveAlong(u, dt) {
   let s = u.speed * dt;
-  while (u.path.length && s > 0) { const t = u.path[0], dx = t.x - u.x, dy = t.y - u.y, d = Math.hypot(dx, dy);
+  while (u.path.length && s > 0) { const t = u.path[0], dx = t.x - u.x, dy = t.y - u.y, d = hyp(dx, dy);
     if (d <= s) { u.x = t.x; u.y = t.y; s -= d; u.path.shift(); } else { u.x += dx / d * s; u.y += dy / d * s; s = 0; } }
   return u.path.length === 0;
 }
@@ -159,13 +205,15 @@ export function nearestWalkable(world, tx, ty, n = 1, grid = buildGrid(world), e
 
 // ---------- queries / selection ----------
 export function townCenterCenter(b) { return { x: b.x + b.size / 2, y: b.y + b.size / 2 }; }
-export function findResourceAt(world, x, y, r = 0.6) { return world.resources.find(n => n.amount > 0 && Math.hypot(n.x - x, n.y - y) < r) || null; }
+export function findResourceAt(world, x, y, r = 0.6) { return world.resources.find(n => n.amount > 0 && hyp(n.x - x, n.y - y) < r) || null; }
 export const mobiles = world => [...world.units, ...world.animals];
 export const mobile = (world, id) => world.units.find(u => u.id === id) || world.animals.find(a => a.id === id) || null;
-export function unitAt(world, x, y, r = 0.6) { return world.units.find(u => Math.hypot(u.x - x, u.y - y) < r) || world.animals.find(u => Math.hypot(u.x - x, u.y - y) < r) || null; }
-export function sheepAt(world, x, y, r = 0.6) { return world.animals.find(u => Math.hypot(u.x - x, u.y - y) < r) || null; }
-const owned = u => u.owner === 'player';
-const mine = b => b.owner !== 'enemy';
+export function unitAt(world, x, y, r = 0.6) { return world.units.find(u => hyp(u.x - x, u.y - y) < r) || world.animals.find(u => hyp(u.x - x, u.y - y) < r) || null; }
+export function sheepAt(world, x, y, r = 0.6) { return world.animals.find(u => hyp(u.x - x, u.y - y) < r) || null; }
+// Ownership is relative to world.cur: the player whose turn of the simulation (command or unit update) is running.
+const curOf = world => world.cur || 'player';
+const owned = (world, u) => u.owner === curOf(world);
+const mine = (world, b) => b.owner === curOf(world);
 export function buildingAt(world, x, y) { return world.buildings.find(b => x >= b.x && x < b.x + b.size && y >= b.y && y < b.y + b.size) || null; }
 export function select(world, unit) { selectUnits(world, unit ? [unit] : []); }
 export function selectUnits(world, units) {
@@ -174,12 +222,12 @@ export function selectUnits(world, units) {
   else { world.selection = { kind: 'units', ids: units.map(u => u.id) }; world.selected = units[0].id; }
 }
 export function selectedUnits(world) { const s = world.selection; if (!s) return [];
-  const ids = s.kind === 'unit' ? [s.id] : s.kind === 'units' ? s.ids : []; return mobiles(world).filter(u => ids.includes(u.id) && owned(u)); }
+  const ids = s.kind === 'unit' ? [s.id] : s.kind === 'units' ? s.ids : []; return mobiles(world).filter(u => ids.includes(u.id) && owned(world, u)); }
 export function getSelected(world) { return world.selected == null ? null : mobile(world, world.selected); }
 export function selectedBuilding(world) { const s = world.selection; return s && s.kind === 'building' ? world.buildings.find(b => b.id === s.id) || null : null; }
-export function selectedOwnBuilding(world) { const b = selectedBuilding(world); return b && mine(b) ? b : null; }
+export function selectedOwnBuilding(world) { const b = selectedBuilding(world); return b && mine(world, b) ? b : null; }
 export function unitsInRect(world, x0, y0, x1, y1) { const [ax, bx] = [Math.min(x0, x1), Math.max(x0, x1)], [ay, by] = [Math.min(y0, y1), Math.max(y0, y1)];
-  const inBox = mobiles(world).filter(u => owned(u) && u.x >= ax && u.x <= bx && u.y >= ay && u.y <= by);
+  const inBox = mobiles(world).filter(u => owned(world, u) && u.x >= ax && u.x <= bx && u.y >= ay && u.y <= by);
   return inBox.some(u => u.type !== 'sheep') ? inBox.filter(u => u.type !== 'sheep') : inBox; }
 export function boxSelect(world, x0, y0, x1, y1) { const us = unitsInRect(world, x0, y0, x1, y1); selectUnits(world, us); return us; }
 export function pickAt(world, x, y) {
@@ -191,9 +239,9 @@ export function pickAt(world, x, y) {
   return null;
 }
 export function selectAt(world, x, y) { const s = pickAt(world, x, y); world.selection = s; world.selected = s && s.kind === 'unit' ? s.id : null; return s; }
-export function popCount(world) { return world.units.filter(owned).length; }
-export function queuedCount(world) { return world.buildings.reduce((t, b) => t + b.queue.filter(isUnitItem).length, 0); }
-export function popCap(world) { return Math.min(POP_MAX, world.buildings.reduce((t, b) => t + (b.complete && mine(b) ? b.popCap : 0), 0)); }
+export function popCount(world) { return world.units.filter(u => owned(world, u)).length; }
+export function queuedCount(world) { return world.buildings.reduce((t, b) => t + (mine(world, b) ? b.queue.filter(isUnitItem).length : 0), 0); }
+export function popCap(world) { return Math.min(POP_MAX, world.buildings.reduce((t, b) => t + (b.complete && mine(world, b) ? b.popCap : 0), 0)); }
 const KIND_NAME = { berries: 'Berry Bush', tree: 'Tree', gold_mine: 'Gold Mine', stone_mine: 'Stone Mine' };
 const TASK_NAME = { attacking: 'Attacking', to_hunt: 'Going to sheep', idle: 'Idle', moving: 'Moving', to_resource: 'Walking to resource', gathering: 'Gathering', to_drop: 'Returning to Town Center', to_build: 'Walking to build', building: 'Building' };
 export function selectionInfo(world) {
@@ -202,7 +250,7 @@ export function selectionInfo(world) {
   if (s.kind === 'building') { const b = world.buildings.find(o => o.id === s.id); if (!b) return null;
     if (!b.complete) return { kind: 'building', type: b.type, title: `${b.name} (foundation)`, lines: [`HP: ${b.hp}/${b.maxHp}`, `Construction: ${Math.floor(100 * b.progress / b.buildTime)}%`], progress: b.progress / b.buildTime };
     const arm = armorOf(b); const lines = [`HP: ${Math.ceil(b.hp)}/${b.maxHp}`, `Armor ${arm.melee}/${arm.pierce}`];
-    if (b.owner === 'enemy') return { kind: 'building', type: b.type, title: `${b.name} (Enemy)`, enemy: true, hp: b.hp / b.maxHp, lines };
+    if (b.owner && b.owner !== curOf(world)) return { kind: 'building', type: b.type, title: `${b.name} (Enemy)`, enemy: true, hp: b.hp / b.maxHp, lines };
     if (b.trains.length || b.queue.length) { lines.push(`Queue: ${b.queue.length}/${QUEUE_MAX}`);
       if (b.queue.length) lines.push(`${isUnitItem(b.queue[0]) ? 'Training' : 'Researching'} ${itemName(b.queue[0])}: ${Math.floor(100 * b.trainProgress / itemTime(b.queue[0]))}%`);
       if (b.blocked) lines.push('Halted: population cap');
@@ -218,10 +266,10 @@ export function selectionInfo(world) {
     const allV = us.every(u => u.type === 'villager');
     return { kind: 'units', count: us.length, title: allV ? `${us.length} Villagers selected` : `${us.length} units selected`, lines: Object.entries(counts).map(([k, v]) => `${v} × ${k}`).concat([`Carrying: ${us.reduce((t, u) => t + u.carry.amount, 0)} total`]) }; }
   const u = mobile(world, s.id); if (!u) return null;
-  if (u.type === 'sheep') return { kind: 'unit', type: 'sheep', title: 'Sheep', lines: [u.owner ? 'Owner: you' : 'Neutral (touch with a villager to convert)', `Food: ${CARCASS_FOOD} when butchered`] };
+  if (u.type === 'sheep') return { kind: 'unit', type: 'sheep', title: 'Sheep', lines: [u.owner ? (u.owner === curOf(world) ? 'Owner: you' : 'Owner: enemy') : 'Neutral (touch with a villager to convert)', `Food: ${CARCASS_FOOD} when butchered`] };
   if (u.type !== 'villager') { const d = UNIT_DEFS[u.type], st = unitStats(world, u);
     const bonus = Object.entries(st.bonus).map(([k, v]) => `+${v} vs ${k}`).join(', ');
-    return { kind: 'unit', type: u.type, title: d.name + (u.owner === 'enemy' ? ' (Enemy)' : ''), enemy: u.owner === 'enemy', hp: u.hp / u.maxHp, stats: { attack: st.attack, melee: st.armor.melee, pierce: st.armor.pierce, range: st.range, reload: st.reload },
+    return { kind: 'unit', type: u.type, title: d.name + (u.owner && u.owner !== curOf(world) ? ' (Enemy)' : ''), enemy: !!u.owner && u.owner !== curOf(world), hp: u.hp / u.maxHp, stats: { attack: st.attack, melee: st.armor.melee, pierce: st.armor.pierce, range: st.range, reload: st.reload },
       lines: [`Task: ${TASK_NAME[u.state] || u.state}${u.note ? ` (${u.note})` : ''}`, `HP ${Math.ceil(u.hp)}/${u.maxHp}  Attack ${st.attack}  Armor ${st.armor.melee}/${st.armor.pierce}${st.ranged ? `  Range ${st.range}` : ''}  Speed ${d.speed}`,
         `${st.ranged ? 'Ranged (pierce damage)' : 'Melee'}  Reload ${st.reload}s${bonus ? `  ${bonus}` : ''}`] }; }
   let task = TASK_NAME[u.state];
@@ -231,7 +279,9 @@ export function selectionInfo(world) {
     if (site) task = `Returning to ${site.name}`; }
   return { kind: 'unit', type: 'villager', title: 'Villager', hp: u.hp / u.maxHp, lines: [`Task: ${task}${u.note ? ` (${u.note})` : ''}`, `Carrying: ${u.carry.amount}${u.carry.amount ? ' ' + u.carry.res : ''}/${carryMax(world)}`, `HP: ${Math.ceil(u.hp)}/${u.maxHp}`, 'Attack 3  Armor 0/0'] };
 }
-function say(world, text) { world.message = { text, until: world.time + 4 }; }
+// UI feedback only goes to the client whose own command / units produced it (never hashed).
+export const isViewer = world => !world.viewer || curOf(world) === world.viewer;
+function say(world, text) { if (isViewer(world)) world.message = { text, until: world.time + 4 }; }
 
 // ---------- orders ----------
 const kindGroup = k => k === 'farm' ? 'farm' : 'wild';
@@ -243,18 +293,18 @@ function planResource(world, u, node) {
   const grid = buildGrid(world);
   // 1) a free tile at this node; 2) a free tile at a nearby node of the same kind (spread out); 3) share a tile here
   if (planTo(world, u, nodeGoals(world, node), grid, true)) { u.target = node.id; return true; }
-  const near = world.resources.filter(n => n !== node && n.kind === node.kind && n.amount > 0 && Math.hypot(n.x - node.x, n.y - node.y) <= 4)
-    .sort((a, b) => Math.hypot(a.x - node.x, a.y - node.y) - Math.hypot(b.x - node.x, b.y - node.y));
+  const near = world.resources.filter(n => n !== node && n.kind === node.kind && n.amount > 0 && hyp(n.x - node.x, n.y - node.y) <= 4)
+    .sort((a, b) => hyp(a.x - node.x, a.y - node.y) - hyp(b.x - node.x, b.y - node.y));
   for (const n of near) if (planTo(world, u, nodeGoals(world, n), grid, true)) { u.target = n.id; return true; }
   if (planTo(world, u, nodeGoals(world, node), grid)) { u.target = node.id; return true; }
   // unreachable (e.g. interior forest tree): try nearest reachable node of the same type
   const alts = world.resources.filter(n => n !== node && n.res === node.res && n.amount > 0 && kindGroup(n.kind) === kindGroup(node.kind))
-    .sort((a, b) => Math.hypot(a.x - node.x, a.y - node.y) - Math.hypot(b.x - node.x, b.y - node.y)).slice(0, 12);
+    .sort((a, b) => hyp(a.x - node.x, a.y - node.y) - hyp(b.x - node.x, b.y - node.y)).slice(0, 12);
   for (const n of alts) if (planTo(world, u, nodeGoals(world, n), grid)) { u.target = n.id; return true; }
   return false;
 }
 // Drop-off for the carried type: A* to the union of all valid sites' adjacent tiles => nearest by path distance.
-export function dropsitesFor(world, res) { return world.buildings.filter(b => b.dropsite && b.complete && mine(b) && (!res || b.accepts.includes(res))); }
+export function dropsitesFor(world, res) { return world.buildings.filter(b => b.dropsite && b.complete && mine(world, b) && (!res || b.accepts.includes(res))); }
 function planDrop(world, u) {
   const goals = dropsitesFor(world, u.carry.res).flatMap(b => ringTiles(b.x, b.y, b.size));
   return goals.length > 0 && planTo(world, u, goals);
@@ -283,7 +333,7 @@ export function orderMoveGroup(world, units, x, y) {
   const tiles = formationTiles(world, units, x, y);
   // assign closest unit to each tile greedily
   const left = [...units]; let ok = 0;
-  for (const t of tiles) { if (!left.length) break; left.sort((a, b) => Math.hypot(a.x - t[0], a.y - t[1]) - Math.hypot(b.x - t[0], b.y - t[1]));
+  for (const t of tiles) { if (!left.length) break; left.sort((a, b) => hyp(a.x - t[0], a.y - t[1]) - hyp(b.x - t[0], b.y - t[1]));
     if (orderMove(world, left.shift(), 0, 0, t)) ok++; }
   for (const u of left) idle(u, 'unreachable');
   return ok;
@@ -301,21 +351,21 @@ export function orderBuild(world, u, b) {
 }
 // Right-click semantics for the current selection.
 export function orderHunt(world, u, sheep) {
-  u.attack = null; u.target = null; u.build = null; u.note = null; u.hunt = sheep.id; u.huntMode = sheep.owner ? 'butcher' : 'convert'; u.state = 'to_hunt';
+  u.attack = null; u.target = null; u.build = null; u.note = null; u.hunt = sheep.id; u.huntMode = sheep.owner === u.owner ? 'butcher' : 'convert'; u.state = 'to_hunt';
   if (!planTo(world, u, ringTiles(Math.floor(sheep.x), Math.floor(sheep.y), 1))) idle(u, 'unreachable');
 }
 export function commandAt(world, x, y) {
   const b = selectedBuilding(world);
-  if (b && !mine(b)) return null;
+  if (b && !mine(world, b)) return null;
   if (b) { if (b.trains.length && b.complete) { b.rally = { x, y }; return 'rally'; } return null; }
   const us = selectedUnits(world); if (!us.length) return null;
-  const foe = world.units.find(o => o.owner === 'enemy' && Math.hypot(o.x - x, o.y - y) < 0.7) || (() => { const eb = buildingAt(world, x, y); return eb && eb.owner === 'enemy' ? eb : null; })();
-  if (foe) { const n = orderAttackGroup(world, us, foe); world.lastOrder = { kind: 'attack', x, y, t: world.time, target: foe.id }; return n ? 'attack' : null; }
-  world.lastOrder = { kind: 'move', x, y, t: world.time };
+  const me = curOf(world), foe = world.units.find(o => o.owner && o.owner !== me && hyp(o.x - x, o.y - y) < 0.7) || (() => { const eb = buildingAt(world, x, y); return eb && eb.owner && eb.owner !== me ? eb : null; })();
+  if (foe) { const n = orderAttackGroup(world, us, foe); if (isViewer(world)) world.lastOrder = { kind: 'attack', x, y, t: world.time, target: foe.id }; return n ? 'attack' : null; }
+  if (isViewer(world)) world.lastOrder = { kind: 'move', x, y, t: world.time };
   const vills = us.filter(u => u.type === 'villager'), others = us.filter(u => u.type !== 'villager');
   const moveOthers = () => { if (others.length === 1) orderMove(world, others[0], x, y); else if (others.length) orderMoveGroup(world, others, x, y); };
   const sh = sheepAt(world, x, y);
-  if (sh && vills.length) { for (const u of vills) orderHunt(world, u, sh); moveOthers(); return sh.owner ? 'butcher' : 'convert'; }
+  if (sh && vills.length) { for (const u of vills) orderHunt(world, u, sh); moveOthers(); return sh.owner === me ? 'butcher' : 'convert'; }
   const tb = buildingAt(world, x, y);
   const farmNode = tb && tb.type === 'farm' && tb.complete ? world.resources.find(n => n.farm === tb.id && n.amount > 0) : null;
   const n = farmNode || (tb ? null : findResourceAt(world, x, y));
@@ -332,7 +382,7 @@ export function missingFor(world, cost) { const m = Object.entries(cost).filter(
   return m.length ? `need ${m.join(', ')}` : null; }
 // Shared rules for every trainer: per-building queue cap, and pop + everything queued anywhere must stay below the cap.
 export function trainUnit(world, b, type) {
-  if (!b || !b.complete || !mine(b) || !b.trains.includes(type)) return { ok: false, reason: 'invalid' };
+  if (!b || !b.complete || !mine(world, b) || !b.trains.includes(type)) return { ok: false, reason: 'invalid' };
   if (isLocked(world, UNIT_DEFS[type].age)) { say(world, `${UNIT_DEFS[type].name}: ${requiresText(UNIT_DEFS[type].age)}`); return { ok: false, reason: 'age' }; }
   if (b.queue.length >= QUEUE_MAX) { say(world, 'Queue is full'); return { ok: false, reason: 'queue' }; }
   if (popCount(world) + queuedCount(world) >= popCap(world)) { say(world, `Population cap reached (${popCount(world)}/${popCap(world)}): build a House`); return { ok: false, reason: 'pop' }; }
@@ -342,7 +392,7 @@ export function trainUnit(world, b, type) {
 export function trainVillager(world, tc) { if (!tc || tc.type !== 'town_center') return { ok: false, reason: 'invalid' }; return trainUnit(world, tc, 'villager'); }
 const rectsOverlap = (ax, ay, as, bx, by, bs) => ax < bx + bs && bx < ax + as && ay < by + bs && by < ay + as;
 export function farmAnchorOk(world, tx, ty, size = 3) {
-  return world.buildings.some(b => mine(b) && (b.type === 'mill' || b.type === 'town_center') && rectsOverlap(tx - 1, ty - 1, size + 2, b.x, b.y, b.size) && !rectsOverlap(tx, ty, size, b.x, b.y, b.size));
+  return world.buildings.some(b => mine(world, b) && (b.type === 'mill' || b.type === 'town_center') && rectsOverlap(tx - 1, ty - 1, size + 2, b.x, b.y, b.size) && !rectsOverlap(tx, ty, size, b.x, b.y, b.size));
 }
 export function canPlace(world, type, tx, ty) {
   const size = BUILDING_DEFS[type].size, grid = buildGrid(world);
@@ -355,26 +405,30 @@ export function placeBuilding(world, type, tx, ty, builders = []) {
   if (isLocked(world, BUILDING_DEFS[type].age)) { say(world, `${BUILDING_DEFS[type].name}: ${requiresText(BUILDING_DEFS[type].age)}`); return null; }
   if (!canPlace(world, type, tx, ty)) { say(world, type === 'farm' && !farmAnchorOk(world, tx, ty) ? 'Farms must be placed next to a Mill or Town Center' : 'Cannot build there'); return null; }
   const cost = COSTS[type]; if (!afford(world, cost)) { say(world, `Cannot build ${BUILDING_DEFS[type].name}: ${missingFor(world, cost)}`); return null; }
-  pay(world, cost); const b = addBuilding(world, type, tx, ty, false);
+  pay(world, cost); const b = addBuilding(world, type, tx, ty, false, curOf(world));
   onFootprintChanged(world, b);            // evict units inside, repath units crossing it
   for (const u of builders) orderBuild(world, u, b);
   return b;
 }
-function spawnFrom(world, tc, type = 'villager', owner = 'player') {
+function spawnFrom(world, tc, type = 'villager', owner = tc.owner || 'player') {
+  const prev = world.cur; world.cur = owner; try { return spawnFromAs(world, tc, type, owner); } finally { world.cur = prev; }
+}
+function spawnFromAs(world, tc, type, owner) {
   const grid = buildGrid(world), occ = new Set(world.units.map(u => tkey(world, ...utile(u))));
   const ref = tc.rally || { x: tc.x + tc.size / 2, y: tc.y + tc.size + 1 };
   const ring = ringTiles(tc.x, tc.y, tc.size).filter(([x, y]) => walkable(world, x, y, grid))
-    .sort((a, b) => (occ.has(tkey(world, ...a)) - occ.has(tkey(world, ...b))) || Math.hypot(a[0] + 0.5 - ref.x, a[1] + 0.5 - ref.y) - Math.hypot(b[0] + 0.5 - ref.x, b[1] + 0.5 - ref.y));
+    .sort((a, b) => (occ.has(tkey(world, ...a)) - occ.has(tkey(world, ...b))) || hyp(a[0] + 0.5 - ref.x, a[1] + 0.5 - ref.y) - hyp(b[0] + 0.5 - ref.x, b[1] + 0.5 - ref.y));
   const t = ring[0] || nearestWalkable(world, tc.x + tc.size, tc.y + tc.size, 1, grid)[0];
   const u = newVillager(world, t[0] + 0.5, t[1] + 0.5, type, owner);
-  if (owner === 'player' && tc.rally) { const n = type === 'villager' ? findResourceAt(world, tc.rally.x, tc.rally.y) : null; n ? orderGather(world, u, n) : orderMove(world, u, tc.rally.x, tc.rally.y); }
+  if (owner === tc.owner && tc.rally) { const n = type === 'villager' ? findResourceAt(world, tc.rally.x, tc.rally.y) : null; n ? orderGather(world, u, n) : orderMove(world, u, tc.rally.x, tc.rally.y); }
   return u;
 }
 
 // ---------- ages & technologies ----------
-export function techEffects(world) {
+export function techEffects(world, owner = null) {
   const fx = { villagerHp: 0, carryPct: 0, villagerSpeedPct: 0, ratePct: {}, farmFood: 0, meleeAttack: 0, upgrade: {} };
-  for (const id of Object.keys(world.researched || {})) { const e = TECHS[id]?.effect; if (!e) continue;
+  const researched = owner && world.players ? world.players[owner]?.researched : world.researched;
+  for (const id of Object.keys(researched || {})) { const e = TECHS[id]?.effect; if (!e) continue;
     for (const [k, v] of Object.entries(e)) {
       if (k === 'ratePct') for (const [kind, pct] of Object.entries(v)) fx.ratePct[kind] = (fx.ratePct[kind] || 0) + pct;
       else if (k === 'upgrade') Object.assign(fx.upgrade, v); else fx[k] += v; } }
@@ -390,8 +444,8 @@ export function nextAge(world) { return AGES[ageIndex(world.age) + 1] || null; }
 export function ageStatus(world) {
   const next = nextAge(world); if (!next) return { next: null, ok: false, missing: 'Already in the Imperial Age' };
   const req = AGE_UPS[next];
-  const have = [...new Set(world.buildings.filter(b => b.complete && mine(b) && req.from.includes(b.type)).map(b => b.type))];
-  const any = (req.orAny || []).some(t => world.buildings.some(b => b.complete && mine(b) && b.type === t));
+  const have = [...new Set(world.buildings.filter(b => b.complete && mine(world, b) && req.from.includes(b.type)).map(b => b.type))];
+  const any = (req.orAny || []).some(t => world.buildings.some(b => b.complete && mine(world, b) && b.type === t));
   const ok = have.length >= req.needs || any;
   const names = req.from.filter(t => BUILDINGS[t]).map(t => BUILDINGS[t].name);
   return { next, ok, have, req, missing: ok ? null : `needs ${req.needs} of: ${names.join(', ')}${req.orAny ? ' (or a Castle)' : ''} (have ${have.length})` };
@@ -439,12 +493,12 @@ export function ageUp(world, tc) {
 }
 function finishItem(world, b, item) {
   if (isUnitItem(item)) { spawnFrom(world, b, item); return; }
-  if (item.startsWith('age:')) { world.age = item.slice(4); world.banner = { text: `You have advanced to the ${AGE_NAMES[world.age]}!`, until: world.time + 6 }; say(world, `${AGE_NAMES[world.age]} reached`); return; }
+  if (item.startsWith('age:')) { world.age = item.slice(4); if (isViewer(world)) world.banner = { text: `You have advanced to the ${AGE_NAMES[world.age]}!`, until: world.time + 6 }; say(world, `${AGE_NAMES[world.age]} reached`); return; }
   const id = item.slice(5); world.researched[id] = world.time;
   const e = TECHS[id].effect;
-  if (e.villagerHp) for (const u of world.units) if (u.type === 'villager' && u.owner === 'player') { u.maxHp += e.villagerHp; u.hp += e.villagerHp; }
-  if (e.villagerSpeedPct) for (const u of world.units) if (u.type === 'villager') u.speed = UNIT_DEFS.villager.speed * (1 + techEffects(world).villagerSpeedPct / 100);
-  if (e.upgrade) for (const u of world.units) if (u.owner === 'player' && e.upgrade[u.type]) { const to = e.upgrade[u.type]; u.type = to; u.maxHp = UNIT_DEFS[to].hp; u.hp = u.maxHp; }
+  if (e.villagerHp) for (const u of world.units) if (u.type === 'villager' && u.owner === b.owner) { u.maxHp += e.villagerHp; u.hp += e.villagerHp; }
+  if (e.villagerSpeedPct) for (const u of world.units) if (u.type === 'villager' && u.owner === b.owner) u.speed = UNIT_DEFS.villager.speed * (1 + techEffects(world).villagerSpeedPct / 100);
+  if (e.upgrade) for (const u of world.units) if (u.owner === b.owner && e.upgrade[u.type]) { const to = e.upgrade[u.type]; u.type = to; u.maxHp = UNIT_DEFS[to].hp; u.hp = u.maxHp; }
   say(world, `${TECHS[id].name} researched`);
 }
 
@@ -496,25 +550,29 @@ export function onFootprintChanged(world, b) {
 // ---------- tick ----------
 function retarget(world, u, res) {
   const grp = kindGroup(u.lastKind);
-  const cands = world.resources.filter(n => n.res === res && n.amount > 0 && kindGroup(n.kind) === grp).sort((a, b) => Math.hypot(a.x - u.x, a.y - u.y) - Math.hypot(b.x - u.x, b.y - u.y)).slice(0, 8);
+  const cands = world.resources.filter(n => n.res === res && n.amount > 0 && kindGroup(n.kind) === grp).sort((a, b) => hyp(a.x - u.x, a.y - u.y) - hyp(b.x - u.x, b.y - u.y)).slice(0, 8);
   const grid = buildGrid(world);
-  for (const n of cands) { if (Math.hypot(n.x - u.x, n.y - u.y) > 12) break; if (planTo(world, u, nodeGoals(world, n), grid)) { u.target = n.id; return n; } }
+  for (const n of cands) { if (hyp(n.x - u.x, n.y - u.y) > 12) break; if (planTo(world, u, nodeGoals(world, n), grid)) { u.target = n.id; return n; } }
   return null;
 }
 export function tick(world, dt) {
   world.time += dt;
   if (world.message && world.time > world.message.until) world.message = null;
   if (world.banner && world.time > world.banner.until) world.banner = null;
+  const view = world.cur;
   for (const b of world.buildings) {
     if (!b.complete || !b.queue.length) continue;
+    world.cur = b.owner;
     // one item at a time (AoE2: a TC researching an age/tech is not training villagers meanwhile)
     if (isUnitItem(b.queue[0]) && popCount(world) >= popCap(world)) { b.blocked = true; continue; } b.blocked = false;
     b.trainProgress += dt;
     if (b.trainProgress >= itemTime(b.queue[0])) { b.trainProgress = 0; finishItem(world, b, b.queue.shift()); }
   }
+  world.cur = 'player'; // canonical context for shared systems: never the local viewer, so both clients compute the same
   tickAi(world, spawnFrom); tickAggro(world);
   for (const u of [...world.units]) {
     if (u.dead) continue;
+    world.cur = u.owner;
     switch (u.state) {
       case 'idle': break;
       case 'attacking': tickAttack(world, u, dt); break;
@@ -566,23 +624,25 @@ export function tick(world, dt) {
       case 'to_hunt': {
         const sh = world.animals.find(a => a.id === u.hunt);
         if (!sh) { const c = world.resources.find(n => n.id === world.carcassOf?.[u.hunt] && n.amount > 0); c ? orderGather(world, u, c) : idle(u); break; }
-        if (u.huntMode === 'convert' && sh.owner) { idle(u); break; } // converted (e.g. by touch) on the way: done
-        const near = Math.hypot(sh.x - u.x, sh.y - u.y) <= 1.6;
+        if (u.huntMode === 'convert' && sh.owner === u.owner) { idle(u); break; } // converted (e.g. by touch) on the way: done
+        const near = hyp(sh.x - u.x, sh.y - u.y) <= 1.6;
         if (!near) { if (moveAlong(u, dt) && !planTo(world, u, ringTiles(Math.floor(sh.x), Math.floor(sh.y), 1))) idle(u, 'unreachable'); break; }
-        if (!sh.owner) { convertSheep(world, sh); idle(u); break; }
+        if (sh.owner !== u.owner) { convertSheep(world, sh, u.owner); idle(u); break; }
         orderGather(world, u, butcher(world, sh));
         break;
       }
     }
     if (u.state === 'idle') u.goal = tkey(world, ...utile(u));
   }
+  world.cur = 'player';
   tickProjectiles(world, dt); tickSeparation(world);
   for (const a of world.animals) {
-    if (!a.owner && world.units.some(u => u.type === 'villager' && u.owner === 'player' && Math.hypot(u.x - a.x, u.y - a.y) < 1.0)) convertSheep(world, a);
+    if (!a.owner) { const v = world.units.find(u => u.type === 'villager' && (u.owner === 'player' || world.mp) && hyp(u.x - a.x, u.y - a.y) < 1.0); if (v) convertSheep(world, a, v.owner); }
     if (a.state === 'moving' && moveAlong(a, dt)) a.state = 'idle';
   }
+  world.cur = view;
 }
-export function convertSheep(world, sh) { sh.owner = 'player'; }
+export function convertSheep(world, sh, owner = curOf(world)) { sh.owner = owner; }
 // Kill an owned sheep where it stands: it becomes a 100-food carcass node at its tile.
 export function butcher(world, sh) {
   world.animals = world.animals.filter(a => a !== sh);
@@ -619,3 +679,72 @@ export function clampCamera(cam, viewW, viewH, world, tile = TILE) {
 export function camPixel(cam) { return { x: Math.round(cam.x), y: Math.round(cam.y) }; }
 export function screenToWorld(sx, sy, cam, tile = TILE) { const c = camPixel(cam); return { x: (sx + c.x) / tile, y: (sy + c.y) / tile }; }
 export function worldToScreen(wx, wy, cam, tile = TILE) { const c = camPixel(cam); return { x: wx * tile - c.x, y: wy * tile - c.y }; }
+
+// ---------- deterministic stepping, commands, state hash (lockstep) ----------
+// The simulation advances only in fixed ticks of TICK_DT seconds. Every player action is a serialized command
+// { tick, player, type, args } applied with applyCommand() at the start of its tick (single player applies them
+// immediately at the current tick boundary, multiplayer at tick + input delay once both players' sets have arrived).
+export const TICK_HZ = 20, TICK_DT = 1 / TICK_HZ;
+export const COMMAND_TYPES = ['order', 'rally', 'build', 'train', 'research', 'ageup', 'cancel', 'stop'];
+const qpos = v => Math.round(v * 64) / 64;            // quantize world coords so commands are short and exact
+const isId = v => Number.isInteger(v) && v > 0;
+export function makeCommand(type, args, player = 0, tick = 0) {
+  const a = { ...args };
+  if ('x' in a) a.x = qpos(a.x); if ('y' in a) a.y = qpos(a.y);
+  return { tick, player, type, args: a };
+}
+export function encodeCommand(c) { return JSON.stringify([c.tick, c.player, c.type, c.args]); }
+export function decodeCommand(str) {
+  const [tick, player, type, args] = JSON.parse(str);
+  if (!Number.isInteger(tick) || !(player === 0 || player === 1) || !COMMAND_TYPES.includes(type) || typeof args !== 'object' || !args) throw new Error('bad command');
+  return { tick, player, type, args };
+}
+const ownUnits = (world, ids) => Array.isArray(ids) ? world.units.filter(u => ids.includes(u.id) && owned(world, u)).concat(world.animals.filter(a => ids.includes(a.id) && owned(world, a))) : [];
+const ownBuilding = (world, id) => { const b = world.buildings.find(o => o.id === id); return b && mine(world, b) ? b : null; };
+const finite = (...v) => v.every(Number.isFinite);
+// Apply one command for its player. Returns the action's result (or null when invalid). Pure sim: no DOM, no clock.
+export function applyCommand(world, cmd) {
+  const owner = OWNERS[cmd.player]; if (!owner) return null;
+  const a = cmd.args || {};
+  return withPlayer(world, owner, () => {
+    switch (cmd.type) {
+      case 'order': { if (!finite(a.x, a.y)) return null; const ids = ownUnits(world, a.ids).map(u => u.id); if (!ids.length) return null;
+        const sel = world.selection, sid = world.selected; world.selection = { kind: 'units', ids };
+        try { return commandAt(world, a.x, a.y); } finally { world.selection = sel; world.selected = sid; } }
+      case 'rally': { const b = ownBuilding(world, a.id); if (!b || !b.trains.length || !b.complete || !finite(a.x, a.y)) return null; b.rally = { x: a.x, y: a.y }; return 'rally'; }
+      case 'build': { if (!BUILDING_DEFS[a.type] || BUILDING_DEFS[a.type].menu === false || !Number.isInteger(a.tx) || !Number.isInteger(a.ty)) return null;
+        return placeBuilding(world, a.type, a.tx, a.ty, ownUnits(world, a.ids).filter(u => u.type === 'villager')); }
+      case 'train': { const b = ownBuilding(world, a.id); return UNIT_DEFS[a.unit] ? trainUnit(world, b, a.unit) : null; }
+      case 'research': { const b = ownBuilding(world, a.id); return b && TECHS[a.tech] ? research(world, b, a.tech) : null; }
+      case 'ageup': { const b = ownBuilding(world, a.id); return b ? ageUp(world, b) : null; }
+      case 'cancel': { const b = ownBuilding(world, a.id); if (!b || !b.queue.length) return null;
+        const i = Number.isInteger(a.index) && a.index >= 0 && a.index < b.queue.length ? a.index : b.queue.length - 1;
+        const item = b.queue.splice(i, 1)[0]; if (i === 0) b.trainProgress = 0;
+        const cost = isUnitItem(item) ? COSTS[item] : item.startsWith('age:') ? AGE_UPS[item.slice(4)].cost : TECHS[item.slice(5)].cost;
+        for (const [r, v] of Object.entries(cost)) world.stockpile[r] += v; return { ok: true, item }; }
+      case 'stop': { for (const u of ownUnits(world, a.ids)) idle(u); return 'stop'; }
+    }
+    return null;
+  });
+}
+// One fixed simulation tick: apply this tick's commands in canonical order (player, then issue order), then advance.
+export function stepTick(world, cmds = []) {
+  const view = world.cur;
+  for (const c of [...cmds].sort((p, q) => p.player - q.player || (p.seq || 0) - (q.seq || 0))) applyCommand(world, c);
+  tick(world, TICK_DT); world.tick = (world.tick || 0) + 1; world.cur = view;
+}
+// FNV-1a over the bytes of every gameplay-relevant value (floats hashed bit-exactly).
+export function stateHash(world) {
+  const buf = new DataView(new ArrayBuffer(8)); let h = 0x811c9dc5;
+  const byte = b => { h ^= b; h = Math.imul(h, 0x01000193) >>> 0; };
+  const num = v => { buf.setFloat64(0, typeof v === 'number' ? v : v == null ? -1e300 : +v); for (let i = 0; i < 8; i++) byte(buf.getUint8(i)); };
+  const str = v => { const t = String(v); for (let i = 0; i < t.length; i++) byte(t.charCodeAt(i) & 255); byte(0); };
+  num(world.tick); num(world.time); num(world.nextId);
+  for (const o of OWNERS) { const p = world.players[o]; for (const r of RES_TYPES) num(p.stockpile[r]); str(p.age); str(Object.keys(p.researched).join(',')); }
+  for (const u of world.units) { num(u.id); str(u.type); str(u.owner); num(u.x); num(u.y); num(u.hp); str(u.state); num(u.carry.amount); num(u.target); num(u.path.length); num(u.atkTimer); }
+  for (const a of world.animals) { num(a.id); str(a.owner); num(a.x); num(a.y); }
+  for (const b of world.buildings) { num(b.id); str(b.type); str(b.owner); num(b.x); num(b.y); num(b.hp); num(b.progress); num(b.complete ? 1 : 0); str(b.queue.join(',')); num(b.trainProgress); }
+  for (const n of world.resources) { num(n.id); num(n.amount); }
+  for (const p of world.projectiles || []) { num(p.x); num(p.y); num(p.dmg); }
+  return h.toString(16).padStart(8, '0');
+}

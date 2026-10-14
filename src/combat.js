@@ -1,6 +1,6 @@
 // Combat: attack orders, damage, projectiles, death, aggro, separation and stuck detection. Pure (no DOM).
 import { UNITS, BUILDINGS } from './techtree.js';
-import { buildGrid, walkable, nearestWalkable, ringTiles, techEffects, planTo, moveAlong, idleUnit, tileKey } from './sim.js';
+import { hyp, buildGrid, walkable, nearestWalkable, ringTiles, techEffects, planTo, moveAlong, idleUnit, tileKey } from './sim.js';
 
 export const LOS = 6;            // auto-acquire radius (tiles)
 export const LEASH = 10;         // auto-acquired chases give up beyond LOS + this from where they started
@@ -8,11 +8,13 @@ export const ARROW_SPEED = 9;    // tiles / second
 const MELEE_REACH = 1.5, BUILDING_REACH = 1.0;
 export const parseArmor = a => { const [m, p] = String(a || '0/0').split('/').map(Number); return { melee: m || 0, pierce: p || 0 }; };
 export const isEnemy = (a, b) => !!a.owner && !!b.owner && a.owner !== b.owner;
+// Units of the computer opponent (single player only) also auto-target buildings and divert raids to defenders.
+const aiOwned = (world, u) => !world.mp && u.owner !== 'player';
 export const isMilitary = u => u.type !== 'villager' && u.type !== 'sheep' && (UNITS[u.type]?.attack || 0) > 0;
 
 // Effective combat stats of a unit (player blacksmith techs apply to player infantry/cavalry only).
 export function unitStats(world, u) {
-  const d = UNITS[u.type]; const melee = u.owner === 'player' && (d.infantry || d.cavalry) ? techEffects(world).meleeAttack : 0;
+  const d = UNITS[u.type]; const melee = u.owner && (d.infantry || d.cavalry) ? techEffects(world, u.owner).meleeAttack : 0;
   return { attack: d.attack + melee, armor: parseArmor(d.armor), range: d.range || 0, ranged: !!d.range, reload: d.reload || 2, bonus: d.bonus || {}, los: Math.max(LOS, (d.range || 0) + 2) };
 }
 export function armorOf(t) { return t.size ? parseArmor(BUILDINGS[t.type].armor || '0/7') : parseArmor(UNITS[t.type]?.armor); }
@@ -29,8 +31,8 @@ export function findTarget(world, ref) {
 }
 const center = t => t.size ? { x: t.x + t.size / 2, y: t.y + t.size / 2 } : { x: t.x, y: t.y };
 export function distTo(u, t) {
-  if (!t.size) return Math.hypot(t.x - u.x, t.y - u.y);
-  const dx = Math.max(t.x - u.x, 0, u.x - (t.x + t.size)), dy = Math.max(t.y - u.y, 0, u.y - (t.y + t.size)); return Math.hypot(dx, dy);
+  if (!t.size) return hyp(t.x - u.x, t.y - u.y);
+  const dx = Math.max(t.x - u.x, 0, u.x - (t.x + t.size)), dy = Math.max(t.y - u.y, 0, u.y - (t.y + t.size)); return hyp(dx, dy);
 }
 export function inRange(world, u, t) { const s = unitStats(world, u); return distTo(u, t) <= (s.ranged ? s.range + 0.5 : t.size ? BUILDING_REACH : MELEE_REACH); }
 // Walkable tiles from which u can hit t.
@@ -85,7 +87,7 @@ function retaliate(world, victim, att) {
 }
 function nearestEnemy(world, u, r, buildingsToo = false) {
   let best = null, bd = r;
-  for (const o of world.units) if (isEnemy(u, o)) { const d = Math.hypot(o.x - u.x, o.y - u.y); if (d <= bd) { bd = d; best = o; } }
+  for (const o of world.units) if (isEnemy(u, o)) { const d = hyp(o.x - u.x, o.y - u.y); if (d <= bd) { bd = d; best = o; } }
   if (!best && buildingsToo) for (const b of world.buildings) if (isEnemy(u, b)) { const d = distTo(u, b); if (d <= bd) { bd = d; best = b; } }
   return best;
 }
@@ -96,13 +98,13 @@ export function tickAttack(world, u, dt) {
   u.atkTimer = Math.max(0, (u.atkTimer || 0) - dt);
   if (!t || t.dead || t.hp <= 0) { // target gone: look for the next one nearby, else stop
     const auto = u.attack?.auto; u.attack = null; idleUnit(u);
-    const n = nearestEnemy(world, u, s.los, u.owner !== 'player'); if (n) orderAttack(world, u, n, true); else if (auto) u.goal = tileKey(world, Math.floor(u.x), Math.floor(u.y));
+    const n = nearestEnemy(world, u, s.los, aiOwned(world, u)); if (n) orderAttack(world, u, n, true); else if (auto) u.goal = tileKey(world, Math.floor(u.x), Math.floor(u.y));
     return;
   }
-  if (u.attack.auto && Math.hypot(u.x - u.attack.home.x, u.y - u.attack.home.y) > s.los + LEASH) { u.attack = null; idleUnit(u, 'gave up chase'); return; }
+  if (u.attack.auto && hyp(u.x - u.attack.home.x, u.y - u.attack.home.y) > s.los + LEASH) { u.attack = null; idleUnit(u, 'gave up chase'); return; }
   if (u.nudge && u.path.length) { moveAlong(u, dt); return; } u.nudge = false;
   if (inRange(world, u, t)) {
-    u.path = []; u.goal = tileKey(world, Math.floor(u.x), Math.floor(u.y)); u.stuck = 0; u.facing = Math.atan2(center(t).y - u.y, center(t).x - u.x);
+    u.path = []; u.goal = tileKey(world, Math.floor(u.x), Math.floor(u.y)); u.stuck = 0; { const fx = center(t).x - u.x, fy = center(t).y - u.y, fd = hyp(fx, fy) || 1; u.face = [fx / fd, fy / fd]; } // no trig in the sim
     if (u.atkTimer <= 0) {
       u.atkTimer = s.reload; u.lastAttackAt = world.time; const dmg = damageFor(world, u, t);
       if (s.ranged) (world.projectiles ||= []).push({ from: u.id, owner: u.owner, x: u.x, y: u.y - 0.3, tgt: { kind: u.attack.kind, id: t.id }, dmg, speed: ARROW_SPEED });
@@ -111,7 +113,7 @@ export function tickAttack(world, u, dt) {
     return;
   }
   // chase: re-path when the target moved away from where we planned, or our path ended
-  const c = center(t), moved = u.tpos ? Math.hypot(c.x - u.tpos.x, c.y - u.tpos.y) : 99;
+  const c = center(t), moved = u.tpos ? hyp(c.x - u.tpos.x, c.y - u.tpos.y) : 99;
   if ((!u.path.length || moved > 1.0) && world.time >= (u.replanAt || 0)) { if (!planAttack(world, u, t)) { u.attack = null; idleUnit(u, 'unreachable'); return; } }
   stepWithStuckCheck(world, u, dt, () => planAttack(world, u, t));
 }
@@ -120,7 +122,7 @@ export function stepWithStuckCheck(world, u, dt, replan) {
   const nx = u.path[0]; const grid = nx ? buildGrid(world) : null;
   if (nx && !walkable(world, Math.floor(nx.x), Math.floor(nx.y), grid)) { u.stuckRepaths = (u.stuckRepaths || 0) + 1; replan(); return false; }
   const x0 = u.x, y0 = u.y; const done = moveAlong(u, dt);
-  if (!done && Math.hypot(u.x - x0, u.y - y0) < u.speed * dt * 0.25) { u.stuck = (u.stuck || 0) + dt; if (u.stuck > 1) { u.stuck = 0; u.stuckRepaths = (u.stuckRepaths || 0) + 1; replan(); } }
+  if (!done && hyp(u.x - x0, u.y - y0) < u.speed * dt * 0.25) { u.stuck = (u.stuck || 0) + dt; if (u.stuck > 1) { u.stuck = 0; u.stuckRepaths = (u.stuckRepaths || 0) + 1; replan(); } }
   else u.stuck = 0;
   return done;
 }
@@ -128,8 +130,8 @@ export function tickProjectiles(world, dt) {
   const ps = world.projectiles || (world.projectiles = []);
   for (const p of ps) {
     const t = findTarget(world, p.tgt); if (!t || t.dead) { p.done = true; continue; }
-    const c = center(t), dx = c.x - p.x, dy = c.y - p.y, d = Math.hypot(dx, dy), step = p.speed * dt;
-    p.angle = Math.atan2(dy, dx);
+    const c = center(t), dx = c.x - p.x, dy = c.y - p.y, d = hyp(dx, dy), step = p.speed * dt;
+    p.dir = d ? [dx / d, dy / d] : p.dir || [1, 0];
     if (d <= step + (t.size ? t.size / 2 : 0.2)) { p.done = true; const att = world.units.find(o => o.id === p.from) || { id: p.from, owner: p.owner }; hit(world, att, t, p.dmg); }
     else { p.x += dx / d * step; p.y += dy / d * step; }
   }
@@ -141,9 +143,9 @@ export function tickAggro(world) {
   for (const u of world.units) {
     if (!isMilitary(u)) continue;
     // raiders marching on a building divert to defending units that come into sight
-    if (u.owner !== 'player' && u.state === 'attacking' && u.attack?.kind === 'building') { const n = nearestEnemy(world, u, unitStats(world, u).los); if (n) orderAttack(world, u, n, true); continue; }
+    if (aiOwned(world, u) && u.state === 'attacking' && u.attack?.kind === 'building') { const n = nearestEnemy(world, u, unitStats(world, u).los); if (n) orderAttack(world, u, n, true); continue; }
     if (u.state !== 'idle') continue;
-    const n = nearestEnemy(world, u, unitStats(world, u).los, u.owner !== 'player'); if (n) orderAttack(world, u, n, true);
+    const n = nearestEnemy(world, u, unitStats(world, u).los, aiOwned(world, u)); if (n) orderAttack(world, u, n, true);
   }
 }
 // Separation: stationary non-villager units never share a tile; extras step to the nearest free tile.
@@ -175,5 +177,5 @@ export function tickAi(world, spawnUnit) {
   const raid = ['militia', 'militia', 'spearman'].map(type => spawnUnit(world, rax, type, 'enemy'));
   const tgt = world.buildings.filter(b => b.owner === 'player').sort((a, b) => distTo(center(rax), a) - distTo(center(rax), b))[0];
   for (const u of raid) if (tgt) orderAttack(world, u, tgt, false);
-  ai.raidsSent = (ai.raidsSent || 0) + 1; world.message = { text: 'Enemy raid incoming!', until: world.time + 4 };
+  ai.raidsSent = (ai.raidsSent || 0) + 1; if (!world.viewer || world.viewer === 'player') world.message = { text: 'Enemy raid incoming!', until: world.time + 4 };
 }

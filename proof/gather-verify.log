@@ -1,6 +1,6 @@
-gather verification 2026-10-14T09:33:49.205Z
+gather verification 2026-10-14T09:58:59.468Z
 PASS: forager reached the bush and is gathering
-PASS: FOOD BUG CHECK: villager panel while foraging shows "Carrying: 4 food" (non-zero food)
+PASS: FOOD BUG CHECK: villager panel while foraging shows "Carrying: 3 food" (non-zero food)
   saved proof/gather-verify-01-forager-carrying-food.png
 PASS: [to TC] food stockpile rose 200 -> 220 (+20)
 PASS: [to TC] food nodes decreased by 29
@@ -36,11 +36,11 @@ PASS: [stone (nearest of TC/mining camp)] balance: node decrease 34 == delivered
   forager panel at mill: Villager | Task: Returning to Mill | Carrying: 10 food/10 | HP: 25/25 | Attack 3 Armor 0/0
   saved proof/gather-verify-04-mill-and-mining-camp.png
 PASS: drop-off label names the Mill: Villager | Task: Returning to Mill | Carrying: 10 food/10 | HP: 25/25 | Attack 3 Armor 0/0
-PASS: woodcut to TC until lumber camp affordable: Food: 365 | Wood: 112 | Gold: 380 | Stone: 226 | Pop 3/5 | Dark Age
+PASS: woodcut to TC until lumber camp affordable: Food: 375 | Wood: 111 | Gold: 390 | Stone: 226 | Pop 3/5 | Dark Age
 PASS: lumber camp at (24,24) under the forest
 PASS: lumber camp built
 PASS: woodcutter drops at the Lumber Camp
-PASS: [lumber camp] wood stockpile rose 12 -> 42 (+30)
+PASS: [lumber camp] wood stockpile rose 11 -> 41 (+30)
 PASS: [lumber camp] wood nodes decreased by 30
 PASS: [lumber camp] balance: node decrease 30 == delivered 30 + change in carried 0
 PASS: forest tree (24,22) 10 -> 0
@@ -56,12 +56,12 @@ PASS: farm food 175 -> 135
   farmer last drop: mill
 PASS: sheep on screen (id 160, owner player)
 PASS: sheep butchered, carcass being gathered
-PASS: butcher panel shows "Carrying: 5 food"
+PASS: butcher panel shows "Carrying: 4 food"
   saved proof/gather-verify-07-butchering.png
 PASS: [carcass (+ farm still running)] food stockpile rose 485 -> 575 (+90)
 PASS: [carcass (+ farm still running)] food nodes decreased by 95
 PASS: [carcass (+ farm still running)] balance: node decrease 95 == delivered 90 + change in carried 5
 PASS: carcass 100 -> 51
   saved proof/gather-verify-08-final-stockpile.png
-  final HUD: Food: 575 | Wood: 122 | Gold: 548 | Stone: 226 | Pop 3/5 | Dark Age
+  final HUD: Food: 575 | Wood: 121 | Gold: 549 | Stone: 226 | Pop 3/5 | Dark Age
 RESULT: ALL PASSED

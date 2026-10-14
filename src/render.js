@@ -1,10 +1,31 @@
-import { TILE, camPixel, selectedUnits, itemTime } from './sim.js';
+import { TILE, camPixel, selectedUnits, itemTime, unitStats } from './sim.js';
+// Per-player fog of war (multiplayer): what the viewer's own units and buildings currently see, plus explored memory.
+// Purely presentational: computed from the (identical) world on each client, never fed back into the simulation.
+const VIS_BUILDING = { town_center: 8, watch_tower: 8, castle: 9 };
+export function computeFog(world, viewer, prev = null) {
+  const W = world.width, H = world.height, visible = new Uint8Array(W * H);
+  const explored = prev && prev.explored && prev.explored.length === W * H ? prev.explored : new Uint8Array(W * H);
+  const seenBuildings = prev && prev.seenBuildings || new Set();
+  const reveal = (cx, cy, r) => { const r2 = r * r;
+    for (let y = Math.max(0, Math.floor(cy - r)); y <= Math.min(H - 1, Math.floor(cy + r)); y++) for (let x = Math.max(0, Math.floor(cx - r)); x <= Math.min(W - 1, Math.floor(cx + r)); x++) {
+      const dx = x + 0.5 - cx, dy = y + 0.5 - cy; if (dx * dx + dy * dy <= r2) { visible[y * W + x] = 1; explored[y * W + x] = 1; } } };
+  for (const u of world.units) if (u.owner === viewer) reveal(u.x, u.y, u.type === 'villager' ? 4 : unitStats(world, u).los);
+  for (const a of world.animals) if (a.owner === viewer) reveal(a.x, a.y, 2);
+  for (const b of world.buildings) if (b.owner === viewer) reveal(b.x + b.size / 2, b.y + b.size / 2, VIS_BUILDING[b.type] || (b.complete ? 4 : 2) + b.size / 2);
+  const tileVis = (x, y) => x >= 0 && y >= 0 && x < W && y < H && visible[Math.floor(y) * W + Math.floor(x)] === 1;
+  const sees = o => { if (!o.owner || o.owner === viewer) return true;
+    if (o.size) { for (let y = o.y; y < o.y + o.size; y++) for (let x = o.x; x < o.x + o.size; x++) if (tileVis(x, y)) return true; return false; }
+    return tileVis(o.x, o.y); };
+  for (const b of world.buildings) if (b.owner !== viewer && sees(b)) seenBuildings.add(b.id);
+  return { visible, explored, seenBuildings, sees, viewer };
+}
 const GENERIC = { archery_range: ['#7a5a3a', '#3a6a2a'], stable: ['#7a5a3a', '#6a4a20'], blacksmith: ['#5a4a40', '#2a2a2a'], market: ['#9a7a4a', '#c0a020'],
   watch_tower: ['#8a8a80', '#5a3a2a'], castle: ['#8a8a80', '#4a4a4a'], monastery: ['#d0c8b0', '#8a2a2a'], university: ['#b0a080', '#3a4a8a'], wonder: ['#e0d0a0', '#d4a640'] };
 const UNIT_STYLE = { spearman: ['#7a3a1a', 'S'], archer: ['#3a7a2a', 'A'], crossbowman: ['#2a5a2a', 'C'], scout_cavalry: ['#a07040', 'Sc'], knight: ['#606080', 'K'], monk: ['#d0c060', 'Mo'], trebuchet: ['#5a4020', 'T'] };
 const GRASS = ['#4a7a2c', '#4f8030', '#457228', '#538634'];
 function bar(ctx, x, y, w, frac, col = '#4fd34f') { ctx.fillStyle = '#000a'; ctx.fillRect(x, y, w, 6); ctx.fillStyle = col; ctx.fillRect(x + 1, y + 1, (w - 2) * Math.max(0, Math.min(1, frac)), 4); }
-export function render(ctx, world, cam, ui = {}) {
+export function render(ctx, world, cam, ui = {}, fog = null) {
+  const me = world.viewer || 'player', foe = o => !!o.owner && o.owner !== me, red = o => o.owner === 'enemy';
   const W = ctx.canvas.width, H = ctx.canvas.height;
   ctx.fillStyle = '#111'; ctx.fillRect(0, 0, W, H);
   const c = camPixel(cam);
@@ -15,6 +36,7 @@ export function render(ctx, world, cam, ui = {}) {
   const sel = world.selection, selUnits = new Set(selectedUnits(world).map(u => u.id));
   if (sel && sel.kind === 'tile') { ctx.strokeStyle = '#fff'; ctx.lineWidth = 2; ctx.strokeRect(sel.x * TILE + 1, sel.y * TILE + 1, TILE - 2, TILE - 2); ctx.lineWidth = 1; }
   for (const b of world.buildings) {
+    if (fog && foe(b) && !fog.sees(b) && !fog.seenBuildings.has(b.id)) continue;
     const px = b.x * TILE, py = b.y * TILE, s = b.size * TILE;
     if (!b.complete) {
       ctx.fillStyle = '#c8a86a88'; ctx.fillRect(px, py, s, s); ctx.strokeStyle = '#6b4a20'; ctx.setLineDash([4, 3]); ctx.strokeRect(px + 1, py + 1, s - 2, s - 2); ctx.setLineDash([]);
@@ -54,8 +76,8 @@ export function render(ctx, world, cam, ui = {}) {
       ctx.fillStyle = '#fff'; ctx.font = '12px sans-serif'; ctx.textAlign = 'center'; ctx.fillText(b.name, px + s / 2, py + s + 14);
       if (b.queue.length) bar(ctx, px, py - 18, s, b.trainProgress / itemTime(b.queue[0]), b.blocked ? '#d33' : '#4fd34f');
     }
-    if (b.owner === 'enemy') { ctx.fillStyle = '#c02020'; ctx.fillRect(px + 2, py + 2, 4, 14); ctx.fillRect(px + 6, py + 2, 9, 6); ctx.strokeStyle = '#e04040'; ctx.strokeRect(px + 0.5, py + 0.5, s - 1, s - 1); }
-    if (b.complete && (b.hp < b.maxHp || b.owner === 'enemy' || (sel && sel.kind === 'building' && sel.id === b.id))) bar(ctx, px, py - (b.queue.length ? 26 : 9), s, b.hp / b.maxHp, b.owner === 'enemy' ? '#e04040' : '#4fd34f');
+    if (red(b)) { ctx.fillStyle = '#c02020'; ctx.fillRect(px + 2, py + 2, 4, 14); ctx.fillRect(px + 6, py + 2, 9, 6); ctx.strokeStyle = '#e04040'; ctx.strokeRect(px + 0.5, py + 0.5, s - 1, s - 1); }
+    if (b.complete && (b.hp < b.maxHp || foe(b) || (sel && sel.kind === 'building' && sel.id === b.id))) bar(ctx, px, py - (b.queue.length ? 26 : 9), s, b.hp / b.maxHp, red(b) ? '#e04040' : '#4fd34f');
     if (sel && sel.kind === 'building' && sel.id === b.id) { ctx.strokeStyle = '#fff'; ctx.lineWidth = 2; ctx.strokeRect(px - 3, py - 3, s + 6, s + 6); ctx.lineWidth = 1;
       if (b.rally) { const rx = b.rally.x * TILE, ry = b.rally.y * TILE; ctx.strokeStyle = '#fff8'; ctx.setLineDash([5, 5]); ctx.beginPath(); ctx.moveTo(px + s / 2, py + s / 2); ctx.lineTo(rx, ry); ctx.stroke(); ctx.setLineDash([]);
         ctx.fillStyle = '#5a3a1a'; ctx.fillRect(rx - 1, ry - 20, 2, 20); ctx.fillStyle = '#2a50c8'; ctx.fillRect(rx + 1, ry - 20, 12, 8); } }
@@ -71,15 +93,16 @@ export function render(ctx, world, cam, ui = {}) {
     else if (n.res === 'food') { ctx.fillStyle = '#2d6b2d'; ctx.beginPath(); ctx.arc(px, py, 11, 0, 7); ctx.fill(); ctx.fillStyle = '#c0203a'; for (let i = 0; i < 5; i++) { ctx.beginPath(); ctx.arc(px - 6 + (i * 5) % 13, py - 5 + (i * 7) % 11, 2.5, 0, 7); ctx.fill(); } }
     else { ctx.fillStyle = n.res === 'gold' ? '#e0b83a' : '#9a9a9a'; ctx.beginPath(); ctx.moveTo(px - 13, py + 9); ctx.lineTo(px - 4, py - 11); ctx.lineTo(px + 6, py - 6); ctx.lineTo(px + 13, py + 9); ctx.fill(); ctx.strokeStyle = '#333'; ctx.stroke(); }
   }
-  for (const a of world.animals) { const px = a.x * TILE, py = a.y * TILE;
+  for (const a of world.animals) { if (fog && !fog.visible[Math.floor(a.y) * world.width + Math.floor(a.x)]) continue; const px = a.x * TILE, py = a.y * TILE;
     if (selUnits.has(a.id) || (sel && sel.kind === 'unit' && sel.id === a.id)) { ctx.strokeStyle = '#fff'; ctx.lineWidth = 2; ctx.beginPath(); ctx.ellipse(px, py + 5, 11, 6, 0, 0, 7); ctx.stroke(); ctx.lineWidth = 1; }
     ctx.fillStyle = '#f4f0e6'; ctx.beginPath(); ctx.ellipse(px, py, 9, 6, 0, 0, 7); ctx.fill(); ctx.fillStyle = '#333'; ctx.beginPath(); ctx.arc(px + 8, py - 2, 3.5, 0, 7); ctx.fill();
-    if (a.owner) { ctx.fillStyle = '#2a50c8'; ctx.fillRect(px + 4, py - 6, 3, 8); } }
+    if (a.owner) { ctx.fillStyle = red(a) ? '#c02020' : '#2a50c8'; ctx.fillRect(px + 4, py - 6, 3, 8); } }
   for (const u of world.units) {
+    if (fog && foe(u) && !fog.sees(u)) continue;
     const px = u.x * TILE, py = u.y * TILE;
-    if (u.type !== 'villager' || u.owner === 'enemy') { ctx.fillStyle = u.owner === 'enemy' ? '#ff2020d0' : '#3060ffb0'; ctx.beginPath(); ctx.ellipse(px, py + 6, 10, 5, 0, 0, 7); ctx.fill(); }
-    if (u.type !== 'villager' || u.hp < u.maxHp || selUnits.has(u.id)) bar(ctx, px - 11, py - 22, 22, u.hp / u.maxHp, u.owner === 'enemy' ? '#e04040' : '#4fd34f');
-    if (u.lastAttackAt != null && world.time - u.lastAttackAt < 0.25 && !UNIT_STYLE[u.type]?.ranged) { ctx.strokeStyle = '#fff'; ctx.lineWidth = 2; ctx.beginPath(); ctx.arc(px + Math.cos(u.facing || 0) * 10, py + Math.sin(u.facing || 0) * 10, 5, 0, 7); ctx.stroke(); ctx.lineWidth = 1; }
+    if (u.type !== 'villager' || red(u)) { ctx.fillStyle = red(u) ? '#ff2020d0' : '#3060ffb0'; ctx.beginPath(); ctx.ellipse(px, py + 6, 10, 5, 0, 0, 7); ctx.fill(); }
+    if (u.type !== 'villager' || u.hp < u.maxHp || selUnits.has(u.id)) bar(ctx, px - 11, py - 22, 22, u.hp / u.maxHp, red(u) ? '#e04040' : '#4fd34f');
+    if (u.lastAttackAt != null && world.time - u.lastAttackAt < 0.25 && !UNIT_STYLE[u.type]?.ranged) { ctx.strokeStyle = '#fff'; ctx.lineWidth = 2; ctx.beginPath(); ctx.arc(px + (u.face ? u.face[0] : 1) * 10, py + (u.face ? u.face[1] : 0) * 10, 5, 0, 7); ctx.stroke(); ctx.lineWidth = 1; }
     if (selUnits.has(u.id)) {
       if (u.path.length) { ctx.strokeStyle = '#ffffffaa'; ctx.setLineDash([3, 4]); ctx.beginPath(); ctx.moveTo(px, py); for (const q of u.path) ctx.lineTo(q.x * TILE, q.y * TILE); ctx.stroke(); ctx.setLineDash([]); }
       ctx.strokeStyle = '#fff'; ctx.lineWidth = 2; ctx.beginPath(); ctx.ellipse(px, py + 6, 11, 6, 0, 0, 7); ctx.stroke(); ctx.lineWidth = 1; }
@@ -88,15 +111,19 @@ export function render(ctx, world, cam, ui = {}) {
       ctx.fillStyle = '#fff'; ctx.font = 'bold 9px sans-serif'; ctx.textAlign = 'center'; ctx.fillText(letter, px, py + 3); continue; }
     if (u.type === 'militia') { ctx.fillStyle = '#8a1a1a'; ctx.fillRect(px - 6, py - 7, 12, 14); ctx.fillStyle = '#bbb'; ctx.beginPath(); ctx.arc(px, py - 11, 5, 0, 7); ctx.fill();
       ctx.strokeStyle = '#ddd'; ctx.lineWidth = 2; ctx.beginPath(); ctx.moveTo(px + 8, py + 6); ctx.lineTo(px + 8, py - 16); ctx.stroke(); ctx.lineWidth = 1; continue; }
-    ctx.fillStyle = '#2a50c8'; ctx.fillRect(px - 5, py - 6, 10, 12);
+    ctx.fillStyle = red(u) ? '#c83030' : '#2a50c8'; ctx.fillRect(px - 5, py - 6, 10, 12);
     ctx.fillStyle = '#f0c8a0'; ctx.beginPath(); ctx.arc(px, py - 10, 4.5, 0, 7); ctx.fill();
     if (u.carry.amount) { ctx.fillStyle = { food: '#c0203a', wood: '#7a4a1a', gold: '#e0b83a', stone: '#aaa' }[u.carry.res]; ctx.fillRect(px + 5, py - 4, 6, 6); }
   }
-  for (const p of world.projectiles || []) { const x = p.x * TILE, y = p.y * TILE, a = p.angle || 0;
+  for (const p of world.projectiles || []) { if (fog && !fog.visible[Math.floor(p.y) * world.width + Math.floor(p.x)]) continue; const x = p.x * TILE, y = p.y * TILE, a = p.dir ? Math.atan2(p.dir[1], p.dir[0]) : 0;
     ctx.strokeStyle = '#3a2410'; ctx.lineWidth = 2; ctx.beginPath(); ctx.moveTo(x - Math.cos(a) * 8, y - Math.sin(a) * 8); ctx.lineTo(x, y); ctx.stroke(); ctx.lineWidth = 1; }
   const lo = world.lastOrder; if (lo && world.time - lo.t < 0.8) { const k = 1 - (world.time - lo.t) / 0.8, x = lo.x * TILE, y = lo.y * TILE;
     ctx.strokeStyle = lo.kind === 'attack' ? `rgba(255,50,50,${k})` : `rgba(80,255,80,${k})`; ctx.lineWidth = 2; ctx.beginPath(); ctx.ellipse(x, y, 14 * (1.5 - k / 2), 7 * (1.5 - k / 2), 0, 0, 7); ctx.stroke();
     if (lo.kind === 'attack') { ctx.beginPath(); ctx.moveTo(x - 6, y - 6); ctx.lineTo(x + 6, y + 6); ctx.moveTo(x + 6, y - 6); ctx.lineTo(x - 6, y + 6); ctx.stroke(); } ctx.lineWidth = 1; }
+  if (fog) { // unexplored = black, explored but not currently seen = dimmed
+    for (let y = y0; y < y1; y++) for (let x = x0; x < x1; x++) { const i = y * world.width + x;
+      if (!fog.explored[i]) { ctx.fillStyle = '#000'; ctx.fillRect(x * TILE, y * TILE, TILE, TILE); }
+      else if (!fog.visible[i]) { ctx.fillStyle = '#00000080'; ctx.fillRect(x * TILE, y * TILE, TILE, TILE); } } }
   if (ui.ghost) { const g = ui.ghost; ctx.fillStyle = g.valid ? '#40ff4060' : '#ff303070'; ctx.strokeStyle = g.valid ? '#6f6' : '#f44'; ctx.lineWidth = 2;
     ctx.fillRect(g.tx * TILE, g.ty * TILE, g.size * TILE, g.size * TILE); ctx.strokeRect(g.tx * TILE, g.ty * TILE, g.size * TILE, g.size * TILE);
     ctx.strokeStyle = '#ffa500'; ctx.lineWidth = 3; for (const [x, y] of g.units || []) ctx.strokeRect(x * TILE + 2, y * TILE + 2, TILE - 4, TILE - 4); ctx.lineWidth = 1; }

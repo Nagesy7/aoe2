@@ -5,7 +5,9 @@
   "private": true,
   "scripts": {
     "start": "npx serve .",
-    "test": "node tests/gather.test.mjs && node tests/ages.test.mjs && node tests/combat.test.mjs",
+    "test": "node tests/gather.test.mjs && node tests/ages.test.mjs && node tests/combat.test.mjs && node tests/determinism.test.mjs",
+    "relay": "node server/relay.mjs --static .",
+    "lockstep": "node scripts/lockstep.mjs",
     "combat": "node scripts/combat.mjs",
     "screenshot": "node scripts/screenshot.mjs",
     "round4": "node scripts/round4.mjs",
@@ -15,6 +17,7 @@
     "ages": "node scripts/ages.mjs"
   },
   "devDependencies": {
-    "playwright": "^1.64.0"
+    "playwright": "^1.64.0",
+    "ws": "^8.22.0"
   }
 }

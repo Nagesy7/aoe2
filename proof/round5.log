@@ -1,4 +1,4 @@
-round5 browser proof 2026-10-14T09:34:23.619Z  rule: placement ignores units; units inside are evicted
+round5 browser proof 2026-10-14T09:59:31.940Z  rule: placement ignores units; units inside are evicted
 PASS: ghost at (36,34) valid over 2 villagers, hinted tiles [[36,34],[36,35]]
   saved proof/round5-01-ghost-over-villagers.png
 PASS: foundation placed; evicted 2 villagers; units inside footprints: 0

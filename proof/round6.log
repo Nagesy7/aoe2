@@ -1,4 +1,4 @@
-round6 browser proof 2026-10-14T09:34:26.038Z
+round6 browser proof 2026-10-14T09:59:34.231Z
 PASS: drag-box: 3 Villagers selected | 3 × Idle | Carrying: 0 total
 PASS: build menu: Build House 25 wood | Lumber Camp 100 wood | Mining Camp 100 wood | Mill 100 wood | Farm 60 wood | Barracks 175 wood | Archery Range Requires Feudal Age | Stable Requires Feudal Age | Blacksmith Requires Feudal Age | Market Requires Feudal Age | Watch Tower Requires Feudal Age | Castle Requires Castle Age | Monastery Requires Castle Age | University Requires Castle Age | Wonder Requires Imperial Age
   saved proof/round6-01-build-menu.png
@@ -50,7 +50,7 @@ PASS: 2 militia queued: gold 111 -> 71
 PASS: barracks panel: Barracks | HP: 1200/1200 | Armor 0/7 | Queue: 2/5 | Training Militia: 25% | M | M
   saved proof/round6-16-barracks-queue.png
 PASS: 2 militia trained
-PASS: HUD Food: 285 | Wood: 1215 | Gold: 71 | Stone: 100 | Pop 5/5 | Dark Age
+PASS: HUD Food: 285 | Wood: 1235 | Gold: 71 | Stone: 100 | Pop 5/5 | Dark Age
 PASS: militia blocked at cap: "Population cap reached (5/5): build a House"
   saved proof/round6-17-militia-trained-pop-cap.png
 PASS: militia selected: 2 units selected | 2 × Idle | Carrying: 0 total

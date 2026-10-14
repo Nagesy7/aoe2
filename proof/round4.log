@@ -1,8 +1,8 @@
-round4 browser proof 2026-10-14T09:34:16.871Z
+round4 browser proof 2026-10-14T09:59:25.310Z
 PASS: start HUD: Food: 200 | Wood: 200 | Gold: 100 | Stone: 100 | Pop 3/5 | Dark Age
   saved proof/round4-00-start.png
 PASS: 2 villagers queued, food 200 -> 100: Food: 100 | Wood: 200 | Gold: 100 | Stone: 100 | Pop 3/5 | Dark Age
-PASS: TC panel: Town Center | HP: 2400/2400 | Armor 3/5 | Queue: 2/5 | Training Villager: 26% | V | V
+PASS: TC panel: Town Center | HP: 2400/2400 | Armor 3/5 | Queue: 2/5 | Training Villager: 25% | V | V
   saved proof/round4-01-tc-train-queue.png
 PASS: rally point set by right-click
 PASS: 2 trained villagers walked to rally: [["44.5","36.5"],["45.5","36.5"]]
@@ -18,9 +18,9 @@ PASS: ghost red over berry bushes at (41,31)
   saved proof/round4-05b-house-ghost-invalid-bushes.png
 PASS: foundation placed at (38,38), wood 200 -> 175
 PASS: drag-selected rally villagers: 2 Villagers selected | 2 × Idle | Carrying: 0 total
-PASS: 3 villagers building; panel: House (foundation) | HP: 325/550 | Construction: 59%
+PASS: 3 villagers building; panel: House (foundation) | HP: 319/550 | Construction: 58%
   saved proof/round4-06-house-construction.png
-PASS: 3 builders add >=2.5 build-seconds per 1s advance (4.15; extra from real-time frames)
+PASS: 3 builders add >=2.5 build-seconds per 1s advance (4.20; extra from real-time frames)
 PASS: house complete: Food: 100 | Wood: 175 | Gold: 100 | Stone: 100 | Pop 5/10 | Dark Age
 PASS: house panel: House | HP: 550/550 | Armor 0/7 | Provides +5 population
   saved proof/round4-07-house-complete-pop10.png

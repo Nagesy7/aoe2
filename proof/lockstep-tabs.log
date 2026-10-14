@@ -1,0 +1,42 @@
+lockstep-tabs browser proof 2026-10-14T10:00:40.681Z base=https://aoe2-ashen.vercel.app/ mode=BroadcastChannel (two tabs, one browser) speed=4x
+  saved proof/lockstep-tabs-01-menu.png
+  room code TLXY
+PASS: host lobby: both players connected
+  saved proof/lockstep-tabs-02-lobby-guest.png
+PASS: guest sees host Ready
+PASS: roles: host = player 1 (player), guest = player 2 (enemy)
+PASS: same map seed on both (1889087181)
+PASS: mirrored bases: host TC at (20,20), guest TC at (64,64); each camera starts on its own TC
+  guest: gather berries #68, gold #110, house at (61,65), 2 villagers queued; commands issued 5
+  host: gather berries #5, gold #47, house at (26,21), 2 villagers queued; commands issued 5
+  saved proof/lockstep-tabs-03-host-economy.png
+  saved proof/lockstep-tabs-04-guest-economy.png
+PASS: host fog of war: enemy TC hidden, 0 enemy units visible, 245/7744 tiles explored
+PASS: guest fog of war: enemy TC hidden, 0 enemy units visible, 245/7744 tiles explored
+PASS: both houses completed
+PASS: both barracks completed
+  saved proof/lockstep-tabs-05-host-militia.png
+PASS: host selected 1 militia
+PASS: host right-click on the enemy Town Center = attack order (crosshair target)
+PASS: combat happened (1 hits logged)
+  saved proof/lockstep-tabs-06-host-attacking.png
+  saved proof/lockstep-tabs-07-guest-under-attack.png
+  saved proof/lockstep-tabs-08-stall-indicator.png
+PASS: host stalls while guest is frozen: "Waiting for opponent… (1.5 s)", advanced only 3 ticks in 1.5 s at 4x
+PASS: host resumes after guest is back; indicator hidden
+  running to tick 2400 (120 s of game time)...
+PASS: no desync on either client (host: none, guest: none)
+PASS: 148 hash checkpoints (every 20 ticks) compared offline: 0 mismatches
+PASS: live hash exchange confirmed 148 (host) / 148 (guest) matches
+PASS: commands from real input: host 9, guest 9
+  last checkpoint: tick 2960 host d4c1c76c guest d4c1c76c
+  host HUD: Ping 464 ms · Delay 3 ticks (150 ms) · Tick 2967 · sync ✓ 148 · same-browser tabs · room TLXY
+  guest HUD: Ping 2 ms · Delay 3 ticks (150 ms) · Tick 2969 · sync ✓ 148 · same-browser tabs · room TLXY
+  total stall time: host 2467 ms, guest 317 ms
+  host  view: {"tick":2969,"units":"ememevevevevevpmpmpvpvpvpvpv","buildings":6,"p1":{"food":70,"wood":0,"gold":160,"stone":100},"p2":{"food":70,"wood":0,"gold":160,"stone":100},"deaths":0}
+  guest view: {"tick":2970,"units":"ememevevevevevpmpmpvpvpvpvpv","buildings":6,"p1":{"food":70,"wood":0,"gold":160,"stone":100},"p2":{"food":70,"wood":0,"gold":160,"stone":100},"deaths":0}
+  saved proof/lockstep-tabs-09-host-final.png
+  saved proof/lockstep-tabs-10-guest-final.png
+PASS: host notices the guest leaving: "Opponent disconnected — waiting for them to return…"
+  saved proof/lockstep-tabs-11-host-opponent-left.png
+RESULT: ALL PASSED
