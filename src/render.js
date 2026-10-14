@@ -1,3 +1,4 @@
+import { drawTerrain } from './terrain.js';
 import { drawInu, paw, TEAM } from './inu.js';
 import { TILE, camPixel, selectedUnits, itemTime, unitStats } from './sim.js';
 // Per-player fog of war (multiplayer): what the viewer's own units and buildings currently see, plus explored memory.
@@ -33,7 +34,8 @@ export function render(ctx, world, cam, ui = {}, fog = null) {
   ctx.save(); ctx.translate(-c.x, -c.y);
   const x0 = Math.max(0, Math.floor(c.x / TILE)), y0 = Math.max(0, Math.floor(c.y / TILE));
   const x1 = Math.min(world.width, Math.ceil((c.x + W) / TILE)), y1 = Math.min(world.height, Math.ceil((c.y + H) / TILE));
-  for (let y = y0; y < y1; y++) for (let x = x0; x < x1; x++) { ctx.fillStyle = GRASS[world.tiles[y * world.width + x]]; ctx.fillRect(x * TILE, y * TILE, TILE, TILE); }
+  if (typeof document !== 'undefined' && x1 > x0 && y1 > y0) drawTerrain(ctx, world, TILE, x0, y0, x1, y1);
+  else for (let y = y0; y < y1; y++) for (let x = x0; x < x1; x++) { ctx.fillStyle = GRASS[world.tiles[y * world.width + x]]; ctx.fillRect(x * TILE, y * TILE, TILE, TILE); }
   const sel = world.selection, selUnits = new Set(selectedUnits(world).map(u => u.id));
   if (sel && sel.kind === 'tile') { ctx.strokeStyle = '#fff'; ctx.lineWidth = 2; ctx.strokeRect(sel.x * TILE + 1, sel.y * TILE + 1, TILE - 2, TILE - 2); ctx.lineWidth = 1; }
   for (const b of world.buildings) {
