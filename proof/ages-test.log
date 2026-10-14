@@ -1,4 +1,4 @@
-ages test 2026-10-14T12:33:25.559Z
+ages test 2026-10-14T12:44:13.793Z
 --- age costs, timing, prerequisites ---
 PASS: start in Dark Age
 PASS: Feudal: 500 food, 130s
@@ -76,8 +76,8 @@ PASS: cannot queue Bow Saw while Double-Bit Axe still researching
 PASS: Bow Saw allowed once Double-Bit Axe completes
 PASS: tech only at its building
 --- eco tech numeric effects (live) ---
-PASS: Double-Bit Axe: wood rate 1.0 -> 1.2 (+20%)
-PASS: measured wood in 5s at a tree: base 5, DBA 6, +Bow Saw 7, +Two-Man Saw 7
+PASS: Double-Bit Axe: wood rate 0.39 -> x1.2 (+20%)
+PASS: measured wood in 20s (capped by carry 10) at a tree: base 7, DBA 9, +Bow Saw 10, +Two-Man Saw 10
 PASS: wood bonuses stack additively: +20 +20 +10 = 1.5x
 PASS: Gold Mining: gold rate +15%
 PASS: Gold Shaft Mining: +15% more (1.3x)
@@ -97,5 +97,5 @@ PASS: Loom: new villagers 40 HP
 PASS: HP shown in villager panel
 --- resource balance with techs ---
 PASS: farm built with Horse Collar food (250)
-PASS: balance with techs: node decrease 635 == delivered 605 + carried 30
+PASS: balance with techs: node decrease 241 == delivered 210 + carried 31
 RESULT: ALL 94 PASSED

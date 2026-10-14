@@ -1,25 +1,43 @@
-gather test 2026-10-14T12:33:25.060Z
+gather test 2026-10-14T12:44:13.280Z
 --- gathering ---
-[food] node berries 125 -> 49; stockpile food=70; carried=6; state=gathering
-PASS: food stockpile increased in trips of 10 (70)
+[food] node berries 125 -> 91; stockpile food=30; carried=4; state=gathering
+PASS: food stockpile increased in trips of 10 (30)
 PASS: food node amount decreased
-PASS: food conservation: removed 76 == delivered 70 + carried 6
+PASS: food conservation: removed 34 == delivered 30 + carried 4
 PASS: only food collected
-[wood] node tree 100 -> 31; stockpile wood=60; carried=9; state=gathering
-PASS: wood stockpile increased in trips of 10 (60)
+[wood] node tree 100 -> 64; stockpile wood=30; carried=6; state=gathering
+PASS: wood stockpile increased in trips of 10 (30)
 PASS: wood node amount decreased
-PASS: wood conservation: removed 69 == delivered 60 + carried 9
+PASS: wood conservation: removed 36 == delivered 30 + carried 6
 PASS: only wood collected
-[gold] node gold_mine 800 -> 719; stockpile gold=80; carried=1; state=gathering
-PASS: gold stockpile increased in trips of 10 (80)
+[gold] node gold_mine 800 -> 761; stockpile gold=30; carried=9; state=gathering
+PASS: gold stockpile increased in trips of 10 (30)
 PASS: gold node amount decreased
-PASS: gold conservation: removed 81 == delivered 80 + carried 1
+PASS: gold conservation: removed 39 == delivered 30 + carried 9
 PASS: only gold collected
-[stone] node stone_mine 350 -> 270; stockpile stone=80; carried=0; state=to_resource
-PASS: stone stockpile increased in trips of 10 (80)
+[stone] node stone_mine 350 -> 314; stockpile stone=30; carried=6; state=gathering
+PASS: stone stockpile increased in trips of 10 (30)
 PASS: stone node amount decreased
-PASS: stone conservation: removed 80 == delivered 80 + carried 0
+PASS: stone conservation: removed 36 == delivered 30 + carried 6
 PASS: only stone collected
+--- AoE2 Dark Age gather/deposit math ---
+PASS: berries rate 0.31 == 0.31/s
+PASS: carcass rate 0.33 == 0.33/s
+PASS: tree rate 0.39 == 0.39/s
+PASS: gold_mine rate 0.38 == 0.38/s
+PASS: stone_mine rate 0.36 == 0.36/s
+PASS: food: 10 carried in 32.30s (ideal 32.26s)
+PASS: food: deposit adds exactly 10 to stockpile (10)
+PASS: food: villager returned to gather after deposit
+PASS: wood: 10 carried in 25.65s (ideal 25.64s)
+PASS: wood: deposit adds exactly 10 to stockpile (10)
+PASS: wood: villager returned to gather after deposit
+PASS: gold: 10 carried in 26.35s (ideal 26.32s)
+PASS: gold: deposit adds exactly 10 to stockpile (10)
+PASS: gold: villager returned to gather after deposit
+PASS: stone: 10 carried in 27.80s (ideal 27.78s)
+PASS: stone: deposit adds exactly 10 to stockpile (10)
+PASS: stone: villager returned to gather after deposit
 --- selection hit-testing ---
 PASS: villager picked at its position
 PASS: town center picked inside footprint
@@ -39,68 +57,68 @@ PASS: clamp bottom-right
 PASS: in-range unchanged
 PASS: viewport larger than map centers it
 --- retask (round 3): never lose carried resources ---
-[food->wood] carried 5 food at retask; final stockpile food=5 wood=50; carry=0 wood; removed=55 held=55
+[food->wood] carried 5 food at retask; final stockpile food=5 wood=20; carry=7 wood; removed=32 held=32
 PASS: food->wood: retask sends villager to drop off with carry intact
 PASS: food->wood: carried food deposited (5)
 PASS: food->wood: then gathers wood
-PASS: food->wood: total node decrease 55 == delivered + carried 55
-[food->gold] carried 5 food at retask; final stockpile food=5 gold=50; carry=10 gold; removed=65 held=65
+PASS: food->wood: total node decrease 32 == delivered + carried 32
+[food->gold] carried 5 food at retask; final stockpile food=5 gold=20; carry=8 gold; removed=33 held=33
 PASS: food->gold: retask sends villager to drop off with carry intact
 PASS: food->gold: carried food deposited (5)
 PASS: food->gold: then gathers gold
-PASS: food->gold: total node decrease 65 == delivered + carried 65
-[food->stone] carried 5 food at retask; final stockpile food=5 stone=50; carry=10 stone; removed=65 held=65
+PASS: food->gold: total node decrease 33 == delivered + carried 33
+[food->stone] carried 5 food at retask; final stockpile food=5 stone=20; carry=6 stone; removed=31 held=31
 PASS: food->stone: retask sends villager to drop off with carry intact
 PASS: food->stone: carried food deposited (5)
 PASS: food->stone: then gathers stone
-PASS: food->stone: total node decrease 65 == delivered + carried 65
-[wood->food] carried 5 wood at retask; final stockpile wood=5 food=40; carry=8 food; removed=53 held=53
+PASS: food->stone: total node decrease 31 == delivered + carried 31
+[wood->food] carried 5 wood at retask; final stockpile wood=5 food=20; carry=3 food; removed=28 held=28
 PASS: wood->food: retask sends villager to drop off with carry intact
 PASS: wood->food: carried wood deposited (5)
 PASS: wood->food: then gathers food
-PASS: wood->food: total node decrease 53 == delivered + carried 53
-[wood->gold] carried 5 wood at retask; final stockpile wood=5 gold=50; carry=8 gold; removed=63 held=63
+PASS: wood->food: total node decrease 28 == delivered + carried 28
+[wood->gold] carried 5 wood at retask; final stockpile wood=5 gold=20; carry=7 gold; removed=32 held=32
 PASS: wood->gold: retask sends villager to drop off with carry intact
 PASS: wood->gold: carried wood deposited (5)
 PASS: wood->gold: then gathers gold
-PASS: wood->gold: total node decrease 63 == delivered + carried 63
-[wood->stone] carried 5 wood at retask; final stockpile wood=5 stone=50; carry=7 stone; removed=62 held=62
+PASS: wood->gold: total node decrease 32 == delivered + carried 32
+[wood->stone] carried 5 wood at retask; final stockpile wood=5 stone=20; carry=5 stone; removed=30 held=30
 PASS: wood->stone: retask sends villager to drop off with carry intact
 PASS: wood->stone: carried wood deposited (5)
 PASS: wood->stone: then gathers stone
-PASS: wood->stone: total node decrease 62 == delivered + carried 62
-[gold->food] carried 5 gold at retask; final stockpile gold=5 food=50; carry=5 food; removed=60 held=60
+PASS: wood->stone: total node decrease 30 == delivered + carried 30
+[gold->food] carried 5 gold at retask; final stockpile gold=5 food=20; carry=5 food; removed=30 held=30
 PASS: gold->food: retask sends villager to drop off with carry intact
 PASS: gold->food: carried gold deposited (5)
 PASS: gold->food: then gathers food
-PASS: gold->food: total node decrease 60 == delivered + carried 60
-[gold->wood] carried 5 gold at retask; final stockpile gold=5 wood=40; carry=8 wood; removed=53 held=53
+PASS: gold->food: total node decrease 30 == delivered + carried 30
+[gold->wood] carried 5 gold at retask; final stockpile gold=5 wood=20; carry=5 wood; removed=30 held=30
 PASS: gold->wood: retask sends villager to drop off with carry intact
 PASS: gold->wood: carried gold deposited (5)
 PASS: gold->wood: then gathers wood
-PASS: gold->wood: total node decrease 53 == delivered + carried 53
-[gold->stone] carried 5 gold at retask; final stockpile gold=5 stone=50; carry=10 stone; removed=65 held=65
+PASS: gold->wood: total node decrease 30 == delivered + carried 30
+[gold->stone] carried 5 gold at retask; final stockpile gold=5 stone=20; carry=6 stone; removed=31 held=31
 PASS: gold->stone: retask sends villager to drop off with carry intact
 PASS: gold->stone: carried gold deposited (5)
 PASS: gold->stone: then gathers stone
-PASS: gold->stone: total node decrease 65 == delivered + carried 65
-[stone->food] carried 5 stone at retask; final stockpile stone=5 food=50; carry=3 food; removed=58 held=58
+PASS: gold->stone: total node decrease 31 == delivered + carried 31
+[stone->food] carried 5 stone at retask; final stockpile stone=5 food=20; carry=4 food; removed=29 held=29
 PASS: stone->food: retask sends villager to drop off with carry intact
 PASS: stone->food: carried stone deposited (5)
 PASS: stone->food: then gathers food
-PASS: stone->food: total node decrease 58 == delivered + carried 58
-[stone->wood] carried 5 stone at retask; final stockpile stone=5 wood=40; carry=4 wood; removed=49 held=49
+PASS: stone->food: total node decrease 29 == delivered + carried 29
+[stone->wood] carried 5 stone at retask; final stockpile stone=5 wood=20; carry=4 wood; removed=29 held=29
 PASS: stone->wood: retask sends villager to drop off with carry intact
 PASS: stone->wood: carried stone deposited (5)
 PASS: stone->wood: then gathers wood
-PASS: stone->wood: total node decrease 49 == delivered + carried 49
-[stone->gold] carried 5 stone at retask; final stockpile stone=5 gold=60; carry=0 gold; removed=65 held=65
+PASS: stone->wood: total node decrease 29 == delivered + carried 29
+[stone->gold] carried 5 stone at retask; final stockpile stone=5 gold=20; carry=8 gold; removed=33 held=33
 PASS: stone->gold: retask sends villager to drop off with carry intact
 PASS: stone->gold: carried stone deposited (5)
 PASS: stone->gold: then gathers gold
-PASS: stone->gold: total node decrease 65 == delivered + carried 65
+PASS: stone->gold: total node decrease 33 == delivered + carried 33
 PASS: same-type retask keeps carry (4 wood) and continues to new tree
-PASS: same-type retask: new tree gathered (74 left), conservation 30 == 30
+PASS: same-type retask: new tree gathered (84 left), conservation 20 == 20
 --- screen<->world uses rounded camera (round 3) ---
 PASS: camPixel rounds like the renderer
 PASS: pixel 21 (first pixel of rendered tile 1) -> tile 1 (unrounded math would give 0)
@@ -143,11 +161,11 @@ PASS: stays idle, no crash
 --- round 4: drag-box multi-select + parallel gather ---
 PASS: box selects 3 villagers (3 Villagers selected)
 PASS: all selected villagers ordered to gather
-parallel: removed=160 delivered=154 carried=6 gatheringTiles=39,32 39,30 39,31
-PASS: 3 villagers: node decrease 160 == delivered 154 + carried 6
+parallel: removed=74 delivered=60 carried=14 gatheringTiles=39,31 39,30 39,29
+PASS: 3 villagers: node decrease 74 == delivered 60 + carried 14
 PASS: no villager ever stood on a blocked (node/building) tile
 PASS: gatherers spread across distinct adjacent tiles
-PASS: group move spreads across tiles near target (44,35 44,36 45,35)
+PASS: group move spreads across tiles near target (44,35 45,35 44,36)
 --- round 5: placement ignores units (eviction) ---
 PASS: ghost valid over 2 villagers (units ignored)
 PASS: still invalid over TC / bushes
@@ -157,7 +175,7 @@ PASS: nobody inside during construction; 3 builders worked from adjacent tiles
 PASS: nobody inside after completion
 PASS: gatherer gathering at (39,31)
 PASS: gatherer evicted from house at (38,31)
-PASS: gatherer resumes (gathering), bush 118->109
+PASS: gatherer resumes (gathering), bush 122->118
 PASS: mover's planned path crosses tile (48,36) before placement
 PASS: mover whose path crossed the foundation repathed immediately around it
 PASS: destination inside footprint reassigned to (49,39)
@@ -184,9 +202,9 @@ PASS: builder auto-farms (to_resource)
 PASS: completed farm is walkable (straight path across it)
 PASS: cannot build on top of a farm
 PASS: farmer stands on the farm
-PASS: depleted farm removed after 195s
+PASS: depleted farm removed after 547s
 PASS: all 175 farm food delivered (175)
-PASS: rates: forage 0.75 < farm 0.9 < butcher 1.2
+PASS: rates: forage 0.31 < farm 0.32 < butcher 0.33
 PASS: farm adjacent to a Mill (even a foundation) valid
 PASS: 7 neutral sheep, not counted in pop
 PASS: right-click neutral sheep -> villager goes to it
@@ -198,7 +216,7 @@ PASS: drag-box prefers villagers over sheep
 PASS: right-click own sheep -> butcher order
 PASS: sheep killed where it stood -> carcass at (26,26)
 PASS: carcass holds 100 food
-PASS: butcher yield 100 delivered (+100, carrying 7)
+PASS: butcher yield 100 delivered (+100, carrying 2)
 PASS: butcher() yields a 100-food carcass
 PASS: barracks costs 175 wood
 PASS: barracks built
@@ -215,10 +233,10 @@ PASS: pop 5/5: militia blocked too
 PASS: per-building queue cap 5
 PASS: missing-resource text "need 40 wood"
 PASS: 6 villagers
-mixed: removed=837 delivered=800 carried=37 created=275 tasks=gathering:tree gathering:gold_mine gathering:farm gathering:stone_mine gathering:berries gathering:berries
+mixed: removed=332 delivered=290 carried=42 created=275 tasks=gathering:tree gathering:gold_mine gathering:farm gathering:stone_mine gathering:berries gathering:carcass
 PASS: farm + carcass created during run
 PASS: all six task kinds active
-PASS: mixed 6-villager balance: node decrease 837 == delivered 800 + carried 37
+PASS: mixed 6-villager balance: node decrease 332 == delivered 290 + carried 42
 --- round 6: build mode (pure ui-state) ---
 PASS: successful placement exits build mode
 PASS: refused placement (over TC) exits build mode with message
@@ -228,4 +246,4 @@ PASS: small jitter (<=5px) still counts as a click and places
 PASS: cancel (Esc/right-click) exits build mode
 PASS: farm ghost far from Mill/TC invalid
 PASS: farm ghost adjacent to TC valid at (36,30)
-RESULT: ALL 200 PASSED
+RESULT: ALL 217 PASSED

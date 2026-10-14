@@ -31,6 +31,9 @@ const W = fn => page.evaluate(fn);
 const at = async (wx, wy, button = 'left') => { const p = await scr(wx, wy); await page.mouse.click(p.x, p.y, { button }); };
 const unit = id => S(`(() => { const w = window.game.world; const u = w.units.find(o => o.id === ${id}) || w.animals.find(o => o.id === ${id}); return u ? { x: u.x, y: u.y, state: u.state, lastDrop: u.lastDrop, type: u.type, owner: u.owner } : null; })()`);
 const clickUnit = async id => { const u = await unit(id); await at(u.x, u.y); };
+// click a villager that is not standing on a building's hit area (real click; falls back across villagers)
+const usedVil = new Set(); const clickFreeVil = async () => { const ids = await S(() => window.game.world.units.filter(u => u.type === 'villager' && u.owner === 'player').map(u => u.id));
+  for (const id of ids) { if (usedVil.has(id)) continue; await clickUnit(id); const s = await S(() => window.game.world.selection); if (s && s.kind === 'unit' && s.id === id) { usedVil.add(id); return id; } } return null; };
 const bld = type => S(`(() => { const b = window.game.world.buildings.filter(o => o.type === '${type}').at(-1); return b ? { id: b.id, x: b.x, y: b.y, size: b.size, complete: b.complete } : null; })()`);
 const until = async (pred, max = 300, step = 1) => { for (let t = 0; t < max; t += step) { if (await S(pred)) return true; await advance(step); } return !!(await S(pred)); };
 const drag = async (ax, ay, bx, by) => { const a = await scr(ax, ay), b = await scr(bx, by); await page.mouse.move(a.x, a.y); await page.mouse.down(); await page.mouse.move(b.x, b.y, { steps: 8 }); await page.mouse.up(); };
@@ -84,7 +87,7 @@ check(mill && lc, `placed mill (${mill?.tx},${mill?.ty}), lumber camp (${lc?.tx}
 check(await until(() => ['mill', 'lumber_camp'].every(t => window.game.world.buildings.some(b => b.type === t && b.complete)), 120), 'mill + lumber camp built');
 await clickUnit(v0); await at(41.5, 31.5, 'right');
 await clickUnit(v2); await at(24.5, 22.5, 'right');
-check(await until(() => window.game.world.stockpile.wood >= 125, 300, 2), 'wood for Mining Camp + House');
+check(await until(() => window.game.world.stockpile.wood >= 125, 900, 2), 'wood for Mining Camp + House');
 await clickUnit(v1); await btn('mining_camp').click(); const mc = await placeAt(41, 42);
 check(mc, `mining camp at (${mc?.tx},${mc?.ty})`);
 check(await until(() => window.game.world.buildings.some(b => b.type === 'mining_camp' && b.complete), 120), 'mining camp built');
@@ -143,8 +146,8 @@ check(/Requires Castle Age/.test(await btn('tech-gold_shaft_mining').innerText()
 await btn('tech-gold_mining').click();
 check(await until(() => 'gold_mining' in window.game.world.researched, 40, 1), 'Gold Mining researched');
 const r1 = await minerRate(30);
-const rates = await S(() => [window.game.sim.gatherRate(window.game.world, 'gold_mine'), window.game.sim.gatherRate(window.game.world, 'tree')]);
-check(Math.abs(rates[0] - 1.15) < 1e-9 && r1 / r0 > 1.05 && r1 / r0 < 1.3, `Gold Mining effect: rate 1.00 -> ${rates[0].toFixed(2)}; measured miner rate ${r0.toFixed(3)} -> ${r1.toFixed(3)} /s (x${(r1 / r0).toFixed(2)})`);
+const GR = await S(() => window.game.sim.GATHER_RATES.gold_mine); const rates = await S(() => [window.game.sim.gatherRate(window.game.world, 'gold_mine'), window.game.sim.gatherRate(window.game.world, 'tree')]);
+check(Math.abs(rates[0] - GR * 1.15) < 1e-9 && r1 / r0 > 1.05 && r1 / r0 < 1.3, `Gold Mining effect: rate ${GR} -> ${rates[0].toFixed(2)}; measured miner rate ${r0.toFixed(3)} -> ${r1.toFixed(3)} /s (x${(r1 / r0).toFixed(2)})`);
 await at(mc.tx + 1, mc.ty + 1); await shot('ages-06-tech-gold-mining-researched.png');
 await waitFor(() => window.game.world.stockpile.gold >= 60, 300);
 await at(34, 34); await btn('tech-loom').click();
@@ -175,11 +178,11 @@ await shot('ages-09-castle-banner.png');
 // 8. Castle buildings: Monastery + University -> Imperial
 reserveWood = 380;
 check(await waitFor(() => window.game.world.stockpile.wood >= 390, 2000), `wood for Monastery + University: ${JSON.stringify(await st())}`);
-await clickUnit(v2); await btn('monastery').click(); const mo = await placeAt(46, 25);
-await clickUnit(v1); await btn('university').click(); const un = await placeAt(51, 33);
+await clickFreeVil(); await btn('monastery').click(); const mo = await placeAt(46, 25);
+await clickFreeVil(); await btn('university').click(); const un = await placeAt(51, 33);
 check(mo && un, `Monastery at (${mo?.tx},${mo?.ty}), University at (${un?.tx},${un?.ty})`);
 reserveWood = 0;
-check(await waitFor(() => ['monastery', 'university'].every(t => window.game.world.buildings.some(b => b.type === t && b.complete)), 600), 'Monastery + University built');
+{ const okB = await waitFor(() => ['monastery', 'university'].every(t => window.game.world.buildings.some(b => b.type === t && b.complete)), 600); check(okB, 'Monastery + University built ' + JSON.stringify(await S(() => window.game.world.buildings.filter(b => ['monastery', 'university'].includes(b.type)).map(b => [b.type, b.complete, Math.round(b.progress)])))); }
 await clickUnit(v2); await at(24.5, 22.5, 'right');
 await at(34, 34); ab = (await ageBtn().innerText()).replace(/\n/g, ' '); log(`  imperial button: "${ab}"`);
 check(await waitFor(() => window.game.world.stockpile.food >= 1000 && window.game.world.stockpile.gold >= 800, 4000), `1000 food + 800 gold: ${JSON.stringify(await st())}`);

@@ -1,20 +1,20 @@
-determinism test 2026-10-14T12:33:26.169Z
+determinism test 2026-10-14T12:44:14.422Z
 --- two sims, same command stream, 6000 ticks (5 min game time) ---
-  tick 1000: hash f7411343 units 8 buildings 9 cmds so far 73
-  tick 2000: hash 500591ff units 9 buildings 15 cmds so far 120
-  tick 3000: hash ea9f3b06 units 12 buildings 18 cmds so far 170
-  tick 4000: hash 3575e570 units 17 buildings 22 cmds so far 219
-  tick 5000: hash ba39ae6c units 18 buildings 27 cmds so far 256
-  tick 6000: hash 82bcfd77 units 20 buildings 32 cmds so far 306
-  3165 ms
+  tick 1000: hash 2185ea31 units 8 buildings 9 cmds so far 73
+  tick 2000: hash 0e66d63a units 9 buildings 15 cmds so far 120
+  tick 3000: hash 101d923a units 12 buildings 18 cmds so far 170
+  tick 4000: hash 8bb945d4 units 17 buildings 22 cmds so far 219
+  tick 5000: hash 69507bb7 units 18 buildings 27 cmds so far 256
+  tick 6000: hash d300630c units 20 buildings 32 cmds so far 306
+  3359 ms
 PASS: hashes identical on all 6000 ticks (6000/6000)
 PASS: command stream exercised (306 commands)
 PASS: all command types used: order,build,train,rally,ageup,stop,cancel,research
 PASS: game actually progressed (units 20, buildings 32, deaths 2)
 PASS: economy ran: 13 buildings completed during the run, 2 techs, ages dark/dark, 20 units alive
-PASS: replay of serialized stream reproduces final hash 82bcfd77
+PASS: replay of serialized stream reproduces final hash d300630c
 --- single player world (enemy camp + raids) is deterministic too ---
-PASS: skirmish + raids: identical hashes for 4000 ticks (deaths 9, raids 1)
+PASS: skirmish + raids: identical hashes for 4000 ticks (deaths 8, raids 1)
 --- different seeds differ ---
 PASS: seed 1 1cc37fb9 != seed 2 d3398b39
 PASS: a single extra move command changes the hash

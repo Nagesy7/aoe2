@@ -67,7 +67,7 @@ function rightClick(x, y, mods = {}) {
 addEventListener('mouseup', e => {
   if (e.button === 1) drag = null;
   if (e.button === 0 && qb.skipUp) { qb.skipUp = false; return; }
-  if (e.button === 0 && world) { const r = pointerUp(ui, world, toWorld, issue); if (r && r.kind === 'select') dblSelect(e.clientX, e.clientY);
+  if (e.button === 0 && world) { const r = pointerUp(ui, world, toWorld, issue); if (r && r.kind === 'select') dblSelect(e.clientX, e.clientY, e.detail >= 2);
     const s = world.selection; // fog: cannot select what you cannot see
     if (r && r.kind === 'select' && s && (s.kind === 'unit' || s.kind === 'building')) { const o = s.kind === 'unit' ? SIM.mobile(world, s.id) : world.buildings.find(q => q.id === s.id); if (o && !seen(o)) { world.selection = null; world.selected = null; } } }
 });
@@ -119,9 +119,9 @@ const qb = { amove: false, skipUp: false, groups: {}, idleIdx: 0 }; let lastSel 
 const qbEl = $('quickbar');
 const onScreen = u => { const q = worldToScreen(u.x, u.y, cam); return q.x >= 0 && q.y >= 0 && q.x <= canvas.width && q.y <= canvas.height; };
 const mineU = () => world.units.filter(u => u.owner === viewer());
-function dblSelect(x, y) { const s = world.selection, now = performance.now();
+function dblSelect(x, y, mouseDbl = null) { const s = world.selection, now = performance.now();
   if (!s || s.kind !== 'unit') { lastSel = { t: 0 }; return; } const u = SIM.mobile(world, s.id); if (!u || u.owner !== viewer()) return;
-  if (now - lastSel.t < 450 && lastSel.type === u.type) { SIM.selectUnits(world, mineU().filter(o => o.type === u.type && onScreen(o))); lastSel = { t: 0 }; }
+  if (mouseDbl === true || (mouseDbl === null && now - lastSel.t < 450 && lastSel.id === u.id)) { SIM.selectUnits(world, mineU().filter(o => o.type === u.type && onScreen(o))); lastSel = { t: 0 }; }
   else lastSel = { t: now, type: u.type, id: u.id }; }
 const centerOn = u => { cam.x = u.x * TILE - canvas.width / 2; cam.y = u.y * TILE - canvas.height / 2; clampCamera(cam, canvas.width, canvas.height, world); };
 function idleVillager() { const idle = mineU().filter(u => u.type === 'villager' && u.state === 'idle'); if (!idle.length) return;
