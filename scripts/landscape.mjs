@@ -35,9 +35,11 @@ for (const [name, tag] of [['iPhone 13 landscape', 'iphone'], ['Pixel 7 landscap
   check(sel && sel.kind === 'unit' && sel.id === v.id, `${name}: tap selects villager #${v.id} (${JSON.stringify(sel)})`);
   // HUD / info / build menu / touchbar fit without overlapping
   const boxes = { hud: await bb('#hud'), info: await bb('#info'), commands: await bb('#commands'), touchbar: await bb('#touchbar'), quickbar: await bb('#quickbar') };
-  check(boxes.info && boxes.commands, `${name}: info panel and build menu shown`);
+  check(boxes.info && !boxes.commands && (await bb('#cmdtab')), `${name}: build menu collapsed to a tab, map uncovered`);
+  await tap(await mid('#cmdtab')); boxes.commands = await bb('#commands'); boxes.cmdtab = await bb('#cmdtab'); check(!!boxes.commands, `${name}: tab expands build menu`);
   const ks = Object.keys(boxes); for (let i = 0; i < ks.length; i++) for (let j = i + 1; j < ks.length; j++) check(!over(boxes[ks[i]], boxes[ks[j]]), `${name}: ${ks[i]} and ${ks[j]} do not overlap`);
   for (const k of ks) { const b = boxes[k]; check(b.x >= 0 && b.y >= 0 && b.x + b.width <= vp.width + 1 && b.y + b.height <= vp.height + 1, `${name}: ${k} inside viewport`); }
+  await tap(await mid('#cmdtab')); check(!(await bb('#commands')), `${name}: tab collapses build menu`);
   // long-press a resource to gather
   const res = await S(() => window.game.world.resources.map(n => ({ id: n.id, x: n.x, y: n.y, res: n.res })));
   const near = res.filter(n => n.res === 'food' || n.res === 'gold' || n.res === 'wood').sort((a, b) => Math.hypot(a.x - v.x, a.y - v.y) - Math.hypot(b.x - v.x, b.y - v.y))[0];
@@ -56,7 +58,7 @@ for (const [name, tag] of [['iPhone 13 landscape', 'iphone'], ['Pixel 7 landscap
   const lo = await S(() => window.game.world.lastOrder); check(lo && (lo.kind === 'move' || lo.kind === 'attack'), `${name}: Command tap issues order (${lo && lo.kind}) and keeps selection ${JSON.stringify(sel2)}`);
   await tap(await mid('#touchbar [data-t=command]'));
   // open build menu and place a house via touch
-  await tap(await mid('#commands button[data-action=house]')); check((await S(() => window.game.ui.placing)) === 'house', `${name}: build menu tap -> placing house`);
+  await tap(await mid('#cmdtab')); await tap(await mid('#commands button[data-action=house]')); check(!(await bb('#commands')), `${name}: menu auto-collapses while placing`); check((await S(() => window.game.ui.placing)) === 'house', `${name}: build menu tap -> placing house`);
   await p.screenshot({ path: join(root, 'proof', `landscape-${tag}-build.png`) });
   await tap(await mid('#touchbar [data-t=cancel]')); check(!(await S(() => window.game.ui.placing)), `${name}: Clear cancels placement`);
   // drag on empty ground pans

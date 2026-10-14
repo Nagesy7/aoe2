@@ -141,13 +141,15 @@ qbEl.addEventListener('pointerdown', e => { const b = e.target.closest('[data-g]
 qbEl.addEventListener('pointerup', e => { if (!gPress) return; clearTimeout(gPress.t); if (!gPress.long) recallGroup(gPress.n); gPress = null; });
 qbEl.addEventListener('pointercancel', () => { if (gPress) clearTimeout(gPress.t); gPress = null; });
 let qbDown = null; qbEl.addEventListener('pointerdown', e => { qbDown = e.target.closest('[data-q]'); }, true);
-qbEl.addEventListener('click', e => { const b = e.target.closest('[data-q]'); if (!b || !world || b !== qbDown) return; qbDown = null; // ignore ghost clicks not started on this button const q = b.dataset.q;
+qbEl.addEventListener('click', e => { const b = e.target.closest('[data-q]'); if (!b || !world || b !== qbDown) return; qbDown = null; /* ignore ghost clicks not started on this button */ const q = b.dataset.q;
   if (q === 'idle') idleVillager(); else if (q === 'army') selectArmy(); else if (q === 'amove') { qb.amove = !qb.amove; } syncQb(); });
 setInterval(syncQb, 250);
 // ---- HUD / panels ----
 const bannerEl = $('banner'), hud = $('hud'), infoEl = $('info'), cmdEl = $('commands'), msgEl = $('msg'), netEl = $('net'), stallEl = $('stall'), desyncEl = $('desync');
 let lastCmd = '';
-cmdEl.addEventListener('click', e => { const btn = e.target.closest('button'); if (!btn || btn.disabled) return; const a = btn.dataset.action, b = selectedBuilding(world);
+const cmdTab = $('cmdtab'); cmdTab.addEventListener('click', () => { const o = document.body.classList.toggle('cmd-open'); cmdTab.setAttribute('aria-expanded', o); });
+cmdEl.addEventListener('click', e => { const btn = e.target.closest('button'); if (!btn || btn.disabled) return; if (BUILDING_DEFS[btn.dataset.action]) document.body.classList.remove('cmd-open'); // collapse so the placement ghost is visible
+ const a = btn.dataset.action, b = selectedBuilding(world);
   if (a === 'train') issue('train', { id: b.id, unit: 'villager' });
   else if (a === 'age-up') issue('ageup', { id: b.id });
   else if (a === 'cancel') issue('cancel', { id: b.id });
@@ -192,6 +194,7 @@ function updateHud() {
     const miss = missingFor(world, d.cost);
     return button(t, t === 'house' ? 'Build House' : d.name, miss || costText(d.cost), { disabled: !!miss, title: `${d.name} (${d.size}x${d.size}): ${costText(d.cost)}${t === 'farm' ? ', must touch a Mill or Town Center' : ''}` }); }).join('');
   if (cmd !== lastCmd) { cmdEl.innerHTML = cmd; lastCmd = cmd; } cmdEl.style.display = cmd ? 'flex' : 'none';
+  document.body.classList.toggle('has-cmd', !!cmd); if (!cmd) document.body.classList.remove('cmd-open'); cmdTab.textContent = document.body.classList.contains('cmd-open') ? '✕ Close menu' : (b ? '🏛 Train ▴' : '🔨 Build ▴');
   if (net) {
     const ping = net.session.rtt == null ? '…' : Math.round(net.session.rtt);
     netEl.style.display = 'block';

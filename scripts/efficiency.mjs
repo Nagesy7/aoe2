@@ -38,15 +38,14 @@ const W = (p, ms) => p.waitForTimeout(ms);
 { // touch: iPhone 13 landscape
   const ctx = await browser.newContext({ ...devices['iPhone 13 landscape'] }); const p = await ctx.newPage(); const cdp = await ctx.newCDPSession(p);
   p.on('pageerror', e => { console.log(e); fails++; });
-  p.on('console', m => m.text().startsWith('DBL') && console.log(m.text()));
-  const touch = (type, pts) => cdp.send('Input.dispatchTouchEvent', { type, touchPoints: pts.map((q, i) => ({ x: q.x, y: q.y, id: i })) });
+    const touch = (type, pts) => cdp.send('Input.dispatchTouchEvent', { type, touchPoints: pts.map((q, i) => ({ x: q.x, y: q.y, id: i })) });
   const tap = async (q, ms = 50) => { await touch('touchStart', [q]); await W(p, ms); await touch('touchEnd', []); await W(p, 60); };
   const mid = async s => { const b = await p.locator(s).boundingBox(); return { x: b.x + b.width / 2, y: b.y + b.height / 2 }; };
   await p.goto(BASE + '?scenario=skirmish'); await p.waitForFunction(() => window.game.world); await W(p, 800);
   const vp = p.viewportSize();
   const us = await p.evaluate(() => window.game.world.units.filter(u => u.owner === 'player').map(u => ({ id: u.id, type: u.type, q: window.game.toScreen(u.x, u.y) })));
   const vis = us.filter(u => u.q.x > 10 && u.q.x < vp.width - 120 && u.q.y > 80 && u.q.y < vp.height - 20);
-  const ty = Object.entries(vis.reduce((m, u) => ((m[u.type] ||= []).push(u), m), {})).sort((a, b) => b[1].length - a[1].length)[0];
+  const ty = Object.entries(vis.filter(u => u.type !== 'villager').reduce((m, u) => ((m[u.type] ||= []).push(u), m), {})).sort((a, b) => b[1].length - a[1].length)[0];
   check(!!ty && ty[1].length >= 2, `touch: ${ty && ty[1].length} ${ty && ty[0]} visible`);
   const dq = ty[1][0].q; await touch('touchStart', [dq]); await W(p, 40); await touch('touchEnd', []); await W(p, 120); await touch('touchStart', [dq]); await W(p, 40); await touch('touchEnd', []); await W(p, 60); let s = await sel(p);
   check(s.length === ty[1].length, `double-tap ${ty[0]} selects all of that type on screen (${s.length}/${ty[1].length})`);
