@@ -5,12 +5,13 @@
   "private": true,
   "scripts": {
     "start": "npx serve .",
-    "test": "node tests/gather.test.mjs",
+    "test": "node tests/gather.test.mjs && node tests/ages.test.mjs",
     "screenshot": "node scripts/screenshot.mjs",
     "round4": "node scripts/round4.mjs",
     "round5": "node scripts/round5.mjs",
     "round6": "node scripts/round6.mjs",
-    "gather-verify": "node scripts/gather-verify.mjs"
+    "gather-verify": "node scripts/gather-verify.mjs",
+    "ages": "node scripts/ages.mjs"
   },
   "devDependencies": {
     "playwright": "^1.64.0"

@@ -1,4 +1,4 @@
-gather verification 2026-10-14T08:20:20.315Z
+gather verification 2026-10-14T09:26:09.470Z
 PASS: forager reached the bush and is gathering
 PASS: FOOD BUG CHECK: villager panel while foraging shows "Carrying: 4 food" (non-zero food)
   saved proof/gather-verify-01-forager-carrying-food.png
@@ -14,33 +14,33 @@ PASS: [to TC] balance: node decrease 30 == delivered 30 + change in carried 0
 PASS: bush 125->96, gold mine 800->770, stone mine 350->320
 PASS: all three dropped at the Town Center
   saved proof/gather-verify-02-food-gold-stone-to-tc.png
-  woodcutter panel: Villager | Task: Walking to resource | Carrying: 0/10
+  woodcutter panel: Villager | Task: Walking to resource | Carrying: 0/10 | HP: 25/25
 PASS: [to TC] wood stockpile rose 200 -> 220 (+20)
-PASS: [to TC] wood nodes decreased by 20
-PASS: [to TC] balance: node decrease 20 == delivered 20 + change in carried 0
-PASS: tree at (17,34) 100 -> 80
+PASS: [to TC] wood nodes decreased by 21
+PASS: [to TC] balance: node decrease 21 == delivered 20 + change in carried 1
+PASS: tree at (50,30) 100 -> 79
   saved proof/gather-verify-03-wood-to-tc.png
 PASS: mill at (40,28), mining camp at (40,41)
 PASS: mill + mining camp built
 PASS: forager drops at the Mill, gold miner at the Mining Camp
 PASS: [mill] food stockpile rose 229 -> 249 (+20)
-PASS: [mill] food nodes decreased by 29
-PASS: [mill] balance: node decrease 29 == delivered 20 + change in carried 9
+PASS: [mill] food nodes decreased by 30
+PASS: [mill] balance: node decrease 30 == delivered 20 + change in carried 10
 PASS: [mining camp] gold stockpile rose 160 -> 210 (+50)
-PASS: [mining camp] gold nodes decreased by 45
-PASS: [mining camp] balance: node decrease 45 == delivered 50 + change in carried -5
+PASS: [mining camp] gold nodes decreased by 50
+PASS: [mining camp] balance: node decrease 50 == delivered 50 + change in carried 0
 PASS: [stone (nearest of TC/mining camp)] stone stockpile rose 190 -> 220 (+30)
-PASS: [stone (nearest of TC/mining camp)] stone nodes decreased by 29
-PASS: [stone (nearest of TC/mining camp)] balance: node decrease 29 == delivered 30 + change in carried -1
+PASS: [stone (nearest of TC/mining camp)] stone nodes decreased by 34
+PASS: [stone (nearest of TC/mining camp)] balance: node decrease 34 == delivered 30 + change in carried 4
   stone miner last drop: town_center
-  forager panel at mill: Villager | Task: Returning to Mill | Carrying: 10 food/10
+  forager panel at mill: Villager | Task: Returning to Mill | Carrying: 10 food/10 | HP: 25/25
   saved proof/gather-verify-04-mill-and-mining-camp.png
-PASS: drop-off label names the Mill: Villager | Task: Returning to Mill | Carrying: 10 food/10
-PASS: woodcut to TC until lumber camp affordable: Food: 365 | Wood: 110 | Gold: 380 | Stone: 227 | Pop 3/5
+PASS: drop-off label names the Mill: Villager | Task: Returning to Mill | Carrying: 10 food/10 | HP: 25/25
+PASS: woodcut to TC until lumber camp affordable: Food: 365 | Wood: 112 | Gold: 380 | Stone: 226 | Pop 3/5 | Dark Age
 PASS: lumber camp at (24,24) under the forest
 PASS: lumber camp built
 PASS: woodcutter drops at the Lumber Camp
-PASS: [lumber camp] wood stockpile rose 10 -> 40 (+30)
+PASS: [lumber camp] wood stockpile rose 12 -> 42 (+30)
 PASS: [lumber camp] wood nodes decreased by 30
 PASS: [lumber camp] balance: node decrease 30 == delivered 30 + change in carried 0
 PASS: forest tree (24,22) 10 -> 0
@@ -63,5 +63,5 @@ PASS: [carcass (+ farm still running)] food nodes decreased by 95
 PASS: [carcass (+ farm still running)] balance: node decrease 95 == delivered 90 + change in carried 5
 PASS: carcass 100 -> 51
   saved proof/gather-verify-08-final-stockpile.png
-  final HUD: Food: 575 | Wood: 120 | Gold: 543 | Stone: 227 | Pop 3/5
+  final HUD: Food: 575 | Wood: 122 | Gold: 548 | Stone: 226 | Pop 3/5 | Dark Age
 RESULT: ALL PASSED

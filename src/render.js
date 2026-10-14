@@ -1,4 +1,7 @@
-import { TILE, camPixel, selectedUnits } from './sim.js';
+import { TILE, camPixel, selectedUnits, itemTime } from './sim.js';
+const GENERIC = { archery_range: ['#7a5a3a', '#3a6a2a'], stable: ['#7a5a3a', '#6a4a20'], blacksmith: ['#5a4a40', '#2a2a2a'], market: ['#9a7a4a', '#c0a020'],
+  watch_tower: ['#8a8a80', '#5a3a2a'], castle: ['#8a8a80', '#4a4a4a'], monastery: ['#d0c8b0', '#8a2a2a'], university: ['#b0a080', '#3a4a8a'], wonder: ['#e0d0a0', '#d4a640'] };
+const UNIT_STYLE = { spearman: ['#7a3a1a', 'S'], archer: ['#3a7a2a', 'A'], crossbowman: ['#2a5a2a', 'C'], scout_cavalry: ['#a07040', 'Sc'], knight: ['#606080', 'K'], monk: ['#d0c060', 'Mo'], trebuchet: ['#5a4020', 'T'] };
 const GRASS = ['#4a7a2c', '#4f8030', '#457228', '#538634'];
 function bar(ctx, x, y, w, frac, col = '#4fd34f') { ctx.fillStyle = '#000a'; ctx.fillRect(x, y, w, 6); ctx.fillStyle = col; ctx.fillRect(x + 1, y + 1, (w - 2) * Math.max(0, Math.min(1, frac)), 4); }
 export function render(ctx, world, cam, ui = {}) {
@@ -32,7 +35,14 @@ export function render(ctx, world, cam, ui = {}) {
       ctx.fillStyle = '#6a4a3a'; ctx.fillRect(px + 2, py + 18, s - 4, s - 20); ctx.fillStyle = '#3a2a2a'; ctx.fillRect(px - 2, py + 10, s + 4, 12);
       ctx.fillStyle = '#c02020'; ctx.fillRect(px + s / 2 - 1, py - 8, 2, 20); ctx.fillRect(px + s / 2 + 1, py - 8, 12, 8);
       ctx.fillStyle = '#fff'; ctx.font = '12px sans-serif'; ctx.textAlign = 'center'; ctx.fillText('Barracks', px + s / 2, py + s + 14);
-      if (b.queue.length) bar(ctx, px, py - 18, s, b.trainProgress / 21, b.blocked ? '#d33' : '#4fd34f');
+      if (b.queue.length) bar(ctx, px, py - 18, s, b.trainProgress / itemTime(b.queue[0]), b.blocked ? '#d33' : '#4fd34f');
+    } else if (GENERIC[b.type]) {
+      const [wall, roof] = GENERIC[b.type];
+      ctx.fillStyle = wall; ctx.fillRect(px + 2, py + Math.min(16, s * 0.4), s - 4, s - Math.min(16, s * 0.4) - 2);
+      ctx.fillStyle = roof; ctx.beginPath(); ctx.moveTo(px - 2, py + Math.min(18, s * 0.45)); ctx.lineTo(px + s / 2, py); ctx.lineTo(px + s + 2, py + Math.min(18, s * 0.45)); ctx.fill();
+      if (b.type === 'castle' || b.type === 'watch_tower') { ctx.fillStyle = '#5a5a5a'; for (let i = 0; i < b.size * 2; i++) if (i % 2 === 0) ctx.fillRect(px + i * TILE / 2, py + 10, TILE / 2, 6); }
+      ctx.fillStyle = '#fff'; ctx.font = '11px sans-serif'; ctx.textAlign = 'center'; ctx.fillText(b.name, px + s / 2, py + s + 13);
+      if (b.queue.length) bar(ctx, px, py - 10, s, b.trainProgress / itemTime(b.queue[0]), b.blocked ? '#d33' : '#4fd34f');
     } else if (b.type === 'house') {
       ctx.fillStyle = '#9b7b53'; ctx.fillRect(px + 4, py + 16, s - 8, s - 18);
       ctx.fillStyle = '#7a2a1a'; ctx.beginPath(); ctx.moveTo(px, py + 18); ctx.lineTo(px + s / 2, py + 2); ctx.lineTo(px + s, py + 18); ctx.fill();
@@ -42,7 +52,7 @@ export function render(ctx, world, cam, ui = {}) {
       ctx.fillStyle = '#a33'; ctx.beginPath(); ctx.moveTo(px - 6, py + s * 0.45); ctx.lineTo(px + s / 2, py - 10); ctx.lineTo(px + s + 6, py + s * 0.45); ctx.fill();
       ctx.fillStyle = '#3a2a18'; ctx.fillRect(px + s / 2 - 10, py + s - 28, 20, 28);
       ctx.fillStyle = '#fff'; ctx.font = '12px sans-serif'; ctx.textAlign = 'center'; ctx.fillText(b.name, px + s / 2, py + s + 14);
-      if (b.queue.length) bar(ctx, px, py - 18, s, b.trainProgress / 25, b.blocked ? '#d33' : '#4fd34f');
+      if (b.queue.length) bar(ctx, px, py - 18, s, b.trainProgress / itemTime(b.queue[0]), b.blocked ? '#d33' : '#4fd34f');
     }
     if (sel && sel.kind === 'building' && sel.id === b.id) { ctx.strokeStyle = '#fff'; ctx.lineWidth = 2; ctx.strokeRect(px - 3, py - 3, s + 6, s + 6); ctx.lineWidth = 1;
       if (b.rally) { const rx = b.rally.x * TILE, ry = b.rally.y * TILE; ctx.strokeStyle = '#fff8'; ctx.setLineDash([5, 5]); ctx.beginPath(); ctx.moveTo(px + s / 2, py + s / 2); ctx.lineTo(rx, ry); ctx.stroke(); ctx.setLineDash([]);
@@ -68,6 +78,9 @@ export function render(ctx, world, cam, ui = {}) {
     if (selUnits.has(u.id)) {
       if (u.path.length) { ctx.strokeStyle = '#ffffffaa'; ctx.setLineDash([3, 4]); ctx.beginPath(); ctx.moveTo(px, py); for (const q of u.path) ctx.lineTo(q.x * TILE, q.y * TILE); ctx.stroke(); ctx.setLineDash([]); }
       ctx.strokeStyle = '#fff'; ctx.lineWidth = 2; ctx.beginPath(); ctx.ellipse(px, py + 6, 11, 6, 0, 0, 7); ctx.stroke(); ctx.lineWidth = 1; }
+    if (UNIT_STYLE[u.type]) { const [col, letter] = UNIT_STYLE[u.type]; const big = u.type === 'knight' || u.type === 'scout_cavalry' || u.type === 'trebuchet';
+      ctx.fillStyle = col; ctx.fillRect(px - (big ? 9 : 6), py - 7, big ? 18 : 12, 14); ctx.fillStyle = '#eee'; ctx.beginPath(); ctx.arc(px, py - 11, 4.5, 0, 7); ctx.fill();
+      ctx.fillStyle = '#fff'; ctx.font = 'bold 9px sans-serif'; ctx.textAlign = 'center'; ctx.fillText(letter, px, py + 3); continue; }
     if (u.type === 'militia') { ctx.fillStyle = '#8a1a1a'; ctx.fillRect(px - 6, py - 7, 12, 14); ctx.fillStyle = '#bbb'; ctx.beginPath(); ctx.arc(px, py - 11, 5, 0, 7); ctx.fill();
       ctx.strokeStyle = '#ddd'; ctx.lineWidth = 2; ctx.beginPath(); ctx.moveTo(px + 8, py + 6); ctx.lineTo(px + 8, py - 16); ctx.stroke(); ctx.lineWidth = 1; continue; }
     ctx.fillStyle = '#2a50c8'; ctx.fillRect(px - 5, py - 6, 10, 12);

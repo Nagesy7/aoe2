@@ -78,7 +78,7 @@ check((await S(`[${ids}].every(id => window.game.world.units.find(u => u.id === 
 await shot('gather-verify-02-food-gold-stone-to-tc.png');
 
 // wood to TC: send the forager to the nearest visible tree
-const tree = await S(() => { const g = window.game; return g.world.resources.filter(n => n.kind === 'tree').map(n => ({ ...n, p: g.toScreen(n.x, n.y) })).filter(n => n.p.x > 40 && n.p.x < 1240 && n.p.y > 60 && n.p.y < 600)
+const tree = await S(() => { const g = window.game; return g.world.resources.filter(n => n.kind === 'tree').map(n => ({ ...n, p: g.toScreen(n.x, n.y) })).filter(n => n.p.x > 40 && n.p.x < 1240 && n.p.y > 60 && n.p.y < 600 && document.elementFromPoint(n.p.x, n.p.y)?.id === 'game') // not under a UI panel
   .sort((a, b) => Math.hypot(a.x - 34, a.y - 34) - Math.hypot(b.x - 34, b.y - 34))[0]; });
 let w0 = await snap('wood'); await clickUnit(ids[0]); await at(tree.x, tree.y, 'right');
 await advance(5); await clickUnit(ids[0]); ct = await carryText(); log(`  woodcutter panel: ${await text('#info')}`);

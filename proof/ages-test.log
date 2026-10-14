@@ -1,0 +1,101 @@
+ages test 2026-10-14T09:25:29.018Z
+--- age costs, timing, prerequisites ---
+PASS: start in Dark Age
+PASS: Feudal: 500 food, 130s
+PASS: Castle: 800 food + 200 gold, 160s
+PASS: Imperial: 1000 food + 800 gold, 190s
+PASS: Feudal blocked with 0 buildings: "needs 2 of: House, Mill, Lumber Camp, Mining Camp, Barracks (have 0)"
+PASS: two Houses count as ONE distinct building type
+PASS: unfinished Mill foundation does not count
+PASS: House + Mill allow Feudal
+PASS: Feudal research started, 500 food spent
+PASS: age research cannot be double-queued (no extra cost)
+PASS: still Dark at 129.5s
+PASS: Feudal at 130s with banner "You have advanced to the Feudal Age!"
+PASS: Castle blocked: "needs 2 of: Archery Range, Stable, Blacksmith, Market (have 0)"
+PASS: Blacksmith + Market allow Castle
+PASS: Castle costs 800 food + 200 gold
+PASS: still Feudal at 159.5s
+PASS: Castle Age at 160s
+PASS: Imperial blocked: "needs 2 of: Monastery, University, Castle (or a Castle) (have 0)"
+PASS: one Monastery alone is not enough
+PASS: a Castle alone allows Imperial
+PASS: Monastery + University allow Imperial
+PASS: Imperial costs 1000 food + 800 gold
+PASS: still Castle at 189.5s
+PASS: Imperial Age at 190s
+PASS: no age after Imperial
+PASS: villager queued behind age research is not trained during research
+PASS: villager trains after age research completes
+PASS: TC panel line format
+--- locked content refused before its age, allowed after ---
+PASS: Archery Range refused in Dark: "Archery Range: Requires Feudal Age"
+PASS: Stable refused in Dark: "Stable: Requires Feudal Age"
+PASS: Blacksmith refused in Dark: "Blacksmith: Requires Feudal Age"
+PASS: Market refused in Dark: "Market: Requires Feudal Age"
+PASS: Watch Tower refused in Dark: "Watch Tower: Requires Feudal Age"
+PASS: Castle refused before Castle
+PASS: Monastery refused before Castle
+PASS: University refused before Castle
+PASS: Wonder refused before Imperial
+PASS: Spearman refused in Dark
+PASS: Double-Bit Axe refused in Dark
+PASS: Dark Age TC techs Loom + Wheelbarrow allowed
+PASS: tech cannot be double-queued
+PASS: Hand Cart refused in Dark
+PASS: reached Feudal
+PASS: researched tech cannot be repeated
+PASS: Archery Range allowed in Feudal
+PASS: Stable allowed in Feudal
+PASS: Blacksmith allowed in Feudal
+PASS: Market allowed in Feudal
+PASS: Watch Tower allowed in Feudal
+PASS: Watch Tower costs 25 wood + 125 stone
+PASS: Archer: 25 wood 45 gold
+PASS: Scout Cavalry: 80 food
+PASS: Spearman: 35 food 25 wood
+PASS: Knight refused in Feudal
+PASS: Crossbowman upgrade refused in Feudal
+PASS: Feudal units trained: spearman, scout_cavalry, archer
+PASS: Scout Cavalry moves
+PASS: unit stats shown: Task: Idle | HP 45/45  Attack 3  Armor 0/2  Speed 3.6 | No combat in this scaffold
+PASS: Forging: +1 attack displayed for cavalry
+PASS: reached Castle
+PASS: Crossbowman upgrade allowed in Castle
+PASS: existing Archers upgraded to Crossbowmen
+PASS: Archer button now trains Crossbowmen
+PASS: Castle buildings + Monk + Knight allowed
+PASS: Trebuchet refused before Imperial
+PASS: Hand Cart allowed in Castle (Wheelbarrow done)
+PASS: reached Imperial (Hand Cart finished first: one item at a time)
+PASS: Wonder allowed in Imperial
+PASS: Trebuchet allowed in Imperial
+--- tech prerequisites ---
+PASS: Bow Saw requires Double-Bit Axe
+PASS: cannot queue Bow Saw while Double-Bit Axe still researching
+PASS: Bow Saw allowed once Double-Bit Axe completes
+PASS: tech only at its building
+--- eco tech numeric effects (live) ---
+PASS: Double-Bit Axe: wood rate 1.0 -> 1.2 (+20%)
+PASS: measured wood in 5s at a tree: base 5, DBA 6, +Bow Saw 7, +Two-Man Saw 7
+PASS: wood bonuses stack additively: +20 +20 +10 = 1.5x
+PASS: Gold Mining: gold rate +15%
+PASS: Gold Shaft Mining: +15% more (1.3x)
+PASS: gold techs do not affect stone
+PASS: base carry 10
+PASS: Wheelbarrow researched while gathering: carry 10 -> 13
+PASS: Wheelbarrow: villager speed 2.5 -> 2.75
+PASS: villager now carries up to 13
+PASS: Hand Cart: carry 15 (+25% of base again)
+PASS: farm food 175
+PASS: Horse Collar: farms 250 food
+PASS: new farm holds 250 food
+PASS: Horse Collar + Heavy Plow + Crop Rotation: 550
+PASS: villager HP 25
+PASS: Loom: existing villagers 40 HP
+PASS: Loom: new villagers 40 HP
+PASS: HP shown in villager panel
+--- resource balance with techs ---
+PASS: farm built with Horse Collar food (250)
+PASS: balance with techs: node decrease 635 == delivered 605 + carried 30
+RESULT: ALL 94 PASSED

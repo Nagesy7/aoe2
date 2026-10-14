@@ -4,25 +4,18 @@ export const RES_TYPES = ['food', 'wood', 'gold', 'stone'];
 const NODE_KIND = { food: 'berries', wood: 'tree', gold: 'gold_mine', stone: 'stone_mine' };
 const NODE_AMOUNT = { food: 125, wood: 100, gold: 800, stone: 350 };
 export const START_STOCKPILE = { food: 200, wood: 200, gold: 100, stone: 100 };
-export const COSTS = { villager: { food: 50 }, militia: { food: 60, gold: 20 }, house: { wood: 25 }, lumber_camp: { wood: 100 },
-  mining_camp: { wood: 100 }, mill: { wood: 100 }, farm: { wood: 60 }, barracks: { wood: 175 } };
-export const UNIT_DEFS = { villager: { name: 'Villager', time: 25, speed: 2.5 }, militia: { name: 'Militia', time: 21, speed: 2.2 } };
-// Gather rates (resource units / second / villager). Scaffold speeds, ~2.5x AoE2, but keeping AoE2's ordering:
-// foraging berries is slower than farming, which is slower than butchering a carcass.
+import { AGES, AGE_NAMES, AGE_UPS, BUILDINGS, UNITS, TECHS, BUILD_MENU as TT_MENU, ageIndex, techsAt } from './techtree.js';
+export { AGES, AGE_NAMES, AGE_UPS, TECHS, techsAt };
+export const UNIT_DEFS = UNITS;
+export const COSTS = Object.fromEntries([...Object.entries(UNITS), ...Object.entries(BUILDINGS)].map(([k, d]) => [k, d.cost]));
+// Base gather rates (resource units / second / villager). Scaffold speeds, ~2.5x AoE2, but keeping AoE2's ordering:
+// foraging berries is slower than farming, which is slower than butchering a carcass. Techs multiply these.
 export const GATHER_RATES = { berries: 0.75, farm: 0.9, carcass: 1.2, tree: 1.0, gold_mine: 1.0, stone_mine: 1.0 };
 export const FARM_FOOD = 175, CARCASS_FOOD = 100;
 export const TRAIN_TIME = 25, HOUSE_BUILD_TIME = 25, POP_MAX = 200, QUEUE_MAX = 5;
 export const CARRY_MAX = 10, GATHER_RATE = 1.0, REACH = 0.9;
-export const BUILDING_DEFS = {
-  town_center: { name: 'Town Center', size: 4, maxHp: 2400, popCap: 5, accepts: ['food', 'wood', 'gold', 'stone'], trains: ['villager'] },
-  house: { name: 'House', size: 2, maxHp: 550, popCap: 5, buildTime: HOUSE_BUILD_TIME },
-  lumber_camp: { name: 'Lumber Camp', size: 2, maxHp: 600, buildTime: 35, accepts: ['wood'] },
-  mining_camp: { name: 'Mining Camp', size: 2, maxHp: 600, buildTime: 35, accepts: ['gold', 'stone'] },
-  mill: { name: 'Mill', size: 2, maxHp: 600, buildTime: 35, accepts: ['food'] },
-  farm: { name: 'Farm', size: 3, maxHp: 480, buildTime: 15, walkable: true },
-  barracks: { name: 'Barracks', size: 3, maxHp: 1200, buildTime: 50, trains: ['militia'] },
-};
-export const BUILD_MENU = ['house', 'lumber_camp', 'mining_camp', 'mill', 'farm', 'barracks'];
+export const BUILDING_DEFS = BUILDINGS;
+export const BUILD_MENU = TT_MENU;
 
 function rng(seed) { let s = seed >>> 0; return () => ((s = (s * 1664525 + 1013904223) >>> 0) / 4294967296); }
 
@@ -34,7 +27,9 @@ export function addBuilding(world, type, x, y, complete = true) {
   world.buildings.push(b); return b;
 }
 function newVillager(world, x, y, type = 'villager') {
-  const u = { id: world.nextId++, type, owner: 'player', x, y, speed: UNIT_DEFS[type].speed, state: 'idle', target: null, build: null,
+  const d = UNIT_DEFS[type], fx = techEffects(world), vil = type === 'villager';
+  const maxHp = d.hp + (vil ? fx.villagerHp : 0);
+  const u = { id: world.nextId++, type, owner: 'player', x, y, speed: d.speed * (vil ? 1 + fx.villagerSpeedPct / 100 : 1), hp: maxHp, maxHp, state: 'idle', target: null, build: null,
     path: [], goal: null, carry: { res: null, amount: 0 }, gatherTimer: 0, note: null };
   world.units.push(u); return u;
 }
@@ -44,7 +39,7 @@ export function createWorld({ width = 64, height = 64, seed = 1, stockpile = STA
   const tiles = new Uint8Array(width * height);
   for (let i = 0; i < tiles.length; i++) tiles[i] = Math.floor(rand() * 4);
   const world = { width, height, tiles, time: 0, nextId: 1, stockpile: { ...stockpile },
-    buildings: [], resources: [], units: [], animals: [], selection: null, selected: null, message: null, ledger: { created: 0 } };
+    buildings: [], resources: [], units: [], animals: [], selection: null, selected: null, message: null, ledger: { created: 0 }, age: 'dark', researched: {}, banner: null };
   addBuilding(world, 'town_center', 32, 32, true);
   const used = new Set();
   const add = (res, tx, ty) => { const k = ty * width + tx; if (used.has(k)) return; used.add(k);
@@ -172,7 +167,7 @@ export function pickAt(world, x, y) {
 }
 export function selectAt(world, x, y) { const s = pickAt(world, x, y); world.selection = s; world.selected = s && s.kind === 'unit' ? s.id : null; return s; }
 export function popCount(world) { return world.units.length; }
-export function queuedCount(world) { return world.buildings.reduce((t, b) => t + b.queue.length, 0); }
+export function queuedCount(world) { return world.buildings.reduce((t, b) => t + b.queue.filter(isUnitItem).length, 0); }
 export function popCap(world) { return Math.min(POP_MAX, world.buildings.reduce((t, b) => t + (b.complete ? b.popCap : 0), 0)); }
 const KIND_NAME = { berries: 'Berry Bush', tree: 'Tree', gold_mine: 'Gold Mine', stone_mine: 'Stone Mine' };
 const TASK_NAME = { to_hunt: 'Going to sheep', idle: 'Idle', moving: 'Moving', to_resource: 'Walking to resource', gathering: 'Gathering', to_drop: 'Returning to Town Center', to_build: 'Walking to build', building: 'Building' };
@@ -182,13 +177,14 @@ export function selectionInfo(world) {
   if (s.kind === 'building') { const b = world.buildings.find(o => o.id === s.id); if (!b) return null;
     if (!b.complete) return { kind: 'building', type: b.type, title: `${b.name} (foundation)`, lines: [`HP: ${b.hp}/${b.maxHp}`, `Construction: ${Math.floor(100 * b.progress / b.buildTime)}%`], progress: b.progress / b.buildTime };
     const lines = [`HP: ${b.hp}/${b.maxHp}`];
-    if (b.trains.length) { lines.push(`Queue: ${b.queue.length}/${QUEUE_MAX}`); if (b.queue.length) lines.push(`Training ${UNIT_DEFS[b.queue[0]].name}: ${Math.floor(100 * b.trainProgress / UNIT_DEFS[b.queue[0]].time)}%`);
+    if (b.trains.length || b.queue.length) { lines.push(`Queue: ${b.queue.length}/${QUEUE_MAX}`);
+      if (b.queue.length) lines.push(`${isUnitItem(b.queue[0]) ? 'Training' : 'Researching'} ${itemName(b.queue[0])}: ${Math.floor(100 * b.trainProgress / itemTime(b.queue[0]))}%`);
       if (b.blocked) lines.push('Halted: population cap');
       if (b.rally) lines.push(`Rally: (${Math.floor(b.rally.x)}, ${Math.floor(b.rally.y)})`); }
     if (b.popCap && b.type !== 'town_center') lines.push(`Provides +${b.popCap} population`);
-    if (b.type === 'farm') { const n = world.resources.find(r => r.farm === b.id); lines.push(`Food: ${n ? n.amount : 0}/${FARM_FOOD}`); }
+    if (b.type === 'farm') { const n = world.resources.find(r => r.farm === b.id); lines.push(`Food: ${n ? n.amount : 0}/${n ? n.max || n.amount : farmFood(world)}`); }
     if (b.accepts.length && b.type !== 'town_center') lines.push(`Drop-off: ${b.accepts.join(', ')}`);
-    return { kind: 'building', type: b.type, title: b.name, lines, queue: b.queue.length, queueTypes: [...b.queue], progress: b.queue.length ? b.trainProgress / UNIT_DEFS[b.queue[0]].time : null };
+    return { kind: 'building', type: b.type, title: b.name, lines, queue: b.queue.length, queueTypes: [...b.queue], progress: b.queue.length ? b.trainProgress / itemTime(b.queue[0]) : null };
   }
   if (s.kind === 'resource') { const n = world.resources.find(o => o.id === s.id); return n && { kind: 'resource', title: KIND_NAME[n.kind], lines: [`${n.res}: ${n.amount} remaining`] }; }
   if (s.kind === 'units') { const us = selectedUnits(world); const counts = {};
@@ -197,13 +193,14 @@ export function selectionInfo(world) {
     return { kind: 'units', count: us.length, title: allV ? `${us.length} Villagers selected` : `${us.length} units selected`, lines: Object.entries(counts).map(([k, v]) => `${v} × ${k}`).concat([`Carrying: ${us.reduce((t, u) => t + u.carry.amount, 0)} total`]) }; }
   const u = mobile(world, s.id); if (!u) return null;
   if (u.type === 'sheep') return { kind: 'unit', type: 'sheep', title: 'Sheep', lines: [u.owner ? 'Owner: you' : 'Neutral (touch with a villager to convert)', `Food: ${CARCASS_FOOD} when butchered`] };
-  if (u.type === 'militia') return { kind: 'unit', type: 'militia', title: 'Militia', lines: [`Task: ${TASK_NAME[u.state]}`, 'No combat in this scaffold'] };
+  if (u.type !== 'villager') { const d = UNIT_DEFS[u.type], fx = techEffects(world), melee = d.infantry || d.cavalry ? fx.meleeAttack : 0;
+    return { kind: 'unit', type: u.type, title: d.name, lines: [`Task: ${TASK_NAME[u.state]}`, `HP ${u.hp}/${u.maxHp}  Attack ${d.attack + melee}  Armor ${d.armor}${d.range ? `  Range ${d.range}` : ''}  Speed ${d.speed}`, 'No combat in this scaffold'] }; }
   let task = TASK_NAME[u.state];
   if (u.state === 'to_drop' && u.goal != null) { // name the drop-off actually being walked to (Mill / camp / TC)
     const gx = u.goal % world.width, gy = Math.floor(u.goal / world.width);
     const site = dropsitesFor(world, u.carry.res).find(b => gx >= b.x - 1 && gy >= b.y - 1 && gx <= b.x + b.size && gy <= b.y + b.size);
     if (site) task = `Returning to ${site.name}`; }
-  return { kind: 'unit', type: 'villager', title: 'Villager', lines: [`Task: ${task}${u.note ? ` (${u.note})` : ''}`, `Carrying: ${u.carry.amount}${u.carry.amount ? ' ' + u.carry.res : ''}/${CARRY_MAX}`] };
+  return { kind: 'unit', type: 'villager', title: 'Villager', lines: [`Task: ${task}${u.note ? ` (${u.note})` : ''}`, `Carrying: ${u.carry.amount}${u.carry.amount ? ' ' + u.carry.res : ''}/${carryMax(world)}`, `HP: ${u.hp}/${u.maxHp}`] };
 }
 function say(world, text) { world.message = { text, until: world.time + 4 }; }
 
@@ -293,10 +290,11 @@ export function missingFor(world, cost) { const m = Object.entries(cost).filter(
 // Shared rules for every trainer: per-building queue cap, and pop + everything queued anywhere must stay below the cap.
 export function trainUnit(world, b, type) {
   if (!b || !b.complete || !b.trains.includes(type)) return { ok: false, reason: 'invalid' };
+  if (isLocked(world, UNIT_DEFS[type].age)) { say(world, `${UNIT_DEFS[type].name}: ${requiresText(UNIT_DEFS[type].age)}`); return { ok: false, reason: 'age' }; }
   if (b.queue.length >= QUEUE_MAX) { say(world, 'Queue is full'); return { ok: false, reason: 'queue' }; }
   if (popCount(world) + queuedCount(world) >= popCap(world)) { say(world, `Population cap reached (${popCount(world)}/${popCap(world)}): build a House`); return { ok: false, reason: 'pop' }; }
   if (!afford(world, COSTS[type])) { say(world, type === 'villager' ? 'Not enough food (50 needed)' : `Cannot train ${UNIT_DEFS[type].name}: ${missingFor(world, COSTS[type])}`); return { ok: false, reason: 'cost' }; }
-  pay(world, COSTS[type]); b.queue.push(type); return { ok: true };
+  pay(world, COSTS[type]); const up = techEffects(world).upgrade[type]; b.queue.push(up || type); return { ok: true, unit: up || type };
 }
 export function trainVillager(world, tc) { if (!tc || tc.type !== 'town_center') return { ok: false, reason: 'invalid' }; return trainUnit(world, tc, 'villager'); }
 const rectsOverlap = (ax, ay, as, bx, by, bs) => ax < bx + bs && bx < ax + as && ay < by + bs && by < ay + as;
@@ -311,6 +309,7 @@ export function canPlace(world, type, tx, ty) {
   return true;
 }
 export function placeBuilding(world, type, tx, ty, builders = []) {
+  if (isLocked(world, BUILDING_DEFS[type].age)) { say(world, `${BUILDING_DEFS[type].name}: ${requiresText(BUILDING_DEFS[type].age)}`); return null; }
   if (!canPlace(world, type, tx, ty)) { say(world, type === 'farm' && !farmAnchorOk(world, tx, ty) ? 'Farms must be placed next to a Mill or Town Center' : 'Cannot build there'); return null; }
   const cost = COSTS[type]; if (!afford(world, cost)) { say(world, `Cannot build ${BUILDING_DEFS[type].name}: ${missingFor(world, cost)}`); return null; }
   pay(world, cost); const b = addBuilding(world, type, tx, ty, false);
@@ -327,6 +326,83 @@ function spawnFrom(world, tc, type = 'villager') {
   const u = newVillager(world, t[0] + 0.5, t[1] + 0.5, type);
   if (tc.rally) { const n = type === 'villager' ? findResourceAt(world, tc.rally.x, tc.rally.y) : null; n ? orderGather(world, u, n) : orderMove(world, u, tc.rally.x, tc.rally.y); }
   return u;
+}
+
+// ---------- ages & technologies ----------
+export function techEffects(world) {
+  const fx = { villagerHp: 0, carryPct: 0, villagerSpeedPct: 0, ratePct: {}, farmFood: 0, meleeAttack: 0, upgrade: {} };
+  for (const id of Object.keys(world.researched || {})) { const e = TECHS[id]?.effect; if (!e) continue;
+    for (const [k, v] of Object.entries(e)) {
+      if (k === 'ratePct') for (const [kind, pct] of Object.entries(v)) fx.ratePct[kind] = (fx.ratePct[kind] || 0) + pct;
+      else if (k === 'upgrade') Object.assign(fx.upgrade, v); else fx[k] += v; } }
+  return fx;
+}
+export function carryMax(world) { return Math.round(CARRY_MAX * (1 + techEffects(world).carryPct / 100)); }
+export function gatherRate(world, kind) { return (GATHER_RATES[kind] ?? GATHER_RATE) * (1 + (techEffects(world).ratePct[kind] || 0) / 100); }
+export function farmFood(world) { return FARM_FOOD + techEffects(world).farmFood; }
+export const isLocked = (world, age) => ageIndex(world.age) < ageIndex(age);
+export const requiresText = age => `Requires ${AGE_NAMES[age]}`;
+export function nextAge(world) { return AGES[ageIndex(world.age) + 1] || null; }
+// What is still missing to start the next age-up (null = can research now, ignoring cost).
+export function ageStatus(world) {
+  const next = nextAge(world); if (!next) return { next: null, ok: false, missing: 'Already in the Imperial Age' };
+  const req = AGE_UPS[next];
+  const have = [...new Set(world.buildings.filter(b => b.complete && req.from.includes(b.type)).map(b => b.type))];
+  const any = (req.orAny || []).some(t => world.buildings.some(b => b.complete && b.type === t));
+  const ok = have.length >= req.needs || any;
+  const names = req.from.filter(t => BUILDINGS[t]).map(t => BUILDINGS[t].name);
+  return { next, ok, have, req, missing: ok ? null : `needs ${req.needs} of: ${names.join(', ')}${req.orAny ? ' (or a Castle)' : ''} (have ${have.length})` };
+}
+const queuedAnywhere = (world, item) => world.buildings.some(b => b.queue.includes(item));
+export function itemTime(item) {
+  if (item.startsWith('tech:')) return TECHS[item.slice(5)].time;
+  if (item.startsWith('age:')) return AGE_UPS[item.slice(4)].time;
+  return UNIT_DEFS[item].time;
+}
+export function itemName(item) {
+  if (item.startsWith('tech:')) return TECHS[item.slice(5)].name;
+  if (item.startsWith('age:')) return AGE_NAMES[item.slice(4)];
+  return UNIT_DEFS[item].name;
+}
+export const isUnitItem = item => !item.includes(':');
+export function canResearch(world, b, techId) {
+  const t = TECHS[techId]; if (!t) return { ok: false, reason: 'invalid', text: 'Unknown technology' };
+  if (!b || !b.complete || b.type !== t.at) return { ok: false, reason: 'invalid', text: `Researched at the ${BUILDINGS[t.at].name}` };
+  if (techId in world.researched) return { ok: false, reason: 'done', text: `${t.name} already researched` };
+  if (queuedAnywhere(world, 'tech:' + techId)) return { ok: false, reason: 'queued', text: `${t.name} is already being researched` };
+  if (isLocked(world, t.age)) return { ok: false, reason: 'age', text: requiresText(t.age) };
+  const pre = (t.requires || []).find(r => !(r in world.researched)); if (pre) return { ok: false, reason: 'prereq', text: `Requires ${TECHS[pre].name}` };
+  if (!afford(world, t.cost)) return { ok: false, reason: 'cost', text: missingFor(world, t.cost) };
+  return { ok: true };
+}
+export function research(world, b, techId) {
+  const c = canResearch(world, b, techId); if (!c.ok) { say(world, `${TECHS[techId]?.name || techId}: ${c.text}`); return c; }
+  if (b.queue.length >= QUEUE_MAX) { say(world, 'Queue is full'); return { ok: false, reason: 'queue' }; }
+  pay(world, TECHS[techId].cost); b.queue.push('tech:' + techId); return { ok: true };
+}
+export function canAgeUp(world, tc) {
+  const st = ageStatus(world);
+  if (!tc || tc.type !== 'town_center' || !tc.complete) return { ok: false, reason: 'invalid', text: 'Researched at the Town Center' };
+  if (!st.next) return { ok: false, reason: 'max', text: st.missing };
+  if (world.buildings.some(b => b.queue.some(q => q.startsWith('age:')))) return { ok: false, reason: 'queued', text: 'Already advancing to the next age' };
+  if (!st.ok) return { ok: false, reason: 'prereq', text: st.missing };
+  if (!afford(world, AGE_UPS[st.next].cost)) return { ok: false, reason: 'cost', text: missingFor(world, AGE_UPS[st.next].cost) };
+  return { ok: true, next: st.next };
+}
+export function ageUp(world, tc) {
+  const c = canAgeUp(world, tc); if (!c.ok) { say(world, `Cannot advance: ${c.text}`); return c; }
+  if (tc.queue.length >= QUEUE_MAX) { say(world, 'Queue is full'); return { ok: false, reason: 'queue' }; }
+  pay(world, AGE_UPS[c.next].cost); tc.queue.push('age:' + c.next); return { ok: true, next: c.next };
+}
+function finishItem(world, b, item) {
+  if (isUnitItem(item)) { spawnFrom(world, b, item); return; }
+  if (item.startsWith('age:')) { world.age = item.slice(4); world.banner = { text: `You have advanced to the ${AGE_NAMES[world.age]}!`, until: world.time + 6 }; say(world, `${AGE_NAMES[world.age]} reached`); return; }
+  const id = item.slice(5); world.researched[id] = world.time;
+  const e = TECHS[id].effect;
+  if (e.villagerHp) for (const u of world.units) if (u.type === 'villager') { u.maxHp += e.villagerHp; u.hp += e.villagerHp; }
+  if (e.villagerSpeedPct) for (const u of world.units) if (u.type === 'villager') u.speed = UNIT_DEFS.villager.speed * (1 + techEffects(world).villagerSpeedPct / 100);
+  if (e.upgrade) for (const u of world.units) if (e.upgrade[u.type]) { const to = e.upgrade[u.type]; u.type = to; u.maxHp = UNIT_DEFS[to].hp; u.hp = u.maxHp; }
+  say(world, `${TECHS[id].name} researched`);
 }
 
 // ---------- eviction (AoE2-style): building placement ignores units; units inside get pushed out ----------
@@ -384,11 +460,13 @@ function retarget(world, u, res) {
 export function tick(world, dt) {
   world.time += dt;
   if (world.message && world.time > world.message.until) world.message = null;
+  if (world.banner && world.time > world.banner.until) world.banner = null;
   for (const b of world.buildings) {
     if (!b.complete || !b.queue.length) continue;
-    if (popCount(world) >= popCap(world)) { b.blocked = true; continue; } b.blocked = false;
+    // one item at a time (AoE2: a TC researching an age/tech is not training villagers meanwhile)
+    if (isUnitItem(b.queue[0]) && popCount(world) >= popCap(world)) { b.blocked = true; continue; } b.blocked = false;
     b.trainProgress += dt;
-    if (b.trainProgress >= UNIT_DEFS[b.queue[0]].time) { b.trainProgress = 0; spawnFrom(world, b, b.queue.shift()); }
+    if (b.trainProgress >= itemTime(b.queue[0])) { b.trainProgress = 0; finishItem(world, b, b.queue.shift()); }
   }
   for (const u of world.units) {
     switch (u.state) {
@@ -408,10 +486,11 @@ export function tick(world, dt) {
           break;
         }
         u.lastKind = node.kind;
-        u.gatherTimer += dt * (GATHER_RATES[node.kind] ?? GATHER_RATE);
-        while (u.gatherTimer >= 1 && u.carry.amount < CARRY_MAX && node.amount > 0) { u.gatherTimer -= 1; node.amount -= 1; u.carry.res = node.res; u.carry.amount += 1; }
+        u.gatherTimer += dt * gatherRate(world, node.kind);
+        const cap = carryMax(world);
+        while (u.gatherTimer >= 1 && u.carry.amount < cap && node.amount > 0) { u.gatherTimer -= 1; node.amount -= 1; u.carry.res = node.res; u.carry.amount += 1; }
         if (node.amount <= 0 && node.farm) removeFarm(world, node);
-        if (u.carry.amount >= CARRY_MAX || node.amount <= 0) { u.state = 'to_drop'; if (!planDrop(world, u)) idle(u, 'no drop-off reachable'); }
+        if (u.carry.amount >= cap || node.amount <= 0) { u.state = 'to_drop'; if (!planDrop(world, u)) idle(u, 'no drop-off reachable'); }
         break;
       }
       case 'to_drop': {
@@ -468,8 +547,8 @@ function completeBuilding(world, b) {
   b.complete = true; b.hp = b.maxHp;
   const builders = world.units.filter(o => o.build === b.id); for (const o of builders) idle(o);
   if (b.type === 'farm') { // walkable field with 175 food; the first builder starts farming it
-    const n = { id: world.nextId++, res: 'food', kind: 'farm', farm: b.id, walkable: true, x: b.x + 1.5, y: b.y + 1.5, amount: FARM_FOOD };
-    world.resources.push(n); world.ledger.created += FARM_FOOD;
+    const n = { id: world.nextId++, res: 'food', kind: 'farm', farm: b.id, walkable: true, x: b.x + 1.5, y: b.y + 1.5, amount: farmFood(world), max: farmFood(world) };
+    world.resources.push(n); world.ledger.created += n.amount;
     if (builders[0]) orderGather(world, builders[0], n);
     return;
   }
