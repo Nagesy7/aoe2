@@ -130,7 +130,7 @@ g = await placeNear(45.5, 37.5); const br = await bld('barracks');
 check(g && br, `barracks foundation at (${br?.x},${br?.y})`);
 check(await until(`window.game.world.buildings.find(b => b.id === ${br.id}).complete`, 150), 'barracks built');
 await at(br.x + 1.5, br.y + 1.5);
-check(/Train Militia/.test(await btn('militia').innerText()) && /60 food, 20 gold, 21s/.test(await btn('militia').innerText()), `barracks button: ${(await btn('militia').innerText()).replace(/\n/g, ' ')}`);
+check(/Train (Kai )?Militia/.test(await btn('militia').innerText()) && /60 food, 20 gold, 21s/.test(await btn('militia').innerText()), `barracks button: ${(await btn('militia').innerText()).replace(/\n/g, ' ')}`);
 const res0 = await S(() => ({ ...window.game.world.stockpile }));
 await btn('militia').click(); await btn('militia').click(); await advance(5);
 const res1 = await S(() => ({ ...window.game.world.stockpile }));

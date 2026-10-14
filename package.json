@@ -1,5 +1,6 @@
 {
-  "name": "aoe2-scaffold",
+  "name": "inu-empires",
+  "description": "Inu Empires: AoE2-style browser RTS with Japanese spitz dog breeds",
   "version": "0.1.0",
   "type": "module",
   "private": true,
@@ -14,7 +15,8 @@
     "round5": "node scripts/round5.mjs",
     "round6": "node scripts/round6.mjs",
     "gather-verify": "node scripts/gather-verify.mjs",
-    "ages": "node scripts/ages.mjs"
+    "ages": "node scripts/ages.mjs",
+    "inu": "node scripts/inu.mjs"
   },
   "devDependencies": {
     "playwright": "^1.64.0",

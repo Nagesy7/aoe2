@@ -1,4 +1,6 @@
-# AoE2-style browser scaffold
+# Inu Empires
+
+An AoE2-style browser RTS where every unit is a Japanese spitz-type dog (Shiba, Kai, Kishu, Shikoku, Hokkaido, Akita, Japanese Spitz). Same AoE2 roles, stats and mechanics; original procedural canvas art (`src/inu.js`, title screen `src/title.js`).
 
 Plain HTML5 canvas + vanilla ES modules. No build step.
 

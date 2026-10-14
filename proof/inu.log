@@ -1,0 +1,23 @@
+PASS: page title: Inu Empires
+PASS: menu shows Inu Empires logo
+PASS: title backdrop is painted (rich colour variety)
+  saved proof/inu-title-screen.png
+  saved proof/inu-lineup.png
+  saved proof/inu-unit-villager.png
+  saved proof/inu-unit-militia.png
+  saved proof/inu-unit-spearman.png
+  saved proof/inu-unit-archer.png
+  saved proof/inu-unit-crossbowman.png
+  saved proof/inu-unit-scout_cavalry.png
+  saved proof/inu-unit-knight.png
+  saved proof/inu-unit-monk.png
+  saved proof/inu-unit-trebuchet.png
+  saved proof/inu-villager-resources.png
+PASS: lineup + 9 close-ups + villager resource sheet rendered
+PASS: HUD shows Inu Empires
+  saved proof/inu-play-economy.png
+PASS: villager info title: Shiba Villager
+  saved proof/inu-play-army.png
+  saved proof/inu-play-army-closeup.png
+  5 castle/imperial units placed for display only (proof page, not a sim test)
+  saved proof/inu-play-battle-start.png

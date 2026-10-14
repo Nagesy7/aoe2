@@ -2,6 +2,8 @@ import { screenToWorld, worldToScreen, createWorld, TILE, pickAt, selectionInfo,
   selectedUnits, selectedBuilding, popCount, popCap, RES_TYPES, BUILD_MENU, BUILDING_DEFS, UNIT_DEFS, missingFor, canAgeUp, canResearch, ageStatus, techsAt, TECHS, AGE_UPS, AGE_NAMES, isLocked, requiresText,
   stepTick, applyCommand, makeCommand, stateHash, TICK_DT, OWNERS, hyp } from './sim.js';
 import { render, computeFog } from './render.js';
+import { BREEDS, unitLabel } from './inu.js';
+import { startTitle } from './title.js';
 import * as SIM from './sim.js';
 import { Lockstep } from './lockstep.js';
 import { NetSession, TabsBus, RelayBus, defaultRelayUrl, newRoomCode } from './net.js';
@@ -72,13 +74,14 @@ cmdEl.addEventListener('click', e => { const btn = e.target.closest('button'); i
 const costText = c => Object.entries(c).map(([r, v]) => `${v} ${r}`).join(', ');
 function updateHud() {
   const pop = popCount(world), cap = popCap(world);
-  hud.innerHTML = RES_TYPES.map(r => `<span id="res-${r}">${r[0].toUpperCase() + r.slice(1)}: ${world.stockpile[r]}</span>`).join('') +
+  hud.innerHTML = '<span id="brand">Inu Empires</span>' + RES_TYPES.map(r => `<span id="res-${r}">${r[0].toUpperCase() + r.slice(1)}: ${world.stockpile[r]}</span>`).join('') +
     `<span id="pop" class="${pop >= cap ? 'capped' : ''}">Pop ${pop}/${cap}</span>` + (net ? `<span id="side" class="${net.me ? 'p2' : 'p1'}">Player ${net.me + 1} (${net.me ? 'Red' : 'Blue'})</span>` : '') + `<span id="age">${AGE_NAMES[world.age]}</span>`;
   bannerEl.textContent = world.banner ? world.banner.text : ''; bannerEl.style.display = world.banner ? 'block' : 'none';
   msgEl.textContent = world.message ? world.message.text : ''; msgEl.style.display = world.message ? 'block' : 'none';
   const info = selectionInfo(world);
   infoEl.style.display = info ? 'block' : 'none';
-  if (info) { infoEl.dataset.kind = info.kind; infoEl.innerHTML = `<b>${info.title}</b>` + info.lines.map(l => `<div>${l}</div>`).join('') +
+  if (info) { infoEl.dataset.kind = info.kind; const title = info.kind === 'unit' && BREEDS[info.type] ? info.title.replace(UNIT_DEFS[info.type].name, unitLabel(info.type)) : info.title;
+    infoEl.innerHTML = `<b>${title}</b>` + info.lines.map(l => info.kind === 'units' ? l.replace(/^(\d+) × (\w+)$/, (m, n, t) => `${n} × ${unitLabel(t, t)}`) : l).map(l => `<div>${l}</div>`).join('') +
     (info.hp != null ? `<div class="bar hp${info.enemy ? ' enemy' : ''}"><div style="width:${Math.round(Math.max(0, info.hp) * 100)}%"></div></div>` : '') +
     (info.progress != null ? `<div class="bar"><div style="width:${Math.round(info.progress * 100)}%"></div></div>` : '') +
     (info.queue ? `<div class="queue">${info.queueTypes.map(t => `<span class="qi" title="${t}">${t.startsWith('age:') ? 'A' : t.startsWith('tech:') ? 'T' : t === 'villager' ? 'V' : t === 'militia' ? 'M' : UNIT_DEFS[t].name[0]}</span>`).join('')}</div>` : ''); }
@@ -88,9 +91,9 @@ function updateHud() {
     `<button data-action="${action}" ${disabled ? 'disabled' : ''} class="${grey ? 'unaffordable' : ''}${ui.placing === action ? ' active' : ''}" title="${title}">${label}<br><small>${sub}</small></button>`;
   if (b && b.complete && (b.trains.length || techsAt(b.type).length)) {
     const parts = b.trains.map(t => { const d = UNIT_DEFS[t], up = Object.keys(world.researched).map(k => TECHS[k].effect.upgrade?.[t]).find(Boolean), shown = up ? UNIT_DEFS[up] : d;
-      if (isLocked(world, d.age)) return button(t === 'villager' ? 'train' : t, `Train ${d.name}`, requiresText(d.age), { disabled: true, title: `${d.name}: ${costText(d.cost)}, ${d.time}s` });
+      if (isLocked(world, d.age)) return button(t === 'villager' ? 'train' : t, `Train ${unitLabel(t, d.name)}`, requiresText(d.age), { disabled: true, title: `${d.name}: ${costText(d.cost)}, ${d.time}s` });
       const miss = missingFor(world, shown.cost);
-      return button(t === 'villager' ? 'train' : t, `Train ${shown.name}`, miss || `${costText(shown.cost)}, ${shown.time}s`, { grey: !!miss, title: `${shown.name}: HP ${shown.hp}, attack ${shown.attack}, armor ${shown.armor}` }); });
+      return button(t === 'villager' ? 'train' : t, `Train ${unitLabel(up || t, shown.name)}`, miss || `${costText(shown.cost)}, ${shown.time}s`, { grey: !!miss, title: `${shown.name}: HP ${shown.hp}, attack ${shown.attack}, armor ${shown.armor}` }); });
     for (const id of techsAt(b.type)) { const t = TECHS[id]; if (id in world.researched) continue;
       const c = canResearch(world, b, id); const queued = c.reason === 'queued';
       const sub = c.ok ? `${costText(t.cost)}, ${t.time}s` : c.reason === 'age' ? requiresText(t.age) : queued ? 'researching…' : c.reason === 'cost' ? c.text : c.text;
@@ -133,7 +136,7 @@ function startGame({ mp = false, seed = 1, me = 0, cfg = {}, session = null } = 
   const c = mp ? { x: tc.x + 2, y: tc.y + 2 } : { x: 34, y: 34 };
   cam.x = c.x * TILE - innerWidth / 2; cam.y = c.y * TILE - innerHeight / 2; clampCamera(cam, canvas.width, canvas.height, world);
   Object.assign(window.game, { world, cam, ui, mode: mp ? 'mp' : 'sp' });
-  for (const id of ['menu', 'lobby']) $(id).style.display = 'none';
+  for (const id of ['menu', 'lobby', 'title-bg']) $(id).style.display = 'none';
   last = performance.now(); requestAnimationFrame(frame);
 }
 const PAN = 600, EDGE = 12; let last = performance.now(), acc = 0, running = false;
@@ -201,4 +204,4 @@ const syncTransport = () => { $('relay-row').style.display = $('transport').valu
 if (params.get('join')) $('join-code').value = params.get('join');
 // Legacy / direct single-player URLs (?enemy=, ?scenario=, ?raids=, ?play=sp) skip the menu.
 if (['enemy', 'scenario', 'raids'].some(k => params.has(k)) || params.get('play') === 'sp') startGame();
-else $('menu').style.display = 'flex';
+else { $('menu').style.display = 'flex'; $('title-bg').style.display = 'block'; startTitle($('title-bg')); }

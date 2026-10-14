@@ -1,5 +1,5 @@
 <!doctype html>
-<html><head><meta charset="utf-8"><title>AoE2-style RTS</title>
+<html><head><meta charset="utf-8"><title>Inu Empires</title>
 <style>
 html,body{margin:0;overflow:hidden;background:#000}
 #hud{position:fixed;top:0;left:0;right:0;padding:6px 12px;background:rgba(40,25,10,.85);color:#f4e2b8;font:bold 15px sans-serif;display:flex;gap:24px;pointer-events:none;border-bottom:2px solid #a07a3a}
@@ -25,7 +25,7 @@ html,body{margin:0;overflow:hidden;background:#000}
 #net{position:fixed;top:34px;right:12px;padding:4px 10px;background:rgba(40,25,10,.85);color:#f4e2b8;font:12px sans-serif;border:1px solid #a07a3a;display:none;pointer-events:none}
 #stall{position:fixed;top:45%;left:50%;transform:translate(-50%,-50%);padding:12px 26px;background:rgba(0,0,0,.8);color:#ffd86b;font:bold 20px sans-serif;border:2px solid #d4a640;display:none;pointer-events:none}
 #desync{position:fixed;top:64px;left:50%;transform:translateX(-50%);padding:10px 20px;background:#a00;color:#fff;font:bold 18px sans-serif;border:2px solid #fff;display:none;pointer-events:none}
-.screen{position:fixed;inset:0;display:none;flex-direction:column;align-items:center;justify-content:center;gap:14px;background:radial-gradient(#3a2a14,#120c05);color:#f4e2b8;font:15px sans-serif;z-index:10}
+.screen{position:fixed;inset:0;display:none;flex-direction:column;align-items:center;justify-content:center;gap:14px;background:transparent;color:#f4e2b8;font:15px sans-serif;z-index:10}
 .screen h1{font:bold 44px serif;color:#ffd86b;margin:0 0 6px;text-shadow:0 3px 6px #000}
 .screen h2{font:bold 26px serif;color:#ffd86b;margin:0}
 .screen button{font:bold 17px sans-serif;padding:10px 26px;min-width:260px;background:#5a3c18;color:#f4e2b8;border:2px solid #a07a3a;cursor:pointer}
@@ -35,16 +35,22 @@ html,body{margin:0;overflow:hidden;background:#000}
 #lobby-code{font:bold 52px monospace;letter-spacing:10px;color:#fff;background:#2a1c0c;padding:6px 24px;border:2px solid #d4a640}
 .pl{padding:6px 14px;min-width:420px;background:#2a1c0c;border-left:6px solid}.pl.p1{border-color:#2a50c8}.pl.p2{border-color:#c83030}
 #menu-err{color:#ff8a7a;min-height:18px}
+#menu{align-items:flex-start;padding-left:5vw;box-sizing:border-box}#menu .panel{max-width:470px}#menu .hint{max-width:440px}
+#title-bg{position:fixed;inset:0;width:100%;height:100%;z-index:9;display:none}
+.screen .panel{display:flex;flex-direction:column;align-items:center;gap:12px;padding:22px 34px;background:linear-gradient(#24140ad8,#120a04e8);border:2px solid #d4a640;box-shadow:0 10px 40px #000c,inset 0 0 0 4px #5a3c1880;border-radius:6px}
+.screen h1{font:bold 64px Georgia,serif!important;letter-spacing:3px;background:linear-gradient(#fff2b0,#ffc040 55%,#c07a20);-webkit-background-clip:text;background-clip:text;color:transparent!important;filter:drop-shadow(0 4px 3px #000)}
+.screen .tag{font:italic 16px Georgia,serif;color:#f4d8a0;margin-top:-10px;letter-spacing:2px}
+#brand{color:#ffd86b;font-family:Georgia,serif}
 </style>
-</head><body><div id="hud"></div><div id="msg"></div><div id="banner"></div><div id="info"></div><div id="commands"></div><div id="net"></div><div id="stall"></div><div id="desync"></div><canvas id="game"></canvas>
-<div id="menu" class="screen"><h1>Age of Empires II</h1><div class="hint">browser recreation</div>
+</head><body><div id="hud"></div><div id="msg"></div><div id="banner"></div><div id="info"></div><div id="commands"></div><div id="net"></div><div id="stall"></div><div id="desync"></div><canvas id="game"></canvas><canvas id="title-bg"></canvas>
+<div id="menu" class="screen"><div class="panel"><h1>Inu Empires</h1><div class="tag">Rise of the Shiba Clans</div>
  <button id="btn-sp">Single Player</button>
  <div class="row"><label for="transport">Online via</label><select id="transport"><option value="tabs">Same browser (two tabs)</option><option value="relay">Relay server (WebSocket)</option></select></div>
  <div id="relay-row" class="row"><input id="relay-url" size="38" placeholder="wss://your-relay/ws"></div>
  <button id="btn-host">Host 1v1</button>
  <div class="row"><input id="join-code" size="8" maxlength="8" placeholder="CODE" style="text-transform:uppercase"><button id="btn-join" style="min-width:150px">Join 1v1</button></div>
  <div id="menu-err"></div>
- <div class="hint">Host creates a room code; the other player joins with it. "Same browser" connects two tabs of this browser without any server. For two machines run <code>node server/relay.mjs</code> (see README) and use its wss:// URL, or open the site with <code>?relay=wss://host/ws</code>.</div></div>
-<div id="lobby" class="screen"><h2>Lobby</h2><div class="hint">Room code</div><div id="lobby-code"></div><div id="lobby-link" class="hint"></div>
+ <div class="hint">Host creates a room code; the other player joins with it. "Same browser" connects two tabs of this browser without any server. For two machines run <code>node server/relay.mjs</code> (see README) and use its wss:// URL, or open the site with <code>?relay=wss://host/ws</code>.</div></div></div>
+<div id="lobby" class="screen"><div class="panel"><h2>Lobby</h2><div class="hint">Room code</div><div id="lobby-code"></div><div id="lobby-link" class="hint"></div>
  <div id="lobby-players"></div><div id="lobby-status"></div><div id="lobby-ping" class="hint"></div>
- <button id="btn-ready" disabled>Ready</button><button id="btn-leave">Leave</button></div><script type="module" src="src/main.js"></script></body></html>
+ <button id="btn-ready" disabled>Ready</button><button id="btn-leave">Leave</button></div></div><script type="module" src="src/main.js"></script></body></html>

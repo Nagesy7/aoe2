@@ -1,3 +1,4 @@
+import { drawInu, paw, TEAM } from './inu.js';
 import { TILE, camPixel, selectedUnits, itemTime, unitStats } from './sim.js';
 // Per-player fog of war (multiplayer): what the viewer's own units and buildings currently see, plus explored memory.
 // Purely presentational: computed from the (identical) world on each client, never fed back into the simulation.
@@ -76,6 +77,7 @@ export function render(ctx, world, cam, ui = {}, fog = null) {
       ctx.fillStyle = '#fff'; ctx.font = '12px sans-serif'; ctx.textAlign = 'center'; ctx.fillText(b.name, px + s / 2, py + s + 14);
       if (b.queue.length) bar(ctx, px, py - 18, s, b.trainProgress / itemTime(b.queue[0]), b.blocked ? '#d33' : '#4fd34f');
     }
+    if (b.complete && b.type !== 'farm' && b.owner) { const tc = TEAM[b.owner] || TEAM.player; ctx.fillStyle = '#4a3018'; ctx.fillRect(px + s - 8, py - 14, 2, 20); ctx.fillStyle = tc; ctx.fillRect(px + s - 6, py - 14, 13, 10); paw(ctx, px + s + 0.5, py - 9, 4.5, '#f6e6c8'); }
     if (red(b)) { ctx.fillStyle = '#c02020'; ctx.fillRect(px + 2, py + 2, 4, 14); ctx.fillRect(px + 6, py + 2, 9, 6); ctx.strokeStyle = '#e04040'; ctx.strokeRect(px + 0.5, py + 0.5, s - 1, s - 1); }
     if (b.complete && (b.hp < b.maxHp || foe(b) || (sel && sel.kind === 'building' && sel.id === b.id))) bar(ctx, px, py - (b.queue.length ? 26 : 9), s, b.hp / b.maxHp, red(b) ? '#e04040' : '#4fd34f');
     if (sel && sel.kind === 'building' && sel.id === b.id) { ctx.strokeStyle = '#fff'; ctx.lineWidth = 2; ctx.strokeRect(px - 3, py - 3, s + 6, s + 6); ctx.lineWidth = 1;
@@ -101,19 +103,13 @@ export function render(ctx, world, cam, ui = {}, fog = null) {
     if (fog && foe(u) && !fog.sees(u)) continue;
     const px = u.x * TILE, py = u.y * TILE;
     if (u.type !== 'villager' || red(u)) { ctx.fillStyle = red(u) ? '#ff2020d0' : '#3060ffb0'; ctx.beginPath(); ctx.ellipse(px, py + 6, 10, 5, 0, 0, 7); ctx.fill(); }
-    if (u.type !== 'villager' || u.hp < u.maxHp || selUnits.has(u.id)) bar(ctx, px - 11, py - 22, 22, u.hp / u.maxHp, red(u) ? '#e04040' : '#4fd34f');
+    if (u.type !== 'villager' || u.hp < u.maxHp || selUnits.has(u.id)) bar(ctx, px - 11, py - 30, 22, u.hp / u.maxHp, red(u) ? '#e04040' : '#4fd34f');
     if (u.lastAttackAt != null && world.time - u.lastAttackAt < 0.25 && !UNIT_STYLE[u.type]?.ranged) { ctx.strokeStyle = '#fff'; ctx.lineWidth = 2; ctx.beginPath(); ctx.arc(px + (u.face ? u.face[0] : 1) * 10, py + (u.face ? u.face[1] : 0) * 10, 5, 0, 7); ctx.stroke(); ctx.lineWidth = 1; }
     if (selUnits.has(u.id)) {
       if (u.path.length) { ctx.strokeStyle = '#ffffffaa'; ctx.setLineDash([3, 4]); ctx.beginPath(); ctx.moveTo(px, py); for (const q of u.path) ctx.lineTo(q.x * TILE, q.y * TILE); ctx.stroke(); ctx.setLineDash([]); }
       ctx.strokeStyle = '#fff'; ctx.lineWidth = 2; ctx.beginPath(); ctx.ellipse(px, py + 6, 11, 6, 0, 0, 7); ctx.stroke(); ctx.lineWidth = 1; }
-    if (UNIT_STYLE[u.type]) { const [col, letter] = UNIT_STYLE[u.type]; const big = u.type === 'knight' || u.type === 'scout_cavalry' || u.type === 'trebuchet';
-      ctx.fillStyle = col; ctx.fillRect(px - (big ? 9 : 6), py - 7, big ? 18 : 12, 14); ctx.fillStyle = '#eee'; ctx.beginPath(); ctx.arc(px, py - 11, 4.5, 0, 7); ctx.fill();
-      ctx.fillStyle = '#fff'; ctx.font = 'bold 9px sans-serif'; ctx.textAlign = 'center'; ctx.fillText(letter, px, py + 3); continue; }
-    if (u.type === 'militia') { ctx.fillStyle = '#8a1a1a'; ctx.fillRect(px - 6, py - 7, 12, 14); ctx.fillStyle = '#bbb'; ctx.beginPath(); ctx.arc(px, py - 11, 5, 0, 7); ctx.fill();
-      ctx.strokeStyle = '#ddd'; ctx.lineWidth = 2; ctx.beginPath(); ctx.moveTo(px + 8, py + 6); ctx.lineTo(px + 8, py - 16); ctx.stroke(); ctx.lineWidth = 1; continue; }
-    ctx.fillStyle = red(u) ? '#c83030' : '#2a50c8'; ctx.fillRect(px - 5, py - 6, 10, 12);
-    ctx.fillStyle = '#f0c8a0'; ctx.beginPath(); ctx.arc(px, py - 10, 4.5, 0, 7); ctx.fill();
-    if (u.carry.amount) { ctx.fillStyle = { food: '#c0203a', wood: '#7a4a1a', gold: '#e0b83a', stone: '#aaa' }[u.carry.res]; ctx.fillRect(px + 5, py - 4, 6, 6); }
+    { let res = null, kind = null; if (u.type === 'villager' && u.target != null && !u.carry.amount) { const n = world.resources.find(r => r.id === u.target); if (n) { res = n.res; kind = n.kind; } }
+      drawInu(ctx, u, px, py, world.time || 0, { res, kind, attacking: u.lastAttackAt != null && world.time - u.lastAttackAt < 0.6 }); }
   }
   for (const p of world.projectiles || []) { if (fog && !fog.visible[Math.floor(p.y) * world.width + Math.floor(p.x)]) continue; const x = p.x * TILE, y = p.y * TILE, a = p.dir ? Math.atan2(p.dir[1], p.dir[0]) : 0;
     ctx.strokeStyle = '#3a2410'; ctx.lineWidth = 2; ctx.beginPath(); ctx.moveTo(x - Math.cos(a) * 8, y - Math.sin(a) * 8); ctx.lineTo(x, y); ctx.stroke(); ctx.lineWidth = 1; }
