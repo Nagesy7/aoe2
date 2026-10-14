@@ -1,0 +1,18 @@
+{
+  "name": "aoe2-scaffold",
+  "version": "0.1.0",
+  "type": "module",
+  "private": true,
+  "scripts": {
+    "start": "npx serve .",
+    "test": "node tests/gather.test.mjs",
+    "screenshot": "node scripts/screenshot.mjs",
+    "round4": "node scripts/round4.mjs",
+    "round5": "node scripts/round5.mjs",
+    "round6": "node scripts/round6.mjs",
+    "gather-verify": "node scripts/gather-verify.mjs"
+  },
+  "devDependencies": {
+    "playwright": "^1.64.0"
+  }
+}

@@ -1,0 +1,20 @@
+<!doctype html>
+<html><head><meta charset="utf-8"><title>AoE2-style Scaffold</title>
+<style>
+html,body{margin:0;overflow:hidden;background:#000}
+#hud{position:fixed;top:0;left:0;right:0;padding:6px 12px;background:rgba(40,25,10,.85);color:#f4e2b8;font:bold 15px sans-serif;display:flex;gap:24px;pointer-events:none;border-bottom:2px solid #a07a3a}
+#pop.capped{color:#ff6b5b}
+#msg{position:fixed;top:40px;left:50%;transform:translateX(-50%);padding:6px 14px;background:rgba(120,20,10,.85);color:#fff;font:bold 15px sans-serif;border:1px solid #f88;display:none;pointer-events:none}
+#info{position:fixed;left:12px;bottom:12px;min-width:220px;padding:10px 14px;background:rgba(40,25,10,.9);color:#f4e2b8;font:14px sans-serif;border:2px solid #a07a3a;display:none;pointer-events:none}
+#info b{font-size:16px;display:block;margin-bottom:4px}
+.bar{height:10px;background:#000;border:1px solid #a07a3a;margin-top:6px}.bar div{height:100%;background:#4fd34f}
+.queue{margin-top:6px;display:flex;gap:4px}.qi{display:inline-block;width:22px;height:22px;background:#2a50c8;color:#fff;text-align:center;line-height:22px;font-weight:bold;border:1px solid #f4e2b8}
+#commands{position:fixed;left:290px;bottom:12px;display:none;gap:8px}
+#commands button{font:bold 13px sans-serif;padding:8px 12px;background:#5a3c18;color:#f4e2b8;border:2px solid #a07a3a;cursor:pointer}
+#commands button.active{border-color:#6f6}
+#commands{flex-wrap:wrap;max-width:900px}
+#commands button:disabled,#commands button.unaffordable{background:#3a3530;color:#8a8070;border-color:#5a5048;cursor:not-allowed}
+#commands button small{font-weight:normal}
+#commands button:disabled small,#commands button.unaffordable small{color:#ff8a7a}
+</style>
+</head><body><div id="hud"></div><div id="msg"></div><div id="info"></div><div id="commands"></div><canvas id="game"></canvas><script type="module" src="src/main.js"></script></body></html>

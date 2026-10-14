@@ -1,0 +1,15 @@
+round5 browser proof 2026-10-14T08:20:08.342Z  rule: placement ignores units; units inside are evicted
+PASS: ghost at (36,34) valid over 2 villagers, hinted tiles [[36,34],[36,35]]
+  saved proof/round5-01-ghost-over-villagers.png
+PASS: foundation placed; evicted 2 villagers; units inside footprints: 0
+PASS: builder building from adjacent tile; inside=0
+  saved proof/round5-02-villagers-evicted.png
+  saved proof/round5-03a-mover-path-before.png
+PASS: foundation at (37,36) on mover's path; mover repathed immediately, new path avoids it (18 waypoints)
+  saved proof/round5-03b-mover-rerouted.png
+PASS: 2 houses complete; max units inside any footprint during construction: 0
+PASS: mover arrived at (49,37)
+PASS: HUD: Food: 200 | Wood: 150 | Gold: 100 | Stone: 100 | Pop 3/15
+PASS: completed house selected: House | HP: 550/550 | Provides +5 population
+  saved proof/round5-04-completed-house-nobody-inside.png
+RESULT: ALL PASSED

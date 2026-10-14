@@ -1,0 +1,231 @@
+gather test 2026-10-14T08:19:39.760Z
+--- gathering ---
+[food] node berries 125 -> 49; stockpile food=70; carried=6; state=gathering
+PASS: food stockpile increased in trips of 10 (70)
+PASS: food node amount decreased
+PASS: food conservation: removed 76 == delivered 70 + carried 6
+PASS: only food collected
+[wood] node tree 100 -> 31; stockpile wood=60; carried=9; state=gathering
+PASS: wood stockpile increased in trips of 10 (60)
+PASS: wood node amount decreased
+PASS: wood conservation: removed 69 == delivered 60 + carried 9
+PASS: only wood collected
+[gold] node gold_mine 800 -> 719; stockpile gold=80; carried=1; state=gathering
+PASS: gold stockpile increased in trips of 10 (80)
+PASS: gold node amount decreased
+PASS: gold conservation: removed 81 == delivered 80 + carried 1
+PASS: only gold collected
+[stone] node stone_mine 350 -> 270; stockpile stone=80; carried=0; state=to_resource
+PASS: stone stockpile increased in trips of 10 (80)
+PASS: stone node amount decreased
+PASS: stone conservation: removed 80 == delivered 80 + carried 0
+PASS: only stone collected
+--- selection hit-testing ---
+PASS: villager picked at its position
+PASS: town center picked inside footprint
+PASS: tree picked at its position
+PASS: tile (0,0) coordinates correct
+PASS: off-map picks nothing
+PASS: priority villager > building
+PASS: priority building > resource
+PASS: resource info shows type + amount
+PASS: resource info updates live
+PASS: TC info shows HP 2400/2400
+PASS: villager selected via selectAt
+PASS: tile info shows (x, y) and deselects villager
+--- camera clamp ---
+PASS: clamp top-left
+PASS: clamp bottom-right
+PASS: in-range unchanged
+PASS: viewport larger than map centers it
+--- retask (round 3): never lose carried resources ---
+[food->wood] carried 5 food at retask; final stockpile food=5 wood=50; carry=0 wood; removed=55 held=55
+PASS: food->wood: retask sends villager to drop off with carry intact
+PASS: food->wood: carried food deposited (5)
+PASS: food->wood: then gathers wood
+PASS: food->wood: total node decrease 55 == delivered + carried 55
+[food->gold] carried 5 food at retask; final stockpile food=5 gold=50; carry=10 gold; removed=65 held=65
+PASS: food->gold: retask sends villager to drop off with carry intact
+PASS: food->gold: carried food deposited (5)
+PASS: food->gold: then gathers gold
+PASS: food->gold: total node decrease 65 == delivered + carried 65
+[food->stone] carried 5 food at retask; final stockpile food=5 stone=50; carry=10 stone; removed=65 held=65
+PASS: food->stone: retask sends villager to drop off with carry intact
+PASS: food->stone: carried food deposited (5)
+PASS: food->stone: then gathers stone
+PASS: food->stone: total node decrease 65 == delivered + carried 65
+[wood->food] carried 5 wood at retask; final stockpile wood=5 food=40; carry=8 food; removed=53 held=53
+PASS: wood->food: retask sends villager to drop off with carry intact
+PASS: wood->food: carried wood deposited (5)
+PASS: wood->food: then gathers food
+PASS: wood->food: total node decrease 53 == delivered + carried 53
+[wood->gold] carried 5 wood at retask; final stockpile wood=5 gold=50; carry=8 gold; removed=63 held=63
+PASS: wood->gold: retask sends villager to drop off with carry intact
+PASS: wood->gold: carried wood deposited (5)
+PASS: wood->gold: then gathers gold
+PASS: wood->gold: total node decrease 63 == delivered + carried 63
+[wood->stone] carried 5 wood at retask; final stockpile wood=5 stone=50; carry=7 stone; removed=62 held=62
+PASS: wood->stone: retask sends villager to drop off with carry intact
+PASS: wood->stone: carried wood deposited (5)
+PASS: wood->stone: then gathers stone
+PASS: wood->stone: total node decrease 62 == delivered + carried 62
+[gold->food] carried 5 gold at retask; final stockpile gold=5 food=50; carry=5 food; removed=60 held=60
+PASS: gold->food: retask sends villager to drop off with carry intact
+PASS: gold->food: carried gold deposited (5)
+PASS: gold->food: then gathers food
+PASS: gold->food: total node decrease 60 == delivered + carried 60
+[gold->wood] carried 5 gold at retask; final stockpile gold=5 wood=40; carry=8 wood; removed=53 held=53
+PASS: gold->wood: retask sends villager to drop off with carry intact
+PASS: gold->wood: carried gold deposited (5)
+PASS: gold->wood: then gathers wood
+PASS: gold->wood: total node decrease 53 == delivered + carried 53
+[gold->stone] carried 5 gold at retask; final stockpile gold=5 stone=50; carry=10 stone; removed=65 held=65
+PASS: gold->stone: retask sends villager to drop off with carry intact
+PASS: gold->stone: carried gold deposited (5)
+PASS: gold->stone: then gathers stone
+PASS: gold->stone: total node decrease 65 == delivered + carried 65
+[stone->food] carried 5 stone at retask; final stockpile stone=5 food=50; carry=3 food; removed=58 held=58
+PASS: stone->food: retask sends villager to drop off with carry intact
+PASS: stone->food: carried stone deposited (5)
+PASS: stone->food: then gathers food
+PASS: stone->food: total node decrease 58 == delivered + carried 58
+[stone->wood] carried 5 stone at retask; final stockpile stone=5 wood=40; carry=4 wood; removed=49 held=49
+PASS: stone->wood: retask sends villager to drop off with carry intact
+PASS: stone->wood: carried stone deposited (5)
+PASS: stone->wood: then gathers wood
+PASS: stone->wood: total node decrease 49 == delivered + carried 49
+[stone->gold] carried 5 stone at retask; final stockpile stone=5 gold=60; carry=0 gold; removed=65 held=65
+PASS: stone->gold: retask sends villager to drop off with carry intact
+PASS: stone->gold: carried stone deposited (5)
+PASS: stone->gold: then gathers gold
+PASS: stone->gold: total node decrease 65 == delivered + carried 65
+PASS: same-type retask keeps carry (4 wood) and continues to new tree
+PASS: same-type retask: new tree gathered (74 left), conservation 30 == 30
+--- screen<->world uses rounded camera (round 3) ---
+PASS: camPixel rounds like the renderer
+PASS: pixel 21 (first pixel of rendered tile 1) -> tile 1 (unrounded math would give 0)
+PASS: pixel 20 (last pixel of rendered tile 0) -> tile 0
+PASS: sub-pixel either side of border
+PASS: y border: pixel 12 -> tile 1, 11 -> tile 0
+PASS: click on top-left border pixel of tile (2,1) selects it
+PASS: one pixel left selects left neighbour
+PASS: one pixel up selects upper neighbour
+PASS: screenToWorld/worldToScreen round-trip
+--- round 4: start state, training, pop cap, houses ---
+PASS: default start: 3 villagers, 200/200/100/100
+PASS: pop 3/5 from Town Center
+PASS: train villager costs 50 food and queues
+PASS: not spawned before 25s (progress 24.0)
+PASS: villager spawned after 25s
+PASS: spawned on a walkable tile beside the TC
+PASS: right-click with TC selected sets rally
+PASS: queue 5th villager
+PASS: new villager walked to rally (at 45.5,36.5)
+PASS: pop now 5/5
+PASS: training blocked at cap with message: "Population cap reached (5/5): build a House"
+PASS: house invalid on TC / off-map edge / forest
+PASS: house valid on open grass
+PASS: house foundation placed, 25 wood spent
+PASS: cannot overlap foundation
+PASS: foundation gives no pop yet
+PASS: house complete -> pop cap 10
+PASS: training allowed again after house
+PASS: 3 builders faster (9.8s) than 1 (25.6s)
+--- round 4: A* pathfinding ---
+PASS: path found around forest (14 steps)
+PASS: path never enters a blocked tile
+PASS: path is longer than the straight line (detour)
+PASS: villager walked around forest and arrived (24.5,16.5), never on a blocked tile
+PASS: enclosed tile is unreachable (null path)
+PASS: move to enclosed tile goes to nearest reachable walkable tile instead
+PASS: unreachable gather target handled gracefully (state idle, note unreachable)
+PASS: stays idle, no crash
+--- round 4: drag-box multi-select + parallel gather ---
+PASS: box selects 3 villagers (3 Villagers selected)
+PASS: all selected villagers ordered to gather
+parallel: removed=160 delivered=154 carried=6 gatheringTiles=39,32 39,30 39,31
+PASS: 3 villagers: node decrease 160 == delivered 154 + carried 6
+PASS: no villager ever stood on a blocked (node/building) tile
+PASS: gatherers spread across distinct adjacent tiles
+PASS: group move spreads across tiles near target (45,36 44,36 46,36)
+--- round 5: placement ignores units (eviction) ---
+PASS: ghost valid over 2 villagers (units ignored)
+PASS: still invalid over TC / bushes
+PASS: no unit inside any footprint right after placement (evicted 2)
+PASS: both builders standing in footprint were evicted
+PASS: nobody inside during construction; 3 builders worked from adjacent tiles
+PASS: nobody inside after completion
+PASS: gatherer gathering at (39,31)
+PASS: gatherer evicted from house at (38,31)
+PASS: gatherer resumes (gathering), bush 118->109
+PASS: mover's planned path crosses tile (48,36) before placement
+PASS: mover whose path crossed the foundation repathed immediately around it
+PASS: destination inside footprint reassigned to (49,39)
+PASS: mover arrived at (52,36) without entering any footprint
+PASS: safety eviction at construction start
+PASS: safety eviction at completion
+--- round 6: drop-off camps, farms, sheep, barracks ---
+PASS: lumber + mining camp placed (100 wood each)
+PASS: camps built by builders, nobody inside
+PASS: wood drop-offs: lumber camp + TC
+PASS: gold/stone drop-offs: mining camp + TC
+PASS: camps reject food
+PASS: woodcutter used nearest lumber camp (drop at lumber_camp)
+PASS: gold miner used mining camp (drop at mining_camp)
+PASS: forager without a mill uses the TC
+PASS: after a mill is built the forager drops at the mill
+PASS: walled-off (unreachable) camp is skipped; TC used by path distance
+PASS: farm far from Mill/TC invalid with message
+PASS: farm adjacent to TC valid
+PASS: farm overlapping TC invalid
+PASS: farm costs 60 wood
+PASS: farm built
+PASS: builder auto-farms (to_resource)
+PASS: completed farm is walkable (straight path across it)
+PASS: cannot build on top of a farm
+PASS: farmer stands on the farm
+PASS: depleted farm removed after 195s
+PASS: all 175 farm food delivered (175)
+PASS: rates: forage 0.75 < farm 0.9 < butcher 1.2
+PASS: farm adjacent to a Mill (even a foundation) valid
+PASS: 7 neutral sheep, not counted in pop
+PASS: right-click neutral sheep -> villager goes to it
+PASS: villager reached sheep and converted it
+PASS: touching a neutral sheep converts it
+PASS: owned sheep selectable
+PASS: owned sheep moves on command
+PASS: drag-box prefers villagers over sheep
+PASS: right-click own sheep -> butcher order
+PASS: sheep killed where it stood -> carcass at (26,26)
+PASS: carcass holds 100 food
+PASS: butcher yield 100 delivered (+100, carrying 7)
+PASS: butcher() yields a 100-food carcass
+PASS: barracks costs 175 wood
+PASS: barracks built
+PASS: militia costs 60 food 20 gold
+PASS: barracks cannot train villagers, TC cannot train militia
+PASS: barracks rally point
+PASS: no militia before 21s
+PASS: militia spawned after 21s, counts as pop
+PASS: militia walked to rally
+PASS: militia selectable + movable
+PASS: 5th pop slot queued at barracks
+PASS: shared cap: TC blocked while barracks queue fills last slot (4 pop + 1 queued = 5)
+PASS: pop 5/5: militia blocked too
+PASS: per-building queue cap 5
+PASS: missing-resource text "need 40 wood"
+PASS: 6 villagers
+mixed: removed=837 delivered=800 carried=37 created=275 tasks=gathering:tree gathering:gold_mine gathering:farm gathering:stone_mine gathering:berries gathering:berries
+PASS: farm + carcass created during run
+PASS: all six task kinds active
+PASS: mixed 6-villager balance: node decrease 837 == delivered 800 + carried 37
+--- round 6: build mode (pure ui-state) ---
+PASS: successful placement exits build mode
+PASS: refused placement (over TC) exits build mode with message
+PASS: unaffordable placement refused, exits build mode
+PASS: drag-box in build mode never places (stays in build mode)
+PASS: small jitter (<=5px) still counts as a click and places
+PASS: cancel (Esc/right-click) exits build mode
+PASS: farm ghost far from Mill/TC invalid
+PASS: farm ghost adjacent to TC valid at (36,30)
+RESULT: ALL 200 PASSED

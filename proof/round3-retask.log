@@ -1,0 +1,79 @@
+--- retask (round 3): never lose carried resources ---
+[food->wood] carried 5 food at retask; final stockpile food=5 wood=40; carry=10 wood; removed=55 held=55
+PASS: food->wood: retask sends villager to drop off with carry intact
+PASS: food->wood: carried food deposited (5)
+PASS: food->wood: then gathers wood
+PASS: food->wood: total node decrease 55 == delivered + carried 55
+[food->gold] carried 5 food at retask; final stockpile food=5 gold=60; carry=0 gold; removed=65 held=65
+PASS: food->gold: retask sends villager to drop off with carry intact
+PASS: food->gold: carried food deposited (5)
+PASS: food->gold: then gathers gold
+PASS: food->gold: total node decrease 65 == delivered + carried 65
+[food->stone] carried 5 food at retask; final stockpile food=5 stone=50; carry=9 stone; removed=64 held=64
+PASS: food->stone: retask sends villager to drop off with carry intact
+PASS: food->stone: carried food deposited (5)
+PASS: food->stone: then gathers stone
+PASS: food->stone: total node decrease 64 == delivered + carried 64
+[wood->food] carried 5 wood at retask; final stockpile wood=5 food=60; carry=0 food; removed=65 held=65
+PASS: wood->food: retask sends villager to drop off with carry intact
+PASS: wood->food: carried wood deposited (5)
+PASS: wood->food: then gathers food
+PASS: wood->food: total node decrease 65 == delivered + carried 65
+[wood->gold] carried 5 wood at retask; final stockpile wood=5 gold=50; carry=9 gold; removed=64 held=64
+PASS: wood->gold: retask sends villager to drop off with carry intact
+PASS: wood->gold: carried wood deposited (5)
+PASS: wood->gold: then gathers gold
+PASS: wood->gold: total node decrease 64 == delivered + carried 64
+[wood->stone] carried 5 wood at retask; final stockpile wood=5 stone=50; carry=6 stone; removed=61 held=61
+PASS: wood->stone: retask sends villager to drop off with carry intact
+PASS: wood->stone: carried wood deposited (5)
+PASS: wood->stone: then gathers stone
+PASS: wood->stone: total node decrease 61 == delivered + carried 61
+[gold->food] carried 5 gold at retask; final stockpile gold=5 food=70; carry=0 food; removed=75 held=75
+PASS: gold->food: retask sends villager to drop off with carry intact
+PASS: gold->food: carried gold deposited (5)
+PASS: gold->food: then gathers food
+PASS: gold->food: total node decrease 75 == delivered + carried 75
+[gold->wood] carried 5 gold at retask; final stockpile gold=5 wood=40; carry=6 wood; removed=51 held=51
+PASS: gold->wood: retask sends villager to drop off with carry intact
+PASS: gold->wood: carried gold deposited (5)
+PASS: gold->wood: then gathers wood
+PASS: gold->wood: total node decrease 51 == delivered + carried 51
+[gold->stone] carried 5 gold at retask; final stockpile gold=5 stone=50; carry=9 stone; removed=64 held=64
+PASS: gold->stone: retask sends villager to drop off with carry intact
+PASS: gold->stone: carried gold deposited (5)
+PASS: gold->stone: then gathers stone
+PASS: gold->stone: total node decrease 64 == delivered + carried 64
+[stone->food] carried 5 stone at retask; final stockpile stone=5 food=60; carry=9 food; removed=74 held=74
+PASS: stone->food: retask sends villager to drop off with carry intact
+PASS: stone->food: carried stone deposited (5)
+PASS: stone->food: then gathers food
+PASS: stone->food: total node decrease 74 == delivered + carried 74
+[stone->wood] carried 5 stone at retask; final stockpile stone=5 wood=40; carry=8 wood; removed=53 held=53
+PASS: stone->wood: retask sends villager to drop off with carry intact
+PASS: stone->wood: carried stone deposited (5)
+PASS: stone->wood: then gathers wood
+PASS: stone->wood: total node decrease 53 == delivered + carried 53
+[stone->gold] carried 5 stone at retask; final stockpile stone=5 gold=60; carry=0 gold; removed=65 held=65
+PASS: stone->gold: retask sends villager to drop off with carry intact
+PASS: stone->gold: carried stone deposited (5)
+PASS: stone->gold: then gathers gold
+PASS: stone->gold: total node decrease 65 == delivered + carried 65
+PASS: same-type retask keeps carry (4 wood) and continues to new tree
+PASS: same-type retask: new tree gathered (74 left), conservation 30 == 30
+PASS: drag pan moved camera (448,728) -> (256,472)
+PASS: tile info: Grass tile | (17, 17)
+PASS: resource info: Tree | wood: 100 remaining
+PASS: TC info: Town Center | HP: 2400/2400
+PASS: villager info: Villager | Task: Idle | Carrying: 0/10
+PASS: villager working: Villager | Task: Gathering | Carrying: 1 wood/10
+PASS: wood increased 0 -> 20
+PASS: tree amount decreased in panel: Tree | wood: 77 remaining
+PASS: retask with 3 wood: Villager | Task: Returning to Town Center | Carrying: 3 wood/10
+PASS: carried wood deposited (20 -> 23), then food (20): Villager | Task: Gathering | Carrying: 7 food/10
+PASS: edge top-left: cam=(0,0) edge pixels non-black [[74,122,44,255],[69,114,40,255],[79,128,48,255],[83,134,52,255]]
+PASS: edge top-right: cam=(768,0) edge pixels non-black [[74,122,44,255],[69,114,40,255],[83,134,52,255],[69,114,40,255]]
+PASS: edge bottom-left: cam=(0,1328) edge pixels non-black [[69,114,40,255],[74,122,44,255],[83,134,52,255],[69,114,40,255]]
+PASS: edge bottom-right: cam=(768,1328) edge pixels non-black [[74,122,44,255],[69,114,40,255],[83,134,52,255],[69,114,40,255]]
+PASS: bottom-right clamp exact (768,1328)
+RESULT: ALL PASSED

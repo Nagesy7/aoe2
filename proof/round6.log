@@ -1,0 +1,65 @@
+round6 browser proof 2026-10-14T08:20:10.599Z
+PASS: drag-box: 3 Villagers selected | 3 × Idle | Carrying: 0 total
+PASS: build menu: Build House 25 wood | Lumber Camp 100 wood | Mining Camp 100 wood | Mill 100 wood | Farm 60 wood | Barracks 175 wood
+  saved proof/round6-01-build-menu.png
+PASS: lumber camp foundation at (24,24); Food: 200 | Wood: 100 | Gold: 100 | Stone: 100 | Pop 3/5
+PASS: greyed: Barracks "Barracks need 75 wood"
+  saved proof/round6-02-build-menu-greyed.png
+PASS: lumber camp built by 3 villagers
+PASS: nobody inside
+  saved proof/round6-03-lumber-camp-built.png
+PASS: all 3 woodcutters drop at the Lumber Camp (nearest wood drop-off), not the TC
+  saved proof/round6-04-villager-uses-lumber-camp.png
+  after 220s of woodcutting: Food: 200 | Wood: 760 | Gold: 100 | Stone: 100 | Pop 3/5
+PASS: mining camp foundation at (40,41)
+PASS: mining camp built
+  saved proof/round6-05-mining-camp-built.png
+PASS: gold miner drops at the Mining Camp
+  saved proof/round6-06-villager-uses-mining-camp.png
+PASS: mill foundation at (40,28)
+PASS: mill built
+  saved proof/round6-07-mill-built.png
+PASS: forager drops berries at the Mill
+  saved proof/round6-08-villager-uses-mill.png
+PASS: farm ghost red away from Mill/TC at (46,39)
+  saved proof/round6-09-farm-ghost-invalid.png
+PASS: farm ghost green touching the Mill at (37,27)
+  saved proof/round6-10-farm-ghost-valid.png
+PASS: farm placed at (37,27); build mode exited
+PASS: farm built; builder auto-farms (standing on the farm)
+  farm panel: Farm | HP: 480/480 | Food: 175/175
+  saved proof/round6-11-farming.png
+PASS: depleted farm disappears
+  saved proof/round6-12-farm-depleted-gone.png
+PASS: picked a neutral on-screen sheep (id 165) at {"x":50.5,"y":24.5,"state":"idle","type":"sheep","owner":null}
+PASS: villager reached the sheep and converted it
+PASS: sheep panel: Sheep | Owner: you | Food: 100 when butchered
+  saved proof/round6-13-sheep-converted.png
+  saved proof/round6-14a-sheep-moving.png
+PASS: owned sheep follows its move order to (33,38)
+  saved proof/round6-14b-sheep-arrived.png
+PASS: sheep killed at its location; carcass (100 food) being butchered
+PASS: carcass at the sheep's tile (33,38), 99 left
+  saved proof/round6-15-butchering.png
+PASS: butchered food delivered
+PASS: barracks affordable now
+PASS: barracks foundation at (44,36)
+PASS: barracks built
+PASS: barracks button: Train Militia 60 food, 20 gold, 21s
+PASS: 2 militia queued: gold 111 -> 71
+PASS: barracks panel: Barracks | HP: 1200/1200 | Queue: 2/5 | Training Militia: 25% | M | M
+  saved proof/round6-16-barracks-queue.png
+PASS: 2 militia trained
+PASS: HUD Food: 285 | Wood: 1225 | Gold: 71 | Stone: 100 | Pop 5/5
+PASS: militia blocked at cap: "Population cap reached (5/5): build a House"
+  saved proof/round6-17-militia-trained-pop-cap.png
+PASS: militia selected: 2 units selected | 2 × Idle | Carrying: 0 total
+PASS: militia move on command
+  saved proof/round6-18-militia-moved.png
+PASS: refused over TC: build mode exited, message "Cannot build there"
+  saved proof/round6-19-build-mode-exit-after-refusal.png
+PASS: drag-box while in build mode never places (still in build mode)
+PASS: Esc exits build mode
+PASS: right-click exits build mode
+PASS: final: no unit inside any non-walkable footprint
+RESULT: ALL PASSED
