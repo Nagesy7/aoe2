@@ -6,7 +6,7 @@
   "private": true,
   "scripts": {
     "start": "npx serve .",
-    "test": "node tests/gather.test.mjs && node tests/ages.test.mjs && node tests/combat.test.mjs && node tests/determinism.test.mjs && node tests/efficiency.test.mjs",
+    "test": "node tests/gather.test.mjs && node tests/ages.test.mjs && node tests/combat.test.mjs && node tests/determinism.test.mjs && node tests/efficiency.test.mjs && node tests/kibble.test.mjs",
     "relay": "node server/relay.mjs --static .",
     "lockstep": "node scripts/lockstep.mjs",
     "combat": "node scripts/combat.mjs",

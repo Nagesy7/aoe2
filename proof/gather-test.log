@@ -1,4 +1,4 @@
-gather test 2026-10-14T12:28:37.607Z
+gather test 2026-10-14T12:33:25.060Z
 --- gathering ---
 [food] node berries 125 -> 49; stockpile food=70; carried=6; state=gathering
 PASS: food stockpile increased in trips of 10 (70)

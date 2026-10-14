@@ -7,6 +7,7 @@ import { startTitle } from './title.js';
 import * as SIM from './sim.js';
 import { Lockstep } from './lockstep.js';
 import { NetSession, TabsBus, RelayBus, defaultRelayUrl, newRoomCode } from './net.js';
+import { initKibble } from './kibble-ui.js';
 import { createUi, startPlacing, cancelPlacing, updateGhost, pointerDown, pointerMove, pointerUp } from './ui-state.js';
 const canvas = document.getElementById('game'), ctx = canvas.getContext('2d');
 const params = new URLSearchParams(location.search);
@@ -292,3 +293,5 @@ if (params.get('join')) $('join-code').value = params.get('join');
 // Legacy / direct single-player URLs (?enemy=, ?scenario=, ?raids=, ?play=sp) skip the menu.
 if (['enemy', 'scenario', 'raids'].some(k => params.has(k)) || params.get('play') === 'sp') startGame();
 else { $('menu').style.display = 'flex'; $('title-bg').style.display = 'block'; startTitle($('title-bg')); }
+
+initKibble();
