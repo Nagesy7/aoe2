@@ -1,4 +1,4 @@
-determinism test 2026-10-14T10:20:05.345Z
+determinism test 2026-10-14T11:59:57.393Z
 --- two sims, same command stream, 6000 ticks (5 min game time) ---
   tick 1000: hash f7411343 units 8 buildings 9 cmds so far 73
   tick 2000: hash 500591ff units 9 buildings 15 cmds so far 120
@@ -6,7 +6,7 @@ determinism test 2026-10-14T10:20:05.345Z
   tick 4000: hash 3575e570 units 17 buildings 22 cmds so far 219
   tick 5000: hash ba39ae6c units 18 buildings 27 cmds so far 256
   tick 6000: hash cb163b9e units 20 buildings 32 cmds so far 306
-  2867 ms
+  2952 ms
 PASS: hashes identical on all 6000 ticks (6000/6000)
 PASS: command stream exercised (306 commands)
 PASS: all command types used: order,build,train,rally,ageup,stop,cancel,research

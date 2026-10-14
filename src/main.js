@@ -14,12 +14,13 @@ const $ = id => document.getElementById(id);
 let world = null, cam = { x: 0, y: 0 }, ui = createUi(), net = null, fog = null;
 const keys = new Set(); addEventListener('blur', () => keys.clear());
 let mouse = { x: -1, y: -1, inside: false }, drag = null;
-function resize() { canvas.width = innerWidth; canvas.height = innerHeight; if (world) clampCamera(cam, canvas.width, canvas.height, world); } resize(); addEventListener('resize', resize);
+let Z = 1; // touch pinch zoom: the canvas backing store is viewport/Z and CSS-stretched to the viewport (desktop Z=1: unchanged)
+function resize() { canvas.width = Math.round(innerWidth / Z); canvas.height = Math.round(innerHeight / Z); canvas.style.width = innerWidth + 'px'; canvas.style.height = innerHeight + 'px'; if (world) clampCamera(cam, canvas.width, canvas.height, world); } resize(); addEventListener('resize', resize);
 addEventListener('blur', () => { keys.clear(); drag = null; });   // no stuck pan keys after alt-tab
 addEventListener('keydown', e => { if (e.target.tagName === 'INPUT') return; keys.add(e.key.toLowerCase()); if (e.key === 'Escape') cancelPlacing(ui); });
 addEventListener('keyup', e => keys.delete(e.key.toLowerCase()));
 canvas.addEventListener('contextmenu', e => e.preventDefault());
-const toWorld = (sx, sy) => screenToWorld(sx, sy, cam);
+const toWorld = (sx, sy) => screenToWorld(sx / Z, sy / Z, cam);
 const viewer = () => (world && world.viewer) || 'player';
 const isFoe = o => !!o.owner && o.owner !== viewer();
 const seen = o => !fog || fog.sees(o);
@@ -62,6 +63,48 @@ addEventListener('mouseup', e => {
     const s = world.selection; // fog: cannot select what you cannot see
     if (r && r.kind === 'select' && s && (s.kind === 'unit' || s.kind === 'building')) { const o = s.kind === 'unit' ? SIM.mobile(world, s.id) : world.buildings.find(q => q.id === s.id); if (o && !seen(o)) { world.selection = null; world.selected = null; } } }
 });
+// ---- touch: tap select, drag pan, pinch zoom, long-press / Command tap = order, Box toggle = drag-select ----
+const touchUi = { box: false, command: false }; let tp = null; // touch gesture state
+const tbar = $('touchbar');
+const syncTbar = () => { for (const b of tbar.querySelectorAll('button')) b.classList.toggle('active', !!touchUi[b.dataset.t]); window.game && (window.game.touch = { ...touchUi }); };
+tbar.addEventListener('click', e => { const b = e.target.closest('button'); if (!b) return; const t = b.dataset.t;
+  if (t === 'cancel') { cancelPlacing(ui); touchUi.command = touchUi.box = false; if (world) { world.selection = null; world.selected = null; } }
+  else { touchUi[t] = !touchUi[t]; if (touchUi[t]) touchUi[t === 'box' ? 'command' : 'box'] = false; }
+  syncTbar(); });
+const pts = e => [...e.touches].map(t => ({ x: t.clientX, y: t.clientY }));
+function touchCommand(x, y) { const p = toWorld(x, y); mouse = { x, y, inside: false }; rightClick(p.x, p.y); }
+function setZoom(nz, fx, fy) { nz = Math.max(0.5, Math.min(2, nz)); const w = toWorld(fx, fy); Z = nz; resize(); cam.x = w.x * TILE - fx / Z; cam.y = w.y * TILE - fy / Z; clampCamera(cam, canvas.width, canvas.height, world); }
+canvas.addEventListener('touchstart', e => { e.preventDefault(); if (!world) return; const p = pts(e);
+  if (p.length >= 2) { clearTimeout(tp?.lp); ui.press = null; ui.box = null; const [a, b] = p;
+    tp = { pinch: true, d: Math.hypot(a.x - b.x, a.y - b.y), z: Z, mx: (a.x + b.x) / 2, my: (a.y + b.y) / 2 }; return; }
+  if (tp?.pinch) return;
+  const [a] = p; tp = { x: a.x, y: a.y, cx: cam.x, cy: cam.y, moved: false, done: false, t0: performance.now() };
+  if (touchUi.box) pointerDown(ui, a.x, a.y);
+  else if (!ui.placing) tp.lp = setTimeout(() => { if (tp && !tp.moved && !tp.pinch) { tp.done = true; touchCommand(tp.x, tp.y); navigator.vibrate?.(20); } }, 450);
+}, { passive: false });
+canvas.addEventListener('touchmove', e => { e.preventDefault(); if (!world || !tp) return; const p = pts(e);
+  if (tp.pinch) { if (p.length < 2) return; const [a, b] = p, mx = (a.x + b.x) / 2, my = (a.y + b.y) / 2;
+    setZoom(tp.z * Math.hypot(a.x - b.x, a.y - b.y) / tp.d, mx, my); cam.x -= (mx - tp.mx) / Z; cam.y -= (my - tp.my) / Z; tp.mx = mx; tp.my = my; clampCamera(cam, canvas.width, canvas.height, world); return; }
+  const [a] = p; if (Math.hypot(a.x - tp.x, a.y - tp.y) > 10) { tp.moved = true; clearTimeout(tp.lp); }
+  if (touchUi.box) { pointerMove(ui, a.x, a.y); return; }
+  if (ui.placing) { mouse = { x: a.x, y: a.y, inside: false }; refreshGhost(); }
+  if (tp.moved && !ui.placing) { cam.x = tp.cx - (a.x - tp.x) / Z; cam.y = tp.cy - (a.y - tp.y) / Z; clampCamera(cam, canvas.width, canvas.height, world); }
+}, { passive: false });
+const touchEnd = e => { e.preventDefault(); if (!world || !tp) return;
+  if (tp.pinch) { if (e.touches.length === 0) tp = null; return; }
+  clearTimeout(tp.lp); const g = tp; tp = null; const t = e.changedTouches[0], x = t ? t.clientX : g.x, y = t ? t.clientY : g.y;
+  if (touchUi.box) { pointerMove(ui, x, y); pointerUp(ui, world, toWorld, issue); return; }
+  if (g.done) return;
+  if (ui.placing) { if (g.moved && Math.hypot(x - g.x, y - g.y) > 10) { mouse = { x, y, inside: false }; refreshGhost(); } pointerDown(ui, x, y); pointerUp(ui, world, toWorld, issue); return; }
+  if (g.moved) return;
+  if (touchUi.command) { touchCommand(x, y); return; }
+  pointerDown(ui, x, y); const r = pointerUp(ui, world, toWorld, issue); const s = world.selection;
+  if (r && r.kind === 'select' && s && (s.kind === 'unit' || s.kind === 'building')) { const o = s.kind === 'unit' ? SIM.mobile(world, s.id) : world.buildings.find(q => q.id === s.id); if (o && !seen(o)) { world.selection = null; world.selected = null; } }
+};
+canvas.addEventListener('touchend', touchEnd, { passive: false }); canvas.addEventListener('touchcancel', e => { clearTimeout(tp?.lp); tp = null; ui.press = null; ui.box = null; e.preventDefault(); }, { passive: false });
+for (const t of ['gesturestart', 'dblclick']) document.addEventListener(t, e => e.preventDefault());
+const orient = () => { document.documentElement.dataset.orient = innerWidth >= innerHeight ? 'landscape' : 'portrait'; scrollTo(0, 0); };
+addEventListener('resize', orient); addEventListener('orientationchange', () => setTimeout(() => { resize(); orient(); }, 100)); orient();
 // ---- HUD / panels ----
 const bannerEl = $('banner'), hud = $('hud'), infoEl = $('info'), cmdEl = $('commands'), msgEl = $('msg'), netEl = $('net'), stallEl = $('stall'), desyncEl = $('desync');
 let lastCmd = '';
@@ -135,7 +178,7 @@ function startGame({ mp = false, seed = 1, me = 0, cfg = {}, session = null } = 
   }
   const tc = world.buildings.find(b => b.type === 'town_center' && b.owner === viewer());
   const c = mp ? { x: tc.x + 2, y: tc.y + 2 } : { x: 34, y: 34 };
-  cam.x = c.x * TILE - innerWidth / 2; cam.y = c.y * TILE - innerHeight / 2; clampCamera(cam, canvas.width, canvas.height, world);
+  cam.x = c.x * TILE - canvas.width / 2; cam.y = c.y * TILE - canvas.height / 2; clampCamera(cam, canvas.width, canvas.height, world);
   Object.assign(window.game, { world, cam, ui, mode: mp ? 'mp' : 'sp' });
   for (const id of ['menu', 'lobby', 'title-bg']) $(id).style.display = 'none';
   last = performance.now(); requestAnimationFrame(frame);
@@ -166,10 +209,10 @@ function frame(now) {
   if (ui.placing) refreshGhost(); if (mouse.inside) updateCursor(); render(ctx, world, cam, ui, net ? fog : null); updateHud(); requestAnimationFrame(frame);
 }
 // Automation hook: read-only state access + time advance in single player (proof scripts must not use it to issue orders).
-window.game = { sim: SIM, world: null, cam, ui, selectionInfo, pickAt, toScreen: (x, y) => worldToScreen(x, y, cam), toWorld,
+window.game = { sim: SIM, world: null, cam, ui, selectionInfo, pickAt, toScreen: (x, y) => { const q = worldToScreen(x, y, cam); return { x: q.x * Z, y: q.y * Z }; }, zoom: () => Z, toWorld,
   tick: (s) => { if (net) throw new Error('no fast-forward in multiplayer'); const n = Math.round(s / TICK_DT); for (let i = 0; i < n; i++) stepTick(world); render(ctx, world, cam, ui); updateHud(); },
   stateHash: () => world && stateHash(world),
-  getSelected: () => getSelected(world) };
+  getSelected: () => getSelected(world), touch: { ...touchUi } };
 
 // ---- main menu / lobby ----
 let session = null;

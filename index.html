@@ -1,5 +1,6 @@
 <!doctype html>
-<html><head><meta charset="utf-8"><title>Inu Empires</title>
+<html><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover"><title>Inu Empires</title>
 <style>
 html,body{margin:0;overflow:hidden;background:#000}
 #hud{position:fixed;top:0;left:0;right:0;padding:6px 12px;background:rgba(40,25,10,.85);color:#f4e2b8;font:bold 15px sans-serif;display:flex;gap:24px;pointer-events:none;border-bottom:2px solid #a07a3a}
@@ -41,8 +42,30 @@ html,body{margin:0;overflow:hidden;background:#000}
 .screen h1{font:bold 64px Georgia,serif!important;letter-spacing:3px;background:linear-gradient(#fff2b0,#ffc040 55%,#c07a20);-webkit-background-clip:text;background-clip:text;color:transparent!important;filter:drop-shadow(0 4px 3px #000)}
 .screen .tag{font:italic 16px Georgia,serif;color:#f4d8a0;margin-top:-10px;letter-spacing:2px}
 #brand{color:#ffd86b;font-family:Georgia,serif}
+html,body{position:fixed;inset:0;overscroll-behavior:none}
+#game{display:block;touch-action:none}
+#touchbar,#rotate{display:none}
+#hud{padding-left:max(12px,env(safe-area-inset-left));padding-right:max(12px,env(safe-area-inset-right));padding-top:max(6px,env(safe-area-inset-top))}
+@media (pointer:coarse),(hover:none){
+ body{-webkit-user-select:none;user-select:none;-webkit-touch-callout:none;-webkit-tap-highlight-color:transparent}
+ #touchbar{display:flex;flex-direction:column;gap:6px;position:fixed;top:calc(40px + env(safe-area-inset-top));right:max(8px,env(safe-area-inset-right));z-index:5}
+ #touchbar button{font:bold 13px sans-serif;min-width:92px;min-height:40px;padding:4px 8px;background:#5a3c18cc;color:#f4e2b8;border:2px solid #a07a3a;border-radius:6px;touch-action:manipulation}
+ #touchbar button.active{background:#2f6a1c;border-color:#6f6}
+ #commands button,.screen button{touch-action:manipulation}
+ html[data-orient=portrait] #rotate{display:block;position:fixed;bottom:calc(10px + env(safe-area-inset-bottom));right:10px;z-index:11;padding:6px 12px;background:#000a;color:#ffd86b;font:bold 13px sans-serif;border:1px solid #d4a640;border-radius:6px;pointer-events:none}
+}
+@media (max-height:520px){
+ #hud{font-size:12px;gap:12px;padding-top:max(4px,env(safe-area-inset-top));padding-bottom:4px;white-space:nowrap;overflow:hidden}#brand{display:none}
+ #msg{top:30px;font-size:13px}#banner{font-size:20px;padding:10px 24px}#net{top:28px;font-size:10px}
+ #info{left:max(8px,env(safe-area-inset-left));bottom:max(8px,env(safe-area-inset-bottom));min-width:170px;max-width:30vw;max-height:calc(100vh - 60px);overflow:hidden;font-size:12px;padding:6px 10px}#info b{font-size:13px}
+ #commands{left:auto;right:max(8px,env(safe-area-inset-right));bottom:max(8px,env(safe-area-inset-bottom));max-height:calc(100vh - 190px);overflow-y:auto;flex-wrap:wrap;align-content:flex-start;width:min(348px,calc(100vw - 32vw - 30px));gap:3px!important}
+ #commands button{width:84px;font-size:10px!important;padding:2px 3px!important}#commands button small{font-size:9px}
+ #touchbar{top:calc(30px + env(safe-area-inset-top))}#touchbar button{min-height:34px;min-width:84px;font-size:12px}
+ .screen{justify-content:flex-start;overflow-y:auto;padding:8px 0}#menu{padding-left:max(5vw,env(safe-area-inset-left))}.screen .panel{gap:6px;padding:10px 20px}
+ .screen h1{font-size:34px!important}.screen button{padding:6px 18px;font-size:14px}.screen .hint{font-size:11px}#lobby-code{font-size:30px}.pl{min-width:300px}
+}
 </style>
-</head><body><div id="hud"></div><div id="msg"></div><div id="banner"></div><div id="info"></div><div id="commands"></div><div id="net"></div><div id="stall"></div><div id="desync"></div><canvas id="game"></canvas><canvas id="title-bg"></canvas>
+</head><body><div id="hud"></div><div id="msg"></div><div id="banner"></div><div id="info"></div><div id="commands"></div><div id="net"></div><div id="stall"></div><div id="desync"></div><canvas id="game"></canvas><div id="touchbar"><button data-t="command">Command</button><button data-t="box">Box select</button><button data-t="cancel">Clear</button></div><div id="rotate">Rotate for best play ⟳</div><canvas id="title-bg"></canvas>
 <div id="menu" class="screen"><div class="panel"><h1>Inu Empires</h1><div class="tag">Rise of the Shiba Clans</div>
  <button id="btn-sp">Single Player</button>
  <div class="row"><label for="transport">Online via</label><select id="transport"><option value="tabs">Same browser (two tabs)</option><option value="relay">Relay server (WebSocket)</option></select></div>

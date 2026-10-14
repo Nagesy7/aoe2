@@ -1,4 +1,4 @@
-gather verification 2026-10-14T10:17:10.841Z
+gather verification 2026-10-14T12:02:20.583Z
 PASS: forager reached the bush and is gathering
 PASS: FOOD BUG CHECK: villager panel while foraging shows "Carrying: 3 food" (non-zero food)
   saved proof/gather-verify-01-forager-carrying-food.png
