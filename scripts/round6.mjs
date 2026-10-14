@@ -19,7 +19,8 @@ let fails = 0; const check = (c, m) => { log(`${c ? 'PASS' : 'FAIL'}: ${m}`); if
 const browser = await chromium.launch();
 const page = await browser.newPage({ viewport: { width: 1280, height: 720 } });
 page.on('pageerror', e => { log('pageerror ' + e); fails++; });
-await page.goto(`http://localhost:${server.address().port}/`); await page.waitForFunction(() => window.game);
+// economy-only scenario: these checks predate the enemy camp (combat is covered by scripts/combat.mjs)
+await page.goto(`http://localhost:${server.address().port}/?enemy=0`); await page.waitForFunction(() => window.game);
 const shot = async name => { await page.waitForTimeout(120); await page.screenshot({ path: join(root, 'proof', name) }); log(`  saved proof/${name}`); };
 const S = fn => page.evaluate(fn);                      // read-only state access
 const advance = s => page.evaluate(s => window.game.tick(s), s); // time advance hook

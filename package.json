@@ -5,7 +5,8 @@
   "private": true,
   "scripts": {
     "start": "npx serve .",
-    "test": "node tests/gather.test.mjs && node tests/ages.test.mjs",
+    "test": "node tests/gather.test.mjs && node tests/ages.test.mjs && node tests/combat.test.mjs",
+    "combat": "node scripts/combat.mjs",
     "screenshot": "node scripts/screenshot.mjs",
     "round4": "node scripts/round4.mjs",
     "round5": "node scripts/round5.mjs",

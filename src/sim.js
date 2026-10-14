@@ -16,30 +16,50 @@ export const TRAIN_TIME = 25, HOUSE_BUILD_TIME = 25, POP_MAX = 200, QUEUE_MAX = 
 export const CARRY_MAX = 10, GATHER_RATE = 1.0, REACH = 0.9;
 export const BUILDING_DEFS = BUILDINGS;
 export const BUILD_MENU = TT_MENU;
+import { orderAttack, orderAttackGroup, isEnemy, tickAttack, tickProjectiles, tickAggro, tickSeparation, tickAi, stepWithStuckCheck, unitStats, armorOf } from './combat.js';
+export * from './combat.js';
 
+// Player 2 ("enemy"): a small walled-in-by-nothing camp in the north-west with guards that aggro on sight.
+export const ENEMY_CAMP = { x: 7, y: 7 };
+export function addEnemyCamp(world, { raids = false, at = ENEMY_CAMP } = {}) {
+  const { x, y } = at;
+  world.resources = world.resources.filter(n => !(n.x >= x - 3 && n.x <= x + 12 && n.y >= y - 3 && n.y <= y + 12));
+  addBuilding(world, 'barracks', x, y, true, 'enemy'); addBuilding(world, 'house', x + 5, y, true, 'enemy'); addBuilding(world, 'house', x, y + 5, true, 'enemy');
+  for (const [t, ux, uy] of [['militia', x + 4.5, y + 4.5], ['militia', x + 5.5, y + 4.5], ['spearman', x + 4.5, y + 5.5], ['archer', x + 3.5, y + 3.5]]) newVillager(world, ux, uy, t, 'enemy');
+  world.ai = { raids, nextRaid: world.time + 180, raidsSent: 0 };
+}
+// Skirmish start (?scenario=skirmish): Feudal Age, a Barracks + Archery Range, houses and a small army.
+export function setupSkirmish(world) {
+  world.age = 'feudal'; world.stockpile = { food: 1000, wood: 1000, gold: 1000, stone: 500 };
+  for (const [t, x, y] of [['barracks', 27, 26], ['archery_range', 42, 34], ['house', 44, 38], ['house', 46, 38], ['house', 44, 40]]) {
+    world.resources = world.resources.filter(n => !(n.x >= x && n.x < x + 3 && n.y >= y && n.y < y + 3)); addBuilding(world, t, x, y, true); }
+  for (const [t, x, y] of [['militia', 36.5, 38.5], ['militia', 37.5, 38.5], ['militia', 38.5, 38.5], ['spearman', 36.5, 39.5], ['spearman', 37.5, 39.5], ['archer', 38.5, 39.5], ['archer', 39.5, 39.5]])
+    newVillager(world, x, y, t);
+}
+export function spawnEnemy(world, type, x, y) { return newVillager(world, x, y, type, 'enemy'); }
 function rng(seed) { let s = seed >>> 0; return () => ((s = (s * 1664525 + 1013904223) >>> 0) / 4294967296); }
 
-export function addBuilding(world, type, x, y, complete = true) {
+export function addBuilding(world, type, x, y, complete = true, owner = 'player') {
   const d = BUILDING_DEFS[type];
   const b = { id: world.nextId++, type, name: d.name, x, y, size: d.size, maxHp: d.maxHp, hp: complete ? d.maxHp : 1,
     popCap: d.popCap || 0, complete, progress: complete ? (d.buildTime || 0) : 0, buildTime: d.buildTime || 0,
-    dropsite: !!d.accepts, accepts: d.accepts || [], trains: d.trains || [], walkable: !!d.walkable, queue: [], trainProgress: 0, rally: null };
+    dropsite: !!d.accepts, accepts: d.accepts || [], trains: d.trains || [], walkable: !!d.walkable, queue: [], trainProgress: 0, rally: null, owner };
   world.buildings.push(b); return b;
 }
-function newVillager(world, x, y, type = 'villager') {
-  const d = UNIT_DEFS[type], fx = techEffects(world), vil = type === 'villager';
+function newVillager(world, x, y, type = 'villager', owner = 'player') {
+  const d = UNIT_DEFS[type], fx = owner === 'player' ? techEffects(world) : techEffects({}), vil = type === 'villager';
   const maxHp = d.hp + (vil ? fx.villagerHp : 0);
-  const u = { id: world.nextId++, type, owner: 'player', x, y, speed: d.speed * (vil ? 1 + fx.villagerSpeedPct / 100 : 1), hp: maxHp, maxHp, state: 'idle', target: null, build: null,
+  const u = { id: world.nextId++, type, owner, x, y, speed: d.speed * (vil ? 1 + fx.villagerSpeedPct / 100 : 1), hp: maxHp, maxHp, state: 'idle', target: null, build: null,
     path: [], goal: null, carry: { res: null, amount: 0 }, gatherTimer: 0, note: null };
   world.units.push(u); return u;
 }
 
-export function createWorld({ width = 64, height = 64, seed = 1, stockpile = START_STOCKPILE, villagers = 3 } = {}) {
+export function createWorld({ width = 64, height = 64, seed = 1, stockpile = START_STOCKPILE, villagers = 3, enemy = false, raids = false, scenario = null } = {}) {
   const rand = rng(seed);
   const tiles = new Uint8Array(width * height);
   for (let i = 0; i < tiles.length; i++) tiles[i] = Math.floor(rand() * 4);
   const world = { width, height, tiles, time: 0, nextId: 1, stockpile: { ...stockpile },
-    buildings: [], resources: [], units: [], animals: [], selection: null, selected: null, message: null, ledger: { created: 0 }, age: 'dark', researched: {}, banner: null };
+    buildings: [], resources: [], units: [], animals: [], selection: null, selected: null, message: null, ledger: { created: 0 }, age: 'dark', researched: {}, banner: null, projectiles: [] };
   addBuilding(world, 'town_center', 32, 32, true);
   const used = new Set();
   const add = (res, tx, ty) => { const k = ty * width + tx; if (used.has(k)) return; used.add(k);
@@ -54,6 +74,8 @@ export function createWorld({ width = 64, height = 64, seed = 1, stockpile = STA
   // sheep: 4 near the TC, 3 scattered. Neutral until a villager touches them. Kept in world.animals (not pop).
   for (const [x, y] of [[29.5, 30.5], [30.5, 29.5], [29.5, 29.5], [28.5, 31.5], [12.5, 40.5], [50.5, 24.5], [45.5, 52.5]])
     world.animals.push({ id: world.nextId++, type: 'sheep', owner: null, x, y, speed: 1.2, state: 'idle', path: [], goal: null, carry: { res: null, amount: 0 }, target: null, build: null, note: null });
+  if (enemy) addEnemyCamp(world, { raids });
+  if (scenario === 'skirmish') setupSkirmish(world);
   return world;
 }
 
@@ -106,7 +128,8 @@ const utile = u => [Math.floor(u.x), Math.floor(u.y)];
 function adjacentToRect(u, x, y, size) { const [tx, ty] = utile(u); return tx >= x - 1 && ty >= y - 1 && tx <= x + size && ty <= y + size && !(tx >= x && ty >= y && tx < x + size && ty < y + size); }
 function reserved(world, u) { const s = new Set(); for (const o of world.units) if (o !== u && o.goal != null) s.add(o.goal); return s; }
 // Plan a path for u to any of goals, preferring tiles no other unit is heading to / standing on.
-function planTo(world, u, goals, grid = buildGrid(world), strict = false) {
+export const tileKey = tkey;
+export function planTo(world, u, goals, grid = buildGrid(world), strict = false) {
   const res = reserved(world, u); const [sx, sy] = utile(u);
   const free = goals.filter(([x, y]) => !res.has(tkey(world, x, y)));
   let p = free.length ? findPath(world, sx, sy, free, grid) : null;
@@ -117,7 +140,7 @@ function planTo(world, u, goals, grid = buildGrid(world), strict = false) {
   if (!p.length) u.path = [{ x: sx + 0.5, y: sy + 0.5 }]; // settle onto tile center
   return true;
 }
-function moveAlong(u, dt) {
+export function moveAlong(u, dt) {
   let s = u.speed * dt;
   while (u.path.length && s > 0) { const t = u.path[0], dx = t.x - u.x, dy = t.y - u.y, d = Math.hypot(dx, dy);
     if (d <= s) { u.x = t.x; u.y = t.y; s -= d; u.path.shift(); } else { u.x += dx / d * s; u.y += dy / d * s; s = 0; } }
@@ -142,6 +165,7 @@ export const mobile = (world, id) => world.units.find(u => u.id === id) || world
 export function unitAt(world, x, y, r = 0.6) { return world.units.find(u => Math.hypot(u.x - x, u.y - y) < r) || world.animals.find(u => Math.hypot(u.x - x, u.y - y) < r) || null; }
 export function sheepAt(world, x, y, r = 0.6) { return world.animals.find(u => Math.hypot(u.x - x, u.y - y) < r) || null; }
 const owned = u => u.owner === 'player';
+const mine = b => b.owner !== 'enemy';
 export function buildingAt(world, x, y) { return world.buildings.find(b => x >= b.x && x < b.x + b.size && y >= b.y && y < b.y + b.size) || null; }
 export function select(world, unit) { selectUnits(world, unit ? [unit] : []); }
 export function selectUnits(world, units) {
@@ -153,6 +177,7 @@ export function selectedUnits(world) { const s = world.selection; if (!s) return
   const ids = s.kind === 'unit' ? [s.id] : s.kind === 'units' ? s.ids : []; return mobiles(world).filter(u => ids.includes(u.id) && owned(u)); }
 export function getSelected(world) { return world.selected == null ? null : mobile(world, world.selected); }
 export function selectedBuilding(world) { const s = world.selection; return s && s.kind === 'building' ? world.buildings.find(b => b.id === s.id) || null : null; }
+export function selectedOwnBuilding(world) { const b = selectedBuilding(world); return b && mine(b) ? b : null; }
 export function unitsInRect(world, x0, y0, x1, y1) { const [ax, bx] = [Math.min(x0, x1), Math.max(x0, x1)], [ay, by] = [Math.min(y0, y1), Math.max(y0, y1)];
   const inBox = mobiles(world).filter(u => owned(u) && u.x >= ax && u.x <= bx && u.y >= ay && u.y <= by);
   return inBox.some(u => u.type !== 'sheep') ? inBox.filter(u => u.type !== 'sheep') : inBox; }
@@ -166,17 +191,18 @@ export function pickAt(world, x, y) {
   return null;
 }
 export function selectAt(world, x, y) { const s = pickAt(world, x, y); world.selection = s; world.selected = s && s.kind === 'unit' ? s.id : null; return s; }
-export function popCount(world) { return world.units.length; }
+export function popCount(world) { return world.units.filter(owned).length; }
 export function queuedCount(world) { return world.buildings.reduce((t, b) => t + b.queue.filter(isUnitItem).length, 0); }
-export function popCap(world) { return Math.min(POP_MAX, world.buildings.reduce((t, b) => t + (b.complete ? b.popCap : 0), 0)); }
+export function popCap(world) { return Math.min(POP_MAX, world.buildings.reduce((t, b) => t + (b.complete && mine(b) ? b.popCap : 0), 0)); }
 const KIND_NAME = { berries: 'Berry Bush', tree: 'Tree', gold_mine: 'Gold Mine', stone_mine: 'Stone Mine' };
-const TASK_NAME = { to_hunt: 'Going to sheep', idle: 'Idle', moving: 'Moving', to_resource: 'Walking to resource', gathering: 'Gathering', to_drop: 'Returning to Town Center', to_build: 'Walking to build', building: 'Building' };
+const TASK_NAME = { attacking: 'Attacking', to_hunt: 'Going to sheep', idle: 'Idle', moving: 'Moving', to_resource: 'Walking to resource', gathering: 'Gathering', to_drop: 'Returning to Town Center', to_build: 'Walking to build', building: 'Building' };
 export function selectionInfo(world) {
   const s = world.selection; if (!s) return null;
   if (s.kind === 'tile') return { kind: 'tile', title: 'Grass tile', lines: [`(${s.x}, ${s.y})`] };
   if (s.kind === 'building') { const b = world.buildings.find(o => o.id === s.id); if (!b) return null;
     if (!b.complete) return { kind: 'building', type: b.type, title: `${b.name} (foundation)`, lines: [`HP: ${b.hp}/${b.maxHp}`, `Construction: ${Math.floor(100 * b.progress / b.buildTime)}%`], progress: b.progress / b.buildTime };
-    const lines = [`HP: ${b.hp}/${b.maxHp}`];
+    const arm = armorOf(b); const lines = [`HP: ${Math.ceil(b.hp)}/${b.maxHp}`, `Armor ${arm.melee}/${arm.pierce}`];
+    if (b.owner === 'enemy') return { kind: 'building', type: b.type, title: `${b.name} (Enemy)`, enemy: true, hp: b.hp / b.maxHp, lines };
     if (b.trains.length || b.queue.length) { lines.push(`Queue: ${b.queue.length}/${QUEUE_MAX}`);
       if (b.queue.length) lines.push(`${isUnitItem(b.queue[0]) ? 'Training' : 'Researching'} ${itemName(b.queue[0])}: ${Math.floor(100 * b.trainProgress / itemTime(b.queue[0]))}%`);
       if (b.blocked) lines.push('Halted: population cap');
@@ -193,14 +219,17 @@ export function selectionInfo(world) {
     return { kind: 'units', count: us.length, title: allV ? `${us.length} Villagers selected` : `${us.length} units selected`, lines: Object.entries(counts).map(([k, v]) => `${v} × ${k}`).concat([`Carrying: ${us.reduce((t, u) => t + u.carry.amount, 0)} total`]) }; }
   const u = mobile(world, s.id); if (!u) return null;
   if (u.type === 'sheep') return { kind: 'unit', type: 'sheep', title: 'Sheep', lines: [u.owner ? 'Owner: you' : 'Neutral (touch with a villager to convert)', `Food: ${CARCASS_FOOD} when butchered`] };
-  if (u.type !== 'villager') { const d = UNIT_DEFS[u.type], fx = techEffects(world), melee = d.infantry || d.cavalry ? fx.meleeAttack : 0;
-    return { kind: 'unit', type: u.type, title: d.name, lines: [`Task: ${TASK_NAME[u.state]}`, `HP ${u.hp}/${u.maxHp}  Attack ${d.attack + melee}  Armor ${d.armor}${d.range ? `  Range ${d.range}` : ''}  Speed ${d.speed}`, 'No combat in this scaffold'] }; }
+  if (u.type !== 'villager') { const d = UNIT_DEFS[u.type], st = unitStats(world, u);
+    const bonus = Object.entries(st.bonus).map(([k, v]) => `+${v} vs ${k}`).join(', ');
+    return { kind: 'unit', type: u.type, title: d.name + (u.owner === 'enemy' ? ' (Enemy)' : ''), enemy: u.owner === 'enemy', hp: u.hp / u.maxHp, stats: { attack: st.attack, melee: st.armor.melee, pierce: st.armor.pierce, range: st.range, reload: st.reload },
+      lines: [`Task: ${TASK_NAME[u.state] || u.state}${u.note ? ` (${u.note})` : ''}`, `HP ${Math.ceil(u.hp)}/${u.maxHp}  Attack ${st.attack}  Armor ${st.armor.melee}/${st.armor.pierce}${st.ranged ? `  Range ${st.range}` : ''}  Speed ${d.speed}`,
+        `${st.ranged ? 'Ranged (pierce damage)' : 'Melee'}  Reload ${st.reload}s${bonus ? `  ${bonus}` : ''}`] }; }
   let task = TASK_NAME[u.state];
   if (u.state === 'to_drop' && u.goal != null) { // name the drop-off actually being walked to (Mill / camp / TC)
     const gx = u.goal % world.width, gy = Math.floor(u.goal / world.width);
     const site = dropsitesFor(world, u.carry.res).find(b => gx >= b.x - 1 && gy >= b.y - 1 && gx <= b.x + b.size && gy <= b.y + b.size);
     if (site) task = `Returning to ${site.name}`; }
-  return { kind: 'unit', type: 'villager', title: 'Villager', lines: [`Task: ${task}${u.note ? ` (${u.note})` : ''}`, `Carrying: ${u.carry.amount}${u.carry.amount ? ' ' + u.carry.res : ''}/${carryMax(world)}`, `HP: ${u.hp}/${u.maxHp}`] };
+  return { kind: 'unit', type: 'villager', title: 'Villager', hp: u.hp / u.maxHp, lines: [`Task: ${task}${u.note ? ` (${u.note})` : ''}`, `Carrying: ${u.carry.amount}${u.carry.amount ? ' ' + u.carry.res : ''}/${carryMax(world)}`, `HP: ${Math.ceil(u.hp)}/${u.maxHp}`, 'Attack 3  Armor 0/0'] };
 }
 function say(world, text) { world.message = { text, until: world.time + 4 }; }
 
@@ -225,14 +254,15 @@ function planResource(world, u, node) {
   return false;
 }
 // Drop-off for the carried type: A* to the union of all valid sites' adjacent tiles => nearest by path distance.
-export function dropsitesFor(world, res) { return world.buildings.filter(b => b.dropsite && b.complete && (!res || b.accepts.includes(res))); }
+export function dropsitesFor(world, res) { return world.buildings.filter(b => b.dropsite && b.complete && mine(b) && (!res || b.accepts.includes(res))); }
 function planDrop(world, u) {
   const goals = dropsitesFor(world, u.carry.res).flatMap(b => ringTiles(b.x, b.y, b.size));
   return goals.length > 0 && planTo(world, u, goals);
 }
-function idle(u, note = null) { u.state = 'idle'; u.path = []; u.note = note; u.target = null; u.build = null; }
+function idle(u, note = null) { u.state = 'idle'; u.path = []; u.note = note; u.target = null; u.build = null; u.attack = null; u.nudge = false; }
+export const idleUnit = idle;
 export function orderMove(world, u, x, y, tile = null) {
-  u.target = null; u.build = null; u.note = null; u.dest = tile ? [...tile] : [Math.floor(x), Math.floor(y)];
+  u.attack = null; u.nudge = false; u.target = null; u.build = null; u.note = null; u.dest = tile ? [...tile] : [Math.floor(x), Math.floor(y)];
   // try the target tile, then the closest walkable tiles around it (handles blocked/enclosed targets)
   const cands = tile ? [tile, ...nearestWalkable(world, tile[0], tile[1], 24).slice(1)] : nearestWalkable(world, Math.floor(x), Math.floor(y), 24);
   const grid = buildGrid(world);
@@ -240,8 +270,17 @@ export function orderMove(world, u, x, y, tile = null) {
   for (const t of [...free, ...cands]) if (planTo(world, u, [t], grid)) { u.state = 'moving'; return true; }
   idle(u, 'unreachable'); return false;
 }
+// Formation: compact box centred on the click, one distinct walkable tile per unit (falls back to BFS spread).
+export function formationTiles(world, units, x, y, grid = buildGrid(world)) {
+  const n = units.length, cols = Math.ceil(Math.sqrt(n)), rows = Math.ceil(n / cols), out = [], used = new Set();
+  const cx = Math.floor(x), cy = Math.floor(y);
+  for (let r = 0; r < rows && out.length < n; r++) for (let c = 0; c < cols && out.length < n; c++) {
+    const t = nearestWalkable(world, cx + c - Math.floor(cols / 2), cy + r - Math.floor(rows / 2), 1, grid, used)[0];
+    if (t) { used.add(tkey(world, t[0], t[1])); out.push(t); } }
+  return out;
+}
 export function orderMoveGroup(world, units, x, y) {
-  const tiles = nearestWalkable(world, Math.floor(x), Math.floor(y), units.length);
+  const tiles = formationTiles(world, units, x, y);
   // assign closest unit to each tile greedily
   const left = [...units]; let ok = 0;
   for (const t of tiles) { if (!left.length) break; left.sort((a, b) => Math.hypot(a.x - t[0], a.y - t[1]) - Math.hypot(b.x - t[0], b.y - t[1]));
@@ -252,23 +291,27 @@ export function orderMoveGroup(world, units, x, y) {
 // Never discards carried resources: on a type change with carry > 0 the villager first
 // returns to the Town Center to deposit, then proceeds to the new target.
 export function orderGather(world, u, node) {
-  u.target = node.id; u.build = null; u.note = null;
+  u.attack = null; u.target = node.id; u.build = null; u.note = null;
   if (u.carry.amount > 0 && u.carry.res !== node.res) { u.state = 'to_drop'; if (!planDrop(world, u)) idle(u, 'no drop-off reachable'); return; }
   u.state = 'to_resource'; if (!planResource(world, u, node)) idle(u, 'unreachable');
 }
 export function orderBuild(world, u, b) {
-  u.target = null; u.build = b.id; u.note = null; u.state = 'to_build';
+  u.attack = null; u.target = null; u.build = b.id; u.note = null; u.state = 'to_build';
   if (!planTo(world, u, ringTiles(b.x, b.y, b.size))) idle(u, 'unreachable');
 }
 // Right-click semantics for the current selection.
 export function orderHunt(world, u, sheep) {
-  u.target = null; u.build = null; u.note = null; u.hunt = sheep.id; u.huntMode = sheep.owner ? 'butcher' : 'convert'; u.state = 'to_hunt';
+  u.attack = null; u.target = null; u.build = null; u.note = null; u.hunt = sheep.id; u.huntMode = sheep.owner ? 'butcher' : 'convert'; u.state = 'to_hunt';
   if (!planTo(world, u, ringTiles(Math.floor(sheep.x), Math.floor(sheep.y), 1))) idle(u, 'unreachable');
 }
 export function commandAt(world, x, y) {
   const b = selectedBuilding(world);
+  if (b && !mine(b)) return null;
   if (b) { if (b.trains.length && b.complete) { b.rally = { x, y }; return 'rally'; } return null; }
   const us = selectedUnits(world); if (!us.length) return null;
+  const foe = world.units.find(o => o.owner === 'enemy' && Math.hypot(o.x - x, o.y - y) < 0.7) || (() => { const eb = buildingAt(world, x, y); return eb && eb.owner === 'enemy' ? eb : null; })();
+  if (foe) { const n = orderAttackGroup(world, us, foe); world.lastOrder = { kind: 'attack', x, y, t: world.time, target: foe.id }; return n ? 'attack' : null; }
+  world.lastOrder = { kind: 'move', x, y, t: world.time };
   const vills = us.filter(u => u.type === 'villager'), others = us.filter(u => u.type !== 'villager');
   const moveOthers = () => { if (others.length === 1) orderMove(world, others[0], x, y); else if (others.length) orderMoveGroup(world, others, x, y); };
   const sh = sheepAt(world, x, y);
@@ -289,7 +332,7 @@ export function missingFor(world, cost) { const m = Object.entries(cost).filter(
   return m.length ? `need ${m.join(', ')}` : null; }
 // Shared rules for every trainer: per-building queue cap, and pop + everything queued anywhere must stay below the cap.
 export function trainUnit(world, b, type) {
-  if (!b || !b.complete || !b.trains.includes(type)) return { ok: false, reason: 'invalid' };
+  if (!b || !b.complete || !mine(b) || !b.trains.includes(type)) return { ok: false, reason: 'invalid' };
   if (isLocked(world, UNIT_DEFS[type].age)) { say(world, `${UNIT_DEFS[type].name}: ${requiresText(UNIT_DEFS[type].age)}`); return { ok: false, reason: 'age' }; }
   if (b.queue.length >= QUEUE_MAX) { say(world, 'Queue is full'); return { ok: false, reason: 'queue' }; }
   if (popCount(world) + queuedCount(world) >= popCap(world)) { say(world, `Population cap reached (${popCount(world)}/${popCap(world)}): build a House`); return { ok: false, reason: 'pop' }; }
@@ -299,7 +342,7 @@ export function trainUnit(world, b, type) {
 export function trainVillager(world, tc) { if (!tc || tc.type !== 'town_center') return { ok: false, reason: 'invalid' }; return trainUnit(world, tc, 'villager'); }
 const rectsOverlap = (ax, ay, as, bx, by, bs) => ax < bx + bs && bx < ax + as && ay < by + bs && by < ay + as;
 export function farmAnchorOk(world, tx, ty, size = 3) {
-  return world.buildings.some(b => (b.type === 'mill' || b.type === 'town_center') && rectsOverlap(tx - 1, ty - 1, size + 2, b.x, b.y, b.size) && !rectsOverlap(tx, ty, size, b.x, b.y, b.size));
+  return world.buildings.some(b => mine(b) && (b.type === 'mill' || b.type === 'town_center') && rectsOverlap(tx - 1, ty - 1, size + 2, b.x, b.y, b.size) && !rectsOverlap(tx, ty, size, b.x, b.y, b.size));
 }
 export function canPlace(world, type, tx, ty) {
   const size = BUILDING_DEFS[type].size, grid = buildGrid(world);
@@ -317,14 +360,14 @@ export function placeBuilding(world, type, tx, ty, builders = []) {
   for (const u of builders) orderBuild(world, u, b);
   return b;
 }
-function spawnFrom(world, tc, type = 'villager') {
+function spawnFrom(world, tc, type = 'villager', owner = 'player') {
   const grid = buildGrid(world), occ = new Set(world.units.map(u => tkey(world, ...utile(u))));
   const ref = tc.rally || { x: tc.x + tc.size / 2, y: tc.y + tc.size + 1 };
   const ring = ringTiles(tc.x, tc.y, tc.size).filter(([x, y]) => walkable(world, x, y, grid))
     .sort((a, b) => (occ.has(tkey(world, ...a)) - occ.has(tkey(world, ...b))) || Math.hypot(a[0] + 0.5 - ref.x, a[1] + 0.5 - ref.y) - Math.hypot(b[0] + 0.5 - ref.x, b[1] + 0.5 - ref.y));
   const t = ring[0] || nearestWalkable(world, tc.x + tc.size, tc.y + tc.size, 1, grid)[0];
-  const u = newVillager(world, t[0] + 0.5, t[1] + 0.5, type);
-  if (tc.rally) { const n = type === 'villager' ? findResourceAt(world, tc.rally.x, tc.rally.y) : null; n ? orderGather(world, u, n) : orderMove(world, u, tc.rally.x, tc.rally.y); }
+  const u = newVillager(world, t[0] + 0.5, t[1] + 0.5, type, owner);
+  if (owner === 'player' && tc.rally) { const n = type === 'villager' ? findResourceAt(world, tc.rally.x, tc.rally.y) : null; n ? orderGather(world, u, n) : orderMove(world, u, tc.rally.x, tc.rally.y); }
   return u;
 }
 
@@ -347,8 +390,8 @@ export function nextAge(world) { return AGES[ageIndex(world.age) + 1] || null; }
 export function ageStatus(world) {
   const next = nextAge(world); if (!next) return { next: null, ok: false, missing: 'Already in the Imperial Age' };
   const req = AGE_UPS[next];
-  const have = [...new Set(world.buildings.filter(b => b.complete && req.from.includes(b.type)).map(b => b.type))];
-  const any = (req.orAny || []).some(t => world.buildings.some(b => b.complete && b.type === t));
+  const have = [...new Set(world.buildings.filter(b => b.complete && mine(b) && req.from.includes(b.type)).map(b => b.type))];
+  const any = (req.orAny || []).some(t => world.buildings.some(b => b.complete && mine(b) && b.type === t));
   const ok = have.length >= req.needs || any;
   const names = req.from.filter(t => BUILDINGS[t]).map(t => BUILDINGS[t].name);
   return { next, ok, have, req, missing: ok ? null : `needs ${req.needs} of: ${names.join(', ')}${req.orAny ? ' (or a Castle)' : ''} (have ${have.length})` };
@@ -399,9 +442,9 @@ function finishItem(world, b, item) {
   if (item.startsWith('age:')) { world.age = item.slice(4); world.banner = { text: `You have advanced to the ${AGE_NAMES[world.age]}!`, until: world.time + 6 }; say(world, `${AGE_NAMES[world.age]} reached`); return; }
   const id = item.slice(5); world.researched[id] = world.time;
   const e = TECHS[id].effect;
-  if (e.villagerHp) for (const u of world.units) if (u.type === 'villager') { u.maxHp += e.villagerHp; u.hp += e.villagerHp; }
+  if (e.villagerHp) for (const u of world.units) if (u.type === 'villager' && u.owner === 'player') { u.maxHp += e.villagerHp; u.hp += e.villagerHp; }
   if (e.villagerSpeedPct) for (const u of world.units) if (u.type === 'villager') u.speed = UNIT_DEFS.villager.speed * (1 + techEffects(world).villagerSpeedPct / 100);
-  if (e.upgrade) for (const u of world.units) if (e.upgrade[u.type]) { const to = e.upgrade[u.type]; u.type = to; u.maxHp = UNIT_DEFS[to].hp; u.hp = u.maxHp; }
+  if (e.upgrade) for (const u of world.units) if (u.owner === 'player' && e.upgrade[u.type]) { const to = e.upgrade[u.type]; u.type = to; u.maxHp = UNIT_DEFS[to].hp; u.hp = u.maxHp; }
   say(world, `${TECHS[id].name} researched`);
 }
 
@@ -426,6 +469,7 @@ function replan(world, u) {
     case 'to_build': case 'building': { const b = world.buildings.find(o => o.id === u.build); if (!b || b.complete) { idle(u); break; }
       if (u.state === 'building' && adjacentToRect(u, b.x, b.y, b.size)) break;
       u.state = 'to_build'; if (!planTo(world, u, ringTiles(b.x, b.y, b.size))) idle(u, 'unreachable'); break; }
+    case 'attacking': u.path = []; u.replanAt = 0; u.tpos = null; break;
     default: u.path = []; u.goal = tkey(world, ...utile(u));
   }
 }
@@ -468,10 +512,13 @@ export function tick(world, dt) {
     b.trainProgress += dt;
     if (b.trainProgress >= itemTime(b.queue[0])) { b.trainProgress = 0; finishItem(world, b, b.queue.shift()); }
   }
-  for (const u of world.units) {
+  tickAi(world, spawnFrom); tickAggro(world);
+  for (const u of [...world.units]) {
+    if (u.dead) continue;
     switch (u.state) {
       case 'idle': break;
-      case 'moving': if (moveAlong(u, dt)) { u.state = 'idle'; } break;
+      case 'attacking': tickAttack(world, u, dt); break;
+      case 'moving': if (u.type === 'villager' ? moveAlong(u, dt) : stepWithStuckCheck(world, u, dt, () => replan(world, u))) { u.state = 'idle'; } break;
       case 'to_resource': case 'gathering': {
         let node = world.resources.find(n => n.id === u.target);
         if (!node || node.amount <= 0) {
@@ -529,8 +576,9 @@ export function tick(world, dt) {
     }
     if (u.state === 'idle') u.goal = tkey(world, ...utile(u));
   }
+  tickProjectiles(world, dt); tickSeparation(world);
   for (const a of world.animals) {
-    if (!a.owner && world.units.some(u => u.type === 'villager' && Math.hypot(u.x - a.x, u.y - a.y) < 1.0)) convertSheep(world, a);
+    if (!a.owner && world.units.some(u => u.type === 'villager' && u.owner === 'player' && Math.hypot(u.x - a.x, u.y - a.y) < 1.0)) convertSheep(world, a);
     if (a.state === 'moving' && moveAlong(a, dt)) a.state = 'idle';
   }
 }

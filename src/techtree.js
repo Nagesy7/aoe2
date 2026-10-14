@@ -13,12 +13,12 @@ export const AGE_UPS = {
 };
 
 export const BUILDINGS = {
-  town_center: { name: 'Town Center', age: 'dark', size: 4, maxHp: 2400, popCap: 5, accepts: ['food', 'wood', 'gold', 'stone'], trains: ['villager'], cost: { wood: 275, stone: 100 }, buildTime: 150, menu: false },
+  town_center: { name: 'Town Center', age: 'dark', size: 4, maxHp: 2400, armor: '3/5', popCap: 5, accepts: ['food', 'wood', 'gold', 'stone'], trains: ['villager'], cost: { wood: 275, stone: 100 }, buildTime: 150, menu: false },
   house: { name: 'House', age: 'dark', size: 2, maxHp: 550, popCap: 5, cost: { wood: 25 }, buildTime: 25 },
   lumber_camp: { name: 'Lumber Camp', age: 'dark', size: 2, maxHp: 600, cost: { wood: 100 }, buildTime: 35, accepts: ['wood'] },
   mining_camp: { name: 'Mining Camp', age: 'dark', size: 2, maxHp: 600, cost: { wood: 100 }, buildTime: 35, accepts: ['gold', 'stone'] },
   mill: { name: 'Mill', age: 'dark', size: 2, maxHp: 600, cost: { wood: 100 }, buildTime: 35, accepts: ['food'] },
-  farm: { name: 'Farm', age: 'dark', size: 3, maxHp: 480, cost: { wood: 60 }, buildTime: 15, walkable: true },
+  farm: { name: 'Farm', age: 'dark', size: 3, maxHp: 480, armor: '0/0', cost: { wood: 60 }, buildTime: 15, walkable: true },
   barracks: { name: 'Barracks', age: 'dark', size: 3, maxHp: 1200, cost: { wood: 175 }, buildTime: 50, trains: ['militia', 'spearman'] },
   // Feudal
   archery_range: { name: 'Archery Range', age: 'feudal', size: 3, maxHp: 1500, cost: { wood: 175 }, buildTime: 50, trains: ['archer'] },
@@ -35,17 +35,17 @@ export const BUILDINGS = {
 };
 export const BUILD_MENU = Object.keys(BUILDINGS).filter(k => BUILDINGS[k].menu !== false);
 
-// Units. stats are displayed only (no combat yet).
+// Units. AoE2 stats: hp, attack, armor 'melee/pierce', range (tiles, ranged = pierce damage), reload (s), class bonus damage.
 export const UNITS = {
-  villager: { name: 'Villager', age: 'dark', cost: { food: 50 }, time: 25, speed: 2.5, hp: 25, attack: 3, armor: '0/0' },
-  militia: { name: 'Militia', age: 'dark', cost: { food: 60, gold: 20 }, time: 21, speed: 2.2, hp: 40, attack: 4, armor: '0/1', infantry: true },
-  spearman: { name: 'Spearman', age: 'feudal', cost: { food: 35, wood: 25 }, time: 22, speed: 2.5, hp: 45, attack: 3, armor: '0/0', infantry: true },
-  archer: { name: 'Archer', age: 'feudal', cost: { wood: 25, gold: 45 }, time: 35, speed: 2.4, hp: 30, attack: 4, armor: '0/0', range: 4, upgradesTo: { tech: 'crossbowman', unit: 'crossbowman' } },
-  crossbowman: { name: 'Crossbowman', age: 'castle', cost: { wood: 25, gold: 45 }, time: 27, speed: 2.4, hp: 35, attack: 5, armor: '0/0', range: 5, trainedVia: 'archer' },
-  scout_cavalry: { name: 'Scout Cavalry', age: 'feudal', cost: { food: 80 }, time: 30, speed: 3.6, hp: 45, attack: 3, armor: '0/2', cavalry: true },
-  knight: { name: 'Knight', age: 'castle', cost: { food: 60, gold: 75 }, time: 30, speed: 3.4, hp: 100, attack: 10, armor: '2/2', cavalry: true },
+  villager: { name: 'Villager', age: 'dark', cost: { food: 50 }, time: 25, speed: 2.5, hp: 25, attack: 3, armor: '0/0', reload: 2.0 },
+  militia: { name: 'Militia', age: 'dark', cost: { food: 60, gold: 20 }, time: 21, speed: 2.2, hp: 40, attack: 4, armor: '0/1', reload: 2.0, infantry: true },
+  spearman: { name: 'Spearman', age: 'feudal', cost: { food: 35, wood: 25 }, time: 22, speed: 2.5, hp: 45, attack: 3, armor: '0/0', reload: 3.0, infantry: true, bonus: { cavalry: 15 } },
+  archer: { name: 'Archer', age: 'feudal', cost: { wood: 25, gold: 45 }, time: 35, speed: 2.4, hp: 30, attack: 4, armor: '0/0', range: 4, reload: 2.0, upgradesTo: { tech: 'crossbowman', unit: 'crossbowman' } },
+  crossbowman: { name: 'Crossbowman', age: 'castle', cost: { wood: 25, gold: 45 }, time: 27, speed: 2.4, hp: 35, attack: 5, armor: '0/0', range: 5, reload: 2.0, trainedVia: 'archer' },
+  scout_cavalry: { name: 'Scout Cavalry', age: 'feudal', cost: { food: 80 }, time: 30, speed: 3.6, hp: 45, attack: 3, armor: '0/2', reload: 2.0, cavalry: true },
+  knight: { name: 'Knight', age: 'castle', cost: { food: 60, gold: 75 }, time: 30, speed: 3.4, hp: 100, attack: 10, armor: '2/2', reload: 1.8, cavalry: true },
   monk: { name: 'Monk', age: 'castle', cost: { gold: 100 }, time: 51, speed: 1.8, hp: 30, attack: 0, armor: '0/0' },
-  trebuchet: { name: 'Trebuchet', age: 'imperial', cost: { wood: 200, gold: 200 }, time: 50, speed: 1.6, hp: 150, attack: 200, armor: '2/8', range: 16 },
+  trebuchet: { name: 'Trebuchet', age: 'imperial', cost: { wood: 200, gold: 200 }, time: 50, speed: 1.6, hp: 150, attack: 200, armor: '2/8', range: 16, reload: 10, bonus: { building: 250 } },
 };
 
 // Technologies. effect keys are interpreted by sim.js (see techEffects()).

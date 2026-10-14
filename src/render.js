@@ -54,6 +54,8 @@ export function render(ctx, world, cam, ui = {}) {
       ctx.fillStyle = '#fff'; ctx.font = '12px sans-serif'; ctx.textAlign = 'center'; ctx.fillText(b.name, px + s / 2, py + s + 14);
       if (b.queue.length) bar(ctx, px, py - 18, s, b.trainProgress / itemTime(b.queue[0]), b.blocked ? '#d33' : '#4fd34f');
     }
+    if (b.owner === 'enemy') { ctx.fillStyle = '#c02020'; ctx.fillRect(px + 2, py + 2, 4, 14); ctx.fillRect(px + 6, py + 2, 9, 6); ctx.strokeStyle = '#e04040'; ctx.strokeRect(px + 0.5, py + 0.5, s - 1, s - 1); }
+    if (b.complete && (b.hp < b.maxHp || b.owner === 'enemy' || (sel && sel.kind === 'building' && sel.id === b.id))) bar(ctx, px, py - (b.queue.length ? 26 : 9), s, b.hp / b.maxHp, b.owner === 'enemy' ? '#e04040' : '#4fd34f');
     if (sel && sel.kind === 'building' && sel.id === b.id) { ctx.strokeStyle = '#fff'; ctx.lineWidth = 2; ctx.strokeRect(px - 3, py - 3, s + 6, s + 6); ctx.lineWidth = 1;
       if (b.rally) { const rx = b.rally.x * TILE, ry = b.rally.y * TILE; ctx.strokeStyle = '#fff8'; ctx.setLineDash([5, 5]); ctx.beginPath(); ctx.moveTo(px + s / 2, py + s / 2); ctx.lineTo(rx, ry); ctx.stroke(); ctx.setLineDash([]);
         ctx.fillStyle = '#5a3a1a'; ctx.fillRect(rx - 1, ry - 20, 2, 20); ctx.fillStyle = '#2a50c8'; ctx.fillRect(rx + 1, ry - 20, 12, 8); } }
@@ -75,6 +77,9 @@ export function render(ctx, world, cam, ui = {}) {
     if (a.owner) { ctx.fillStyle = '#2a50c8'; ctx.fillRect(px + 4, py - 6, 3, 8); } }
   for (const u of world.units) {
     const px = u.x * TILE, py = u.y * TILE;
+    if (u.type !== 'villager' || u.owner === 'enemy') { ctx.fillStyle = u.owner === 'enemy' ? '#ff2020d0' : '#3060ffb0'; ctx.beginPath(); ctx.ellipse(px, py + 6, 10, 5, 0, 0, 7); ctx.fill(); }
+    if (u.type !== 'villager' || u.hp < u.maxHp || selUnits.has(u.id)) bar(ctx, px - 11, py - 22, 22, u.hp / u.maxHp, u.owner === 'enemy' ? '#e04040' : '#4fd34f');
+    if (u.lastAttackAt != null && world.time - u.lastAttackAt < 0.25 && !UNIT_STYLE[u.type]?.ranged) { ctx.strokeStyle = '#fff'; ctx.lineWidth = 2; ctx.beginPath(); ctx.arc(px + Math.cos(u.facing || 0) * 10, py + Math.sin(u.facing || 0) * 10, 5, 0, 7); ctx.stroke(); ctx.lineWidth = 1; }
     if (selUnits.has(u.id)) {
       if (u.path.length) { ctx.strokeStyle = '#ffffffaa'; ctx.setLineDash([3, 4]); ctx.beginPath(); ctx.moveTo(px, py); for (const q of u.path) ctx.lineTo(q.x * TILE, q.y * TILE); ctx.stroke(); ctx.setLineDash([]); }
       ctx.strokeStyle = '#fff'; ctx.lineWidth = 2; ctx.beginPath(); ctx.ellipse(px, py + 6, 11, 6, 0, 0, 7); ctx.stroke(); ctx.lineWidth = 1; }
@@ -87,6 +92,11 @@ export function render(ctx, world, cam, ui = {}) {
     ctx.fillStyle = '#f0c8a0'; ctx.beginPath(); ctx.arc(px, py - 10, 4.5, 0, 7); ctx.fill();
     if (u.carry.amount) { ctx.fillStyle = { food: '#c0203a', wood: '#7a4a1a', gold: '#e0b83a', stone: '#aaa' }[u.carry.res]; ctx.fillRect(px + 5, py - 4, 6, 6); }
   }
+  for (const p of world.projectiles || []) { const x = p.x * TILE, y = p.y * TILE, a = p.angle || 0;
+    ctx.strokeStyle = '#3a2410'; ctx.lineWidth = 2; ctx.beginPath(); ctx.moveTo(x - Math.cos(a) * 8, y - Math.sin(a) * 8); ctx.lineTo(x, y); ctx.stroke(); ctx.lineWidth = 1; }
+  const lo = world.lastOrder; if (lo && world.time - lo.t < 0.8) { const k = 1 - (world.time - lo.t) / 0.8, x = lo.x * TILE, y = lo.y * TILE;
+    ctx.strokeStyle = lo.kind === 'attack' ? `rgba(255,50,50,${k})` : `rgba(80,255,80,${k})`; ctx.lineWidth = 2; ctx.beginPath(); ctx.ellipse(x, y, 14 * (1.5 - k / 2), 7 * (1.5 - k / 2), 0, 0, 7); ctx.stroke();
+    if (lo.kind === 'attack') { ctx.beginPath(); ctx.moveTo(x - 6, y - 6); ctx.lineTo(x + 6, y + 6); ctx.moveTo(x + 6, y - 6); ctx.lineTo(x - 6, y + 6); ctx.stroke(); } ctx.lineWidth = 1; }
   if (ui.ghost) { const g = ui.ghost; ctx.fillStyle = g.valid ? '#40ff4060' : '#ff303070'; ctx.strokeStyle = g.valid ? '#6f6' : '#f44'; ctx.lineWidth = 2;
     ctx.fillRect(g.tx * TILE, g.ty * TILE, g.size * TILE, g.size * TILE); ctx.strokeRect(g.tx * TILE, g.ty * TILE, g.size * TILE, g.size * TILE);
     ctx.strokeStyle = '#ffa500'; ctx.lineWidth = 3; for (const [x, y] of g.units || []) ctx.strokeRect(x * TILE + 2, y * TILE + 2, TILE - 4, TILE - 4); ctx.lineWidth = 1; }

@@ -4,7 +4,9 @@ import { render } from './render.js';
 import * as SIM from './sim.js';
 import { createUi, startPlacing, cancelPlacing, updateGhost, pointerDown, pointerMove, pointerUp } from './ui-state.js';
 const canvas = document.getElementById('game'), ctx = canvas.getContext('2d');
-const world = createWorld();
+const params = new URLSearchParams(location.search);
+// Player 2 camp is on by default (?enemy=0 disables); periodic AI raids are opt-in with ?raids=1.
+const world = createWorld({ enemy: params.get('enemy') !== '0', raids: params.get('raids') === '1', scenario: params.get('scenario') });
 const cam = { x: 34 * TILE - innerWidth / 2, y: 34 * TILE - innerHeight / 2 };
 const ui = createUi();
 const keys = new Set(); addEventListener('blur', () => keys.clear());
@@ -17,7 +19,11 @@ const toWorld = (sx, sy) => screenToWorld(sx, sy, cam);
 const refreshGhost = () => { const p = toWorld(mouse.x, mouse.y); updateGhost(ui, world, p.x, p.y); };
 canvas.addEventListener('mousemove', e => { mouse = { x: e.clientX, y: e.clientY, inside: true };
   if (drag) { cam.x = drag.cx - (e.clientX - drag.x); cam.y = drag.cy - (e.clientY - drag.y); clampCamera(cam, canvas.width, canvas.height, world); }
-  pointerMove(ui, e.clientX, e.clientY); refreshGhost(); });
+  pointerMove(ui, e.clientX, e.clientY); refreshGhost(); updateCursor(); });
+// Attack cursor: crosshair when own units are selected and the pointer is over an enemy unit/building.
+function hoverEnemy() { const p = toWorld(mouse.x, mouse.y);
+  return world.units.find(o => o.owner === 'enemy' && Math.hypot(o.x - p.x, o.y - p.y) < 0.7) || (() => { const b = SIM.buildingAt(world, p.x, p.y); return b && b.owner === 'enemy' ? b : null; })(); }
+function updateCursor() { ui.cursor = !ui.placing && selectedUnits(world).length && hoverEnemy() ? 'attack' : 'default'; canvas.style.cursor = ui.cursor === 'attack' ? 'crosshair' : 'default'; }
 canvas.addEventListener('mouseleave', () => { mouse.inside = false; drag = null; });
 canvas.addEventListener('mousedown', e => {
   const p = toWorld(e.clientX, e.clientY);
@@ -48,9 +54,10 @@ function updateHud() {
   const info = selectionInfo(world);
   infoEl.style.display = info ? 'block' : 'none';
   if (info) { infoEl.dataset.kind = info.kind; infoEl.innerHTML = `<b>${info.title}</b>` + info.lines.map(l => `<div>${l}</div>`).join('') +
+    (info.hp != null ? `<div class="bar hp${info.enemy ? ' enemy' : ''}"><div style="width:${Math.round(Math.max(0, info.hp) * 100)}%"></div></div>` : '') +
     (info.progress != null ? `<div class="bar"><div style="width:${Math.round(info.progress * 100)}%"></div></div>` : '') +
     (info.queue ? `<div class="queue">${info.queueTypes.map(t => `<span class="qi" title="${t}">${t.startsWith('age:') ? 'A' : t.startsWith('tech:') ? 'T' : t === 'villager' ? 'V' : t === 'militia' ? 'M' : UNIT_DEFS[t].name[0]}</span>`).join('')}</div>` : ''); }
-  const b = selectedBuilding(world), us = selectedUnits(world);
+  const b = SIM.selectedOwnBuilding(world), us = selectedUnits(world);
   let cmd = '';
   const button = (action, label, sub, { disabled = false, grey = false, title = '' } = {}) =>
     `<button data-action="${action}" ${disabled ? 'disabled' : ''} class="${grey ? 'unaffordable' : ''}${ui.placing === action ? ' active' : ''}" title="${title}">${label}<br><small>${sub}</small></button>`;
@@ -82,7 +89,7 @@ function frame(now) {
   if (keys.has('w') || keys.has('arrowup')) dy--; if (keys.has('s') || keys.has('arrowdown')) dy++;
   if (mouse.inside && !drag && !ui.press) { if (mouse.x < EDGE) dx--; if (mouse.x > innerWidth - EDGE) dx++; if (mouse.y < EDGE) dy--; if (mouse.y > innerHeight - EDGE) dy++; }
   if (dx || dy) { cam.x += dx * PAN * dt; cam.y += dy * PAN * dt; clampCamera(cam, canvas.width, canvas.height, world); }
-  tick(world, dt); if (ui.placing) refreshGhost(); render(ctx, world, cam, ui); updateHud(); requestAnimationFrame(frame);
+  tick(world, dt); if (ui.placing) refreshGhost(); if (mouse.inside) updateCursor(); render(ctx, world, cam, ui); updateHud(); requestAnimationFrame(frame);
 }
 requestAnimationFrame(frame);
 // Automation hook: read-only state access + time advance (proof scripts must not use it to issue orders).

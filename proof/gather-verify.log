@@ -1,4 +1,4 @@
-gather verification 2026-10-14T09:26:09.470Z
+gather verification 2026-10-14T09:33:49.205Z
 PASS: forager reached the bush and is gathering
 PASS: FOOD BUG CHECK: villager panel while foraging shows "Carrying: 4 food" (non-zero food)
   saved proof/gather-verify-01-forager-carrying-food.png
@@ -14,7 +14,7 @@ PASS: [to TC] balance: node decrease 30 == delivered 30 + change in carried 0
 PASS: bush 125->96, gold mine 800->770, stone mine 350->320
 PASS: all three dropped at the Town Center
   saved proof/gather-verify-02-food-gold-stone-to-tc.png
-  woodcutter panel: Villager | Task: Walking to resource | Carrying: 0/10 | HP: 25/25
+  woodcutter panel: Villager | Task: Walking to resource | Carrying: 0/10 | HP: 25/25 | Attack 3 Armor 0/0
 PASS: [to TC] wood stockpile rose 200 -> 220 (+20)
 PASS: [to TC] wood nodes decreased by 21
 PASS: [to TC] balance: node decrease 21 == delivered 20 + change in carried 1
@@ -33,9 +33,9 @@ PASS: [stone (nearest of TC/mining camp)] stone stockpile rose 190 -> 220 (+30)
 PASS: [stone (nearest of TC/mining camp)] stone nodes decreased by 34
 PASS: [stone (nearest of TC/mining camp)] balance: node decrease 34 == delivered 30 + change in carried 4
   stone miner last drop: town_center
-  forager panel at mill: Villager | Task: Returning to Mill | Carrying: 10 food/10 | HP: 25/25
+  forager panel at mill: Villager | Task: Returning to Mill | Carrying: 10 food/10 | HP: 25/25 | Attack 3 Armor 0/0
   saved proof/gather-verify-04-mill-and-mining-camp.png
-PASS: drop-off label names the Mill: Villager | Task: Returning to Mill | Carrying: 10 food/10 | HP: 25/25
+PASS: drop-off label names the Mill: Villager | Task: Returning to Mill | Carrying: 10 food/10 | HP: 25/25 | Attack 3 Armor 0/0
 PASS: woodcut to TC until lumber camp affordable: Food: 365 | Wood: 112 | Gold: 380 | Stone: 226 | Pop 3/5 | Dark Age
 PASS: lumber camp at (24,24) under the forest
 PASS: lumber camp built

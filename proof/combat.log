@@ -1,0 +1,43 @@
+combat browser proof 2026-10-14T09:35:00.998Z url=http://localhost:46651/?scenario=skirmish
+PASS: skirmish start: 7 player military (militia,militia,militia,spearman,spearman,archer,archer), 4 enemy guards
+  saved proof/combat-01-start.png
+PASS: archer info panel: Archer | Task: Idle | HP 30/30 Attack 4 Armor 0/0 Range 4 Speed 2.4 | Ranged (pierce damage) Reload 2s
+PASS: spearman info shows cavalry bonus: Spearman | Task: Idle | HP 45/45 Attack 3 Armor 0/0 Speed 2.5 | Melee Reload 3s +15 vs cavalry
+PASS: info panel has an HP bar
+  saved proof/combat-02-unit-info.png
+PASS: drag-box selected all 7 soldiers
+PASS: move target is on the canvas
+PASS: right-click ground issued a move
+  saved proof/combat-03-move-order.png
+PASS: formation: 7 units on 7 distinct tiles (21,29 23,29 22,30 22,29 21,30 23,30 21,31)
+PASS: units gathered around the clicked point
+PASS: no unit inside a building or tree
+  saved proof/combat-04-enemy-camp.png
+PASS: attack cursor over enemy unit: attack,crosshair
+PASS: right-click enemy militia = attack order (target 170)
+PASS: all 7 selected units ordered to attack it
+  saved proof/combat-05-attack-order.png
+  first contact t=20.6s: enemy militia:28:attacking militia:40:attacking spearman:45:attacking archer:30:attacking | own militia:40:attacking militia:40:attacking militia:40:attacking spearman:34:attacking spearman:45:attacking archer:30:attacking archer:30:attacking
+PASS: enemy guards auto-acquired (aggro) without orders
+PASS: combat log has 7 hits
+  saved proof/combat-06-melee-and-arrows.png
+PASS: archer arrows landed (3 dmg vs militia)
+PASS: all enemy guards killed; 6/7 own soldiers survive
+  deaths: enemy:militia@24.1 player:spearman@26.4 enemy:spearman@28.2 enemy:militia@33.8 enemy:archer@39.1
+PASS: dead units removed from the world (no 0-HP units remain)
+PASS: survivors auto-acquired follow-up targets after the first kill
+PASS: no stacking after the fight
+  saved proof/combat-07-guards-defeated.png
+PASS: re-selected 6 survivors
+PASS: attack cursor over enemy Barracks
+PASS: right-click enemy Barracks = attack order
+PASS: Barracks HP 1200 -> 1121
+PASS: enemy Barracks info: Barracks (Enemy) | HP: 1121/1200 | Armor 0/7
+PASS: no train buttons for an enemy building
+  saved proof/combat-08-attacking-building.png
+PASS: enemy Barracks destroyed at t=192s and removed
+  saved proof/combat-09-barracks-destroyed.png
+PASS: queued Militia + Spearman from the Barracks UI
+PASS: Militia and Spearman trained
+  saved proof/combat-10-trained.png
+RESULT: ALL PASSED

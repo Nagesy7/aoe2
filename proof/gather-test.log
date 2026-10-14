@@ -1,4 +1,4 @@
-gather test 2026-10-14T09:26:12.821Z
+gather test 2026-10-14T09:32:34.604Z
 --- gathering ---
 [food] node berries 125 -> 49; stockpile food=70; carried=6; state=gathering
 PASS: food stockpile increased in trips of 10 (70)
@@ -147,7 +147,7 @@ parallel: removed=160 delivered=154 carried=6 gatheringTiles=39,32 39,30 39,31
 PASS: 3 villagers: node decrease 160 == delivered 154 + carried 6
 PASS: no villager ever stood on a blocked (node/building) tile
 PASS: gatherers spread across distinct adjacent tiles
-PASS: group move spreads across tiles near target (45,36 44,36 46,36)
+PASS: group move spreads across tiles near target (44,35 44,36 45,35)
 --- round 5: placement ignores units (eviction) ---
 PASS: ghost valid over 2 villagers (units ignored)
 PASS: still invalid over TC / bushes

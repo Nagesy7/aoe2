@@ -1,0 +1,62 @@
+combat test 2026-10-14T09:32:34.417Z
+--- stats & damage formula ---
+PASS: Militia: 40 HP, 4 atk, 0/1 armor, 2.0s reload
+PASS: Archer: 30 HP, 4 pierce atk, range 4, 2.0s reload
+PASS: Spearman: 45 HP, 3 atk, +15 vs cavalry, 3.0s reload
+PASS: militia vs militia: 4 melee - 0 melee armor = 4
+PASS: archer vs militia: 4 pierce - 1 pierce armor = 3
+PASS: spearman vs scout: 3 + 15 bonus - 0 = 18
+PASS: spearman vs knight: 3 + 15 - 2 = 16
+PASS: militia vs knight: 4 - 2 = 2
+PASS: minimum damage is 1 (archer / villager vs Town Center 3/5 armor)
+PASS: house: militia 4 (0 melee armor), archer 1 (7 pierce armor)
+--- melee duel: damage per reload, death at 0 HP removes unit ---
+PASS: first hit immediately: enemy HP 40 -> 36
+PASS: no second hit before 2.0s reload
+PASS: second hit after reload (HP 32)
+PASS: victim retaliates against attacker
+PASS: one militia dies
+PASS: death recorded (militia id 165)
+PASS: no units at <= 0 HP remain in world.units
+PASS: survivor goes idle when no enemies remain
+--- ranged vs melee ---
+PASS: right-click on enemy unit = attack (attack)
+PASS: archer fires from range (4.34 tiles, not melee distance)
+PASS: arrow lands as projectile for 3 dmg (4 pierce - 1)
+PASS: militia that closes the gap beats a lone archer (militia HP left 16)
+PASS: three archers kill a militia before it reaches them
+--- pathing around obstacles to target, chase + re-path ---
+PASS: path (16 steps) avoids the wall
+PASS: path detours around an end of the wall
+PASS: attacker reaches target around the wall and hits it, never entering buildings
+PASS: attacker re-paths after moving target (goal 13.5,30.5 -> 13.5,35.5)
+PASS: faster-chasing attacker catches and hits the moving target
+PASS: blocked waypoint detected, re-pathed (1) and arrived
+--- group move: formation, no stacking ---
+PASS: group right-click ground = move
+PASS: 9 distinct formation goal tiles
+PASS: 9 units on 9 distinct tiles after the move (31,46 31,45 31,44 30,46 30,45 29,44 29,46 29,45 32,44)
+PASS: formation is a compact block around the click
+PASS: 4 units spawned on one tile separate to 4 tiles (20,20 21,20 19,20 20,21)
+PASS: 4 attackers surround target on distinct tiles (16,10 16,9 16,11 17,11)
+--- buildings can be attacked and destroyed ---
+PASS: right-click enemy building = attack
+PASS: house taking damage (514/550)
+PASS: house destroyed at t=91.7s and removed
+PASS: destroyed building footprint is walkable again
+PASS: attackers go idle afterwards
+PASS: enemy building info: Barracks (Enemy) | HP: 1200/1200 | Armor 0/7
+PASS: cannot train from an enemy Barracks
+PASS: enemy houses do not raise player pop cap
+--- aggro: idle units auto-acquire; villagers do not; leash ---
+PASS: idle player militia auto-acquires enemy within 6 tiles
+PASS: idle enemy militia auto-acquires too
+PASS: enemy beyond line of sight stays idle
+PASS: villagers do not auto-attack but enemy military targets them
+PASS: undefended villager killed
+PASS: unit under a move order does not divert to aggro
+PASS: createWorld({enemy:true}) adds a 3-building enemy camp with 4 guards
+PASS: enemy units do not count toward player population
+PASS: camp guards stay home while the player is out of sight
+PASS: AI raid: 3 units sent to attack the player
+RESULT: ALL 53 PASSED

@@ -1,4 +1,4 @@
-ages browser proof 2026-10-14T09:26:15.221Z
+ages browser proof 2026-10-14T09:33:55.085Z
 PASS: HUD shows age: Food: 200 | Wood: 200 | Gold: 100 | Stone: 100 | Pop 3/5 | Dark Age
 PASS: Feudal buildings greyed: Archery Range Requires Feudal Age; Watch Tower Requires Feudal Age
 PASS: Castle/Imperial greyed: Castle Requires Castle Age; Wonder Requires Imperial Age
@@ -12,43 +12,43 @@ PASS: wood for Mining Camp + House
 PASS: mining camp at (40,41)
 PASS: mining camp built
 PASS: house built by the miner
-PASS: 500+ food gathered: {"food":555,"wood":195,"gold":300,"stone":100,"age":"dark","t":331.8203000000528}
+PASS: 500+ food gathered: {"food":555,"wood":205,"gold":300,"stone":100,"age":"dark","t":331.9906000000291}
 PASS: requirements met: "Advance to Feudal Age 500 food, 130s"
 PASS: Feudal research started (-500 food)
-PASS: research progress: Town Center | HP: 2400/2400 | Queue: 1/5 | Researching Feudal Age: 30% | Rally: (41, 31) | A
+PASS: research progress: Town Center | HP: 2400/2400 | Armor 3/5 | Queue: 1/5 | Researching Feudal Age: 30% | Rally: (41, 31) | A
   saved proof/ages-03-feudal-research-progress.png
 PASS: Feudal Age reached
-PASS: banner: "You have advanced to the Feudal Age!"; HUD Food: 75 | Wood: 547 | Gold: 430 | Stone: 100 | Pop 8/10 | Feudal Age
+PASS: banner: "You have advanced to the Feudal Age!"; HUD Food: 75 | Wood: 643 | Gold: 430 | Stone: 100 | Pop 8/10 | Feudal Age
   saved proof/ages-04-feudal-banner.png
 PASS: unlocked in Feudal: "Archery Range 175 wood", "Blacksmith 150 wood"; still locked: "Castle Requires Castle Age"
   saved proof/ages-05-feudal-unlocked-menu.png
 PASS: Mining Camp tech button: Gold Mining 100 food, 75 wood, 30s
 PASS: Gold Shaft Mining greyed: Requires Castle Age
 PASS: Gold Mining researched
-PASS: Gold Mining effect: rate 1.00 -> 1.15; measured miner rate 1.053 -> 1.263 /s (x1.20)
+PASS: Gold Mining effect: rate 1.00 -> 1.15; measured miner rate 1.018 -> 1.204 /s (x1.18)
   saved proof/ages-06-tech-gold-mining-researched.png
 PASS: Loom researched
-PASS: Loom effect on villager panel: Villager | Task: Gathering | Carrying: 2 food/10 | HP: 40/40
+PASS: Loom effect on villager panel: Villager | Task: Gathering | Carrying: 2 food/10 | HP: 40/40 | Attack 3 Armor 0/0
   saved proof/ages-07-loom-villager-hp.png
-PASS: wood for Blacksmith + Market: {"food":215,"wood":1025,"gold":710,"stone":100,"age":"feudal","t":662.6701999999584}
+PASS: wood for Blacksmith + Market: {"food":215,"wood":1169,"gold":710,"stone":100,"age":"feudal","t":663.0571999999349}
 PASS: Blacksmith at (46,30), Market at (46,37)
 PASS: Blacksmith + Market built (Feudal buildings)
 PASS: Blacksmith offers Forging
   saved proof/ages-08-feudal-building-built.png
-PASS: 800 food + 200 gold: {"food":805,"wood":1674,"gold":1340,"stone":100,"age":"feudal","t":1040.303399999624}
+PASS: 800 food + 200 gold: {"food":805,"wood":1795,"gold":1340,"stone":100,"age":"feudal","t":1040.8069999996005}
 PASS: castle button: "Advance to Castle Age 800 food, 200 gold, 160s"
 PASS: Castle Age reached
 PASS: banner: You have advanced to the Castle Age!
   saved proof/ages-09-castle-banner.png
-PASS: wood for Monastery + University: {"food":255,"wood":2069,"gold":1503,"stone":100,"age":"castle","t":1202.6365999994669}
+PASS: wood for Monastery + University: {"food":255,"wood":2194,"gold":1513,"stone":100,"age":"castle","t":1203.1735999994448}
 PASS: Monastery at (45,24), University at (50,32)
 PASS: Monastery + University built
   imperial button: "Advance to Imperial Age 1000 food, 800 gold, 190s | need 685 food"
-PASS: 1000 food + 800 gold: {"food":1000,"wood":2856,"gold":2052,"stone":100,"age":"castle","t":1681.5864999990151}
+PASS: 1000 food + 800 gold: {"food":1000,"wood":2941,"gold":2052,"stone":100,"age":"castle","t":1682.3233999989925}
 PASS: Imperial Age reached
-PASS: banner: You have advanced to the Imperial Age!; HUD Food: 300 | Wood: 3045 | Gold: 1472 | Stone: 100 | Pop 8/10 | Imperial Age
+PASS: banner: You have advanced to the Imperial Age!; HUD Food: 300 | Wood: 3068 | Gold: 1472 | Stone: 100 | Pop 8/10 | Imperial Age
   saved proof/ages-10-imperial-banner.png
 PASS: Wonder unlocked in Imperial: "Wonder need 900 stone"
   saved proof/ages-11-imperial-menu.png
-  final: {"food":300,"wood":3045,"gold":1472,"stone":100,"age":"imperial","t":1873.169599998827}, villagers 8, sim time 1873s
+  final: {"food":300,"wood":3068,"gold":1472,"stone":100,"age":"imperial","t":1874.2232999988018}, villagers 8, sim time 1874s
 RESULT: ALL PASSED

@@ -1,4 +1,4 @@
-ages test 2026-10-14T09:25:29.018Z
+ages test 2026-10-14T09:32:34.008Z
 --- age costs, timing, prerequisites ---
 PASS: start in Dark Age
 PASS: Feudal: 500 food, 130s
@@ -58,7 +58,7 @@ PASS: Knight refused in Feudal
 PASS: Crossbowman upgrade refused in Feudal
 PASS: Feudal units trained: spearman, scout_cavalry, archer
 PASS: Scout Cavalry moves
-PASS: unit stats shown: Task: Idle | HP 45/45  Attack 3  Armor 0/2  Speed 3.6 | No combat in this scaffold
+PASS: unit stats shown: Task: Idle | HP 45/45  Attack 3  Armor 0/2  Speed 3.6 | Melee  Reload 2s
 PASS: Forging: +1 attack displayed for cavalry
 PASS: reached Castle
 PASS: Crossbowman upgrade allowed in Castle
