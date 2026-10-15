@@ -26,8 +26,8 @@ export const DEFAULT_CIV = 'shiba';
 export const civOf = (world, owner) => CIVS[world.players?.[owner]?.civ] || CIVS[DEFAULT_CIV];
 // Cosmetic-only unlocks per clan (banner colours / coat patterns). No gameplay effect anywhere in the sim.
 export const COSMETICS = Object.fromEntries(CIV_IDS.map(id => [id, [
-  { id: `${id}_banner_gold`, name: `${CIVS[id].name} Gold Banner`, kind: 'banner', price: 500 },
-  { id: `${id}_coat_winter`, name: `${CIVS[id].name} Winter Coat`, kind: 'coat', price: 800 },
+  { id: `${id}_banner_gold`, name: `${CIVS[id].name} Gold Banner`, kind: 'banner', price: 5000000 },
+  { id: `${id}_coat_winter`, name: `${CIVS[id].name} Winter Coat`, kind: 'coat', price: 8000000 },
 ]]));
 // Visual identity per clan (presentation only, never read by the sim): palette, shield emblem, landmark, unit skin.
 export const CIV_LOOK = {
