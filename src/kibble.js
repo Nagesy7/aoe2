@@ -4,7 +4,9 @@ import { COSMETICS as CIV_COSMETICS } from './civs.js';
 // owner takes the rounding remainder so every unit of the fee lands somewhere. Prize pools go by leaderboard rank
 // (skill), never by chance; there is no wagering and no paid entry. Bones is the free in-game currency, never cashed out.
 // Cosmetics only: nothing here touches stats, resources or build speed.
-export const SIMULATED = true;
+// Real mode (default): wallet, balance, purchases and inventory come from kibble-pay (Phantom SIWS, on-chain $KIBBLE).
+// Demo (?demo=1): the original fully simulated wallet below. Ladder, packs and Cup stay local stubs in both modes.
+export const SIMULATED = (() => { try { return new URLSearchParams(location.search).get('demo') === '1'; } catch { return false; } })();
 export const U = 1_000_000;
 export const OWNER = { name: 'President Inu', title: "President's treasury" };
 export const OWNER_WALLET = 'BzLYTFAfUsjzQ5x8bx5BbPK4DFtaHrLCuferkvkxTNGJ'; // Solana receive address, display only (simulated: no transfers)
@@ -88,3 +90,16 @@ export function joinCup(s, month) { if (tier(s).id === 'none') return { ok: fals
 // demo rivals for the ladder display (static, simulated)
 export const RIVALS = [{ id: 'r1', name: 'KaiKage', pack: 'AKTA', rating: 1386, wins: 21, losses: 9, minutesWon: 441 }, { id: 'r2', name: 'ShibaSan', pack: 'SHIB', rating: 1302, wins: 14, losses: 10, minutesWon: 322 },
   { id: 'r3', name: 'HokkaidoHana', pack: 'HKDO', rating: 1302, wins: 14, losses: 6, minutesWon: 280 }, { id: 'r4', name: 'SpitzStorm', pack: 'AKTA', rating: 1188, wins: 8, losses: 9, minutesWon: 200 }];
+
+// ---- real wallet (kibble-pay) ----
+// applyWallet: connected wallet -> on-chain balance (base units = U, 6 decimals) and server inventory ({"inu-empires": {"<id>": n}}).
+// Owned shop items come ONLY from the wallet's server inventory (never from local state) in real mode.
+export function applyWallet(s, { address, units = 0, inventory = {} } = {}) {
+  if (!address) { s.owned = []; disconnect(s); return tier(s); }
+  s.wallet = { address, simulated: false }; s.kibbleU = Number(units) || 0;
+  const inv = inventory['inu-empires'] || inventory || {};
+  s.owned = Object.keys(inv).filter(k => inv[k] > 0).map(k => k.startsWith('inu-empires:') ? k.slice(12) : k).filter(id => COSMETICS[id]?.price);
+  for (const k of Object.keys(s.equipped)) if (s.equipped[k] && !canUse(s, s.equipped[k])) s.equipped[k] = k === 'colour' ? 'colour_azure' : k === 'banner' ? 'banner_paw' : null;
+  return tier(s);
+}
+export const catalogId = id => 'inu-empires:' + id;

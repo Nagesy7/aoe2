@@ -311,6 +311,7 @@ $('ai-civ').innerHTML = CIV_IDS.map(id => `<option value="${id}">${CIVS[id].name
 $('civ').value = params.get('civ') && CIVS[params.get('civ')] ? params.get('civ') : 'shiba'; $('ai-civ').value = params.get('aiciv') && CIVS[params.get('aiciv')] ? params.get('aiciv') : 'akita';
 const showCiv = () => { $('civ-info').textContent = CIVS[$('civ').value].traits.join(' · '); }; $('civ').onchange = showCiv; showCiv();
 window.game.civCards = mountCivCards($('civ-cards'), { owned: kibbleState().owned || [], selected: $('civ').value, onPick: id => { $('civ').value = id; showCiv(); } });
+addEventListener('empires:wallet', () => { $('civ-cards').innerHTML = ''; window.game.civCards = mountCivCards($('civ-cards'), { owned: kibbleState().owned || [], selected: $('civ').value, onPick: id => { $('civ').value = id; showCiv(); } }); });
 $('btn-ai').onclick = () => startGame({ ai: { civ: $('civ').value, enemy: $('ai-civ').value }, seed: +(params.get('seed') || 7) });
 $('btn-host').onclick = () => openSession('host', newRoomCode());
 $('btn-join').onclick = () => { const code = $('join-code').value.trim().toUpperCase(); if (!/^[A-Z0-9]{3,8}$/.test(code)) { $('menu-err').textContent = 'Enter the room code shown to the host'; return; } openSession('guest', code); };

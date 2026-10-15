@@ -104,9 +104,9 @@ body.ingame #quickbar{display:flex}
  <div id="relay-row" class="row"><input id="relay-url" size="38" placeholder="wss://your-relay/ws"></div>
  <button id="btn-host">Host 1v1</button>
  <div class="row"><input id="join-code" size="8" maxlength="8" placeholder="CODE" style="text-transform:uppercase"><button id="btn-join" style="min-width:150px">Join 1v1</button></div>
- <button id="btn-kibble">🦴 $KIBBLE network (simulated)</button>
+ <button id="btn-kibble">🦴 $KIBBLE network</button>
  <div id="menu-err"></div>
  <div class="hint">Host creates a room code; the other player joins with it. "Same browser" connects two tabs of this browser without any server. For two machines run <code>node server/relay.mjs</code> (see README) and use its wss:// URL, or open the site with <code>?relay=wss://host/ws</code>.</div></div></div>
 <div id="lobby" class="screen"><div class="panel"><h2>Lobby</h2><div class="hint">Room code</div><div id="lobby-code"></div><div id="lobby-link" class="hint"></div>
  <div id="lobby-players"></div><div id="lobby-status"></div><div id="lobby-ping" class="hint"></div>
- <button id="btn-ready" disabled>Ready</button><button id="btn-leave">Leave</button></div></div><script type="module" src="src/main.js"></script></body></html>
+ <button id="btn-ready" disabled>Ready</button><button id="btn-leave">Leave</button></div></div><script type="importmap">{"imports":{"@solana/web3.js":"https://esm.sh/@solana/web3.js@1.98.4"}}</script><script type="module" src="src/main.js"></script></body></html>
