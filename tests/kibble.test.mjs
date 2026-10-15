@@ -7,8 +7,8 @@ assert(K.OWNER_WALLET === 'BzLYTFAfUsjzQ5x8bx5BbPK4DFtaHrLCuferkvkxTNGJ', 'treas
 // shop + tiers
 const s = K.newState(); assert(!K.buy(s, 'skin_snow_akita').ok, 'cannot buy without (simulated) wallet');
 assert(K.connectDemo(s, 25_000).id === 'hound', '25k demo balance = Hound'); assert(K.tierOf(K.toU(1e6)).id === 'shogun' && K.tierOf(K.toU(5)).id === 'pup' && K.tierOf(0).id === 'none', 'tier thresholds');
-const b0 = s.kibbleU; const r = K.buy(s, 'skin_snow_akita'); assert(r.ok && b0 - s.kibbleU === K.toU(255), 'buy deducts price + 2%');
-assert(s.treasuryU === K.toU(2.5) && s.pools.weekly === K.toU(1.25) && s.ledger[0].to === K.OWNER_WALLET, 'fee settled to treasury + pools');
+s.kibbleU += K.toU(2_550_000); const b0 = s.kibbleU; const r = K.buy(s, 'skin_snow_akita'); assert(r.ok && b0 - s.kibbleU === K.toU(2_550_000), 'buy deducts price + 2%');
+assert(s.treasuryU === K.toU(25_000) && s.pools.weekly === K.toU(12_500) && s.ledger[0].to === K.OWNER_WALLET, 'fee settled to treasury + pools');
 assert(K.equip(s, 'skin_snow_akita') && K.equip(s, 'title_hound') && !K.equip(s, 'title_shogun'), 'equip respects ownership + tier');
 assert(Object.values(K.COSMETICS).every(c => ['colour', 'banner', 'title', 'skin', 'civ'].includes(c.kind)), 'cosmetics only');
 // Elo + ranking
