@@ -1,4 +1,4 @@
-full RTS test 2026-10-15T07:19:23.259Z
+full RTS test 2026-10-15T10:03:48.564Z
 --- 1. pathfinding: A*, obstacles, flow field, formations ---
 PASS: A* path (32 steps) never enters a blocked tile
 PASS: A* goes through the only gap in the wall
@@ -40,9 +40,9 @@ PASS: tech tree has 27 techs with original names
 --- 5. civilizations: traits, unique units, no pay-to-win ---
 PASS: 6 clans, each with its own unique unit
 PASS: Kishu: archers +1 range
-PASS: Shikoku: Paddock units 35% cheaper (80 -> 52 food)
+PASS: Shikoku: Paddock units 50% cheaper (80 -> 40 food)
 PASS: Shikoku: cavalry +15% speed
-PASS: Akita: Pack Age researched 20% faster (130 -> 104 s)
+PASS: Akita: Pack Age researched 6% faster (130 -> 122.2 s)
 PASS: Hokkaido: buildings +10% HP, build 20% faster
 PASS: Kai: Dojo trains 30% faster
 PASS: Shiba: lumber +8%
@@ -51,16 +51,21 @@ PASS: another clan cannot train a unique unit it does not own
 PASS: Kibble unlocks are cosmetic only (banners/coats, no effects)
 PASS: every clan is free to play (no price / lock on a clan)
 --- 6. computer opponent (AI-vs-AI, real commands) ---
-PASS: AI builds an economy: 17 / 17 Worker Pups at 8:00
-PASS: AI builds houses, farms and drop sites (town_center, house, barracks, lumber_camp, farm)
+PASS: AI builds an economy: 19 / 19 Worker Pups at 8:00
+PASS: AI builds houses, farms and drop sites (town_center, house, lumber_camp, mill, barracks, farm)
 PASS: AI ages up (22:00: feudal / feudal)
-PASS: AI trains an army (3 / 4, deaths 63)
-PASS: AI attacks: 178 units and 2 buildings destroyed by 32:00
-PASS: score 5099 vs 4157
+PASS: AI trains an army (1 / 5, deaths 77)
+PASS: AI attacks: 128 units and 6 buildings destroyed by 32:00
+PASS: score 3094 vs 6921
 --- 7. lockstep determinism: two AI-vs-AI clients, 10 min, hash every tick ---
 PASS: identical hashes on 12000/12000 ticks
-PASS: simulation progressed (34 units)
+PASS: simulation progressed (40 units)
 PASS: new command types round-trip through encode/decode
+--- 7b. computer economy ---
+FAIL: AI keeps the hall busy: 30 / 22 Worker Pups at 15 min
+PASS: AI reaches the Pack Age on time (10.4 min)
+PASS: AI transitions to farms
+PASS: AI fishes
 --- 8. balance report (sim/balance.mjs) ---
 PASS: 480 AI-vs-AI games across 6 clans (0 conquests)
 PASS: Shiba Clan: 46.9% (75/160) within 45-55%
@@ -69,4 +74,4 @@ PASS: Kishu Archers: 55.0% (88/160) within 45-55%
 PASS: Shikoku Riders: 46.9% (75/160) within 45-55%
 PASS: Hokkaido Wardens: 53.1% (85/160) within 45-55%
 PASS: Kai Brindles: 51.9% (83/160) within 45-55%
-RESULT: ALL 62 PASSED
+RESULT: 1 FAILED, 65 PASSED

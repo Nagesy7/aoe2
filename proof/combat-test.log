@@ -1,4 +1,4 @@
-combat test 2026-10-15T07:19:16.440Z
+combat test 2026-10-15T09:43:01.963Z
 --- stats & damage formula ---
 PASS: Militia: 40 HP, 4 atk, 0/1 armor, 2.0s reload
 PASS: Archer: 30 HP, 4 pierce atk, range 4, 2.0s reload
@@ -16,7 +16,7 @@ PASS: no second hit before 2.0s reload
 PASS: second hit after reload (HP 32)
 PASS: victim retaliates against attacker
 PASS: one militia dies
-PASS: death recorded (militia id 165)
+PASS: death recorded (militia id 169)
 PASS: no units at <= 0 HP remain in world.units
 PASS: survivor goes idle when no enemies remain
 --- ranged vs melee ---

@@ -10,7 +10,19 @@ export const UNIT_DEFS = UNITS;
 export const COSTS = Object.fromEntries([...Object.entries(UNITS), ...Object.entries(BUILDINGS)].map(([k, d]) => [k, d.cost]));
 // Base gather rates (resource units / second / villager), Puppy Age values:
 // forager 0.31, shepherd 0.33, farmer 0.32, lumberjack 0.39, gold miner 0.38, stone miner 0.36. Techs multiply these.
-export const GATHER_RATES = { berries: 0.31, farm: 0.32, carcass: 0.33, tree: 0.39, gold_mine: 0.38, stone_mine: 0.36 };
+export const GATHER_RATES = { berries: 0.31, farm: 0.32, carcass: 0.33, tree: 0.39, gold_mine: 0.38, stone_mine: 0.36, fish: 0.42 };
+export const FISH_FOOD = 200;
+// Water: world.water is a Uint8Array mask (1 = water). Impassable and unbuildable; fish nodes sit on water tiles next to the shore and are
+// gathered from the adjacent land tiles with the net. Deterministic: ponds are fixed shapes, no RNG draws.
+export function addPond(world, cx, cy, rx, ry, fish = []) {
+  if (!world.water) world.water = new Uint8Array(world.width * world.height);
+  for (let y = Math.floor(cy - ry); y <= Math.ceil(cy + ry); y++) for (let x = Math.floor(cx - rx); x <= Math.ceil(cx + rx); x++) {
+    if (x < 0 || y < 0 || x >= world.width || y >= world.height) continue;
+    const dx = (x + 0.5 - cx) / rx, dy = (y + 0.5 - cy) / ry; if (dx * dx + dy * dy <= 1) world.water[y * world.width + x] = 1; }
+  world.resources = world.resources.filter(n => n.kind === 'fish' || !isWater(world, Math.floor(n.x), Math.floor(n.y)));
+  for (const [x, y] of fish) if (isWater(world, x, y)) world.resources.push({ id: world.nextId++, res: 'food', kind: 'fish', x: x + 0.5, y: y + 0.5, amount: FISH_FOOD });
+}
+export const isWater = (world, x, y) => !!(world.water && x >= 0 && y >= 0 && x < world.width && y < world.height && world.water[y * world.width + x]);
 export const FARM_FOOD = 175, CARCASS_FOOD = 100;
 export const TRAIN_TIME = 25, HOUSE_BUILD_TIME = 25, POP_MAX = 200, QUEUE_MAX = 5;
 export const CARRY_MAX = 10, GATHER_RATE = 1.0, REACH = 0.9;
@@ -98,6 +110,10 @@ export function createMpWorld({ seed = 1, stockpile = START_STOCKPILE } = {}) {
   const c1 = O + 2, c2 = M + 2;
   for (let i = 0; i < 150; i++) { const x = Math.floor(rand() * width), y = Math.floor(rand() * height), mx = width - 1 - x, my = height - 1 - y;
     if (hyp(x - c1, y - c1) > 14 && hyp(x - c2, y - c2) > 14) { add('wood', x, y); add('wood', mx, my); } }
+  // a fishing pond near each base (mirrored) and a central lake
+  addPond(world, O + 13, O + 9, 2.6, 2.1, [[O + 11, O + 9], [O + 14, O + 8], [O + 13, O + 10]]);
+  addPond(world, width - (O + 13), height - (O + 9), 2.6, 2.1, [[width - 1 - (O + 11), height - 1 - (O + 9)], [width - 1 - (O + 14), height - 1 - (O + 8)], [width - 1 - (O + 13), height - 1 - (O + 10)]]);
+  addPond(world, width / 2, height / 2, 4.2, 3.2, [[width / 2 - 4, height / 2 - 1], [width / 2 + 3, height / 2], [width / 2 - 1, height / 2 + 2], [width / 2, height / 2 - 3]]);
   return world;
 }
 
@@ -119,6 +135,7 @@ export function createWorld({ width = 64, height = 64, seed = 1, stockpile = STA
   for (const [x, y] of [[26, 42], [27, 42], [28, 42]]) add('stone', x, y);
   for (let i = 0; i < 120; i++) { const x = Math.floor(rand() * width), y = Math.floor(rand() * height);
     if (hyp(x - 34, y - 34) > 14) add('wood', x, y); }
+  addPond(world, 16, 52, 3.2, 2.4, [[13, 52], [16, 50], [18, 52], [15, 53]]);
   for (const [x, y] of [[36.5, 34.5], [36.5, 35.5], [31.5, 35.5]].slice(0, villagers)) newVillager(world, x, y);
   // sheep: 4 near the TC, 3 scattered. Neutral until a villager touches them. Kept in world.animals (not pop).
   for (const [x, y] of [[29.5, 30.5], [30.5, 29.5], [29.5, 29.5], [28.5, 31.5], [12.5, 40.5], [50.5, 24.5], [45.5, 52.5]])
@@ -134,6 +151,7 @@ export function buildGrid(world) {
   const g = new Uint8Array(world.width * world.height);
   for (const n of world.resources) if (n.amount > 0 && !n.walkable) { const x = Math.floor(n.x), y = Math.floor(n.y);
     if (x >= 0 && y >= 0 && x < world.width && y < world.height) g[tkey(world, x, y)] = 1; }
+  if (world.water) for (let i = 0; i < g.length; i++) if (world.water[i]) g[i] = 1;
   for (const b of world.buildings) if (!(b.walkable && b.complete)) for (let y = b.y; y < b.y + b.size; y++) for (let x = b.x; x < b.x + b.size; x++)
     if (x >= 0 && y >= 0 && x < world.width && y < world.height) g[tkey(world, x, y)] = 1;
   return g;
@@ -245,11 +263,11 @@ export function selectAt(world, x, y) { const s = pickAt(world, x, y); world.sel
 export function popCount(world) { return world.units.filter(u => owned(world, u)).length; }
 export function queuedCount(world) { return world.buildings.reduce((t, b) => t + (mine(world, b) ? b.queue.filter(isUnitItem).length : 0), 0); }
 export function popCap(world) { return Math.min(POP_MAX, world.buildings.reduce((t, b) => t + (b.complete && mine(world, b) ? b.popCap : 0), 0)); }
-const KIND_NAME = { berries: 'Berry Bush', tree: 'Tree', gold_mine: 'Gold Mine', stone_mine: 'Stone Mine' };
+const KIND_NAME = { fish: 'Fish (shore net)', berries: 'Berry Bush', tree: 'Tree', gold_mine: 'Gold Mine', stone_mine: 'Stone Mine' };
 const TASK_NAME = { attacking: 'Attacking', to_hunt: 'Going to sheep', idle: 'Idle', moving: 'Moving', to_resource: 'Walking to resource', gathering: 'Gathering', to_drop: 'Returning to drop-off', to_build: 'Walking to build', building: 'Building' };
 export function selectionInfo(world) {
   const s = world.selection; if (!s) return null;
-  if (s.kind === 'tile') return { kind: 'tile', title: 'Grass tile', lines: [`(${s.x}, ${s.y})`] };
+  if (s.kind === 'tile') return { kind: 'tile', title: isWater(world, s.x, s.y) ? 'Water' : 'Grass tile', lines: [`(${s.x}, ${s.y})`] };
   if (s.kind === 'building') { const b = world.buildings.find(o => o.id === s.id); if (!b) return null;
     if (!b.complete) return { kind: 'building', type: b.type, title: `${b.name} (foundation)`, lines: [`HP: ${b.hp}/${b.maxHp}`, `Construction: ${Math.floor(100 * b.progress / b.buildTime)}%`], progress: b.progress / b.buildTime };
     const arm = armorOf(b); const lines = [`HP: ${Math.ceil(b.hp)}/${b.maxHp}`, `Armor ${arm.melee}/${arm.pierce}`];

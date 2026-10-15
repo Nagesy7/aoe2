@@ -8,7 +8,7 @@ import { AGES, AGE_UPS, ageIndex } from './techtree.js';
 const AGE_COST = a => (a && AGE_UPS[a] ? AGE_UPS[a].cost : {});
 import { CIVS, civOf } from './civs.js';
 
-const VIL_TARGET = { dark: 20, feudal: 28, castle: 36, imperial: 40 };
+const VIL_TARGET = { dark: 22, feudal: 32, castle: 42, imperial: 48 };
 const RATIO = { dark: { food: 0.6, wood: 0.4, gold: 0, stone: 0 }, feudal: { food: 0.42, wood: 0.33, gold: 0.2, stone: 0.05 },
   castle: { food: 0.38, wood: 0.27, gold: 0.25, stone: 0.1 }, imperial: { food: 0.38, wood: 0.27, gold: 0.27, stone: 0.08 } };
 const ATTACK_SIZE = { dark: 99, feudal: 8, castle: 14, imperial: 18 };
@@ -71,9 +71,12 @@ function think(world, owner, mem) {
   const working = vills.filter(v => v.state !== 'garrisoned');
   const count = { food: 0, wood: 0, gold: 0, stone: 0 };
   for (const v of working) { const n = world.resources.find(r => r.id === v.target); const r = n ? n.res : v.carry.res; if (r && v.state !== 'idle') count[r]++; }
-  const ratio = { ...RATIO[age] }; // lean away from resources already piling up, toward what the next age costs
+  const ratio = { ...RATIO[age] }; if (age === 'dark' && vills.length < 11) { ratio.food = 0.75; ratio.wood = 0.25; } // early: feed the hall first
+  if (age === 'feudal' && vills.length >= 22) { ratio.gold += 0.08; ratio.food += 0.04; } // bank for the next age
+  { const nAge = ['archery_range', 'blacksmith', 'stable', 'market'].filter(t => any(t).length).length; // wood for age-unlock buildings + farms
+    if ((age === 'feudal' && nAge < 2) || (age === 'dark' && vills.length >= 11 && !any('barracks').length)) ratio.wood += 0.15; } // lean away from resources already piling up, toward what the next age costs
   const nxA = AGES[ageIndex(age) + 1]; if (nxA && vills.length >= 14) for (const [r, v] of Object.entries(AGE_COST(nxA))) if (P.stockpile[r] < v) ratio[r] += 0.2;
-  for (const r in ratio) if (P.stockpile[r] > 700) ratio[r] *= 0.35; { const t = Object.values(ratio).reduce((a, b) => a + b, 0) || 1; for (const r in ratio) ratio[r] /= t; }
+  for (const r in ratio) if (P.stockpile[r] > Math.max(350, (AGE_COST(nxA)[r] || 0) + 150)) ratio[r] *= 0.35; { const t = Object.values(ratio).reduce((a, b) => a + b, 0) || 1; for (const r in ratio) ratio[r] /= t; }
   const want = r => ratio[r] * working.length;
   // rebalance up to two busy gatherers per second from surplus to deficit
   for (let k = 0; k < 2; k++) {
@@ -93,30 +96,40 @@ function think(world, owner, mem) {
     else gatherAny(world, owner, cmd, v, home);
   }
   // keep farms coming once wild food runs out
-  const foodNodes = world.resources.filter(n => n.res === 'food' && n.amount > 0 && n.kind !== 'farm' && hyp(n.x - home.x, n.y - home.y) < 16).length;
-  if (!foodNodes && count.food < want('food') - 1 && has({ wood: 60 })) {
+  // farm transition starts before wild food (sheep, berries, fish) runs dry: farms ~= food workers not covered by what is left
+  const wild = world.resources.filter(n => n.res === 'food' && n.amount > 0 && n.kind !== 'farm' && hyp(n.x - home.x, n.y - home.y) < 16).reduce((t, n) => t + n.amount, 0)
+    + world.animals.filter(a => a.type === 'sheep' && (!a.owner || a.owner === owner) && hyp(a.x - home.x, a.y - home.y) < 14).length * 100;
+  const farms = any('farm').length, wantFarms = Math.min(Math.ceil(0.5 * working.length), Math.ceil(want('food') - wild / 180));
+  // keep wood for the buildings that unlock the next age (Dojo, then two of Bow Yard / Forge / Paddock / Bazaar) unless food is collapsing
+  const ageBuild = ['archery_range', 'blacksmith', 'stable', 'market'].filter(t => any(t).length).length;
+  const reserve = (vills.length >= 11 && !any('barracks').length ? 175 : 0) + (ageIndex(age) >= 1 && ageBuild < 2 ? 175 : 0);
+  if (vills.length >= 12 && farms < wantFarms && !any('farm').some(b => !b.complete) && has({ wood: 60 + (count.food < 5 ? 0 : reserve) })) {
     const v = pick(working, 'wood') || working[0]; if (v) buildNear(world, owner, cmd, 'farm', home, tc.size, [v]);
   }
   // --- age up ---
   const nx = nextAge(world.players[owner] ? { age } : world);
   const ageReady = nx && withPlayer(world, owner, () => canAgeUp(world, tc).ok);
-  const minVil = { feudal: 16, castle: 24, imperial: 30 }[nx] || 99;
+  const minVil = { feudal: 18, castle: 26, imperial: 32 }[nx] || 99;
   if (ageReady && vills.length >= minVil) cmd('ageup', { id: tc.id });
   const saving = nx && vills.length >= minVil - 2 && withPlayer(world, owner, () => ageStatus(world).ok);
   // --- villager production ---
-  if (vills.length < VIL_TARGET[age] && !(saving && vills.length >= minVil && !has(AGE_COST(nx))) && tc.queue.length < 2 && !tc.queue.some(q => q.startsWith('age:')) && room() > 0 && has({ food: 50 })) cmd('train', { id: tc.id, unit: 'villager' });
+  // keep the hall busy: always train up to the age-up threshold; past it, only from food beyond the age-up cost
+  const spareFood = P.stockpile.food - ((saving && AGE_COST(nx).food) || 0);
+  if (vills.length < VIL_TARGET[age] && (vills.length < minVil || !saving || spareFood >= 50) && tc.queue.length < 2 && !tc.queue.some(q => q.startsWith('age:')) && room() > 0 && has({ food: 50 })) cmd('train', { id: tc.id, unit: 'villager' });
   // --- houses ---
   const building = t => any(t).some(b => !b.complete);
   const cap = withPlayer(world, owner, () => popCap(world));
   const housing = any('house').filter(b => !b.complete).length;
   if (cap < 200 && room() <= 3 + 3 * ageIndex(age) && housing < 1 + (ageIndex(age) >= 1 ? 1 : 0) && has({ wood: 25 })) { const v = pick(working, 'wood'), v2 = v && pick(working.filter(o => o !== v), 'wood'); if (v) buildNear(world, owner, cmd, 'house', home, tc.size + 5, [v, ...(v2 && vills.length > 12 ? [v2] : [])], 18); }
   // --- drop sites ---
-  for (const [t, res, need] of [['lumber_camp', 'wood', 3], ['mill', 'food', 3], ['mining_camp', 'gold', 2], ['mining_camp', 'stone', 2]]) {
-    if (count[res] < need || building(t) || !has(BUILDING_DEFS[t].cost)) continue;
-    const gs = working.filter(v => { const n = world.resources.find(r => r.id === v.target); return n && n.res === res && n.kind !== 'farm'; }); if (!gs.length) continue;
-    const n = world.resources.find(r => r.id === gs[0].target);
-    const nearDrop = world.buildings.some(b => b.owner === owner && b.accepts.includes(res) && hyp(b.x + b.size / 2 - n.x, b.y + b.size / 2 - n.y) < 8);
-    if (!nearDrop) { buildNear(world, owner, cmd, t, n, 1, [gs[0]], 3); break; }
+  // a drop site next to every worked cluster that is far from one (berries, fish, woodlines, mines), cheapest first
+  dropsites: for (const [t, res, need] of [['mill', 'food', 2], ['lumber_camp', 'wood', 2], ['mining_camp', 'gold', 2], ['mining_camp', 'stone', 2]]) {
+    const cap = { mill: 2, lumber_camp: 2 + ageIndex(age), mining_camp: 2 + ageIndex(age) }[t], hasOne = any(t).length;
+    if (count[res] < need || building(t) || hasOne >= cap || !has(hasOne ? { wood: BUILDING_DEFS[t].cost.wood + reserve } : BUILDING_DEFS[t].cost)) continue;
+    const gs = working.filter(v => { const n = world.resources.find(r => r.id === v.target); return n && n.res === res && n.kind !== 'farm' && n.kind !== 'carcass'; });
+    for (const g of gs) { const n = world.resources.find(r => r.id === g.target);
+      const nearDrop = world.buildings.some(b => b.owner === owner && b.accepts.includes(res) && hyp(b.x + b.size / 2 - n.x, b.y + b.size / 2 - n.y) < 6.5);
+      if (!nearDrop && gs.filter(o => { const m = world.resources.find(r => r.id === o.target); return hyp(m.x - n.x, m.y - n.y) < 5; }).length >= need) { if (buildNear(world, owner, cmd, t, n, 1, [g], 4)) break dropsites; } }
   }
   // --- tech-tree progression (buildings) ---
   const plan = [];
@@ -165,6 +178,9 @@ function pick(vills, res) {
 }
 function nearestNode(world, owner, v, res, home) {
   let best = null, bd = 1e9;
+  if (res === 'food') for (const a of world.animals) { // herd/butcher sheep near the hall first (best early food); one worker per live sheep
+    if (a.type !== 'sheep' || (a.owner && a.owner !== owner) || hyp(a.x - home.x, a.y - home.y) > 14 || world.units.some(u => u.hunt === a.id && u !== v)) continue;
+    const d = hyp(a.x - v.x, a.y - v.y) + 0.5 * hyp(a.x - home.x, a.y - home.y) - 6; if (d < bd) { bd = d; best = a; } }
   for (const n of world.resources) {
     if (n.res !== res || n.amount <= 0) continue;
     if (n.farm) { const b = world.buildings.find(o => o.id === n.farm); if (!b || b.owner !== owner || world.units.some(u => u.target === n.id && u !== v)) continue; }

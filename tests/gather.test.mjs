@@ -396,6 +396,18 @@ log('--- round 6: build mode (pure ui-state) ---');
   const g = ghostAt(w, 'farm', 46, 46); assert(!g.valid && g.size === 3, 'farm ghost far from Mill/TC invalid');
   const g2 = ghostAt(w, 'farm', 37.5, 31.5); assert(g2.valid && g2.tx === 36 && g2.ty === 30, `farm ghost adjacent to TC valid at (${g2.tx},${g2.ty})`);
 }
+log('--- water & fishing ---');
+{ const S = await import('../src/sim.js'); const w = createWorld({}); const fish = w.resources.filter(n => n.kind === 'fish');
+  assert(w.water && fish.length >= 3 && fish.every(n => S.isWater(w, Math.floor(n.x), Math.floor(n.y))), `sandbox map has a pond with ${fish.length} fish on water tiles`);
+  const g = buildGrid(w), wt = [...w.water].findIndex(v => v); assert(g[wt] === 1, 'water tiles are impassable');
+  assert(!canPlace(w, 'house', wt % w.width, Math.floor(wt / w.width)), 'cannot build on water');
+  assert(fish.every(n => [[-1,-1],[0,-1],[1,-1],[-1,0],[1,0],[-1,1],[0,1],[1,1]].some(([dx, dy]) => !g[(Math.floor(n.y) + dy) * w.width + Math.floor(n.x) + dx])), 'every fish is reachable from a shore tile');
+  const v = w.units.find(u => u.type === 'villager'); orderGather(w, v, fish[0]); const f0 = w.stockpile.food;
+  let fished = false; for (let i = 0; i < 20 * 120; i++) { tick(w, 0.05); if (v.state === 'gathering' && v.carry.kind === 'fish') fished = true; }
+  assert(fished && w.stockpile.food > f0 && fish[0].amount < S.FISH_FOOD, `villager fishes from the shore and deposits food (+${w.stockpile.food - f0})`);
+  const m = S.createMpWorld({ seed: 5 }); const mf = m.resources.filter(n => n.kind === 'fish');
+  assert(mf.length >= 10 && mf.every(n => mf.some(o => Math.abs(o.x - (m.width - n.x)) < 1e-9 && Math.abs(o.y - (m.height - n.y)) < 1e-9)), `1v1 map: ${mf.length} fish, point-mirrored for both players`);
+}
 log(fail ? `RESULT: ${fail} FAILED, ${pass} passed` : `RESULT: ALL ${pass} PASSED`);
 mkdirSync(fileURLToPath(new URL('../proof/', import.meta.url)), { recursive: true });
 writeFileSync(out, lines.join('\n') + '\n');

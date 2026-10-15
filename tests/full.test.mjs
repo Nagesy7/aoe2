@@ -107,9 +107,9 @@ log('--- 5. civilizations: traits, unique units, no pay-to-win ---');
   assert(CIV_IDS.length === 6 && CIV_IDS.every(id => CIVS[id].unique && UNITS[CIVS[id].unique].unique === id), '6 clans, each with its own unique unit');
   const mkCiv = civ => { const w = createMpWorld({ seed: 3 }); w.players.player.civ = civ; return w; };
   { const w = mkCiv('kishu'); const a = mk(w, 'archer', 30.5, 30.5); assert(unitStats(w, a).range === UNITS.archer.range + 1, 'Kishu: archers +1 range'); }
-  { const w = mkCiv('shikoku'); const st = addBuilding(w, 'stable', 30, 30); assert(unitCost(w, 'scout_cavalry', st).food === 52, 'Shikoku: Paddock units 35% cheaper (80 -> 52 food)');
+  { const w = mkCiv('shikoku'); const st = addBuilding(w, 'stable', 30, 30); assert(unitCost(w, 'scout_cavalry', st).food === 40, 'Shikoku: Paddock units 50% cheaper (80 -> 40 food)');
     w.players.enemy.civ = 'shikoku'; const s = mk(w, 'scout_cavalry', 30.5, 36.5); assert(Math.abs(s.speed - UNITS.scout_cavalry.speed * 1.15) < 1e-9, 'Shikoku: cavalry +15% speed'); }
-  { const w = mkCiv('akita'); const tc = w.buildings.find(b => b.owner === 'player'); assert(Math.abs(itemTime('age:feudal', w, tc) - 130 * 0.80) < 1e-9, 'Akita: Pack Age researched 20% faster (130 -> 104 s)'); }
+  { const w = mkCiv('akita'); const tc = w.buildings.find(b => b.owner === 'player'); assert(Math.abs(itemTime('age:feudal', w, tc) - 130 * 0.94) < 1e-9, 'Akita: Pack Age researched 6% faster (130 -> 122.2 s)'); }
   { const w = mkCiv('hokkaido'); const h = addBuilding(w, 'house', 30, 30); assert(h.maxHp === Math.round(550 * 1.10) && techEffects(w, 'player').buildSpeedPct === 20, 'Hokkaido: buildings +10% HP, build 20% faster'); }
   { const w = mkCiv('kai'); const br = addBuilding(w, 'barracks', 30, 30); assert(Math.abs(itemTime('militia', w, br) - UNITS.militia.time * 0.70) < 1e-9, 'Kai: Dojo trains 30% faster'); }
   { const w = mkCiv('shiba'); assert(S.gatherRate(w, 'tree') > S.GATHER_RATES.tree, 'Shiba: lumber +8%'); }
@@ -150,6 +150,16 @@ log('--- 7. lockstep determinism: two AI-vs-AI clients, 10 min, hash every tick 
   assert(A.units.length > 20, `simulation progressed (${A.units.length} units)`);
   const c = makeCommand('stance', { ids: [1, 2], stance: 'defensive' }, 1, 99); assert(JSON.stringify(S.decodeCommand(S.encodeCommand(c))) === JSON.stringify({ tick: 99, player: 1, type: 'stance', args: { ids: [1, 2], stance: 'defensive' } }), 'new command types round-trip through encode/decode');
 }
+
+log('--- 7b. computer economy ---');
+{ const { createMpWorld, stepTick } = await import('../src/sim.js'); const { setupComputers } = await import('../src/ai.js');
+  const w = createMpWorld({ seed: 2 }); setupComputers(w, { player: 'shiba', enemy: 'kai' }); let feudalAt = null, mills = 0;
+  for (let i = 0; i < 15 * 1200; i++) { stepTick(w); if (feudalAt == null && w.players.player.age !== 'dark') feudalAt = w.time / 60; }
+  const v = o => w.units.filter(u => u.owner === o && u.type === 'villager').length;
+  assert(Math.max(v('player'), v('enemy')) >= 27 && Math.min(v('player'), v('enemy')) >= 20, `AI keeps the hall busy: ${v('player')} / ${v('enemy')} Worker Pups at 15 min`);
+  assert(feudalAt != null && feudalAt < 12, `AI reaches the Pack Age on time (${feudalAt?.toFixed(1)} min)`);
+  assert(w.buildings.some(b => b.owner === 'player' && b.type === 'farm'), 'AI transitions to farms');
+  assert(w.resources.some(n => n.kind === 'fish' && n.amount < 200), 'AI fishes'); }
 
 log('--- 8. balance report (sim/balance.mjs) ---');
 {

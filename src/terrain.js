@@ -29,6 +29,23 @@ function drawChunk(world, cx, cy, T) {
     if (hash(tx, ty, 300) < 0.18) { const n = 1 + (hash(tx, ty, 301) * 3 | 0); for (let i = 0; i < n; i++) {
       const x = bx + hash(tx, ty, 310 + i) * T | 0, y = by + hash(tx, ty, 320 + i) * T | 0; g.fillStyle = i % 2 ? 'rgba(120,90,50,0.6)' : 'rgba(95,72,40,0.55)'; g.fillRect(x, y, 2, 1); } }
   }
+  // 2b) water: deep blue noise, lighter rim, sandy shore pixels and foam where water meets land (pixel blocks to match the sprite style)
+  if (world.water) { const W = (x, y) => x >= 0 && y >= 0 && x < world.width && y < world.height && world.water[y * world.width + x];
+    for (let ty = cy * CH; ty < cy * CH + h; ty++) for (let tx = cx * CH; tx < cx * CH + w; tx++) {
+      const bx = tx * T - ox, by = ty * T - oy;
+      if (!W(tx, ty)) { // shore: sandy fringe on the side facing water
+        for (const [dx, dy] of [[1, 0], [-1, 0], [0, 1], [0, -1]]) if (W(tx + dx, ty + dy)) { g.fillStyle = 'rgba(214,190,128,0.85)';
+          if (dx) g.fillRect(dx > 0 ? bx + T - 6 : bx, by, 6, T); else g.fillRect(bx, dy > 0 ? by + T - 6 : by, T, 6); }
+        continue; }
+      for (let py = 0; py < T; py += B) for (let px = 0; px < T; px += B) {
+        const wx = tx + px / T, wy = ty + py / T, n = vnoise(wx / 2.2, wy / 2.2, 7), edge = [[1, 0], [-1, 0], [0, 1], [0, -1]].some(([dx, dy]) => !W(tx + dx, ty + dy));
+        const k = 0.85 + n * 0.3 + (edge ? 0.18 : 0);
+        g.fillStyle = `rgb(${38 * k | 0},${104 * k | 0},${168 * k | 0})`; g.fillRect(bx + px, by + py, B, B); }
+      for (const [dx, dy] of [[1, 0], [-1, 0], [0, 1], [0, -1]]) if (!W(tx + dx, ty + dy)) { g.fillStyle = 'rgba(235,245,255,0.75)';
+        if (dx) g.fillRect(dx > 0 ? bx + T - 2 : bx, by, 2, T); else g.fillRect(bx, dy > 0 ? by + T - 2 : by, T, 2); }
+      for (let i = 0; i < 2; i++) if (hash(tx, ty, 400 + i) < 0.5) { g.fillStyle = 'rgba(200,230,255,0.55)';
+        g.fillRect(bx + (hash(tx, ty, 410 + i) * (T - 8) | 0), by + (hash(tx, ty, 420 + i) * (T - 2) | 0), 6, 1); }
+    } }
   // 3) very light grid
   g.fillStyle = 'rgba(0,0,0,0.07)'; for (let i = 0; i <= w; i++) g.fillRect(i * T, 0, 1, cv.height); for (let i = 0; i <= h; i++) g.fillRect(0, i * T, cv.width, 1);
   return cv;

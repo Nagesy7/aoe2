@@ -150,12 +150,14 @@ Every clan is free. Traits change how a clan plays, not raw power; $KIBBLE only 
 
 | Clan | Style | Traits | Unique (Fortress) |
 |---|---|---|---|
-| Shiba Clan | Economy | lumber/berries +15%, farming +10% | Red Fang (fast cheap raider) |
-| Akita Dominion | Fast ages | age-ups research 16% faster | Akita Guardian (armored infantry) |
-| Kishu Bow Pups | Bow Pups | archers +1 range, Bow Yard 10% faster | Kishu Longbow (range 7) |
-| Shikoku Riders | Cavalry | cavalry +10% speed, Paddock units 15% cheaper | Boar Rider (building breaker) |
-| Hokkaido Wardens | Defense | buildings +20% HP, build 30% faster, Den Hall +1 arrow | Frost Guard (anti-archer) |
-| Kai Brindles | Infantry | Dojo trains 25% faster, infantry +10% HP | Brindle Striker (anti-cavalry) |
+| Shiba Clan | Economy | berry foraging +15%, lumber +10% | Red Fang (fast cheap raider) |
+| Akita Dominion | Fast ages | age-ups research 6% faster | Akita Guardian (armored infantry) |
+| Kishu Archers | Archers | archers +1 range, Bow Yard units cost 10% more | Kishu Longbow (range 7) |
+| Shikoku Riders | Cavalry | cavalry 15% faster, Paddock units 50% cheaper | Boar Rider (building breaker) |
+| Hokkaido Wardens | Defense | buildings +10% HP, build 20% faster, Den Hall +1 arrow | Frost Guard (anti-archer) |
+| Kai Brindles | Infantry | Dojo trains 30% faster, infantry +35% HP | Brindle Striker (anti-cavalry) |
+
+**Water & fishing**: maps have ponds (one by each base plus a central lake on 1v1 maps). Water is impassable and unbuildable; Worker Pups fish from the shore with the net (fish 200 food, 0.42/s), dropping at a Granary or Den Hall. The computer builds a Granary next to its fishing spot.
 
 **Balance sim**: `node sim/balance.mjs --seeds 8 --minutes 30` plays every pair of clans from both map sides on mirrored maps (AI vs AI, worker threads) and writes `proof/balance.json`. A game ends by conquest or, at the time limit, by score (value of living units + buildings + stockpile + age). Win rates and their sample sizes are reported; see the report for the exact numbers and the limits (most games end on score, not conquest).
 

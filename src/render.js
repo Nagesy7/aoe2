@@ -1,10 +1,10 @@
 import { unitAction } from './anim.js';
 import { CIV_LOOK } from './civs.js';
-import { drawUnitArt, drawBuildingArt } from './art.js';
+import { drawUnitArt, drawBuildingArt, drawVillagerArt } from './art.js';
 const ART_B = new WeakSet();
 import { drawTerrain } from './terrain.js';
 import { drawInu, paw, TEAM } from './inu.js';
-import { TILE, camPixel, selectedUnits, itemTime, unitStats } from './sim.js';
+import { TILE, camPixel, selectedUnits, itemTime, unitStats, FISH_FOOD } from './sim.js';
 // Per-player fog of war (multiplayer): what the viewer's own units and buildings currently see, plus explored memory.
 // Purely presentational: computed from the (identical) world on each client, never fed back into the simulation.
 const VIS_BUILDING = { town_center: 8, watch_tower: 8, castle: 9 };
@@ -99,6 +99,12 @@ export function render(ctx, world, cam, ui = {}, fog = null) {
     if (sel && sel.kind === 'resource' && sel.id === n.id) { ctx.strokeStyle = '#fff'; ctx.lineWidth = 2; ctx.beginPath(); ctx.ellipse(px, py + 8, 15, 7, 0, 0, 7); ctx.stroke(); ctx.lineWidth = 1; }
     if (n.res === 'wood') { ctx.fillStyle = '#5a3a1a'; ctx.fillRect(px - 3, py, 6, 12); ctx.fillStyle = '#1f5a1f'; ctx.beginPath(); ctx.arc(px, py - 4, 12, 0, 7); ctx.fill(); }
     else if (n.kind === 'farm') {}
+    else if (n.kind === 'fish') { const t = (world.time || 0) + n.id * 1.7, k = Math.sin(t * 1.3), fx = Math.round(px + k * 6), fy = Math.round(py + Math.cos(t * 0.9) * 3), d = Math.cos(t * 1.3) >= 0 ? 1 : -1;
+      ctx.strokeStyle = 'rgba(220,240,255,0.6)'; ctx.lineWidth = 1; const r = 5 + ((t * 6) % 8); ctx.beginPath(); ctx.ellipse(px, py + 2, r, r * 0.45, 0, 0, 7); ctx.stroke();
+      ctx.fillStyle = '#1c2a3a'; ctx.fillRect(fx - 6, fy - 2, 12, 5); ctx.fillRect(fx - 6 * d - (d > 0 ? 3 : 0), fy - 3, 3, 7);  // outline + tail
+      ctx.fillStyle = '#d8dee6'; ctx.fillRect(fx - 5, fy - 1, 10, 3); ctx.fillStyle = '#7f9fbf'; ctx.fillRect(fx - 5, fy - 1, 10, 1); ctx.fillStyle = '#e88a3a'; ctx.fillRect(fx - 6 * d - (d > 0 ? 2 : -1), fy - 2, 2, 5);
+      ctx.fillStyle = '#111'; ctx.fillRect(fx + 3 * d, fy - 1, 1, 1);
+      if (n.amount < FISH_FOOD) bar(ctx, px - 12, py - 10, 24, n.amount / FISH_FOOD, '#4aa0e0'); }
     else if (n.kind === 'carcass') { ctx.fillStyle = '#e8e0d0'; ctx.beginPath(); ctx.ellipse(px, py + 4, 10, 6, 0, 0, 7); ctx.fill(); ctx.fillStyle = '#a02020'; ctx.beginPath(); ctx.ellipse(px + 2, py + 5, 5, 3, 0, 0, 7); ctx.fill();
       bar(ctx, px - 12, py - 10, 24, n.amount / 100, '#e0a040'); }
     else if (n.res === 'food') { ctx.fillStyle = '#2d6b2d'; ctx.beginPath(); ctx.arc(px, py, 11, 0, 7); ctx.fill(); ctx.fillStyle = '#c0203a'; for (let i = 0; i < 5; i++) { ctx.beginPath(); ctx.arc(px - 6 + (i * 5) % 13, py - 5 + (i * 7) % 11, 2.5, 0, 7); ctx.fill(); } }
@@ -119,7 +125,8 @@ export function render(ctx, world, cam, ui = {}, fog = null) {
       ctx.strokeStyle = '#fff'; ctx.lineWidth = 2; ctx.beginPath(); ctx.ellipse(px, py + 6, 11, 6, 0, 0, 7); ctx.stroke(); ctx.lineWidth = 1; }
     { let res = null, kind = null; if (u.type === 'villager' && u.target != null && !u.carry.amount) { const n = world.resources.find(r => r.id === u.target); if (n) { res = n.res; kind = n.kind; } }
       const act = unitAction(u, world, world.time || 0); // villagers: sprite sheet only for hammer work (build/repair) and death; otherwise procedural with the right tool
-      if (u.type === 'villager' && act.tool !== 'hammer' && act.action !== 'death') drawInu(ctx, u, px, py, world.time || 0, { res, kind, act, attacking: act.action === 'attack' });
+      if (u.type === 'villager' && act.tool !== 'hammer' && act.action !== 'death' && drawVillagerArt(ctx, u, px, py, world.time || 0, TEAM[u.owner] || TEAM.player, act)) {}
+      else if (u.type === 'villager' && act.tool !== 'hammer' && act.action !== 'death') drawInu(ctx, u, px, py, world.time || 0, { res, kind, act, attacking: act.action === 'attack' });
       else if (!drawUnitArt(ctx, u, px, py, world.time || 0, TEAM[u.owner] || TEAM.player, u.lastAttackAt != null && world.time - u.lastAttackAt < 0.6)) drawInu(ctx, u, px, py, world.time || 0, { res, kind, act, attacking: u.lastAttackAt != null && world.time - u.lastAttackAt < 0.6 }); }
     { const civ = world.players?.[u.owner]?.civ, L = civ && CIV_LOOK[civ]; // clan skin: back-banner in the clan palette with its accent stripe
       if (L) { const d = u.face && u.face[0] < -0.05 ? 1 : -1, bx = px + d * 7; ctx.fillStyle = '#2a1a10'; ctx.fillRect(bx, py - 26, 1.5, 16);

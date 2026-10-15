@@ -3,23 +3,23 @@
 // Effects use the same keys as technology effects (src/sim.js techEffects), so they stack with the tech tree.
 export const CIVS = {
   shiba: { name: 'Shiba Clan', style: 'Economy', unique: 'red_fang',
-    traits: ['Berry foraging +12%, lumber +8%', 'Unique: Red Fang (fast, cheap raider infantry)'],
-    effect: { ratePct: { tree: 8, berries: 12 } }, ai: { army: ['militia', 'archer', 'spearman'] } },
+    traits: ['Berry foraging +15%, lumber +10%', 'Unique: Red Fang (fast, cheap raider infantry)'],
+    effect: { ratePct: { tree: 10, berries: 15 } }, ai: { army: ['militia', 'archer', 'spearman'] } },
   akita: { name: 'Akita Dominion', style: 'Fast ages', unique: 'akita_guardian',
-    traits: ['Age advancement researches 20% faster', 'Unique: Akita Guardian (armored heavy infantry)'],
-    effect: { ageTimePct: -20 }, ai: { army: ['militia', 'archer', 'spearman'] } },
+    traits: ['Age advancement researches 6% faster', 'Unique: Akita Guardian (armored heavy infantry)'],
+    effect: { ageTimePct: -6 }, ai: { army: ['militia', 'archer', 'spearman'] } },
   kishu: { name: 'Kishu Archers', style: 'Archers', unique: 'kishu_longbow',
-    traits: ['Archers +1 range', 'Unique: Kishu Longbow (range 7)'],
-    effect: { archerRange: 1 }, ai: { army: ['archer', 'militia', 'spearman'] } },
+    traits: ['Archers +1 range', 'Bow Yard units cost 10% more', 'Unique: Kishu Longbow (range 7)'],
+    effect: { archerRange: 1, costPct: { archery_range: 10 } }, ai: { army: ['archer', 'militia', 'spearman'] } },
   shikoku: { name: 'Shikoku Riders', style: 'Cavalry', unique: 'boar_rider',
-    traits: ['Cavalry move 15% faster', 'Paddock units cost 35% less', 'Unique: Boar Rider (cavalry that breaks buildings)'],
-    effect: { cavalrySpeedPct: 15, costPct: { stable: -35 } }, ai: { army: ['scout_cavalry', 'archer', 'spearman', 'militia'] } },
+    traits: ['Cavalry move 15% faster', 'Paddock units cost 50% less', 'Unique: Boar Rider (cavalry that breaks buildings)'],
+    effect: { cavalrySpeedPct: 15, costPct: { stable: -50 } }, ai: { army: ['scout_cavalry', 'archer', 'spearman', 'militia'] } },
   hokkaido: { name: 'Hokkaido Wardens', style: 'Defense', unique: 'frost_guard',
     traits: ['Buildings +10% HP', 'Worker Pups build 20% faster', 'Den Hall fires +1 arrow', 'Unique: Frost Guard (anti-archer infantry)'],
     effect: { buildingHpPct: 10, buildSpeedPct: 20, extraArrows: 1 }, ai: { army: ['spearman', 'archer', 'militia'] } },
   kai: { name: 'Kai Brindles', style: 'Infantry', unique: 'brindle_striker',
-    traits: ['Dojo units train 30% faster', 'Infantry +25% HP', 'Unique: Brindle Striker (fast-attacking anti-cavalry)'],
-    effect: { trainTimePct: { barracks: -30 }, infantryHpPct: 25 }, ai: { army: ['militia', 'archer', 'spearman'] } },
+    traits: ['Dojo units train 30% faster', 'Infantry +35% HP', 'Unique: Brindle Striker (fast-attacking anti-cavalry)'],
+    effect: { trainTimePct: { barracks: -30 }, infantryHpPct: 35 }, ai: { army: ['militia', 'archer', 'spearman'] } },
 };
 export const CIV_IDS = Object.keys(CIVS);
 export const DEFAULT_CIV = 'shiba';

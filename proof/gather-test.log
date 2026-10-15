@@ -1,4 +1,4 @@
-gather test 2026-10-15T07:19:15.455Z
+gather test 2026-10-15T10:03:41.511Z
 --- gathering ---
 [food] node berries 125 -> 91; stockpile food=30; carried=4; state=gathering
 PASS: food stockpile increased in trips of 10 (30)
@@ -246,4 +246,11 @@ PASS: small jitter (<=5px) still counts as a click and places
 PASS: cancel (Esc/right-click) exits build mode
 PASS: farm ghost far from Mill/TC invalid
 PASS: farm ghost adjacent to TC valid at (36,30)
-RESULT: ALL 217 PASSED
+--- water & fishing ---
+PASS: sandbox map has a pond with 4 fish on water tiles
+PASS: water tiles are impassable
+PASS: cannot build on water
+PASS: every fish is reachable from a shore tile
+PASS: villager fishes from the shore and deposits food (+20)
+PASS: 1v1 map: 10 fish, point-mirrored for both players
+RESULT: ALL 223 PASSED

@@ -398,6 +398,754 @@
    },
    "footprint": null,
    "base_colour": "golden"
+  },
+  {
+   "id": "halberd_pup",
+   "kind": "unit",
+   "file": "units/halberd_pup.png",
+   "team_layer": "units/halberd_pup_team.png",
+   "frame_size": {
+    "w": 48,
+    "h": 48
+   },
+   "sheet_size": {
+    "w": 624,
+    "h": 192
+   },
+   "rows_directions": [
+    "S",
+    "W",
+    "E",
+    "N"
+   ],
+   "animations": {
+    "idle": {
+     "start_col": 0,
+     "frames": 2
+    },
+    "walk": {
+     "start_col": 2,
+     "frames": 4
+    },
+    "attack": {
+     "start_col": 6,
+     "frames": 3
+    },
+    "death": {
+     "start_col": 9,
+     "frames": 4
+    }
+   },
+   "anchor": {
+    "x": 24,
+    "y": 46
+   },
+   "footprint": null,
+   "base_colour": "cream"
+  },
+  {
+   "id": "blade_paw",
+   "kind": "unit",
+   "file": "units/blade_paw.png",
+   "team_layer": "units/blade_paw_team.png",
+   "frame_size": {
+    "w": 48,
+    "h": 48
+   },
+   "sheet_size": {
+    "w": 624,
+    "h": 192
+   },
+   "rows_directions": [
+    "S",
+    "W",
+    "E",
+    "N"
+   ],
+   "animations": {
+    "idle": {
+     "start_col": 0,
+     "frames": 2
+    },
+    "walk": {
+     "start_col": 2,
+     "frames": 4
+    },
+    "attack": {
+     "start_col": 6,
+     "frames": 3
+    },
+    "death": {
+     "start_col": 9,
+     "frames": 4
+    }
+   },
+   "anchor": {
+    "x": 24,
+    "y": 46
+   },
+   "footprint": null,
+   "base_colour": "dark"
+  },
+  {
+   "id": "swift_rider",
+   "kind": "unit",
+   "file": "units/swift_rider.png",
+   "team_layer": "units/swift_rider_team.png",
+   "frame_size": {
+    "w": 64,
+    "h": 56
+   },
+   "sheet_size": {
+    "w": 832,
+    "h": 224
+   },
+   "rows_directions": [
+    "S",
+    "W",
+    "E",
+    "N"
+   ],
+   "animations": {
+    "idle": {
+     "start_col": 0,
+     "frames": 2
+    },
+    "walk": {
+     "start_col": 2,
+     "frames": 4
+    },
+    "attack": {
+     "start_col": 6,
+     "frames": 3
+    },
+    "death": {
+     "start_col": 9,
+     "frames": 4
+    }
+   },
+   "anchor": {
+    "x": 32,
+    "y": 54
+   },
+   "footprint": null,
+   "base_colour": "gray"
+  },
+  {
+   "id": "red_fang",
+   "kind": "unit",
+   "file": "units/red_fang.png",
+   "team_layer": "units/red_fang_team.png",
+   "frame_size": {
+    "w": 48,
+    "h": 48
+   },
+   "sheet_size": {
+    "w": 624,
+    "h": 192
+   },
+   "rows_directions": [
+    "S",
+    "W",
+    "E",
+    "N"
+   ],
+   "animations": {
+    "idle": {
+     "start_col": 0,
+     "frames": 2
+    },
+    "walk": {
+     "start_col": 2,
+     "frames": 4
+    },
+    "attack": {
+     "start_col": 6,
+     "frames": 3
+    },
+    "death": {
+     "start_col": 9,
+     "frames": 4
+    }
+   },
+   "anchor": {
+    "x": 24,
+    "y": 46
+   },
+   "footprint": null,
+   "base_colour": "red"
+  },
+  {
+   "id": "akita_guardian",
+   "kind": "unit",
+   "file": "units/akita_guardian.png",
+   "team_layer": "units/akita_guardian_team.png",
+   "frame_size": {
+    "w": 48,
+    "h": 48
+   },
+   "sheet_size": {
+    "w": 624,
+    "h": 192
+   },
+   "rows_directions": [
+    "S",
+    "W",
+    "E",
+    "N"
+   ],
+   "animations": {
+    "idle": {
+     "start_col": 0,
+     "frames": 2
+    },
+    "walk": {
+     "start_col": 2,
+     "frames": 4
+    },
+    "attack": {
+     "start_col": 6,
+     "frames": 3
+    },
+    "death": {
+     "start_col": 9,
+     "frames": 4
+    }
+   },
+   "anchor": {
+    "x": 24,
+    "y": 46
+   },
+   "footprint": null,
+   "base_colour": "red"
+  },
+  {
+   "id": "kishu_longbow",
+   "kind": "unit",
+   "file": "units/kishu_longbow.png",
+   "team_layer": "units/kishu_longbow_team.png",
+   "frame_size": {
+    "w": 48,
+    "h": 48
+   },
+   "sheet_size": {
+    "w": 624,
+    "h": 192
+   },
+   "rows_directions": [
+    "S",
+    "W",
+    "E",
+    "N"
+   ],
+   "animations": {
+    "idle": {
+     "start_col": 0,
+     "frames": 2
+    },
+    "walk": {
+     "start_col": 2,
+     "frames": 4
+    },
+    "attack": {
+     "start_col": 6,
+     "frames": 3
+    },
+    "death": {
+     "start_col": 9,
+     "frames": 4
+    }
+   },
+   "anchor": {
+    "x": 24,
+    "y": 46
+   },
+   "footprint": null,
+   "base_colour": "cream"
+  },
+  {
+   "id": "boar_rider",
+   "kind": "unit",
+   "file": "units/boar_rider.png",
+   "team_layer": "units/boar_rider_team.png",
+   "frame_size": {
+    "w": 64,
+    "h": 56
+   },
+   "sheet_size": {
+    "w": 832,
+    "h": 224
+   },
+   "rows_directions": [
+    "S",
+    "W",
+    "E",
+    "N"
+   ],
+   "animations": {
+    "idle": {
+     "start_col": 0,
+     "frames": 2
+    },
+    "walk": {
+     "start_col": 2,
+     "frames": 4
+    },
+    "attack": {
+     "start_col": 6,
+     "frames": 3
+    },
+    "death": {
+     "start_col": 9,
+     "frames": 4
+    }
+   },
+   "anchor": {
+    "x": 32,
+    "y": 54
+   },
+   "footprint": null,
+   "base_colour": "tan"
+  },
+  {
+   "id": "frost_guard",
+   "kind": "unit",
+   "file": "units/frost_guard.png",
+   "team_layer": "units/frost_guard_team.png",
+   "frame_size": {
+    "w": 48,
+    "h": 48
+   },
+   "sheet_size": {
+    "w": 624,
+    "h": 192
+   },
+   "rows_directions": [
+    "S",
+    "W",
+    "E",
+    "N"
+   ],
+   "animations": {
+    "idle": {
+     "start_col": 0,
+     "frames": 2
+    },
+    "walk": {
+     "start_col": 2,
+     "frames": 4
+    },
+    "attack": {
+     "start_col": 6,
+     "frames": 3
+    },
+    "death": {
+     "start_col": 9,
+     "frames": 4
+    }
+   },
+   "anchor": {
+    "x": 24,
+    "y": 46
+   },
+   "footprint": null,
+   "base_colour": "gray"
+  },
+  {
+   "id": "brindle_striker",
+   "kind": "unit",
+   "file": "units/brindle_striker.png",
+   "team_layer": "units/brindle_striker_team.png",
+   "frame_size": {
+    "w": 48,
+    "h": 48
+   },
+   "sheet_size": {
+    "w": 624,
+    "h": 192
+   },
+   "rows_directions": [
+    "S",
+    "W",
+    "E",
+    "N"
+   ],
+   "animations": {
+    "idle": {
+     "start_col": 0,
+     "frames": 2
+    },
+    "walk": {
+     "start_col": 2,
+     "frames": 4
+    },
+    "attack": {
+     "start_col": 6,
+     "frames": 3
+    },
+    "death": {
+     "start_col": 9,
+     "frames": 4
+    }
+   },
+   "anchor": {
+    "x": 24,
+    "y": 46
+   },
+   "footprint": null,
+   "base_colour": "dark"
+  },
+  {
+   "id": "villager_axe",
+   "kind": "unit",
+   "file": "units/villager_axe.png",
+   "team_layer": "units/villager_axe_team.png",
+   "frame_size": {
+    "w": 48,
+    "h": 48
+   },
+   "sheet_size": {
+    "w": 624,
+    "h": 192
+   },
+   "rows_directions": [
+    "S",
+    "W",
+    "E",
+    "N"
+   ],
+   "animations": {
+    "idle": {
+     "start_col": 0,
+     "frames": 2
+    },
+    "walk": {
+     "start_col": 2,
+     "frames": 4
+    },
+    "attack": {
+     "start_col": 6,
+     "frames": 3
+    },
+    "death": {
+     "start_col": 9,
+     "frames": 4
+    }
+   },
+   "anchor": {
+    "x": 24,
+    "y": 46
+   },
+   "footprint": null,
+   "base_colour": "golden"
+  },
+  {
+   "id": "villager_pick",
+   "kind": "unit",
+   "file": "units/villager_pick.png",
+   "team_layer": "units/villager_pick_team.png",
+   "frame_size": {
+    "w": 48,
+    "h": 48
+   },
+   "sheet_size": {
+    "w": 624,
+    "h": 192
+   },
+   "rows_directions": [
+    "S",
+    "W",
+    "E",
+    "N"
+   ],
+   "animations": {
+    "idle": {
+     "start_col": 0,
+     "frames": 2
+    },
+    "walk": {
+     "start_col": 2,
+     "frames": 4
+    },
+    "attack": {
+     "start_col": 6,
+     "frames": 3
+    },
+    "death": {
+     "start_col": 9,
+     "frames": 4
+    }
+   },
+   "anchor": {
+    "x": 24,
+    "y": 46
+   },
+   "footprint": null,
+   "base_colour": "golden"
+  },
+  {
+   "id": "villager_basket",
+   "kind": "unit",
+   "file": "units/villager_basket.png",
+   "team_layer": "units/villager_basket_team.png",
+   "frame_size": {
+    "w": 48,
+    "h": 48
+   },
+   "sheet_size": {
+    "w": 624,
+    "h": 192
+   },
+   "rows_directions": [
+    "S",
+    "W",
+    "E",
+    "N"
+   ],
+   "animations": {
+    "idle": {
+     "start_col": 0,
+     "frames": 2
+    },
+    "walk": {
+     "start_col": 2,
+     "frames": 4
+    },
+    "attack": {
+     "start_col": 6,
+     "frames": 3
+    },
+    "death": {
+     "start_col": 9,
+     "frames": 4
+    }
+   },
+   "anchor": {
+    "x": 24,
+    "y": 46
+   },
+   "footprint": null,
+   "base_colour": "golden"
+  },
+  {
+   "id": "villager_hoe",
+   "kind": "unit",
+   "file": "units/villager_hoe.png",
+   "team_layer": "units/villager_hoe_team.png",
+   "frame_size": {
+    "w": 48,
+    "h": 48
+   },
+   "sheet_size": {
+    "w": 624,
+    "h": 192
+   },
+   "rows_directions": [
+    "S",
+    "W",
+    "E",
+    "N"
+   ],
+   "animations": {
+    "idle": {
+     "start_col": 0,
+     "frames": 2
+    },
+    "walk": {
+     "start_col": 2,
+     "frames": 4
+    },
+    "attack": {
+     "start_col": 6,
+     "frames": 3
+    },
+    "death": {
+     "start_col": 9,
+     "frames": 4
+    }
+   },
+   "anchor": {
+    "x": 24,
+    "y": 46
+   },
+   "footprint": null,
+   "base_colour": "golden"
+  },
+  {
+   "id": "villager_knife",
+   "kind": "unit",
+   "file": "units/villager_knife.png",
+   "team_layer": "units/villager_knife_team.png",
+   "frame_size": {
+    "w": 48,
+    "h": 48
+   },
+   "sheet_size": {
+    "w": 624,
+    "h": 192
+   },
+   "rows_directions": [
+    "S",
+    "W",
+    "E",
+    "N"
+   ],
+   "animations": {
+    "idle": {
+     "start_col": 0,
+     "frames": 2
+    },
+    "walk": {
+     "start_col": 2,
+     "frames": 4
+    },
+    "attack": {
+     "start_col": 6,
+     "frames": 3
+    },
+    "death": {
+     "start_col": 9,
+     "frames": 4
+    }
+   },
+   "anchor": {
+    "x": 24,
+    "y": 46
+   },
+   "footprint": null,
+   "base_colour": "golden"
+  },
+  {
+   "id": "villager_spear",
+   "kind": "unit",
+   "file": "units/villager_spear.png",
+   "team_layer": "units/villager_spear_team.png",
+   "frame_size": {
+    "w": 48,
+    "h": 48
+   },
+   "sheet_size": {
+    "w": 624,
+    "h": 192
+   },
+   "rows_directions": [
+    "S",
+    "W",
+    "E",
+    "N"
+   ],
+   "animations": {
+    "idle": {
+     "start_col": 0,
+     "frames": 2
+    },
+    "walk": {
+     "start_col": 2,
+     "frames": 4
+    },
+    "attack": {
+     "start_col": 6,
+     "frames": 3
+    },
+    "death": {
+     "start_col": 9,
+     "frames": 4
+    }
+   },
+   "anchor": {
+    "x": 24,
+    "y": 46
+   },
+   "footprint": null,
+   "base_colour": "golden"
+  },
+  {
+   "id": "villager_net",
+   "kind": "unit",
+   "file": "units/villager_net.png",
+   "team_layer": "units/villager_net_team.png",
+   "frame_size": {
+    "w": 48,
+    "h": 48
+   },
+   "sheet_size": {
+    "w": 624,
+    "h": 192
+   },
+   "rows_directions": [
+    "S",
+    "W",
+    "E",
+    "N"
+   ],
+   "animations": {
+    "idle": {
+     "start_col": 0,
+     "frames": 2
+    },
+    "walk": {
+     "start_col": 2,
+     "frames": 4
+    },
+    "attack": {
+     "start_col": 6,
+     "frames": 3
+    },
+    "death": {
+     "start_col": 9,
+     "frames": 4
+    }
+   },
+   "anchor": {
+    "x": 24,
+    "y": 46
+   },
+   "footprint": null,
+   "base_colour": "golden"
+  },
+  {
+   "id": "villager_none",
+   "kind": "unit",
+   "file": "units/villager_none.png",
+   "team_layer": "units/villager_none_team.png",
+   "frame_size": {
+    "w": 48,
+    "h": 48
+   },
+   "sheet_size": {
+    "w": 624,
+    "h": 192
+   },
+   "rows_directions": [
+    "S",
+    "W",
+    "E",
+    "N"
+   ],
+   "animations": {
+    "idle": {
+     "start_col": 0,
+     "frames": 2
+    },
+    "walk": {
+     "start_col": 2,
+     "frames": 4
+    },
+    "attack": {
+     "start_col": 6,
+     "frames": 3
+    },
+    "death": {
+     "start_col": 9,
+     "frames": 4
+    }
+   },
+   "anchor": {
+    "x": 24,
+    "y": 46
+   },
+   "footprint": null,
+   "base_colour": "golden"
   }
  ],
  "buildings": [
