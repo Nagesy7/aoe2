@@ -20,7 +20,7 @@ export function unitStats(world, u) {
 }
 export function armorOf(t, world = null) { if (t.size) return parseArmor(BUILDINGS[t.type].armor || '0/7'); return world && t.owner ? unitStats(world, t).armor : parseArmor(UNITS[t.type]?.armor); }
 const classes = t => { if (t.size) return ['building']; const d = UNITS[t.type] || {}; return [d.infantry && 'infantry', d.cavalry && 'cavalry', d.range && 'archer'].filter(Boolean); };
-// AoE2 damage: max(1, attack + class bonuses - matching armor (melee or pierce))
+// Classic RTS damage: max(1, attack + class bonuses - matching armor (melee or pierce))
 export function damageFor(world, att, tgt) {
   const s = unitStats(world, att), arm = armorOf(tgt, world);
   const bonus = classes(tgt).reduce((t, c) => t + (s.bonus[c] || 0), 0);

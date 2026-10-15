@@ -8,7 +8,7 @@ import { AGES, AGE_NAMES, AGE_UPS, BUILDINGS, UNITS, TECHS, BUILD_MENU as TT_MEN
 export { AGES, AGE_NAMES, AGE_UPS, TECHS, techsAt };
 export const UNIT_DEFS = UNITS;
 export const COSTS = Object.fromEntries([...Object.entries(UNITS), ...Object.entries(BUILDINGS)].map(([k, d]) => [k, d.cost]));
-// Base gather rates (resource units / second / villager), AoE2 Dark Age values:
+// Base gather rates (resource units / second / villager), Puppy Age values:
 // forager 0.31, shepherd 0.33, farmer 0.32, lumberjack 0.39, gold miner 0.38, stone miner 0.36. Techs multiply these.
 export const GATHER_RATES = { berries: 0.31, farm: 0.32, carcass: 0.33, tree: 0.39, gold_mine: 0.38, stone_mine: 0.36 };
 export const FARM_FOOD = 175, CARCASS_FOOD = 100;
@@ -30,7 +30,7 @@ export function addEnemyCamp(world, { raids = false, at = ENEMY_CAMP } = {}) {
   for (const [t, ux, uy] of [['militia', x + 4.5, y + 4.5], ['militia', x + 5.5, y + 4.5], ['spearman', x + 4.5, y + 5.5], ['archer', x + 3.5, y + 3.5]]) newVillager(world, ux, uy, t, 'enemy');
   world.ai = { raids, nextRaid: world.time + 180, raidsSent: 0 };
 }
-// Skirmish start (?scenario=skirmish): Feudal Age, a Barracks + Archery Range, houses and a small army.
+// Skirmish start (?scenario=skirmish): Pack Age, a Dojo + Bow Yard, houses and a small army.
 export function setupSkirmish(world) {
   world.age = 'feudal'; world.stockpile = { food: 1000, wood: 1000, gold: 1000, stone: 500 };
   for (const [t, x, y] of [['barracks', 27, 26], ['archery_range', 42, 34], ['house', 44, 38], ['house', 46, 38], ['house', 44, 40]]) {
@@ -394,7 +394,7 @@ function orderMoveFlow(world, units, tiles) {
   return ok;
 }
 // Never discards carried resources: on a type change with carry > 0 the villager first
-// returns to the Town Center to deposit, then proceeds to the new target.
+// returns to the Den Hall to deposit, then proceeds to the new target.
 export function orderGather(world, u, node) {
   u.attack = null; u.target = node.id; u.build = null; u.note = null;
   if (u.carry.amount > 0 && u.carry.res !== node.res) { u.state = 'to_drop'; if (!planDrop(world, u)) idle(u, 'no drop-off reachable'); return; }
@@ -575,7 +575,7 @@ function finishItem(world, b, item) {
 }
 
 // ---------- construction repair, garrison, building arrows ----------
-// Repair: each villager restores HP at the construction rate; costs 50% of the building cost spread over its HP (paid per point, AoE-style).
+// Repair: each villager restores HP at the construction rate; costs 50% of the building cost spread over its HP (paid per point, classic-RTS style).
 function repairStep(world, u, b, dt) {
   const d = BUILDING_DEFS[b.type], cost = d.cost || {}, rate = b.maxHp / Math.max(1, b.buildTime) * dt;
   b.repairDebt = (b.repairDebt || 0) + rate; const pts = Math.floor(b.repairDebt); if (!pts) return true;
@@ -623,7 +623,7 @@ function tickBuildingArrows(world, dt) {
   }
 }
 
-// ---------- eviction (AoE2-style): building placement ignores units; units inside get pushed out ----------
+// ---------- eviction (classic-RTS-style): building placement ignores units; units inside get pushed out ----------
 export function footprintTiles(tx, ty, size) { const out = []; for (let y = ty; y < ty + size; y++) for (let x = tx; x < tx + size; x++) out.push([x, y]); return out; }
 export function unitsInFootprint(world, tx, ty, size) {
   return mobiles(world).filter(u => { const [x, y] = utile(u); return x >= tx && y >= ty && x < tx + size && y < ty + size; });
@@ -684,7 +684,7 @@ export function tick(world, dt) {
   for (const b of world.buildings) {
     if (!b.complete || !b.queue.length) continue;
     world.cur = b.owner;
-    // one item at a time (AoE2: a TC researching an age/tech is not training villagers meanwhile)
+    // one item at a time (classic RTS rule: a TC researching an age/tech is not training villagers meanwhile)
     if (isUnitItem(b.queue[0]) && popCount(world) >= popCap(world)) { b.blocked = true; continue; } b.blocked = false;
     b.trainProgress += dt;
     if (b.trainProgress >= itemTime(b.queue[0], world, b)) { b.trainProgress = 0; finishItem(world, b, b.queue.shift()); }

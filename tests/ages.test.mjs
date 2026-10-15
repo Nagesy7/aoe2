@@ -47,7 +47,7 @@ log('--- age costs, timing, prerequisites ---');
   run(w, 189.5); assert(w.age === 'castle', 'still Castle at 189.5s'); run(w, 0.7); assert(w.age === 'imperial', 'Imperial Age at 190s');
   assert(!canAgeUp(w, tc(w)).ok && ageStatus(w).next === null, 'no age after Imperial');
 }
-{ // TC busy researching -> villager waits (AoE2 behavior)
+{ // TC busy researching -> villager waits (classic RTS behaviour)
   const w = rich(); built(w, 'house'); built(w, 'mill', [40, 27]);
   ageUp(w, tc(w)); S.trainVillager(w, tc(w)); run(w, 100);
   assert(w.units.length === 3 && tc(w).queue[1] === 'villager', 'villager queued behind age research is not trained during research');

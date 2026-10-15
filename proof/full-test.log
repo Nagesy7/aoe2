@@ -1,4 +1,4 @@
-full RTS test 2026-10-15T06:00:13.876Z
+full RTS test 2026-10-15T06:56:54.435Z
 --- 1. pathfinding: A*, obstacles, flow field, formations ---
 PASS: A* path (32 steps) never enters a blocked tile
 PASS: A* goes through the only gap in the wall
@@ -40,12 +40,12 @@ PASS: tech tree has 27 techs with original names
 --- 5. civilizations: traits, unique units, no pay-to-win ---
 PASS: 6 clans, each with its own unique unit
 PASS: Kishu: archers +1 range
-PASS: Shikoku: Paddock units 15% cheaper (80 -> 68 food)
-PASS: Shikoku: cavalry +10% speed
+PASS: Shikoku: Paddock units 30% cheaper (80 -> 56 food)
+PASS: Shikoku: cavalry +15% speed
 PASS: Akita: Pack Age researched 20% faster (130 -> 104 s)
-PASS: Hokkaido: buildings +10% HP, build 25% faster
+PASS: Hokkaido: buildings +10% HP, build 20% faster
 PASS: Kai: Dojo trains 30% faster
-PASS: Shiba: lumber +12%
+PASS: Shiba: lumber +5%
 PASS: Fortress trains only the own clan unique unit
 PASS: another clan cannot train a unique unit it does not own
 PASS: Kibble unlocks are cosmetic only (banners/coats, no effects)
@@ -54,19 +54,19 @@ PASS: every clan is free to play (no price / lock on a clan)
 PASS: AI builds an economy: 17 / 17 Worker Pups at 8:00
 PASS: AI builds houses, farms and drop sites (town_center, house, barracks, lumber_camp, farm)
 PASS: AI ages up (22:00: feudal / feudal)
-PASS: AI trains an army (6 / 3, deaths 60)
-PASS: AI attacks: 135 units and 6 buildings destroyed by 32:00
-PASS: score 5843 vs 4384
+PASS: AI trains an army (0 / 4, deaths 56)
+PASS: AI attacks: 127 units and 3 buildings destroyed by 32:00
+PASS: score 3931 vs 4881
 --- 7. lockstep determinism: two AI-vs-AI clients, 10 min, hash every tick ---
 PASS: identical hashes on 12000/12000 ticks
 PASS: simulation progressed (34 units)
 PASS: new command types round-trip through encode/decode
 --- 8. balance report (sim/balance.mjs) ---
-PASS: 360 AI-vs-AI games across 6 clans (0 conquests)
-PASS: Shiba Clan: 48.3% (58/120) within 45-55%
-PASS: Akita Dominion: 51.7% (62/120) within 45-55%
-FAIL: Kishu Archers: 56.7% (68/120) within 45-55%
-PASS: Shikoku Riders: 45.8% (55/120) within 45-55%
-FAIL: Hokkaido Wardens: 57.5% (69/120) within 45-55%
-FAIL: Kai Brindles: 40.0% (48/120) within 45-55%
-RESULT: 3 FAILED, 59 PASSED
+PASS: 480 AI-vs-AI games across 6 clans (0 conquests)
+FAIL: Shiba Clan: 44.4% (71/160) within 45-55%
+PASS: Akita Dominion: 51.2% (82/160) within 45-55%
+PASS: Kishu Archers: 52.5% (84/160) within 45-55%
+FAIL: Shikoku Riders: 44.4% (71/160) within 45-55%
+PASS: Hokkaido Wardens: 54.4% (87/160) within 45-55%
+PASS: Kai Brindles: 53.1% (85/160) within 45-55%
+RESULT: 2 FAILED, 60 PASSED

@@ -23,7 +23,7 @@ export function startRelay({ port = PORT, staticDir = STATIC, log = console.log 
     const url = new URL(req.url, 'http://x');
     if (url.pathname === '/api/relay') { httpRelay(req, res); return; }
     if (url.pathname === '/health') { res.writeHead(200, { 'content-type': 'application/json', 'access-control-allow-origin': '*' }); res.end(JSON.stringify({ ok: true, rooms: rooms.size })); return; }
-    if (!staticDir) { res.writeHead(200, { 'content-type': 'text/plain' }); res.end('aoe2 lockstep relay: connect a WebSocket to /ws\n'); return; }
+    if (!staticDir) { res.writeHead(200, { 'content-type': 'text/plain' }); res.end('Inu Empires lockstep relay: connect a WebSocket to /ws\n'); return; }
     const root = path.resolve(staticDir), f = path.join(root, decodeURIComponent(url.pathname === '/' ? '/index.html' : url.pathname));
     if (!f.startsWith(root)) { res.writeHead(403); res.end(); return; }
     fs.readFile(f, (e, d) => { if (e) { res.writeHead(404); res.end('not found'); return; } res.writeHead(200, { 'content-type': MIME[path.extname(f)] || 'application/octet-stream' }); res.end(d); });

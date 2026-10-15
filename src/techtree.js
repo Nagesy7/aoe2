@@ -1,10 +1,10 @@
 // Tech tree data: ages, buildings, units, technologies. Pure data + tiny helpers, no game state.
-// Costs / research times follow AoE2 (DE) values; build times are AoE2 values (1 builder).
+// Costs / research times follow classic-RTS reference values; build times are classic-RTS reference values (1 builder).
 export const AGES = ['dark', 'feudal', 'castle', 'imperial'];
 export const AGE_NAMES = { dark: 'Puppy Age', feudal: 'Pack Age', castle: 'Fortress Age', imperial: 'Shogun Age' };
 export const ageIndex = a => AGES.indexOf(a);
 
-// Age advancement is researched at the Den Hall (town centre). `needs` distinct completed building types from `from`
+// Age advancement is researched at the Den Hall. `needs` distinct completed building types from `from`
 // (or any one of `orAny`).
 export const AGE_UPS = {
   feudal: { cost: { food: 500 }, time: 130, needs: 2, from: ['house', 'mill', 'lumber_camp', 'mining_camp', 'barracks', 'dock'] },
@@ -35,7 +35,7 @@ export const BUILDINGS = {
 };
 export const BUILD_MENU = Object.keys(BUILDINGS).filter(k => BUILDINGS[k].menu !== false);
 
-// Units. AoE2 stats: hp, attack, armor 'melee/pierce', range (tiles, ranged = pierce damage), reload (s), class bonus damage.
+// Units. Classic RTS stats: hp, attack, armor 'melee/pierce', range (tiles, ranged = pierce damage), reload (s), class bonus damage.
 export const UNITS = {
   villager: { name: 'Worker Pup', age: 'dark', cost: { food: 50 }, time: 25, speed: 2.5, hp: 25, attack: 3, armor: '0/0', reload: 2.0 },
   militia: { name: 'Footpaw', age: 'dark', cost: { food: 60, gold: 20 }, time: 21, speed: 2.2, hp: 40, attack: 4, armor: '0/1', reload: 2.0, infantry: true, upgradesTo: { tech: 'blade_paw', unit: 'blade_paw' } },
@@ -69,8 +69,8 @@ export const TECHS = {
   horse_collar: { name: 'Paddy Terraces', at: 'mill', age: 'feudal', cost: { food: 75, wood: 75 }, time: 20, effect: { farmFood: 75 }, desc: 'Farms +75 food' },
   heavy_plow: { name: 'Iron Hoe', at: 'mill', age: 'castle', cost: { food: 125, wood: 125 }, time: 40, requires: ['horse_collar'], effect: { farmFood: 125 }, desc: 'Farms +125 food' },
   crop_rotation: { name: 'Season Planting', at: 'mill', age: 'imperial', cost: { food: 250, wood: 250 }, time: 70, requires: ['heavy_plow'], effect: { farmFood: 175 }, desc: 'Farms +175 food' },
-  gold_mining: { name: 'Gold Sniffing', at: 'mining_camp', age: 'feudal', cost: { food: 100, wood: 75 }, time: 30, effect: { ratePct: { gold_mine: 15 } }, desc: 'Gold mining +15%' },
-  gold_shaft_mining: { name: 'Deep Dig', at: 'mining_camp', age: 'castle', cost: { food: 200, wood: 100 }, time: 75, requires: ['gold_mining'], effect: { ratePct: { gold_mine: 15 } }, desc: 'Gold mining +15%' },
+  gold_mining: { name: 'Gold Sniffing', at: 'mining_camp', age: 'feudal', cost: { food: 100, wood: 75 }, time: 30, effect: { ratePct: { gold_mine: 15 } }, desc: 'Gold yield +15%' },
+  gold_shaft_mining: { name: 'Deep Dig', at: 'mining_camp', age: 'castle', cost: { food: 200, wood: 100 }, time: 75, requires: ['gold_mining'], effect: { ratePct: { gold_mine: 15 } }, desc: 'Gold yield +15%' },
   forging: { name: 'Tempered Claws', at: 'blacksmith', age: 'feudal', cost: { food: 150 }, time: 50, effect: { meleeAttack: 1 }, desc: 'Infantry & cavalry +1 attack' },
   iron_casting: { name: 'Steel Claws', at: 'blacksmith', age: 'castle', cost: { food: 220, gold: 120 }, time: 75, requires: ['forging'], effect: { meleeAttack: 1 }, desc: 'Infantry & cavalry +1 attack' },
   blast_furnace: { name: 'Dragon Forge', at: 'blacksmith', age: 'imperial', cost: { food: 275, gold: 225 }, time: 100, requires: ['iron_casting'], effect: { meleeAttack: 2 }, desc: 'Infantry & cavalry +2 attack' },
@@ -82,7 +82,7 @@ export const TECHS = {
   fletched_arrows: { name: 'Fletched Arrows', at: 'blacksmith', age: 'feudal', cost: { food: 100, wood: 50 }, time: 30, effect: { archerAttack: 1, archerRange: 1 }, desc: 'Archers +1 attack, +1 range' },
   barbed_arrows: { name: 'Barbed Arrows', at: 'blacksmith', age: 'castle', cost: { food: 200, gold: 100 }, time: 50, requires: ['fletched_arrows'], effect: { archerAttack: 1, archerRange: 1 }, desc: 'Archers +1 attack, +1 range' },
   quilted_vests: { name: 'Quilted Vests', at: 'blacksmith', age: 'feudal', cost: { food: 100 }, time: 40, effect: { archerArmor: 1 }, desc: 'Archers +1/+1 armor' },
-  stone_sniffing: { name: 'Stone Sniffing', at: 'mining_camp', age: 'feudal', cost: { food: 100, wood: 75 }, time: 30, effect: { ratePct: { stone_mine: 15 } }, desc: 'Stone mining +15%' },
+  stone_sniffing: { name: 'Stone Sniffing', at: 'mining_camp', age: 'feudal', cost: { food: 100, wood: 75 }, time: 30, effect: { ratePct: { stone_mine: 15 } }, desc: 'Stone yield +15%' },
   masonry: { name: 'Stone Joinery', at: 'university', age: 'castle', cost: { wood: 175, stone: 150 }, time: 50, effect: { buildingHpPct: 10 }, desc: 'Buildings +10% HP' },
   ballistics_t: { name: 'Wind Reading', at: 'university', age: 'castle', cost: { wood: 300, gold: 175 }, time: 60, effect: { archerAttack: 1 }, desc: 'Ranged units +1 attack' },
   // unit-line upgrades

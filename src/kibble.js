@@ -30,9 +30,9 @@ export const COSMETICS = {
   banner_paw: { kind: 'banner', name: 'Paw banner', tier: 'none' }, banner_bone: { kind: 'banner', name: 'Crossed-bones banner', tier: 'hound' }, banner_fuji: { kind: 'banner', name: 'Animated Fuji banner', tier: 'alpha' },
   title_pup: { kind: 'title', name: 'Pup', tier: 'pup' }, title_hound: { kind: 'title', name: 'Hound', tier: 'hound' }, title_alpha: { kind: 'title', name: 'Alpha', tier: 'alpha' }, title_shogun: { kind: 'title', name: 'Shogun', tier: 'shogun' },
   skin_golden_shiba: { kind: 'skin', name: 'Golden Shiba villagers', tier: 'hound' },
-  skin_snow_akita: { kind: 'skin', name: 'Snow Akita knights', price: 250, tier: 'none' },
-  skin_kai_brindle: { kind: 'skin', name: 'Kai brindle militia', price: 400, tier: 'none' },
-  skin_spitz_monk: { kind: 'skin', name: 'Spitz monk robe', price: 900, tier: 'pup' },
+  skin_snow_akita: { kind: 'skin', name: 'Snow Akita riders', price: 250, tier: 'none' },
+  skin_kai_brindle: { kind: 'skin', name: 'Kai brindle Footpaws', price: 400, tier: 'none' },
+  skin_spitz_monk: { kind: 'skin', name: 'Spitz shrine-keeper robe', price: 900, tier: 'pup' },
   // clan shield finishes (match-select card glow; cosmetic only, every clan itself is free)
   ...Object.fromEntries(Object.values(CIV_COSMETICS).flat().map(c => [c.id, { kind: 'civ', name: c.name, price: c.price, tier: 'none' }])),
 };

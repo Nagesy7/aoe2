@@ -12,7 +12,7 @@ class Bus {
   emit(m) { for (const f of this.handlers) f(m); } status(s, extra) { for (const f of this.statusHandlers) f(s, extra); }
 }
 export class TabsBus extends Bus {
-  constructor(code) { super(); this.kind = 'tabs'; this.ch = new BroadcastChannel('aoe2-room-' + code);
+  constructor(code) { super(); this.kind = 'tabs'; this.ch = new BroadcastChannel('inu-room-' + code);
     this.ch.onmessage = e => this.emit(e.data); setTimeout(() => this.status('open'), 0); }
   send(m) { this.ch.postMessage(m); } close() { this.ch.close(); }
 }

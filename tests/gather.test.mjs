@@ -27,7 +27,7 @@ for (const res of RES_TYPES) {
   assert(RES_TYPES.filter(r => r !== res).every(r => w.stockpile[r] === 0), `only ${res} collected`);
 }
 
-log('--- AoE2 Dark Age gather/deposit math ---');
+log('--- Puppy Age gather/deposit math ---');
 {
   const expect = { berries: 0.31, carcass: 0.33, tree: 0.39, gold_mine: 0.38, stone_mine: 0.36 };
   for (const [k, r] of Object.entries(expect)) assert(GATHER_RATES[k] === r, `${k} rate ${GATHER_RATES[k]} == ${r}/s`);

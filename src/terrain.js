@@ -1,4 +1,4 @@
-// Textured AoE2-style grass, pre-rendered in cached 16x16-tile chunks. Purely visual: deterministic hash of (x, y), no sim RNG.
+// Textured classic-RTS-style grass, pre-rendered in cached 16x16-tile chunks. Purely visual: deterministic hash of (x, y), no sim RNG.
 const CH = 16;
 const hash = (x, y, s = 0) => { let h = (x * 374761393 + y * 668265263 + s * 2147483647) | 0; h = Math.imul(h ^ (h >>> 13), 1274126177); return ((h ^ (h >>> 16)) >>> 0) / 4294967296; };
 const smooth = t => t * t * (3 - 2 * t);

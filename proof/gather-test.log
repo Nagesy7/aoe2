@@ -1,4 +1,4 @@
-gather test 2026-10-15T05:31:55.628Z
+gather test 2026-10-15T06:56:40.775Z
 --- gathering ---
 [food] node berries 125 -> 91; stockpile food=30; carried=4; state=gathering
 PASS: food stockpile increased in trips of 10 (30)
@@ -20,7 +20,7 @@ PASS: stone stockpile increased in trips of 10 (30)
 PASS: stone node amount decreased
 PASS: stone conservation: removed 36 == delivered 30 + carried 6
 PASS: only stone collected
---- AoE2 Dark Age gather/deposit math ---
+--- Puppy Age gather/deposit math ---
 PASS: berries rate 0.31 == 0.31/s
 PASS: carcass rate 0.33 == 0.33/s
 PASS: tree rate 0.39 == 0.39/s

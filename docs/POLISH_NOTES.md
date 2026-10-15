@@ -1,6 +1,6 @@
 # Inu Empires — Polish Notes (phone landscape playtest, 2026-10-15)
 
-Tested live https://aoe2-ashen.vercel.app with Playwright (Chromium, touch + mobile, DPR 2) at 844x390 and 932x430.
+Tested live https://inu-empires.vercel.app with Playwright (Chromium, touch + mobile, DPR 2) at 844x390 and 932x430.
 Screenshots: /workspace/inu-empires-shots/. Load ~1.3–2.0 s, 60 fps idle, no console errors.
 
 Legend: **[REBUILD]** = belongs to the rebuild worker (pathfinding, unit AI, ages/tech, 1v1, civs, lobby cards, animations, tabbed build menu, IP/naming). Don't touch here.

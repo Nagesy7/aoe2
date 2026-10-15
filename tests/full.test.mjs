@@ -107,12 +107,12 @@ log('--- 5. civilizations: traits, unique units, no pay-to-win ---');
   assert(CIV_IDS.length === 6 && CIV_IDS.every(id => CIVS[id].unique && UNITS[CIVS[id].unique].unique === id), '6 clans, each with its own unique unit');
   const mkCiv = civ => { const w = createMpWorld({ seed: 3 }); w.players.player.civ = civ; return w; };
   { const w = mkCiv('kishu'); const a = mk(w, 'archer', 30.5, 30.5); assert(unitStats(w, a).range === UNITS.archer.range + 1, 'Kishu: archers +1 range'); }
-  { const w = mkCiv('shikoku'); const st = addBuilding(w, 'stable', 30, 30); assert(unitCost(w, 'scout_cavalry', st).food === 68, 'Shikoku: Paddock units 15% cheaper (80 -> 68 food)');
-    w.players.enemy.civ = 'shikoku'; const s = mk(w, 'scout_cavalry', 30.5, 36.5); assert(Math.abs(s.speed - UNITS.scout_cavalry.speed * 1.1) < 1e-9, 'Shikoku: cavalry +10% speed'); }
+  { const w = mkCiv('shikoku'); const st = addBuilding(w, 'stable', 30, 30); assert(unitCost(w, 'scout_cavalry', st).food === 56, 'Shikoku: Paddock units 30% cheaper (80 -> 56 food)');
+    w.players.enemy.civ = 'shikoku'; const s = mk(w, 'scout_cavalry', 30.5, 36.5); assert(Math.abs(s.speed - UNITS.scout_cavalry.speed * 1.15) < 1e-9, 'Shikoku: cavalry +15% speed'); }
   { const w = mkCiv('akita'); const tc = w.buildings.find(b => b.owner === 'player'); assert(Math.abs(itemTime('age:feudal', w, tc) - 130 * 0.80) < 1e-9, 'Akita: Pack Age researched 20% faster (130 -> 104 s)'); }
-  { const w = mkCiv('hokkaido'); const h = addBuilding(w, 'house', 30, 30); assert(h.maxHp === Math.round(550 * 1.10) && techEffects(w, 'player').buildSpeedPct === 25, 'Hokkaido: buildings +10% HP, build 25% faster'); }
+  { const w = mkCiv('hokkaido'); const h = addBuilding(w, 'house', 30, 30); assert(h.maxHp === Math.round(550 * 1.10) && techEffects(w, 'player').buildSpeedPct === 20, 'Hokkaido: buildings +10% HP, build 20% faster'); }
   { const w = mkCiv('kai'); const br = addBuilding(w, 'barracks', 30, 30); assert(Math.abs(itemTime('militia', w, br) - UNITS.militia.time * 0.70) < 1e-9, 'Kai: Dojo trains 30% faster'); }
-  { const w = mkCiv('shiba'); assert(S.gatherRate(w, 'tree') > S.GATHER_RATES.tree, 'Shiba: lumber +12%'); }
+  { const w = mkCiv('shiba'); assert(S.gatherRate(w, 'tree') > S.GATHER_RATES.tree, 'Shiba: lumber +5%'); }
   { const w = mkCiv('kai'); w.players.player.age = 'castle'; const c = addBuilding(w, 'castle', 30, 30);
     assert(c.trains.includes('brindle_striker') && !c.trains.includes('red_fang'), 'Fortress trains only the own clan unique unit');
     w.players.player.civ = 'shiba'; assert(!trainUnit(w, c, 'red_fang').ok, 'another clan cannot train a unique unit it does not own'); }

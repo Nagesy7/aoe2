@@ -1,12 +1,12 @@
 {
   "name": "inu-empires",
-  "description": "Inu Empires: AoE2-style browser RTS with Japanese spitz dog breeds",
+  "description": "Inu Empires: classic-RTS-style browser RTS with Japanese spitz dog breeds",
   "version": "0.1.0",
   "type": "module",
   "private": true,
   "scripts": {
     "start": "npx serve .",
-    "test": "node tests/gather.test.mjs && node tests/ages.test.mjs && node tests/combat.test.mjs && node tests/determinism.test.mjs && node tests/efficiency.test.mjs && node tests/kibble.test.mjs && node tests/anim.test.mjs && node tests/full.test.mjs",
+    "test": "node tests/gather.test.mjs && node tests/ages.test.mjs && node tests/combat.test.mjs && node tests/determinism.test.mjs && node tests/efficiency.test.mjs && node tests/kibble.test.mjs && node tests/anim.test.mjs && node tests/ip.test.mjs && node tests/full.test.mjs",
     "balance": "node sim/balance.mjs --seeds 8 --minutes 30",
     "full": "node scripts/full.mjs",
     "relay": "node server/relay.mjs --static .",
