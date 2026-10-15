@@ -154,7 +154,7 @@ Every clan is free. Traits change how a clan plays, not raw power; $KIBBLE only 
 | Akita Dominion | Fast ages | age-ups research 6% faster | Akita Guardian (armored infantry) |
 | Kishu Archers | Archers | archers +1 range, Bow Yard units cost 10% more | Kishu Longbow (range 7) |
 | Shikoku Riders | Cavalry | cavalry 15% faster, Paddock units 50% cheaper | Boar Rider (building breaker) |
-| Hokkaido Wardens | Defense | buildings +10% HP, build 20% faster, Den Hall +1 arrow | Frost Guard (anti-archer) |
+| Hokkaido Wardens | Defense | buildings +5% HP, build 20% faster, Den Hall +1 arrow | Frost Guard (anti-archer) |
 | Kai Brindles | Infantry | Dojo trains 30% faster, infantry +35% HP | Brindle Striker (anti-cavalry) |
 
 **Water & fishing**: maps have ponds (one by each base plus a central lake on 1v1 maps). Water is impassable and unbuildable; Worker Pups fish from the shore with the net (fish 200 food, 0.42/s), dropping at a Granary or Den Hall. The computer builds a Granary next to its fishing spot.
