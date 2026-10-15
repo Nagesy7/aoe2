@@ -125,6 +125,45 @@ The main menu (plain URL) offers **Single Player**, **Host 1v1** and **Join 1v1*
   see (black = unexplored, dimmed = explored), enemy units outside vision are not drawn or selectable, enemy
   buildings are remembered once seen.
 
+## Full RTS layer (clans, computer opponent, construction, Forge, online over HTTP)
+Names, art labels and techs are original (no Age of Empires / Microsoft names or assets). Internal ids (`town_center`, `militia`…) are unchanged so saves/tests stay stable; everything the player sees uses the Inu names below.
+
+| Ages | Puppy → Pack → Fortress → Shogun (costs/requirements as in the table above) |
+|---|---|
+| Buildings | Den Hall, Kennel Hut, Timber Lodge, Dig Site, Granary, Rice Paddy, Dojo, Bow Yard, Paddock, Forge, Bazaar, Lookout Tower, Fortress, Shrine, Academy, Grand Torii |
+| Units | Worker Pup, Footpaw → Blade Paw, Pike Pup → Halberd Pup, Bow Pup → Longbow Pup, Scout Rider → Swift Rider, Armored Rider, Shrine Keeper, Boulder Thrower + 6 clan uniques |
+
+**Menu**: pick *Your clan*, then **⚔ Skirmish vs Computer** (choose the computer's clan next to it). *Sandbox* is the old practice camp. URL shortcuts: `?play=ai&civ=kishu&aiciv=akita&seed=7`, AI-vs-AI spectator `?play=watch&civ=kai&aiciv=hokkaido`.
+
+**Pathfinding** (`src/sim.js`): A* on the 8-connected tile grid, no corner cutting, trees/mines/buildings/foundations block. Orders to 6+ units build one shared **flow field** (`flowField`, multi-source Dijkstra with deterministic tie-breaks) over the formation box; each unit descends it, then a short A* to its own formation slot (`orderMoveFlow`). Formation slots are distinct tiles, groups move at the slowest member's speed, stationary units are separated onto distinct tiles, units re-plan when a path gets blocked or they stop making progress.
+
+**Unit AI**: villagers auto-return/re-target the nearest node of the same kind; idle-villager button; attack-move; auto-retaliate; **stances** (Aggressive / Defensive / Stand Ground / No Attack, buttons when soldiers are selected; `stance` command).
+
+**Computer opponent** (`src/ai.js`): plays only through `applyCommand` (same commands as a human, so it is deterministic and lockstep-safe). Trains Worker Pups to an age-dependent target, balances gatherers by ratio and stockpile, builds Kennel Huts ahead of the cap, drop sites next to the resource being worked, farms when wild food is gone, Dojo/Bow Yard/Forge/Paddock/Academy/Fortress, ages up, researches economy and Forge techs, trains a clan-flavoured army, garrisons villagers when raided, defends, and attacks in waves at the side of your Den Hall that faces its base. Conquest victory: a player whose Den Halls and Fortresses are all destroyed loses.
+
+**Construction**: foundations evict units; every builder adds its own work (n builders = n× speed); right-click a damaged own building with Worker Pups to **repair** (50% of the cost spread over the HP, stops when you run out); right-click a Den Hall / Lookout Tower / Fortress to **garrison** (15 / 5 / 20), *Ungarrison* button; garrisoned units heal, cannot be targeted, and each adds an arrow (base arrows 1 / 1 / 4, 5 pierce, range 7).
+
+**Tech tree additions**: Forge armor line (Lacquer → Lamellar → Kabuto Plates), archery line (Fletched / Barbed Arrows, Quilted Vests), Stone Sniffing, Academy (Stone Joinery, Wind Reading), unit-line upgrades (Blade Paw, Halberd Pup, Swift Rider, Longbow Training). Existing units are upgraded in place.
+
+### Clans (`src/civs.js`)
+Every clan is free. Traits change how a clan plays, not raw power; $KIBBLE only unlocks cosmetic banners/coats (`COSMETICS`, no gameplay keys; verified by tests).
+
+| Clan | Style | Traits | Unique (Fortress) |
+|---|---|---|---|
+| Shiba Clan | Economy | lumber/berries +15%, farming +10% | Red Fang (fast cheap raider) |
+| Akita Dominion | Fast ages | age-ups research 16% faster | Akita Guardian (armored infantry) |
+| Kishu Archers | Archers | archers +1 range, Bow Yard 10% faster | Kishu Longbow (range 7) |
+| Shikoku Riders | Cavalry | cavalry +10% speed, Paddock units 15% cheaper | Boar Rider (building breaker) |
+| Hokkaido Wardens | Defense | buildings +20% HP, build 30% faster, Den Hall +1 arrow | Frost Guard (anti-archer) |
+| Kai Brindles | Infantry | Dojo trains 25% faster, infantry +10% HP | Brindle Striker (anti-cavalry) |
+
+**Balance sim**: `node sim/balance.mjs --seeds 8 --minutes 30` plays every pair of clans from both map sides on mirrored maps (AI vs AI, worker threads) and writes `proof/balance.json`. A game ends by conquest or, at the time limit, by score (value of living units + buildings + stockpile + age). Win rates and their sample sizes are reported; see the report for the exact numbers and the limits (most games end on score, not conquest).
+
+### Online over Vercel (HTTP relay)
+Vercel functions cannot hold WebSockets, so `api/relay.js` is an HTTP polling relay (POST batches, GET `?room=&after=`) backed by **Upstash Redis REST** (`UPSTASH_REDIS_REST_URL` / `UPSTASH_REDIS_REST_TOKEN`, or Vercel KV's `KV_REST_API_URL/TOKEN`). Pick *Online via → Vercel relay (HTTP polling)*. Without those env vars the endpoint answers 503 and the lobby shows "HTTP relay unavailable" — **the live deployment currently has no Upstash store configured**, so on the live site use *Same browser (two tabs)* or a WebSocket relay. `server/relay.mjs` serves the same `/api/relay` protocol from memory for local tests. Limits: polling adds ~100-300 ms, so HTTP games use an input delay of 8 ticks (400 ms); rooms expire 2 h after the last message; no NAT traversal/WebRTC; no reconnection of a closed tab into a running game.
+
+Tests: `node tests/full.test.mjs` (pathfinding, AI, construction, tech tree, clans, AI-vs-AI lockstep determinism, balance report) and `node scripts/full.mjs` (Playwright, real mouse/keyboard + iPhone landscape touch → `proof/full-*.png`).
+
 ## Layout
 - `src/techtree.js`: tech tree data tables (ages, age-up requirements, buildings, units, technologies)
 - `src/sim.js`: pure simulation (world, A* pathfinding, villager state machine, training, houses, population, selection/hit-testing, right-click command semantics, camera clamp, screen<->world transform); no DOM, runs in Node

@@ -10,7 +10,7 @@ assert(K.connectDemo(s, 25_000).id === 'hound', '25k demo balance = Hound'); ass
 const b0 = s.kibbleU; const r = K.buy(s, 'skin_snow_akita'); assert(r.ok && b0 - s.kibbleU === K.toU(255), 'buy deducts price + 2%');
 assert(s.treasuryU === K.toU(2.5) && s.pools.weekly === K.toU(1.25) && s.ledger[0].to === K.OWNER_WALLET, 'fee settled to treasury + pools');
 assert(K.equip(s, 'skin_snow_akita') && K.equip(s, 'title_hound') && !K.equip(s, 'title_shogun'), 'equip respects ownership + tier');
-assert(Object.values(K.COSMETICS).every(c => ['colour', 'banner', 'title', 'skin'].includes(c.kind)), 'cosmetics only');
+assert(Object.values(K.COSMETICS).every(c => ['colour', 'banner', 'title', 'skin', 'civ'].includes(c.kind)), 'cosmetics only');
 // Elo + ranking
 assert(JSON.stringify(K.elo(1200, 1200, 1)) === '[1216,1184]', 'Elo equal ratings win +16');
 const d = K.recordMatch(s, { mode: 'ai', opp: 'hard', win: true, minutes: 20 }); assert(d > 16 && s.me.wins === 1 && s.bones === K.BONES_PER_WIN && s.packs.SHIB === 3, `beat hard AI: +${d}, bones + pack points`);

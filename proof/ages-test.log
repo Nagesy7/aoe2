@@ -1,23 +1,23 @@
-ages test 2026-10-14T12:44:13.793Z
+ages test 2026-10-15T05:31:56.726Z
 --- age costs, timing, prerequisites ---
 PASS: start in Dark Age
 PASS: Feudal: 500 food, 130s
 PASS: Castle: 800 food + 200 gold, 160s
 PASS: Imperial: 1000 food + 800 gold, 190s
-PASS: Feudal blocked with 0 buildings: "needs 2 of: House, Mill, Lumber Camp, Mining Camp, Barracks (have 0)"
+PASS: Feudal blocked with 0 buildings: "needs 2 of: Kennel Hut, Granary, Timber Lodge, Dig Site, Dojo (have 0)"
 PASS: two Houses count as ONE distinct building type
 PASS: unfinished Mill foundation does not count
 PASS: House + Mill allow Feudal
 PASS: Feudal research started, 500 food spent
 PASS: age research cannot be double-queued (no extra cost)
 PASS: still Dark at 129.5s
-PASS: Feudal at 130s with banner "You have advanced to the Feudal Age!"
-PASS: Castle blocked: "needs 2 of: Archery Range, Stable, Blacksmith, Market (have 0)"
+PASS: Feudal at 130s with banner "You have advanced to the Pack Age!"
+PASS: Castle blocked: "needs 2 of: Bow Yard, Paddock, Forge, Bazaar (have 0)"
 PASS: Blacksmith + Market allow Castle
 PASS: Castle costs 800 food + 200 gold
 PASS: still Feudal at 159.5s
 PASS: Castle Age at 160s
-PASS: Imperial blocked: "needs 2 of: Monastery, University, Castle (or a Castle) (have 0)"
+PASS: Imperial blocked: "needs 2 of: Shrine, Academy, Fortress (or a Fortress) (have 0)"
 PASS: one Monastery alone is not enough
 PASS: a Castle alone allows Imperial
 PASS: Monastery + University allow Imperial
@@ -29,14 +29,14 @@ PASS: villager queued behind age research is not trained during research
 PASS: villager trains after age research completes
 PASS: TC panel line format
 --- locked content refused before its age, allowed after ---
-PASS: Archery Range refused in Dark: "Archery Range: Requires Feudal Age"
-PASS: Stable refused in Dark: "Stable: Requires Feudal Age"
-PASS: Blacksmith refused in Dark: "Blacksmith: Requires Feudal Age"
-PASS: Market refused in Dark: "Market: Requires Feudal Age"
-PASS: Watch Tower refused in Dark: "Watch Tower: Requires Feudal Age"
-PASS: Castle refused before Castle
-PASS: Monastery refused before Castle
-PASS: University refused before Castle
+PASS: Bow Yard refused in Dark: "Bow Yard: Requires Pack Age"
+PASS: Paddock refused in Dark: "Paddock: Requires Pack Age"
+PASS: Forge refused in Dark: "Forge: Requires Pack Age"
+PASS: Bazaar refused in Dark: "Bazaar: Requires Pack Age"
+PASS: Lookout Tower refused in Dark: "Lookout Tower: Requires Pack Age"
+PASS: Fortress refused before Castle
+PASS: Shrine refused before Castle
+PASS: Academy refused before Castle
 PASS: Wonder refused before Imperial
 PASS: Spearman refused in Dark
 PASS: Double-Bit Axe refused in Dark
@@ -45,11 +45,11 @@ PASS: tech cannot be double-queued
 PASS: Hand Cart refused in Dark
 PASS: reached Feudal
 PASS: researched tech cannot be repeated
-PASS: Archery Range allowed in Feudal
-PASS: Stable allowed in Feudal
-PASS: Blacksmith allowed in Feudal
-PASS: Market allowed in Feudal
-PASS: Watch Tower allowed in Feudal
+PASS: Bow Yard allowed in Feudal
+PASS: Paddock allowed in Feudal
+PASS: Forge allowed in Feudal
+PASS: Bazaar allowed in Feudal
+PASS: Lookout Tower allowed in Feudal
 PASS: Watch Tower costs 25 wood + 125 stone
 PASS: Archer: 25 wood 45 gold
 PASS: Scout Cavalry: 80 food

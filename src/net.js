@@ -28,6 +28,25 @@ export class RelayBus extends Bus {
   }
   send(m) { if (this.ws && this.ws.readyState === 1) this.ws.send(JSON.stringify(m)); } close() { this.ws && this.ws.close(); }
 }
+// HttpBus: polls the /api/relay serverless function (Vercel + Upstash Redis, or the local relay's in-memory copy).
+// Batches outgoing messages every poll; latency ~1-3 polls, so online games over HTTP use a larger input delay.
+export class HttpBus extends Bus {
+  constructor(base, code, pollMs = 120) { super(); this.kind = 'http'; this.url = base; this.code = code; this.out = []; this.after = 0; this.closed = false; this.pollMs = pollMs;
+    fetch(`${base}?health=1`).then(r => r.json()).then(j => { if (!j.configured) throw new Error(j.error || 'relay not configured');
+      return fetch(`${base}?room=${code}&after=0`).then(r => r.json()); }).then(j => { this.after = j.next || 0; this.status('open'); this.loop(); })
+      .catch(e => this.status('error', `HTTP relay unavailable: ${e.message || e}`)); }
+  async loop() {
+    while (!this.closed) {
+      try {
+        if (this.out.length) { const msgs = this.out.splice(0, 64); await fetch(this.url, { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ room: this.code, msgs }) }); }
+        const j = await (await fetch(`${this.url}?room=${this.code}&after=${this.after}`)).json(); this.after = j.next ?? this.after; for (const m of j.msgs || []) this.emit(m);
+      } catch (e) { /* transient: retry next poll */ }
+      await new Promise(r => setTimeout(r, this.pollMs));
+    }
+  }
+  send(m) { this.out.push(m); } close() { this.closed = true; }
+}
+export const httpRelayBase = () => new URLSearchParams(location.search).get('httprelay') || `${location.origin}/api/relay`;
 export function defaultRelayUrl() {
   const p = new URLSearchParams(location.search).get('relay'); if (p) return p;
   return `${location.protocol === 'https:' ? 'wss' : 'ws'}://${location.host}/ws`;
@@ -75,15 +94,15 @@ export class NetSession {
     switch (m.t) {
       case 'ping': this.send({ t: 'pong', ts: m.ts }); return;
       case 'pong': { const r = performance.now() - m.ts; this.rtt = this.rtt == null ? r : this.rtt * 0.7 + r * 0.3; return; }
-      case 'ready': this.peer.ready = !!m.v; this.onChange(this); this.maybeStart(); return;
+      case 'ready': this.peer.ready = !!m.v; this.peer.civ = m.civ || null; this.onChange(this); this.maybeStart(); return;
       case 'start': if (this.role === 'guest' && this.state === 'lobby') { this.state = 'playing'; this.onStart(m.cfg); this.onChange(this); } return;
       default: if (this.state === 'playing') this.onGame(m);
     }
   }
-  setReady(v) { this.ready = v; this.send({ t: 'ready', v }); this.onChange(this); this.maybeStart(); }
+  setReady(v) { this.ready = v; this.send({ t: 'ready', v, civ: this.civ || null }); this.onChange(this); this.maybeStart(); }
   maybeStart(cfgExtra = {}) {
     if (this.role !== 'host' || this.state !== 'lobby' || !this.ready || !this.peer?.ready) return;
-    const cfg = { seed: (Math.random() * 2 ** 31) | 0, delay: 3, hashEvery: 20, speed: 1, ...this.startCfg, ...cfgExtra };
+    const cfg = { seed: (Math.random() * 2 ** 31) | 0, delay: this.bus.kind === 'http' ? 8 : 3, hashEvery: 20, speed: 1, civs: [this.civ || null, this.peer.civ || null], ...this.startCfg, ...cfgExtra };
     this.send({ t: 'start', cfg }); this.state = 'playing'; this.onStart(cfg); this.onChange(this);
   }
   leave() { this.state = 'left'; this.bye(); clearInterval(this.timer); removeEventListener('pagehide', this.bye); this.bus.close(); }

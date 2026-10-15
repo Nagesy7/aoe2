@@ -9,6 +9,7 @@ import http from 'http';
 import fs from 'fs';
 import path from 'path';
 import { WebSocketServer } from 'ws';
+import { makeHandler, memoryStore } from '../api/relay.js';
 
 const arg = (k, d) => { const i = process.argv.indexOf(k); return i > 0 ? process.argv[i + 1] : d; };
 const PORT = +(process.env.PORT || arg('--port', 8787));
@@ -17,8 +18,10 @@ const MIME = { '.html': 'text/html', '.js': 'text/javascript', '.mjs': 'text/jav
 
 export function startRelay({ port = PORT, staticDir = STATIC, log = console.log } = {}) {
   const rooms = new Map();   // code -> Set<ws>
+  const httpRelay = makeHandler(memoryStore());   // same protocol as the Vercel /api/relay function, in memory
   const server = http.createServer((req, res) => {
     const url = new URL(req.url, 'http://x');
+    if (url.pathname === '/api/relay') { httpRelay(req, res); return; }
     if (url.pathname === '/health') { res.writeHead(200, { 'content-type': 'application/json', 'access-control-allow-origin': '*' }); res.end(JSON.stringify({ ok: true, rooms: rooms.size })); return; }
     if (!staticDir) { res.writeHead(200, { 'content-type': 'text/plain' }); res.end('aoe2 lockstep relay: connect a WebSocket to /ws\n'); return; }
     const root = path.resolve(staticDir), f = path.join(root, decodeURIComponent(url.pathname === '/' ? '/index.html' : url.pathname));

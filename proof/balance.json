@@ -1,0 +1,5805 @@
+{
+ "minutes": 30,
+ "seeds": 12,
+ "games": 360,
+ "conquests": 0,
+ "sideWins": {
+  "player": 162,
+  "enemy": 198
+ },
+ "table": {
+  "shiba": {
+   "games": 120,
+   "wins": 58,
+   "winRate": 0.483
+  },
+  "akita": {
+   "games": 120,
+   "wins": 62,
+   "winRate": 0.517
+  },
+  "kishu": {
+   "games": 120,
+   "wins": 68,
+   "winRate": 0.567
+  },
+  "shikoku": {
+   "games": 120,
+   "wins": 55,
+   "winRate": 0.458
+  },
+  "hokkaido": {
+   "games": 120,
+   "wins": 69,
+   "winRate": 0.575
+  },
+  "kai": {
+   "games": 120,
+   "wins": 48,
+   "winRate": 0.4
+  }
+ },
+ "ms": 623699,
+ "results": [
+  {
+   "a": "shiba",
+   "b": "akita",
+   "seed": 1,
+   "winnerCiv": "shiba",
+   "conquest": false,
+   "minutes": 30,
+   "score": [
+    5892,
+    4989
+   ],
+   "ages": [
+    "feudal",
+    "feudal"
+   ]
+  },
+  {
+   "a": "shiba",
+   "b": "akita",
+   "seed": 5,
+   "winnerCiv": "akita",
+   "conquest": false,
+   "minutes": 30,
+   "score": [
+    5552,
+    5666
+   ],
+   "ages": [
+    "feudal",
+    "feudal"
+   ]
+  },
+  {
+   "a": "shiba",
+   "b": "akita",
+   "seed": 9,
+   "winnerCiv": "akita",
+   "conquest": false,
+   "minutes": 30,
+   "score": [
+    4472,
+    6192
+   ],
+   "ages": [
+    "feudal",
+    "feudal"
+   ]
+  },
+  {
+   "a": "shiba",
+   "b": "kishu",
+   "seed": 1,
+   "winnerCiv": "shiba",
+   "conquest": false,
+   "minutes": 30,
+   "score": [
+    5706,
+    2716
+   ],
+   "ages": [
+    "castle",
+    "feudal"
+   ]
+  },
+  {
+   "a": "shiba",
+   "b": "kishu",
+   "seed": 5,
+   "winnerCiv": "shiba",
+   "conquest": false,
+   "minutes": 30,
+   "score": [
+    6088,
+    5335
+   ],
+   "ages": [
+    "feudal",
+    "feudal"
+   ]
+  },
+  {
+   "a": "shiba",
+   "b": "kishu",
+   "seed": 9,
+   "winnerCiv": "kishu",
+   "conquest": false,
+   "minutes": 30,
+   "score": [
+    5171,
+    5531
+   ],
+   "ages": [
+    "feudal",
+    "castle"
+   ]
+  },
+  {
+   "a": "shiba",
+   "b": "shikoku",
+   "seed": 1,
+   "winnerCiv": "shiba",
+   "conquest": false,
+   "minutes": 30,
+   "score": [
+    5816,
+    3750
+   ],
+   "ages": [
+    "feudal",
+    "feudal"
+   ]
+  },
+  {
+   "a": "shiba",
+   "b": "shikoku",
+   "seed": 5,
+   "winnerCiv": "shiba",
+   "conquest": false,
+   "minutes": 30,
+   "score": [
+    5057,
+    4220
+   ],
+   "ages": [
+    "feudal",
+    "feudal"
+   ]
+  },
+  {
+   "a": "shiba",
+   "b": "shikoku",
+   "seed": 9,
+   "winnerCiv": "shiba",
+   "conquest": false,
+   "minutes": 30,
+   "score": [
+    5358,
+    3685
+   ],
+   "ages": [
+    "feudal",
+    "feudal"
+   ]
+  },
+  {
+   "a": "shiba",
+   "b": "hokkaido",
+   "seed": 1,
+   "winnerCiv": "hokkaido",
+   "conquest": false,
+   "minutes": 30,
+   "score": [
+    3868,
+    5725
+   ],
+   "ages": [
+    "feudal",
+    "feudal"
+   ]
+  },
+  {
+   "a": "shiba",
+   "b": "hokkaido",
+   "seed": 5,
+   "winnerCiv": "shiba",
+   "conquest": false,
+   "minutes": 30,
+   "score": [
+    4204,
+    4056
+   ],
+   "ages": [
+    "feudal",
+    "feudal"
+   ]
+  },
+  {
+   "a": "shiba",
+   "b": "hokkaido",
+   "seed": 9,
+   "winnerCiv": "hokkaido",
+   "conquest": false,
+   "minutes": 30,
+   "score": [
+    5275,
+    6189
+   ],
+   "ages": [
+    "castle",
+    "feudal"
+   ]
+  },
+  {
+   "a": "shiba",
+   "b": "kai",
+   "seed": 1,
+   "winnerCiv": "kai",
+   "conquest": false,
+   "minutes": 30,
+   "score": [
+    4347,
+    5183
+   ],
+   "ages": [
+    "feudal",
+    "feudal"
+   ]
+  },
+  {
+   "a": "shiba",
+   "b": "kai",
+   "seed": 5,
+   "winnerCiv": "kai",
+   "conquest": false,
+   "minutes": 30,
+   "score": [
+    3717,
+    5261
+   ],
+   "ages": [
+    "feudal",
+    "feudal"
+   ]
+  },
+  {
+   "a": "shiba",
+   "b": "kai",
+   "seed": 9,
+   "winnerCiv": "kai",
+   "conquest": false,
+   "minutes": 30,
+   "score": [
+    4765,
+    5077
+   ],
+   "ages": [
+    "feudal",
+    "feudal"
+   ]
+  },
+  {
+   "a": "akita",
+   "b": "kishu",
+   "seed": 1,
+   "winnerCiv": "kishu",
+   "conquest": false,
+   "minutes": 30,
+   "score": [
+    3606,
+    5197
+   ],
+   "ages": [
+    "feudal",
+    "feudal"
+   ]
+  },
+  {
+   "a": "akita",
+   "b": "kishu",
+   "seed": 5,
+   "winnerCiv": "akita",
+   "conquest": false,
+   "minutes": 30,
+   "score": [
+    6196,
+    4400
+   ],
+   "ages": [
+    "feudal",
+    "feudal"
+   ]
+  },
+  {
+   "a": "akita",
+   "b": "kishu",
+   "seed": 9,
+   "winnerCiv": "kishu",
+   "conquest": false,
+   "minutes": 30,
+   "score": [
+    4336,
+    4366
+   ],
+   "ages": [
+    "feudal",
+    "feudal"
+   ]
+  },
+  {
+   "a": "akita",
+   "b": "shikoku",
+   "seed": 1,
+   "winnerCiv": "shikoku",
+   "conquest": false,
+   "minutes": 30,
+   "score": [
+    4518,
+    5454
+   ],
+   "ages": [
+    "feudal",
+    "feudal"
+   ]
+  },
+  {
+   "a": "akita",
+   "b": "shikoku",
+   "seed": 5,
+   "winnerCiv": "shikoku",
+   "conquest": false,
+   "minutes": 30,
+   "score": [
+    4505,
+    5721
+   ],
+   "ages": [
+    "feudal",
+    "feudal"
+   ]
+  },
+  {
+   "a": "akita",
+   "b": "shikoku",
+   "seed": 9,
+   "winnerCiv": "shikoku",
+   "conquest": false,
+   "minutes": 30,
+   "score": [
+    3862,
+    4100
+   ],
+   "ages": [
+    "feudal",
+    "feudal"
+   ]
+  },
+  {
+   "a": "akita",
+   "b": "hokkaido",
+   "seed": 1,
+   "winnerCiv": "akita",
+   "conquest": false,
+   "minutes": 30,
+   "score": [
+    5853,
+    4368
+   ],
+   "ages": [
+    "castle",
+    "feudal"
+   ]
+  },
+  {
+   "a": "akita",
+   "b": "hokkaido",
+   "seed": 5,
+   "winnerCiv": "akita",
+   "conquest": false,
+   "minutes": 30,
+   "score": [
+    4512,
+    3377
+   ],
+   "ages": [
+    "feudal",
+    "feudal"
+   ]
+  },
+  {
+   "a": "akita",
+   "b": "hokkaido",
+   "seed": 9,
+   "winnerCiv": "akita",
+   "conquest": false,
+   "minutes": 30,
+   "score": [
+    5951,
+    5358
+   ],
+   "ages": [
+    "feudal",
+    "feudal"
+   ]
+  },
+  {
+   "a": "akita",
+   "b": "kai",
+   "seed": 1,
+   "winnerCiv": "akita",
+   "conquest": false,
+   "minutes": 30,
+   "score": [
+    4524,
+    4329
+   ],
+   "ages": [
+    "feudal",
+    "feudal"
+   ]
+  },
+  {
+   "a": "akita",
+   "b": "kai",
+   "seed": 5,
+   "winnerCiv": "akita",
+   "conquest": false,
+   "minutes": 30,
+   "score": [
+    5647,
+    4172
+   ],
+   "ages": [
+    "feudal",
+    "feudal"
+   ]
+  },
+  {
+   "a": "akita",
+   "b": "kai",
+   "seed": 9,
+   "winnerCiv": "kai",
+   "conquest": false,
+   "minutes": 30,
+   "score": [
+    4890,
+    6350
+   ],
+   "ages": [
+    "feudal",
+    "castle"
+   ]
+  },
+  {
+   "a": "kishu",
+   "b": "shikoku",
+   "seed": 1,
+   "winnerCiv": "kishu",
+   "conquest": false,
+   "minutes": 30,
+   "score": [
+    4922,
+    2655
+   ],
+   "ages": [
+    "feudal",
+    "feudal"
+   ]
+  },
+  {
+   "a": "kishu",
+   "b": "shikoku",
+   "seed": 5,
+   "winnerCiv": "shikoku",
+   "conquest": false,
+   "minutes": 30,
+   "score": [
+    4717,
+    5770
+   ],
+   "ages": [
+    "feudal",
+    "feudal"
+   ]
+  },
+  {
+   "a": "kishu",
+   "b": "shikoku",
+   "seed": 9,
+   "winnerCiv": "shikoku",
+   "conquest": false,
+   "minutes": 30,
+   "score": [
+    3930,
+    4398
+   ],
+   "ages": [
+    "feudal",
+    "feudal"
+   ]
+  },
+  {
+   "a": "kishu",
+   "b": "hokkaido",
+   "seed": 1,
+   "winnerCiv": "hokkaido",
+   "conquest": false,
+   "minutes": 30,
+   "score": [
+    4526,
+    5041
+   ],
+   "ages": [
+    "feudal",
+    "feudal"
+   ]
+  },
+  {
+   "a": "kishu",
+   "b": "hokkaido",
+   "seed": 5,
+   "winnerCiv": "kishu",
+   "conquest": false,
+   "minutes": 30,
+   "score": [
+    5240,
+    5033
+   ],
+   "ages": [
+    "feudal",
+    "feudal"
+   ]
+  },
+  {
+   "a": "kishu",
+   "b": "hokkaido",
+   "seed": 9,
+   "winnerCiv": "hokkaido",
+   "conquest": false,
+   "minutes": 30,
+   "score": [
+    4733,
+    6074
+   ],
+   "ages": [
+    "feudal",
+    "feudal"
+   ]
+  },
+  {
+   "a": "kishu",
+   "b": "kai",
+   "seed": 1,
+   "winnerCiv": "kishu",
+   "conquest": false,
+   "minutes": 30,
+   "score": [
+    4905,
+    3079
+   ],
+   "ages": [
+    "feudal",
+    "feudal"
+   ]
+  },
+  {
+   "a": "kishu",
+   "b": "kai",
+   "seed": 5,
+   "winnerCiv": "kai",
+   "conquest": false,
+   "minutes": 30,
+   "score": [
+    3500,
+    4178
+   ],
+   "ages": [
+    "feudal",
+    "feudal"
+   ]
+  },
+  {
+   "a": "kishu",
+   "b": "kai",
+   "seed": 9,
+   "winnerCiv": "kishu",
+   "conquest": false,
+   "minutes": 30,
+   "score": [
+    4439,
+    3716
+   ],
+   "ages": [
+    "feudal",
+    "feudal"
+   ]
+  },
+  {
+   "a": "shikoku",
+   "b": "hokkaido",
+   "seed": 1,
+   "winnerCiv": "hokkaido",
+   "conquest": false,
+   "minutes": 30,
+   "score": [
+    4219,
+    4423
+   ],
+   "ages": [
+    "feudal",
+    "feudal"
+   ]
+  },
+  {
+   "a": "shikoku",
+   "b": "hokkaido",
+   "seed": 5,
+   "winnerCiv": "hokkaido",
+   "conquest": false,
+   "minutes": 30,
+   "score": [
+    4576,
+    5129
+   ],
+   "ages": [
+    "feudal",
+    "feudal"
+   ]
+  },
+  {
+   "a": "shikoku",
+   "b": "hokkaido",
+   "seed": 9,
+   "winnerCiv": "shikoku",
+   "conquest": false,
+   "minutes": 30,
+   "score": [
+    6355,
+    5815
+   ],
+   "ages": [
+    "feudal",
+    "feudal"
+   ]
+  },
+  {
+   "a": "shikoku",
+   "b": "kai",
+   "seed": 1,
+   "winnerCiv": "shikoku",
+   "conquest": false,
+   "minutes": 30,
+   "score": [
+    5338,
+    4490
+   ],
+   "ages": [
+    "feudal",
+    "feudal"
+   ]
+  },
+  {
+   "a": "shikoku",
+   "b": "kai",
+   "seed": 5,
+   "winnerCiv": "kai",
+   "conquest": false,
+   "minutes": 30,
+   "score": [
+    3500,
+    4178
+   ],
+   "ages": [
+    "feudal",
+    "feudal"
+   ]
+  },
+  {
+   "a": "shikoku",
+   "b": "kai",
+   "seed": 9,
+   "winnerCiv": "kai",
+   "conquest": false,
+   "minutes": 30,
+   "score": [
+    3895,
+    4850
+   ],
+   "ages": [
+    "feudal",
+    "feudal"
+   ]
+  },
+  {
+   "a": "hokkaido",
+   "b": "kai",
+   "seed": 1,
+   "winnerCiv": "hokkaido",
+   "conquest": false,
+   "minutes": 30,
+   "score": [
+    4625,
+    4033
+   ],
+   "ages": [
+    "feudal",
+    "feudal"
+   ]
+  },
+  {
+   "a": "hokkaido",
+   "b": "kai",
+   "seed": 5,
+   "winnerCiv": "hokkaido",
+   "conquest": false,
+   "minutes": 30,
+   "score": [
+    5428,
+    4037
+   ],
+   "ages": [
+    "feudal",
+    "feudal"
+   ]
+  },
+  {
+   "a": "hokkaido",
+   "b": "kai",
+   "seed": 9,
+   "winnerCiv": "kai",
+   "conquest": false,
+   "minutes": 30,
+   "score": [
+    3725,
+    5177
+   ],
+   "ages": [
+    "feudal",
+    "feudal"
+   ]
+  },
+  {
+   "a": "akita",
+   "b": "shiba",
+   "seed": 1,
+   "winnerCiv": "akita",
+   "conquest": false,
+   "minutes": 30,
+   "score": [
+    5680,
+    4487
+   ],
+   "ages": [
+    "feudal",
+    "feudal"
+   ]
+  },
+  {
+   "a": "akita",
+   "b": "shiba",
+   "seed": 5,
+   "winnerCiv": "shiba",
+   "conquest": false,
+   "minutes": 30,
+   "score": [
+    3476,
+    6019
+   ],
+   "ages": [
+    "feudal",
+    "feudal"
+   ]
+  },
+  {
+   "a": "akita",
+   "b": "shiba",
+   "seed": 9,
+   "winnerCiv": "akita",
+   "conquest": false,
+   "minutes": 30,
+   "score": [
+    5114,
+    4765
+   ],
+   "ages": [
+    "feudal",
+    "feudal"
+   ]
+  },
+  {
+   "a": "kishu",
+   "b": "shiba",
+   "seed": 1,
+   "winnerCiv": "shiba",
+   "conquest": false,
+   "minutes": 30,
+   "score": [
+    4856,
+    5401
+   ],
+   "ages": [
+    "feudal",
+    "feudal"
+   ]
+  },
+  {
+   "a": "kishu",
+   "b": "shiba",
+   "seed": 5,
+   "winnerCiv": "shiba",
+   "conquest": false,
+   "minutes": 30,
+   "score": [
+    4288,
+    5246
+   ],
+   "ages": [
+    "feudal",
+    "feudal"
+   ]
+  },
+  {
+   "a": "kishu",
+   "b": "shiba",
+   "seed": 9,
+   "winnerCiv": "kishu",
+   "conquest": false,
+   "minutes": 30,
+   "score": [
+    5566,
+    4755
+   ],
+   "ages": [
+    "feudal",
+    "feudal"
+   ]
+  },
+  {
+   "a": "shikoku",
+   "b": "shiba",
+   "seed": 1,
+   "winnerCiv": "shikoku",
+   "conquest": false,
+   "minutes": 30,
+   "score": [
+    6072,
+    5003
+   ],
+   "ages": [
+    "feudal",
+    "feudal"
+   ]
+  },
+  {
+   "a": "shikoku",
+   "b": "shiba",
+   "seed": 5,
+   "winnerCiv": "shiba",
+   "conquest": false,
+   "minutes": 30,
+   "score": [
+    3954,
+    4909
+   ],
+   "ages": [
+    "feudal",
+    "feudal"
+   ]
+  },
+  {
+   "a": "shikoku",
+   "b": "shiba",
+   "seed": 9,
+   "winnerCiv": "shikoku",
+   "conquest": false,
+   "minutes": 30,
+   "score": [
+    6308,
+    4604
+   ],
+   "ages": [
+    "feudal",
+    "feudal"
+   ]
+  },
+  {
+   "a": "hokkaido",
+   "b": "shiba",
+   "seed": 1,
+   "winnerCiv": "hokkaido",
+   "conquest": false,
+   "minutes": 30,
+   "score": [
+    5241,
+    5235
+   ],
+   "ages": [
+    "feudal",
+    "feudal"
+   ]
+  },
+  {
+   "a": "hokkaido",
+   "b": "shiba",
+   "seed": 5,
+   "winnerCiv": "hokkaido",
+   "conquest": false,
+   "minutes": 30,
+   "score": [
+    5993,
+    4809
+   ],
+   "ages": [
+    "feudal",
+    "feudal"
+   ]
+  },
+  {
+   "a": "hokkaido",
+   "b": "shiba",
+   "seed": 9,
+   "winnerCiv": "hokkaido",
+   "conquest": false,
+   "minutes": 30,
+   "score": [
+    5558,
+    4722
+   ],
+   "ages": [
+    "feudal",
+    "feudal"
+   ]
+  },
+  {
+   "a": "kai",
+   "b": "shiba",
+   "seed": 1,
+   "winnerCiv": "kai",
+   "conquest": false,
+   "minutes": 30,
+   "score": [
+    5413,
+    3277
+   ],
+   "ages": [
+    "feudal",
+    "feudal"
+   ]
+  },
+  {
+   "a": "kai",
+   "b": "shiba",
+   "seed": 5,
+   "winnerCiv": "shiba",
+   "conquest": false,
+   "minutes": 30,
+   "score": [
+    4038,
+    5004
+   ],
+   "ages": [
+    "feudal",
+    "feudal"
+   ]
+  },
+  {
+   "a": "kai",
+   "b": "shiba",
+   "seed": 9,
+   "winnerCiv": "kai",
+   "conquest": false,
+   "minutes": 30,
+   "score": [
+    4599,
+    4272
+   ],
+   "ages": [
+    "feudal",
+    "feudal"
+   ]
+  },
+  {
+   "a": "kishu",
+   "b": "akita",
+   "seed": 1,
+   "winnerCiv": "kishu",
+   "conquest": false,
+   "minutes": 30,
+   "score": [
+    5580,
+    4438
+   ],
+   "ages": [
+    "feudal",
+    "feudal"
+   ]
+  },
+  {
+   "a": "kishu",
+   "b": "akita",
+   "seed": 5,
+   "winnerCiv": "kishu",
+   "conquest": false,
+   "minutes": 30,
+   "score": [
+    5127,
+    4742
+   ],
+   "ages": [
+    "feudal",
+    "feudal"
+   ]
+  },
+  {
+   "a": "kishu",
+   "b": "akita",
+   "seed": 9,
+   "winnerCiv": "kishu",
+   "conquest": false,
+   "minutes": 30,
+   "score": [
+    4572,
+    4159
+   ],
+   "ages": [
+    "feudal",
+    "feudal"
+   ]
+  },
+  {
+   "a": "shikoku",
+   "b": "akita",
+   "seed": 1,
+   "winnerCiv": "akita",
+   "conquest": false,
+   "minutes": 30,
+   "score": [
+    5290,
+    5381
+   ],
+   "ages": [
+    "feudal",
+    "feudal"
+   ]
+  },
+  {
+   "a": "shikoku",
+   "b": "akita",
+   "seed": 5,
+   "winnerCiv": "akita",
+   "conquest": false,
+   "minutes": 30,
+   "score": [
+    4480,
+    4774
+   ],
+   "ages": [
+    "feudal",
+    "feudal"
+   ]
+  },
+  {
+   "a": "shikoku",
+   "b": "akita",
+   "seed": 9,
+   "winnerCiv": "akita",
+   "conquest": false,
+   "minutes": 30,
+   "score": [
+    4130,
+    4655
+   ],
+   "ages": [
+    "feudal",
+    "feudal"
+   ]
+  },
+  {
+   "a": "hokkaido",
+   "b": "akita",
+   "seed": 1,
+   "winnerCiv": "hokkaido",
+   "conquest": false,
+   "minutes": 30,
+   "score": [
+    5862,
+    4673
+   ],
+   "ages": [
+    "feudal",
+    "feudal"
+   ]
+  },
+  {
+   "a": "hokkaido",
+   "b": "akita",
+   "seed": 5,
+   "winnerCiv": "akita",
+   "conquest": false,
+   "minutes": 30,
+   "score": [
+    4291,
+    4942
+   ],
+   "ages": [
+    "feudal",
+    "feudal"
+   ]
+  },
+  {
+   "a": "hokkaido",
+   "b": "akita",
+   "seed": 9,
+   "winnerCiv": "hokkaido",
+   "conquest": false,
+   "minutes": 30,
+   "score": [
+    6607,
+    6073
+   ],
+   "ages": [
+    "feudal",
+    "feudal"
+   ]
+  },
+  {
+   "a": "kai",
+   "b": "akita",
+   "seed": 1,
+   "winnerCiv": "akita",
+   "conquest": false,
+   "minutes": 30,
+   "score": [
+    4366,
+    5351
+   ],
+   "ages": [
+    "castle",
+    "feudal"
+   ]
+  },
+  {
+   "a": "kai",
+   "b": "akita",
+   "seed": 5,
+   "winnerCiv": "kai",
+   "conquest": false,
+   "minutes": 30,
+   "score": [
+    4377,
+    4344
+   ],
+   "ages": [
+    "feudal",
+    "feudal"
+   ]
+  },
+  {
+   "a": "kai",
+   "b": "akita",
+   "seed": 9,
+   "winnerCiv": "akita",
+   "conquest": false,
+   "minutes": 30,
+   "score": [
+    4151,
+    4685
+   ],
+   "ages": [
+    "feudal",
+    "feudal"
+   ]
+  },
+  {
+   "a": "shikoku",
+   "b": "kishu",
+   "seed": 1,
+   "winnerCiv": "kishu",
+   "conquest": false,
+   "minutes": 30,
+   "score": [
+    2925,
+    5746
+   ],
+   "ages": [
+    "feudal",
+    "feudal"
+   ]
+  },
+  {
+   "a": "shikoku",
+   "b": "kishu",
+   "seed": 5,
+   "winnerCiv": "kishu",
+   "conquest": false,
+   "minutes": 30,
+   "score": [
+    3637,
+    4875
+   ],
+   "ages": [
+    "feudal",
+    "feudal"
+   ]
+  },
+  {
+   "a": "shikoku",
+   "b": "kishu",
+   "seed": 9,
+   "winnerCiv": "kishu",
+   "conquest": false,
+   "minutes": 30,
+   "score": [
+    4059,
+    4421
+   ],
+   "ages": [
+    "feudal",
+    "feudal"
+   ]
+  },
+  {
+   "a": "hokkaido",
+   "b": "kishu",
+   "seed": 1,
+   "winnerCiv": "kishu",
+   "conquest": false,
+   "minutes": 30,
+   "score": [
+    4233,
+    4917
+   ],
+   "ages": [
+    "feudal",
+    "feudal"
+   ]
+  },
+  {
+   "a": "hokkaido",
+   "b": "kishu",
+   "seed": 5,
+   "winnerCiv": "hokkaido",
+   "conquest": false,
+   "minutes": 30,
+   "score": [
+    5108,
+    4949
+   ],
+   "ages": [
+    "feudal",
+    "feudal"
+   ]
+  },
+  {
+   "a": "hokkaido",
+   "b": "kishu",
+   "seed": 9,
+   "winnerCiv": "hokkaido",
+   "conquest": false,
+   "minutes": 30,
+   "score": [
+    5999,
+    5040
+   ],
+   "ages": [
+    "feudal",
+    "feudal"
+   ]
+  },
+  {
+   "a": "kai",
+   "b": "kishu",
+   "seed": 1,
+   "winnerCiv": "kai",
+   "conquest": false,
+   "minutes": 30,
+   "score": [
+    5047,
+    4304
+   ],
+   "ages": [
+    "feudal",
+    "feudal"
+   ]
+  },
+  {
+   "a": "kai",
+   "b": "kishu",
+   "seed": 5,
+   "winnerCiv": "kishu",
+   "conquest": false,
+   "minutes": 30,
+   "score": [
+    4257,
+    4834
+   ],
+   "ages": [
+    "feudal",
+    "feudal"
+   ]
+  },
+  {
+   "a": "kai",
+   "b": "kishu",
+   "seed": 9,
+   "winnerCiv": "kishu",
+   "conquest": false,
+   "minutes": 30,
+   "score": [
+    3954,
+    4591
+   ],
+   "ages": [
+    "feudal",
+    "feudal"
+   ]
+  },
+  {
+   "a": "hokkaido",
+   "b": "shikoku",
+   "seed": 1,
+   "winnerCiv": "hokkaido",
+   "conquest": false,
+   "minutes": 30,
+   "score": [
+    5677,
+    4172
+   ],
+   "ages": [
+    "feudal",
+    "feudal"
+   ]
+  },
+  {
+   "a": "hokkaido",
+   "b": "shikoku",
+   "seed": 5,
+   "winnerCiv": "hokkaido",
+   "conquest": false,
+   "minutes": 30,
+   "score": [
+    6056,
+    5186
+   ],
+   "ages": [
+    "feudal",
+    "feudal"
+   ]
+  },
+  {
+   "a": "hokkaido",
+   "b": "shikoku",
+   "seed": 9,
+   "winnerCiv": "hokkaido",
+   "conquest": false,
+   "minutes": 30,
+   "score": [
+    5501,
+    4607
+   ],
+   "ages": [
+    "feudal",
+    "feudal"
+   ]
+  },
+  {
+   "a": "kai",
+   "b": "shikoku",
+   "seed": 1,
+   "winnerCiv": "shikoku",
+   "conquest": false,
+   "minutes": 30,
+   "score": [
+    2913,
+    4698
+   ],
+   "ages": [
+    "feudal",
+    "feudal"
+   ]
+  },
+  {
+   "a": "kai",
+   "b": "shikoku",
+   "seed": 5,
+   "winnerCiv": "shikoku",
+   "conquest": false,
+   "minutes": 30,
+   "score": [
+    4457,
+    5990
+   ],
+   "ages": [
+    "feudal",
+    "feudal"
+   ]
+  },
+  {
+   "a": "kai",
+   "b": "shikoku",
+   "seed": 9,
+   "winnerCiv": "shikoku",
+   "conquest": false,
+   "minutes": 30,
+   "score": [
+    3570,
+    5095
+   ],
+   "ages": [
+    "feudal",
+    "feudal"
+   ]
+  },
+  {
+   "a": "kai",
+   "b": "hokkaido",
+   "seed": 1,
+   "winnerCiv": "kai",
+   "conquest": false,
+   "minutes": 30,
+   "score": [
+    4922,
+    4279
+   ],
+   "ages": [
+    "feudal",
+    "feudal"
+   ]
+  },
+  {
+   "a": "kai",
+   "b": "hokkaido",
+   "seed": 5,
+   "winnerCiv": "kai",
+   "conquest": false,
+   "minutes": 30,
+   "score": [
+    4812,
+    4535
+   ],
+   "ages": [
+    "feudal",
+    "feudal"
+   ]
+  },
+  {
+   "a": "kai",
+   "b": "hokkaido",
+   "seed": 9,
+   "winnerCiv": "kai",
+   "conquest": false,
+   "minutes": 30,
+   "score": [
+    5508,
+    5143
+   ],
+   "ages": [
+    "feudal",
+    "feudal"
+   ]
+  },
+  {
+   "a": "shiba",
+   "b": "akita",
+   "seed": 2,
+   "winnerCiv": "akita",
+   "conquest": false,
+   "minutes": 30,
+   "score": [
+    5663,
+    5678
+   ],
+   "ages": [
+    "feudal",
+    "feudal"
+   ]
+  },
+  {
+   "a": "shiba",
+   "b": "akita",
+   "seed": 6,
+   "winnerCiv": "akita",
+   "conquest": false,
+   "minutes": 30,
+   "score": [
+    3702,
+    4926
+   ],
+   "ages": [
+    "feudal",
+    "feudal"
+   ]
+  },
+  {
+   "a": "shiba",
+   "b": "akita",
+   "seed": 10,
+   "winnerCiv": "akita",
+   "conquest": false,
+   "minutes": 30,
+   "score": [
+    5478,
+    6490
+   ],
+   "ages": [
+    "castle",
+    "feudal"
+   ]
+  },
+  {
+   "a": "shiba",
+   "b": "kishu",
+   "seed": 2,
+   "winnerCiv": "kishu",
+   "conquest": false,
+   "minutes": 30,
+   "score": [
+    3595,
+    5418
+   ],
+   "ages": [
+    "feudal",
+    "feudal"
+   ]
+  },
+  {
+   "a": "shiba",
+   "b": "kishu",
+   "seed": 6,
+   "winnerCiv": "shiba",
+   "conquest": false,
+   "minutes": 30,
+   "score": [
+    5042,
+    4932
+   ],
+   "ages": [
+    "feudal",
+    "feudal"
+   ]
+  },
+  {
+   "a": "shiba",
+   "b": "kishu",
+   "seed": 10,
+   "winnerCiv": "shiba",
+   "conquest": false,
+   "minutes": 30,
+   "score": [
+    5391,
+    4862
+   ],
+   "ages": [
+    "feudal",
+    "feudal"
+   ]
+  },
+  {
+   "a": "shiba",
+   "b": "shikoku",
+   "seed": 2,
+   "winnerCiv": "shiba",
+   "conquest": false,
+   "minutes": 30,
+   "score": [
+    6049,
+    4595
+   ],
+   "ages": [
+    "feudal",
+    "feudal"
+   ]
+  },
+  {
+   "a": "shiba",
+   "b": "shikoku",
+   "seed": 6,
+   "winnerCiv": "shiba",
+   "conquest": false,
+   "minutes": 30,
+   "score": [
+    5516,
+    4413
+   ],
+   "ages": [
+    "feudal",
+    "feudal"
+   ]
+  },
+  {
+   "a": "shiba",
+   "b": "shikoku",
+   "seed": 10,
+   "winnerCiv": "shikoku",
+   "conquest": false,
+   "minutes": 30,
+   "score": [
+    4547,
+    4563
+   ],
+   "ages": [
+    "feudal",
+    "feudal"
+   ]
+  },
+  {
+   "a": "shiba",
+   "b": "hokkaido",
+   "seed": 2,
+   "winnerCiv": "hokkaido",
+   "conquest": false,
+   "minutes": 30,
+   "score": [
+    4723,
+    5813
+   ],
+   "ages": [
+    "feudal",
+    "feudal"
+   ]
+  },
+  {
+   "a": "shiba",
+   "b": "hokkaido",
+   "seed": 6,
+   "winnerCiv": "shiba",
+   "conquest": false,
+   "minutes": 30,
+   "score": [
+    5144,
+    4918
+   ],
+   "ages": [
+    "feudal",
+    "feudal"
+   ]
+  },
+  {
+   "a": "shiba",
+   "b": "hokkaido",
+   "seed": 10,
+   "winnerCiv": "shiba",
+   "conquest": false,
+   "minutes": 30,
+   "score": [
+    5238,
+    5204
+   ],
+   "ages": [
+    "feudal",
+    "castle"
+   ]
+  },
+  {
+   "a": "shiba",
+   "b": "kai",
+   "seed": 2,
+   "winnerCiv": "kai",
+   "conquest": false,
+   "minutes": 30,
+   "score": [
+    4858,
+    4962
+   ],
+   "ages": [
+    "feudal",
+    "feudal"
+   ]
+  },
+  {
+   "a": "shiba",
+   "b": "kai",
+   "seed": 6,
+   "winnerCiv": "kai",
+   "conquest": false,
+   "minutes": 30,
+   "score": [
+    3983,
+    4094
+   ],
+   "ages": [
+    "feudal",
+    "feudal"
+   ]
+  },
+  {
+   "a": "shiba",
+   "b": "kai",
+   "seed": 10,
+   "winnerCiv": "shiba",
+   "conquest": false,
+   "minutes": 30,
+   "score": [
+    5374,
+    4816
+   ],
+   "ages": [
+    "feudal",
+    "feudal"
+   ]
+  },
+  {
+   "a": "akita",
+   "b": "kishu",
+   "seed": 2,
+   "winnerCiv": "kishu",
+   "conquest": false,
+   "minutes": 30,
+   "score": [
+    3815,
+    5864
+   ],
+   "ages": [
+    "feudal",
+    "feudal"
+   ]
+  },
+  {
+   "a": "akita",
+   "b": "kishu",
+   "seed": 6,
+   "winnerCiv": "kishu",
+   "conquest": false,
+   "minutes": 30,
+   "score": [
+    3563,
+    5815
+   ],
+   "ages": [
+    "feudal",
+    "feudal"
+   ]
+  },
+  {
+   "a": "akita",
+   "b": "kishu",
+   "seed": 10,
+   "winnerCiv": "kishu",
+   "conquest": false,
+   "minutes": 30,
+   "score": [
+    4407,
+    5150
+   ],
+   "ages": [
+    "feudal",
+    "feudal"
+   ]
+  },
+  {
+   "a": "akita",
+   "b": "shikoku",
+   "seed": 2,
+   "winnerCiv": "shikoku",
+   "conquest": false,
+   "minutes": 30,
+   "score": [
+    4456,
+    5280
+   ],
+   "ages": [
+    "feudal",
+    "feudal"
+   ]
+  },
+  {
+   "a": "akita",
+   "b": "shikoku",
+   "seed": 6,
+   "winnerCiv": "akita",
+   "conquest": false,
+   "minutes": 30,
+   "score": [
+    5226,
+    4862
+   ],
+   "ages": [
+    "feudal",
+    "feudal"
+   ]
+  },
+  {
+   "a": "akita",
+   "b": "shikoku",
+   "seed": 10,
+   "winnerCiv": "shikoku",
+   "conquest": false,
+   "minutes": 30,
+   "score": [
+    3986,
+    4618
+   ],
+   "ages": [
+    "feudal",
+    "feudal"
+   ]
+  },
+  {
+   "a": "akita",
+   "b": "hokkaido",
+   "seed": 2,
+   "winnerCiv": "hokkaido",
+   "conquest": false,
+   "minutes": 30,
+   "score": [
+    4741,
+    4755
+   ],
+   "ages": [
+    "feudal",
+    "feudal"
+   ]
+  },
+  {
+   "a": "akita",
+   "b": "hokkaido",
+   "seed": 6,
+   "winnerCiv": "hokkaido",
+   "conquest": false,
+   "minutes": 30,
+   "score": [
+    4999,
+    4999
+   ],
+   "ages": [
+    "feudal",
+    "feudal"
+   ]
+  },
+  {
+   "a": "akita",
+   "b": "hokkaido",
+   "seed": 10,
+   "winnerCiv": "hokkaido",
+   "conquest": false,
+   "minutes": 30,
+   "score": [
+    4564,
+    4668
+   ],
+   "ages": [
+    "feudal",
+    "feudal"
+   ]
+  },
+  {
+   "a": "akita",
+   "b": "kai",
+   "seed": 2,
+   "winnerCiv": "akita",
+   "conquest": false,
+   "minutes": 30,
+   "score": [
+    4608,
+    4509
+   ],
+   "ages": [
+    "feudal",
+    "feudal"
+   ]
+  },
+  {
+   "a": "akita",
+   "b": "kai",
+   "seed": 6,
+   "winnerCiv": "kai",
+   "conquest": false,
+   "minutes": 30,
+   "score": [
+    4506,
+    5038
+   ],
+   "ages": [
+    "feudal",
+    "feudal"
+   ]
+  },
+  {
+   "a": "akita",
+   "b": "kai",
+   "seed": 10,
+   "winnerCiv": "akita",
+   "conquest": false,
+   "minutes": 30,
+   "score": [
+    4485,
+    4342
+   ],
+   "ages": [
+    "feudal",
+    "feudal"
+   ]
+  },
+  {
+   "a": "kishu",
+   "b": "shikoku",
+   "seed": 2,
+   "winnerCiv": "kishu",
+   "conquest": false,
+   "minutes": 30,
+   "score": [
+    5152,
+    4891
+   ],
+   "ages": [
+    "feudal",
+    "feudal"
+   ]
+  },
+  {
+   "a": "kishu",
+   "b": "shikoku",
+   "seed": 6,
+   "winnerCiv": "shikoku",
+   "conquest": false,
+   "minutes": 30,
+   "score": [
+    5021,
+    5238
+   ],
+   "ages": [
+    "feudal",
+    "feudal"
+   ]
+  },
+  {
+   "a": "kishu",
+   "b": "shikoku",
+   "seed": 10,
+   "winnerCiv": "kishu",
+   "conquest": false,
+   "minutes": 30,
+   "score": [
+    4997,
+    4321
+   ],
+   "ages": [
+    "feudal",
+    "feudal"
+   ]
+  },
+  {
+   "a": "kishu",
+   "b": "hokkaido",
+   "seed": 2,
+   "winnerCiv": "kishu",
+   "conquest": false,
+   "minutes": 30,
+   "score": [
+    5513,
+    4845
+   ],
+   "ages": [
+    "feudal",
+    "feudal"
+   ]
+  },
+  {
+   "a": "kishu",
+   "b": "hokkaido",
+   "seed": 6,
+   "winnerCiv": "kishu",
+   "conquest": false,
+   "minutes": 30,
+   "score": [
+    5116,
+    4828
+   ],
+   "ages": [
+    "feudal",
+    "feudal"
+   ]
+  },
+  {
+   "a": "kishu",
+   "b": "hokkaido",
+   "seed": 10,
+   "winnerCiv": "kishu",
+   "conquest": false,
+   "minutes": 30,
+   "score": [
+    4931,
+    4838
+   ],
+   "ages": [
+    "feudal",
+    "feudal"
+   ]
+  },
+  {
+   "a": "kishu",
+   "b": "kai",
+   "seed": 2,
+   "winnerCiv": "kai",
+   "conquest": false,
+   "minutes": 30,
+   "score": [
+    3066,
+    5047
+   ],
+   "ages": [
+    "feudal",
+    "feudal"
+   ]
+  },
+  {
+   "a": "kishu",
+   "b": "kai",
+   "seed": 6,
+   "winnerCiv": "kishu",
+   "conquest": false,
+   "minutes": 30,
+   "score": [
+    5010,
+    4211
+   ],
+   "ages": [
+    "feudal",
+    "feudal"
+   ]
+  },
+  {
+   "a": "kishu",
+   "b": "kai",
+   "seed": 10,
+   "winnerCiv": "kishu",
+   "conquest": false,
+   "minutes": 30,
+   "score": [
+    5591,
+    3534
+   ],
+   "ages": [
+    "feudal",
+    "feudal"
+   ]
+  },
+  {
+   "a": "shikoku",
+   "b": "hokkaido",
+   "seed": 2,
+   "winnerCiv": "hokkaido",
+   "conquest": false,
+   "minutes": 30,
+   "score": [
+    4921,
+    5375
+   ],
+   "ages": [
+    "feudal",
+    "feudal"
+   ]
+  },
+  {
+   "a": "shikoku",
+   "b": "hokkaido",
+   "seed": 6,
+   "winnerCiv": "shikoku",
+   "conquest": false,
+   "minutes": 30,
+   "score": [
+    5293,
+    4607
+   ],
+   "ages": [
+    "feudal",
+    "feudal"
+   ]
+  },
+  {
+   "a": "shikoku",
+   "b": "hokkaido",
+   "seed": 10,
+   "winnerCiv": "shikoku",
+   "conquest": false,
+   "minutes": 30,
+   "score": [
+    5417,
+    4486
+   ],
+   "ages": [
+    "feudal",
+    "feudal"
+   ]
+  },
+  {
+   "a": "shikoku",
+   "b": "kai",
+   "seed": 2,
+   "winnerCiv": "kai",
+   "conquest": false,
+   "minutes": 30,
+   "score": [
+    4483,
+    4815
+   ],
+   "ages": [
+    "feudal",
+    "feudal"
+   ]
+  },
+  {
+   "a": "shikoku",
+   "b": "kai",
+   "seed": 6,
+   "winnerCiv": "shikoku",
+   "conquest": false,
+   "minutes": 30,
+   "score": [
+    5377,
+    4657
+   ],
+   "ages": [
+    "feudal",
+    "feudal"
+   ]
+  },
+  {
+   "a": "shikoku",
+   "b": "kai",
+   "seed": 10,
+   "winnerCiv": "shikoku",
+   "conquest": false,
+   "minutes": 30,
+   "score": [
+    5120,
+    4456
+   ],
+   "ages": [
+    "feudal",
+    "feudal"
+   ]
+  },
+  {
+   "a": "hokkaido",
+   "b": "kai",
+   "seed": 2,
+   "winnerCiv": "kai",
+   "conquest": false,
+   "minutes": 30,
+   "score": [
+    5232,
+    5333
+   ],
+   "ages": [
+    "feudal",
+    "feudal"
+   ]
+  },
+  {
+   "a": "hokkaido",
+   "b": "kai",
+   "seed": 6,
+   "winnerCiv": "kai",
+   "conquest": false,
+   "minutes": 30,
+   "score": [
+    3158,
+    4888
+   ],
+   "ages": [
+    "feudal",
+    "feudal"
+   ]
+  },
+  {
+   "a": "hokkaido",
+   "b": "kai",
+   "seed": 10,
+   "winnerCiv": "kai",
+   "conquest": false,
+   "minutes": 30,
+   "score": [
+    3789,
+    4609
+   ],
+   "ages": [
+    "feudal",
+    "feudal"
+   ]
+  },
+  {
+   "a": "akita",
+   "b": "shiba",
+   "seed": 2,
+   "winnerCiv": "shiba",
+   "conquest": false,
+   "minutes": 30,
+   "score": [
+    4605,
+    4839
+   ],
+   "ages": [
+    "feudal",
+    "feudal"
+   ]
+  },
+  {
+   "a": "akita",
+   "b": "shiba",
+   "seed": 6,
+   "winnerCiv": "akita",
+   "conquest": false,
+   "minutes": 30,
+   "score": [
+    6097,
+    3972
+   ],
+   "ages": [
+    "feudal",
+    "feudal"
+   ]
+  },
+  {
+   "a": "akita",
+   "b": "shiba",
+   "seed": 10,
+   "winnerCiv": "akita",
+   "conquest": false,
+   "minutes": 30,
+   "score": [
+    4905,
+    3686
+   ],
+   "ages": [
+    "feudal",
+    "feudal"
+   ]
+  },
+  {
+   "a": "kishu",
+   "b": "shiba",
+   "seed": 2,
+   "winnerCiv": "shiba",
+   "conquest": false,
+   "minutes": 30,
+   "score": [
+    4856,
+    5575
+   ],
+   "ages": [
+    "feudal",
+    "feudal"
+   ]
+  },
+  {
+   "a": "kishu",
+   "b": "shiba",
+   "seed": 6,
+   "winnerCiv": "kishu",
+   "conquest": false,
+   "minutes": 30,
+   "score": [
+    4621,
+    3547
+   ],
+   "ages": [
+    "feudal",
+    "feudal"
+   ]
+  },
+  {
+   "a": "kishu",
+   "b": "shiba",
+   "seed": 10,
+   "winnerCiv": "shiba",
+   "conquest": false,
+   "minutes": 30,
+   "score": [
+    4692,
+    5491
+   ],
+   "ages": [
+    "feudal",
+    "feudal"
+   ]
+  },
+  {
+   "a": "shikoku",
+   "b": "shiba",
+   "seed": 2,
+   "winnerCiv": "shiba",
+   "conquest": false,
+   "minutes": 30,
+   "score": [
+    5022,
+    5429
+   ],
+   "ages": [
+    "feudal",
+    "feudal"
+   ]
+  },
+  {
+   "a": "shikoku",
+   "b": "shiba",
+   "seed": 6,
+   "winnerCiv": "shiba",
+   "conquest": false,
+   "minutes": 30,
+   "score": [
+    4580,
+    4790
+   ],
+   "ages": [
+    "feudal",
+    "feudal"
+   ]
+  },
+  {
+   "a": "shikoku",
+   "b": "shiba",
+   "seed": 10,
+   "winnerCiv": "shiba",
+   "conquest": false,
+   "minutes": 30,
+   "score": [
+    3941,
+    5281
+   ],
+   "ages": [
+    "feudal",
+    "feudal"
+   ]
+  },
+  {
+   "a": "hokkaido",
+   "b": "shiba",
+   "seed": 2,
+   "winnerCiv": "hokkaido",
+   "conquest": false,
+   "minutes": 30,
+   "score": [
+    5680,
+    5340
+   ],
+   "ages": [
+    "feudal",
+    "feudal"
+   ]
+  },
+  {
+   "a": "hokkaido",
+   "b": "shiba",
+   "seed": 6,
+   "winnerCiv": "hokkaido",
+   "conquest": false,
+   "minutes": 30,
+   "score": [
+    5494,
+    5313
+   ],
+   "ages": [
+    "feudal",
+    "feudal"
+   ]
+  },
+  {
+   "a": "hokkaido",
+   "b": "shiba",
+   "seed": 10,
+   "winnerCiv": "hokkaido",
+   "conquest": false,
+   "minutes": 30,
+   "score": [
+    5679,
+    5179
+   ],
+   "ages": [
+    "feudal",
+    "feudal"
+   ]
+  },
+  {
+   "a": "kai",
+   "b": "shiba",
+   "seed": 2,
+   "winnerCiv": "shiba",
+   "conquest": false,
+   "minutes": 30,
+   "score": [
+    4456,
+    4900
+   ],
+   "ages": [
+    "feudal",
+    "feudal"
+   ]
+  },
+  {
+   "a": "kai",
+   "b": "shiba",
+   "seed": 6,
+   "winnerCiv": "shiba",
+   "conquest": false,
+   "minutes": 30,
+   "score": [
+    3575,
+    4019
+   ],
+   "ages": [
+    "feudal",
+    "feudal"
+   ]
+  },
+  {
+   "a": "kai",
+   "b": "shiba",
+   "seed": 10,
+   "winnerCiv": "kai",
+   "conquest": false,
+   "minutes": 30,
+   "score": [
+    4953,
+    4701
+   ],
+   "ages": [
+    "feudal",
+    "feudal"
+   ]
+  },
+  {
+   "a": "kishu",
+   "b": "akita",
+   "seed": 2,
+   "winnerCiv": "akita",
+   "conquest": false,
+   "minutes": 30,
+   "score": [
+    4432,
+    4527
+   ],
+   "ages": [
+    "feudal",
+    "feudal"
+   ]
+  },
+  {
+   "a": "kishu",
+   "b": "akita",
+   "seed": 6,
+   "winnerCiv": "akita",
+   "conquest": false,
+   "minutes": 30,
+   "score": [
+    4740,
+    5048
+   ],
+   "ages": [
+    "feudal",
+    "feudal"
+   ]
+  },
+  {
+   "a": "kishu",
+   "b": "akita",
+   "seed": 10,
+   "winnerCiv": "akita",
+   "conquest": false,
+   "minutes": 30,
+   "score": [
+    4537,
+    4599
+   ],
+   "ages": [
+    "feudal",
+    "feudal"
+   ]
+  },
+  {
+   "a": "shikoku",
+   "b": "akita",
+   "seed": 2,
+   "winnerCiv": "akita",
+   "conquest": false,
+   "minutes": 30,
+   "score": [
+    3682,
+    4974
+   ],
+   "ages": [
+    "feudal",
+    "feudal"
+   ]
+  },
+  {
+   "a": "shikoku",
+   "b": "akita",
+   "seed": 6,
+   "winnerCiv": "shikoku",
+   "conquest": false,
+   "minutes": 30,
+   "score": [
+    5332,
+    3597
+   ],
+   "ages": [
+    "feudal",
+    "feudal"
+   ]
+  },
+  {
+   "a": "shikoku",
+   "b": "akita",
+   "seed": 10,
+   "winnerCiv": "shikoku",
+   "conquest": false,
+   "minutes": 30,
+   "score": [
+    5488,
+    4765
+   ],
+   "ages": [
+    "feudal",
+    "feudal"
+   ]
+  },
+  {
+   "a": "hokkaido",
+   "b": "akita",
+   "seed": 2,
+   "winnerCiv": "akita",
+   "conquest": false,
+   "minutes": 30,
+   "score": [
+    4998,
+    5151
+   ],
+   "ages": [
+    "feudal",
+    "castle"
+   ]
+  },
+  {
+   "a": "hokkaido",
+   "b": "akita",
+   "seed": 6,
+   "winnerCiv": "akita",
+   "conquest": false,
+   "minutes": 30,
+   "score": [
+    3926,
+    5946
+   ],
+   "ages": [
+    "feudal",
+    "feudal"
+   ]
+  },
+  {
+   "a": "hokkaido",
+   "b": "akita",
+   "seed": 10,
+   "winnerCiv": "hokkaido",
+   "conquest": false,
+   "minutes": 30,
+   "score": [
+    6365,
+    6062
+   ],
+   "ages": [
+    "feudal",
+    "feudal"
+   ]
+  },
+  {
+   "a": "kai",
+   "b": "akita",
+   "seed": 2,
+   "winnerCiv": "akita",
+   "conquest": false,
+   "minutes": 30,
+   "score": [
+    3807,
+    5678
+   ],
+   "ages": [
+    "feudal",
+    "feudal"
+   ]
+  },
+  {
+   "a": "kai",
+   "b": "akita",
+   "seed": 6,
+   "winnerCiv": "akita",
+   "conquest": false,
+   "minutes": 30,
+   "score": [
+    4481,
+    4746
+   ],
+   "ages": [
+    "feudal",
+    "feudal"
+   ]
+  },
+  {
+   "a": "kai",
+   "b": "akita",
+   "seed": 10,
+   "winnerCiv": "kai",
+   "conquest": false,
+   "minutes": 30,
+   "score": [
+    4628,
+    4414
+   ],
+   "ages": [
+    "feudal",
+    "feudal"
+   ]
+  },
+  {
+   "a": "shikoku",
+   "b": "kishu",
+   "seed": 2,
+   "winnerCiv": "shikoku",
+   "conquest": false,
+   "minutes": 30,
+   "score": [
+    4945,
+    4943
+   ],
+   "ages": [
+    "feudal",
+    "feudal"
+   ]
+  },
+  {
+   "a": "shikoku",
+   "b": "kishu",
+   "seed": 6,
+   "winnerCiv": "shikoku",
+   "conquest": false,
+   "minutes": 30,
+   "score": [
+    5004,
+    4752
+   ],
+   "ages": [
+    "feudal",
+    "feudal"
+   ]
+  },
+  {
+   "a": "shikoku",
+   "b": "kishu",
+   "seed": 10,
+   "winnerCiv": "shikoku",
+   "conquest": false,
+   "minutes": 30,
+   "score": [
+    5508,
+    5183
+   ],
+   "ages": [
+    "feudal",
+    "feudal"
+   ]
+  },
+  {
+   "a": "hokkaido",
+   "b": "kishu",
+   "seed": 2,
+   "winnerCiv": "kishu",
+   "conquest": false,
+   "minutes": 30,
+   "score": [
+    5183,
+    5304
+   ],
+   "ages": [
+    "feudal",
+    "feudal"
+   ]
+  },
+  {
+   "a": "hokkaido",
+   "b": "kishu",
+   "seed": 6,
+   "winnerCiv": "hokkaido",
+   "conquest": false,
+   "minutes": 30,
+   "score": [
+    5111,
+    3974
+   ],
+   "ages": [
+    "feudal",
+    "feudal"
+   ]
+  },
+  {
+   "a": "hokkaido",
+   "b": "kishu",
+   "seed": 10,
+   "winnerCiv": "kishu",
+   "conquest": false,
+   "minutes": 30,
+   "score": [
+    4238,
+    4960
+   ],
+   "ages": [
+    "feudal",
+    "feudal"
+   ]
+  },
+  {
+   "a": "kai",
+   "b": "kishu",
+   "seed": 2,
+   "winnerCiv": "kishu",
+   "conquest": false,
+   "minutes": 30,
+   "score": [
+    3890,
+    5697
+   ],
+   "ages": [
+    "feudal",
+    "feudal"
+   ]
+  },
+  {
+   "a": "kai",
+   "b": "kishu",
+   "seed": 6,
+   "winnerCiv": "kishu",
+   "conquest": false,
+   "minutes": 30,
+   "score": [
+    3623,
+    5141
+   ],
+   "ages": [
+    "feudal",
+    "feudal"
+   ]
+  },
+  {
+   "a": "kai",
+   "b": "kishu",
+   "seed": 10,
+   "winnerCiv": "kishu",
+   "conquest": false,
+   "minutes": 30,
+   "score": [
+    4391,
+    4906
+   ],
+   "ages": [
+    "feudal",
+    "feudal"
+   ]
+  },
+  {
+   "a": "hokkaido",
+   "b": "shikoku",
+   "seed": 2,
+   "winnerCiv": "shikoku",
+   "conquest": false,
+   "minutes": 30,
+   "score": [
+    4256,
+    5010
+   ],
+   "ages": [
+    "feudal",
+    "feudal"
+   ]
+  },
+  {
+   "a": "hokkaido",
+   "b": "shikoku",
+   "seed": 6,
+   "winnerCiv": "hokkaido",
+   "conquest": false,
+   "minutes": 30,
+   "score": [
+    5648,
+    4887
+   ],
+   "ages": [
+    "feudal",
+    "feudal"
+   ]
+  },
+  {
+   "a": "hokkaido",
+   "b": "shikoku",
+   "seed": 10,
+   "winnerCiv": "hokkaido",
+   "conquest": false,
+   "minutes": 30,
+   "score": [
+    5799,
+    5369
+   ],
+   "ages": [
+    "feudal",
+    "feudal"
+   ]
+  },
+  {
+   "a": "kai",
+   "b": "shikoku",
+   "seed": 2,
+   "winnerCiv": "shikoku",
+   "conquest": false,
+   "minutes": 30,
+   "score": [
+    4471,
+    5562
+   ],
+   "ages": [
+    "feudal",
+    "feudal"
+   ]
+  },
+  {
+   "a": "kai",
+   "b": "shikoku",
+   "seed": 6,
+   "winnerCiv": "shikoku",
+   "conquest": false,
+   "minutes": 30,
+   "score": [
+    4039,
+    5026
+   ],
+   "ages": [
+    "feudal",
+    "feudal"
+   ]
+  },
+  {
+   "a": "kai",
+   "b": "shikoku",
+   "seed": 10,
+   "winnerCiv": "shikoku",
+   "conquest": false,
+   "minutes": 30,
+   "score": [
+    4119,
+    5295
+   ],
+   "ages": [
+    "feudal",
+    "feudal"
+   ]
+  },
+  {
+   "a": "kai",
+   "b": "hokkaido",
+   "seed": 2,
+   "winnerCiv": "hokkaido",
+   "conquest": false,
+   "minutes": 30,
+   "score": [
+    4480,
+    5734
+   ],
+   "ages": [
+    "feudal",
+    "feudal"
+   ]
+  },
+  {
+   "a": "kai",
+   "b": "hokkaido",
+   "seed": 6,
+   "winnerCiv": "hokkaido",
+   "conquest": false,
+   "minutes": 30,
+   "score": [
+    3158,
+    5750
+   ],
+   "ages": [
+    "feudal",
+    "feudal"
+   ]
+  },
+  {
+   "a": "kai",
+   "b": "hokkaido",
+   "seed": 10,
+   "winnerCiv": "kai",
+   "conquest": false,
+   "minutes": 30,
+   "score": [
+    5637,
+    4707
+   ],
+   "ages": [
+    "feudal",
+    "feudal"
+   ]
+  },
+  {
+   "a": "shiba",
+   "b": "akita",
+   "seed": 3,
+   "winnerCiv": "akita",
+   "conquest": false,
+   "minutes": 30,
+   "score": [
+    5178,
+    5853
+   ],
+   "ages": [
+    "feudal",
+    "feudal"
+   ]
+  },
+  {
+   "a": "shiba",
+   "b": "akita",
+   "seed": 7,
+   "winnerCiv": "akita",
+   "conquest": false,
+   "minutes": 30,
+   "score": [
+    5280,
+    5569
+   ],
+   "ages": [
+    "feudal",
+    "feudal"
+   ]
+  },
+  {
+   "a": "shiba",
+   "b": "akita",
+   "seed": 11,
+   "winnerCiv": "akita",
+   "conquest": false,
+   "minutes": 30,
+   "score": [
+    4907,
+    5973
+   ],
+   "ages": [
+    "feudal",
+    "feudal"
+   ]
+  },
+  {
+   "a": "shiba",
+   "b": "kishu",
+   "seed": 3,
+   "winnerCiv": "shiba",
+   "conquest": false,
+   "minutes": 30,
+   "score": [
+    4898,
+    4314
+   ],
+   "ages": [
+    "feudal",
+    "feudal"
+   ]
+  },
+  {
+   "a": "shiba",
+   "b": "kishu",
+   "seed": 7,
+   "winnerCiv": "kishu",
+   "conquest": false,
+   "minutes": 30,
+   "score": [
+    4456,
+    4990
+   ],
+   "ages": [
+    "feudal",
+    "feudal"
+   ]
+  },
+  {
+   "a": "shiba",
+   "b": "kishu",
+   "seed": 11,
+   "winnerCiv": "kishu",
+   "conquest": false,
+   "minutes": 30,
+   "score": [
+    4345,
+    6233
+   ],
+   "ages": [
+    "feudal",
+    "feudal"
+   ]
+  },
+  {
+   "a": "shiba",
+   "b": "shikoku",
+   "seed": 3,
+   "winnerCiv": "shiba",
+   "conquest": false,
+   "minutes": 30,
+   "score": [
+    4906,
+    4089
+   ],
+   "ages": [
+    "feudal",
+    "feudal"
+   ]
+  },
+  {
+   "a": "shiba",
+   "b": "shikoku",
+   "seed": 7,
+   "winnerCiv": "shiba",
+   "conquest": false,
+   "minutes": 30,
+   "score": [
+    5306,
+    3817
+   ],
+   "ages": [
+    "feudal",
+    "feudal"
+   ]
+  },
+  {
+   "a": "shiba",
+   "b": "shikoku",
+   "seed": 11,
+   "winnerCiv": "shiba",
+   "conquest": false,
+   "minutes": 30,
+   "score": [
+    5267,
+    4555
+   ],
+   "ages": [
+    "feudal",
+    "feudal"
+   ]
+  },
+  {
+   "a": "shiba",
+   "b": "hokkaido",
+   "seed": 3,
+   "winnerCiv": "hokkaido",
+   "conquest": false,
+   "minutes": 30,
+   "score": [
+    4807,
+    5668
+   ],
+   "ages": [
+    "feudal",
+    "feudal"
+   ]
+  },
+  {
+   "a": "shiba",
+   "b": "hokkaido",
+   "seed": 7,
+   "winnerCiv": "hokkaido",
+   "conquest": false,
+   "minutes": 30,
+   "score": [
+    5474,
+    5643
+   ],
+   "ages": [
+    "feudal",
+    "feudal"
+   ]
+  },
+  {
+   "a": "shiba",
+   "b": "hokkaido",
+   "seed": 11,
+   "winnerCiv": "shiba",
+   "conquest": false,
+   "minutes": 30,
+   "score": [
+    6374,
+    5545
+   ],
+   "ages": [
+    "feudal",
+    "feudal"
+   ]
+  },
+  {
+   "a": "shiba",
+   "b": "kai",
+   "seed": 3,
+   "winnerCiv": "shiba",
+   "conquest": false,
+   "minutes": 30,
+   "score": [
+    5443,
+    3807
+   ],
+   "ages": [
+    "feudal",
+    "feudal"
+   ]
+  },
+  {
+   "a": "shiba",
+   "b": "kai",
+   "seed": 7,
+   "winnerCiv": "kai",
+   "conquest": false,
+   "minutes": 30,
+   "score": [
+    4010,
+    4891
+   ],
+   "ages": [
+    "feudal",
+    "feudal"
+   ]
+  },
+  {
+   "a": "shiba",
+   "b": "kai",
+   "seed": 11,
+   "winnerCiv": "shiba",
+   "conquest": false,
+   "minutes": 30,
+   "score": [
+    5538,
+    4622
+   ],
+   "ages": [
+    "feudal",
+    "feudal"
+   ]
+  },
+  {
+   "a": "akita",
+   "b": "kishu",
+   "seed": 3,
+   "winnerCiv": "akita",
+   "conquest": false,
+   "minutes": 30,
+   "score": [
+    5405,
+    4770
+   ],
+   "ages": [
+    "feudal",
+    "feudal"
+   ]
+  },
+  {
+   "a": "akita",
+   "b": "kishu",
+   "seed": 7,
+   "winnerCiv": "akita",
+   "conquest": false,
+   "minutes": 30,
+   "score": [
+    5814,
+    5023
+   ],
+   "ages": [
+    "feudal",
+    "feudal"
+   ]
+  },
+  {
+   "a": "akita",
+   "b": "kishu",
+   "seed": 11,
+   "winnerCiv": "akita",
+   "conquest": false,
+   "minutes": 30,
+   "score": [
+    5767,
+    4695
+   ],
+   "ages": [
+    "feudal",
+    "feudal"
+   ]
+  },
+  {
+   "a": "akita",
+   "b": "shikoku",
+   "seed": 3,
+   "winnerCiv": "akita",
+   "conquest": false,
+   "minutes": 30,
+   "score": [
+    5201,
+    4804
+   ],
+   "ages": [
+    "feudal",
+    "feudal"
+   ]
+  },
+  {
+   "a": "akita",
+   "b": "shikoku",
+   "seed": 7,
+   "winnerCiv": "shikoku",
+   "conquest": false,
+   "minutes": 30,
+   "score": [
+    5761,
+    5970
+   ],
+   "ages": [
+    "feudal",
+    "feudal"
+   ]
+  },
+  {
+   "a": "akita",
+   "b": "shikoku",
+   "seed": 11,
+   "winnerCiv": "akita",
+   "conquest": false,
+   "minutes": 30,
+   "score": [
+    6446,
+    4301
+   ],
+   "ages": [
+    "feudal",
+    "feudal"
+   ]
+  },
+  {
+   "a": "akita",
+   "b": "hokkaido",
+   "seed": 3,
+   "winnerCiv": "akita",
+   "conquest": false,
+   "minutes": 30,
+   "score": [
+    5409,
+    4410
+   ],
+   "ages": [
+    "feudal",
+    "feudal"
+   ]
+  },
+  {
+   "a": "akita",
+   "b": "hokkaido",
+   "seed": 7,
+   "winnerCiv": "akita",
+   "conquest": false,
+   "minutes": 30,
+   "score": [
+    5203,
+    4122
+   ],
+   "ages": [
+    "feudal",
+    "feudal"
+   ]
+  },
+  {
+   "a": "akita",
+   "b": "hokkaido",
+   "seed": 11,
+   "winnerCiv": "akita",
+   "conquest": false,
+   "minutes": 30,
+   "score": [
+    6255,
+    4244
+   ],
+   "ages": [
+    "feudal",
+    "feudal"
+   ]
+  },
+  {
+   "a": "akita",
+   "b": "kai",
+   "seed": 3,
+   "winnerCiv": "akita",
+   "conquest": false,
+   "minutes": 30,
+   "score": [
+    5436,
+    4142
+   ],
+   "ages": [
+    "feudal",
+    "feudal"
+   ]
+  },
+  {
+   "a": "akita",
+   "b": "kai",
+   "seed": 7,
+   "winnerCiv": "akita",
+   "conquest": false,
+   "minutes": 30,
+   "score": [
+    4935,
+    4478
+   ],
+   "ages": [
+    "feudal",
+    "feudal"
+   ]
+  },
+  {
+   "a": "akita",
+   "b": "kai",
+   "seed": 11,
+   "winnerCiv": "akita",
+   "conquest": false,
+   "minutes": 30,
+   "score": [
+    5558,
+    4625
+   ],
+   "ages": [
+    "feudal",
+    "feudal"
+   ]
+  },
+  {
+   "a": "kishu",
+   "b": "shikoku",
+   "seed": 3,
+   "winnerCiv": "kishu",
+   "conquest": false,
+   "minutes": 30,
+   "score": [
+    5278,
+    4222
+   ],
+   "ages": [
+    "feudal",
+    "feudal"
+   ]
+  },
+  {
+   "a": "kishu",
+   "b": "shikoku",
+   "seed": 7,
+   "winnerCiv": "kishu",
+   "conquest": false,
+   "minutes": 30,
+   "score": [
+    6098,
+    5062
+   ],
+   "ages": [
+    "feudal",
+    "feudal"
+   ]
+  },
+  {
+   "a": "kishu",
+   "b": "shikoku",
+   "seed": 11,
+   "winnerCiv": "shikoku",
+   "conquest": false,
+   "minutes": 30,
+   "score": [
+    3851,
+    4939
+   ],
+   "ages": [
+    "feudal",
+    "feudal"
+   ]
+  },
+  {
+   "a": "kishu",
+   "b": "hokkaido",
+   "seed": 3,
+   "winnerCiv": "hokkaido",
+   "conquest": false,
+   "minutes": 30,
+   "score": [
+    4388,
+    5918
+   ],
+   "ages": [
+    "feudal",
+    "feudal"
+   ]
+  },
+  {
+   "a": "kishu",
+   "b": "hokkaido",
+   "seed": 7,
+   "winnerCiv": "kishu",
+   "conquest": false,
+   "minutes": 30,
+   "score": [
+    6355,
+    5549
+   ],
+   "ages": [
+    "feudal",
+    "feudal"
+   ]
+  },
+  {
+   "a": "kishu",
+   "b": "hokkaido",
+   "seed": 11,
+   "winnerCiv": "hokkaido",
+   "conquest": false,
+   "minutes": 30,
+   "score": [
+    4720,
+    4847
+   ],
+   "ages": [
+    "feudal",
+    "feudal"
+   ]
+  },
+  {
+   "a": "kishu",
+   "b": "kai",
+   "seed": 3,
+   "winnerCiv": "kishu",
+   "conquest": false,
+   "minutes": 30,
+   "score": [
+    4991,
+    4623
+   ],
+   "ages": [
+    "feudal",
+    "feudal"
+   ]
+  },
+  {
+   "a": "kishu",
+   "b": "kai",
+   "seed": 7,
+   "winnerCiv": "kishu",
+   "conquest": false,
+   "minutes": 30,
+   "score": [
+    5395,
+    4896
+   ],
+   "ages": [
+    "feudal",
+    "feudal"
+   ]
+  },
+  {
+   "a": "kishu",
+   "b": "kai",
+   "seed": 11,
+   "winnerCiv": "kishu",
+   "conquest": false,
+   "minutes": 30,
+   "score": [
+    5163,
+    3727
+   ],
+   "ages": [
+    "feudal",
+    "feudal"
+   ]
+  },
+  {
+   "a": "shikoku",
+   "b": "hokkaido",
+   "seed": 3,
+   "winnerCiv": "hokkaido",
+   "conquest": false,
+   "minutes": 30,
+   "score": [
+    4766,
+    5637
+   ],
+   "ages": [
+    "feudal",
+    "feudal"
+   ]
+  },
+  {
+   "a": "shikoku",
+   "b": "hokkaido",
+   "seed": 7,
+   "winnerCiv": "shikoku",
+   "conquest": false,
+   "minutes": 30,
+   "score": [
+    6314,
+    5406
+   ],
+   "ages": [
+    "feudal",
+    "feudal"
+   ]
+  },
+  {
+   "a": "shikoku",
+   "b": "hokkaido",
+   "seed": 11,
+   "winnerCiv": "hokkaido",
+   "conquest": false,
+   "minutes": 30,
+   "score": [
+    4500,
+    5384
+   ],
+   "ages": [
+    "feudal",
+    "feudal"
+   ]
+  },
+  {
+   "a": "shikoku",
+   "b": "kai",
+   "seed": 3,
+   "winnerCiv": "kai",
+   "conquest": false,
+   "minutes": 30,
+   "score": [
+    4107,
+    5204
+   ],
+   "ages": [
+    "feudal",
+    "feudal"
+   ]
+  },
+  {
+   "a": "shikoku",
+   "b": "kai",
+   "seed": 7,
+   "winnerCiv": "shikoku",
+   "conquest": false,
+   "minutes": 30,
+   "score": [
+    5395,
+    4896
+   ],
+   "ages": [
+    "feudal",
+    "feudal"
+   ]
+  },
+  {
+   "a": "shikoku",
+   "b": "kai",
+   "seed": 11,
+   "winnerCiv": "shikoku",
+   "conquest": false,
+   "minutes": 30,
+   "score": [
+    5756,
+    4017
+   ],
+   "ages": [
+    "feudal",
+    "feudal"
+   ]
+  },
+  {
+   "a": "hokkaido",
+   "b": "kai",
+   "seed": 3,
+   "winnerCiv": "hokkaido",
+   "conquest": false,
+   "minutes": 30,
+   "score": [
+    5404,
+    4186
+   ],
+   "ages": [
+    "feudal",
+    "feudal"
+   ]
+  },
+  {
+   "a": "hokkaido",
+   "b": "kai",
+   "seed": 7,
+   "winnerCiv": "kai",
+   "conquest": false,
+   "minutes": 30,
+   "score": [
+    4202,
+    4956
+   ],
+   "ages": [
+    "feudal",
+    "feudal"
+   ]
+  },
+  {
+   "a": "hokkaido",
+   "b": "kai",
+   "seed": 11,
+   "winnerCiv": "hokkaido",
+   "conquest": false,
+   "minutes": 30,
+   "score": [
+    5259,
+    4609
+   ],
+   "ages": [
+    "feudal",
+    "feudal"
+   ]
+  },
+  {
+   "a": "akita",
+   "b": "shiba",
+   "seed": 3,
+   "winnerCiv": "shiba",
+   "conquest": false,
+   "minutes": 30,
+   "score": [
+    4505,
+    6204
+   ],
+   "ages": [
+    "feudal",
+    "feudal"
+   ]
+  },
+  {
+   "a": "akita",
+   "b": "shiba",
+   "seed": 7,
+   "winnerCiv": "akita",
+   "conquest": false,
+   "minutes": 30,
+   "score": [
+    4729,
+    4487
+   ],
+   "ages": [
+    "feudal",
+    "feudal"
+   ]
+  },
+  {
+   "a": "akita",
+   "b": "shiba",
+   "seed": 11,
+   "winnerCiv": "shiba",
+   "conquest": false,
+   "minutes": 30,
+   "score": [
+    5762,
+    6022
+   ],
+   "ages": [
+    "feudal",
+    "feudal"
+   ]
+  },
+  {
+   "a": "kishu",
+   "b": "shiba",
+   "seed": 3,
+   "winnerCiv": "shiba",
+   "conquest": false,
+   "minutes": 30,
+   "score": [
+    4799,
+    5413
+   ],
+   "ages": [
+    "feudal",
+    "feudal"
+   ]
+  },
+  {
+   "a": "kishu",
+   "b": "shiba",
+   "seed": 7,
+   "winnerCiv": "shiba",
+   "conquest": false,
+   "minutes": 30,
+   "score": [
+    4279,
+    5735
+   ],
+   "ages": [
+    "feudal",
+    "feudal"
+   ]
+  },
+  {
+   "a": "kishu",
+   "b": "shiba",
+   "seed": 11,
+   "winnerCiv": "shiba",
+   "conquest": false,
+   "minutes": 30,
+   "score": [
+    4832,
+    5677
+   ],
+   "ages": [
+    "feudal",
+    "feudal"
+   ]
+  },
+  {
+   "a": "shikoku",
+   "b": "shiba",
+   "seed": 3,
+   "winnerCiv": "shiba",
+   "conquest": false,
+   "minutes": 30,
+   "score": [
+    4799,
+    5413
+   ],
+   "ages": [
+    "feudal",
+    "feudal"
+   ]
+  },
+  {
+   "a": "shikoku",
+   "b": "shiba",
+   "seed": 7,
+   "winnerCiv": "shiba",
+   "conquest": false,
+   "minutes": 30,
+   "score": [
+    5286,
+    5310
+   ],
+   "ages": [
+    "feudal",
+    "castle"
+   ]
+  },
+  {
+   "a": "shikoku",
+   "b": "shiba",
+   "seed": 11,
+   "winnerCiv": "shiba",
+   "conquest": false,
+   "minutes": 30,
+   "score": [
+    4919,
+    6238
+   ],
+   "ages": [
+    "feudal",
+    "feudal"
+   ]
+  },
+  {
+   "a": "hokkaido",
+   "b": "shiba",
+   "seed": 3,
+   "winnerCiv": "shiba",
+   "conquest": false,
+   "minutes": 30,
+   "score": [
+    4397,
+    5311
+   ],
+   "ages": [
+    "feudal",
+    "castle"
+   ]
+  },
+  {
+   "a": "hokkaido",
+   "b": "shiba",
+   "seed": 7,
+   "winnerCiv": "hokkaido",
+   "conquest": false,
+   "minutes": 30,
+   "score": [
+    5924,
+    4339
+   ],
+   "ages": [
+    "feudal",
+    "feudal"
+   ]
+  },
+  {
+   "a": "hokkaido",
+   "b": "shiba",
+   "seed": 11,
+   "winnerCiv": "shiba",
+   "conquest": false,
+   "minutes": 30,
+   "score": [
+    4203,
+    5329
+   ],
+   "ages": [
+    "feudal",
+    "feudal"
+   ]
+  },
+  {
+   "a": "kai",
+   "b": "shiba",
+   "seed": 3,
+   "winnerCiv": "shiba",
+   "conquest": false,
+   "minutes": 30,
+   "score": [
+    4481,
+    5008
+   ],
+   "ages": [
+    "feudal",
+    "feudal"
+   ]
+  },
+  {
+   "a": "kai",
+   "b": "shiba",
+   "seed": 7,
+   "winnerCiv": "shiba",
+   "conquest": false,
+   "minutes": 30,
+   "score": [
+    4369,
+    5511
+   ],
+   "ages": [
+    "feudal",
+    "feudal"
+   ]
+  },
+  {
+   "a": "kai",
+   "b": "shiba",
+   "seed": 11,
+   "winnerCiv": "kai",
+   "conquest": false,
+   "minutes": 30,
+   "score": [
+    5954,
+    4850
+   ],
+   "ages": [
+    "feudal",
+    "feudal"
+   ]
+  },
+  {
+   "a": "kishu",
+   "b": "akita",
+   "seed": 3,
+   "winnerCiv": "kishu",
+   "conquest": false,
+   "minutes": 30,
+   "score": [
+    5766,
+    4479
+   ],
+   "ages": [
+    "feudal",
+    "feudal"
+   ]
+  },
+  {
+   "a": "kishu",
+   "b": "akita",
+   "seed": 7,
+   "winnerCiv": "akita",
+   "conquest": false,
+   "minutes": 30,
+   "score": [
+    4409,
+    4779
+   ],
+   "ages": [
+    "feudal",
+    "feudal"
+   ]
+  },
+  {
+   "a": "kishu",
+   "b": "akita",
+   "seed": 11,
+   "winnerCiv": "kishu",
+   "conquest": false,
+   "minutes": 30,
+   "score": [
+    5795,
+    5752
+   ],
+   "ages": [
+    "feudal",
+    "feudal"
+   ]
+  },
+  {
+   "a": "shikoku",
+   "b": "akita",
+   "seed": 3,
+   "winnerCiv": "shikoku",
+   "conquest": false,
+   "minutes": 30,
+   "score": [
+    4926,
+    3898
+   ],
+   "ages": [
+    "feudal",
+    "feudal"
+   ]
+  },
+  {
+   "a": "shikoku",
+   "b": "akita",
+   "seed": 7,
+   "winnerCiv": "akita",
+   "conquest": false,
+   "minutes": 30,
+   "score": [
+    4739,
+    5604
+   ],
+   "ages": [
+    "feudal",
+    "feudal"
+   ]
+  },
+  {
+   "a": "shikoku",
+   "b": "akita",
+   "seed": 11,
+   "winnerCiv": "akita",
+   "conquest": false,
+   "minutes": 30,
+   "score": [
+    5599,
+    5752
+   ],
+   "ages": [
+    "feudal",
+    "feudal"
+   ]
+  },
+  {
+   "a": "hokkaido",
+   "b": "akita",
+   "seed": 3,
+   "winnerCiv": "hokkaido",
+   "conquest": false,
+   "minutes": 30,
+   "score": [
+    6185,
+    5512
+   ],
+   "ages": [
+    "feudal",
+    "feudal"
+   ]
+  },
+  {
+   "a": "hokkaido",
+   "b": "akita",
+   "seed": 7,
+   "winnerCiv": "akita",
+   "conquest": false,
+   "minutes": 30,
+   "score": [
+    4566,
+    5453
+   ],
+   "ages": [
+    "feudal",
+    "feudal"
+   ]
+  },
+  {
+   "a": "hokkaido",
+   "b": "akita",
+   "seed": 11,
+   "winnerCiv": "hokkaido",
+   "conquest": false,
+   "minutes": 30,
+   "score": [
+    4930,
+    4688
+   ],
+   "ages": [
+    "feudal",
+    "feudal"
+   ]
+  },
+  {
+   "a": "kai",
+   "b": "akita",
+   "seed": 3,
+   "winnerCiv": "akita",
+   "conquest": false,
+   "minutes": 30,
+   "score": [
+    4186,
+    5676
+   ],
+   "ages": [
+    "feudal",
+    "feudal"
+   ]
+  },
+  {
+   "a": "kai",
+   "b": "akita",
+   "seed": 7,
+   "winnerCiv": "kai",
+   "conquest": false,
+   "minutes": 30,
+   "score": [
+    4973,
+    4497
+   ],
+   "ages": [
+    "feudal",
+    "feudal"
+   ]
+  },
+  {
+   "a": "kai",
+   "b": "akita",
+   "seed": 11,
+   "winnerCiv": "kai",
+   "conquest": false,
+   "minutes": 30,
+   "score": [
+    5444,
+    4809
+   ],
+   "ages": [
+    "feudal",
+    "feudal"
+   ]
+  },
+  {
+   "a": "shikoku",
+   "b": "kishu",
+   "seed": 3,
+   "winnerCiv": "shikoku",
+   "conquest": false,
+   "minutes": 30,
+   "score": [
+    4525,
+    4341
+   ],
+   "ages": [
+    "feudal",
+    "feudal"
+   ]
+  },
+  {
+   "a": "shikoku",
+   "b": "kishu",
+   "seed": 7,
+   "winnerCiv": "shikoku",
+   "conquest": false,
+   "minutes": 30,
+   "score": [
+    6313,
+    5468
+   ],
+   "ages": [
+    "feudal",
+    "feudal"
+   ]
+  },
+  {
+   "a": "shikoku",
+   "b": "kishu",
+   "seed": 11,
+   "winnerCiv": "shikoku",
+   "conquest": false,
+   "minutes": 30,
+   "score": [
+    5353,
+    5283
+   ],
+   "ages": [
+    "feudal",
+    "feudal"
+   ]
+  },
+  {
+   "a": "hokkaido",
+   "b": "kishu",
+   "seed": 3,
+   "winnerCiv": "kishu",
+   "conquest": false,
+   "minutes": 30,
+   "score": [
+    4718,
+    5252
+   ],
+   "ages": [
+    "feudal",
+    "feudal"
+   ]
+  },
+  {
+   "a": "hokkaido",
+   "b": "kishu",
+   "seed": 7,
+   "winnerCiv": "kishu",
+   "conquest": false,
+   "minutes": 30,
+   "score": [
+    3347,
+    6215
+   ],
+   "ages": [
+    "feudal",
+    "feudal"
+   ]
+  },
+  {
+   "a": "hokkaido",
+   "b": "kishu",
+   "seed": 11,
+   "winnerCiv": "hokkaido",
+   "conquest": false,
+   "minutes": 30,
+   "score": [
+    5300,
+    4809
+   ],
+   "ages": [
+    "feudal",
+    "feudal"
+   ]
+  },
+  {
+   "a": "kai",
+   "b": "kishu",
+   "seed": 3,
+   "winnerCiv": "kishu",
+   "conquest": false,
+   "minutes": 30,
+   "score": [
+    4558,
+    4992
+   ],
+   "ages": [
+    "feudal",
+    "feudal"
+   ]
+  },
+  {
+   "a": "kai",
+   "b": "kishu",
+   "seed": 7,
+   "winnerCiv": "kishu",
+   "conquest": false,
+   "minutes": 30,
+   "score": [
+    3624,
+    5293
+   ],
+   "ages": [
+    "feudal",
+    "feudal"
+   ]
+  },
+  {
+   "a": "kai",
+   "b": "kishu",
+   "seed": 11,
+   "winnerCiv": "kishu",
+   "conquest": false,
+   "minutes": 30,
+   "score": [
+    3673,
+    4636
+   ],
+   "ages": [
+    "feudal",
+    "feudal"
+   ]
+  },
+  {
+   "a": "hokkaido",
+   "b": "shikoku",
+   "seed": 3,
+   "winnerCiv": "shikoku",
+   "conquest": false,
+   "minutes": 30,
+   "score": [
+    4965,
+    5100
+   ],
+   "ages": [
+    "feudal",
+    "feudal"
+   ]
+  },
+  {
+   "a": "hokkaido",
+   "b": "shikoku",
+   "seed": 7,
+   "winnerCiv": "hokkaido",
+   "conquest": false,
+   "minutes": 30,
+   "score": [
+    5250,
+    5153
+   ],
+   "ages": [
+    "feudal",
+    "feudal"
+   ]
+  },
+  {
+   "a": "hokkaido",
+   "b": "shikoku",
+   "seed": 11,
+   "winnerCiv": "hokkaido",
+   "conquest": false,
+   "minutes": 30,
+   "score": [
+    4857,
+    4398
+   ],
+   "ages": [
+    "feudal",
+    "feudal"
+   ]
+  },
+  {
+   "a": "kai",
+   "b": "shikoku",
+   "seed": 3,
+   "winnerCiv": "kai",
+   "conquest": false,
+   "minutes": 30,
+   "score": [
+    5355,
+    4523
+   ],
+   "ages": [
+    "feudal",
+    "feudal"
+   ]
+  },
+  {
+   "a": "kai",
+   "b": "shikoku",
+   "seed": 7,
+   "winnerCiv": "kai",
+   "conquest": false,
+   "minutes": 30,
+   "score": [
+    5044,
+    4802
+   ],
+   "ages": [
+    "feudal",
+    "feudal"
+   ]
+  },
+  {
+   "a": "kai",
+   "b": "shikoku",
+   "seed": 11,
+   "winnerCiv": "shikoku",
+   "conquest": false,
+   "minutes": 30,
+   "score": [
+    3863,
+    4080
+   ],
+   "ages": [
+    "feudal",
+    "feudal"
+   ]
+  },
+  {
+   "a": "kai",
+   "b": "hokkaido",
+   "seed": 3,
+   "winnerCiv": "hokkaido",
+   "conquest": false,
+   "minutes": 30,
+   "score": [
+    4402,
+    5301
+   ],
+   "ages": [
+    "feudal",
+    "feudal"
+   ]
+  },
+  {
+   "a": "kai",
+   "b": "hokkaido",
+   "seed": 7,
+   "winnerCiv": "kai",
+   "conquest": false,
+   "minutes": 30,
+   "score": [
+    4813,
+    4691
+   ],
+   "ages": [
+    "feudal",
+    "feudal"
+   ]
+  },
+  {
+   "a": "kai",
+   "b": "hokkaido",
+   "seed": 11,
+   "winnerCiv": "hokkaido",
+   "conquest": false,
+   "minutes": 30,
+   "score": [
+    4327,
+    4939
+   ],
+   "ages": [
+    "feudal",
+    "feudal"
+   ]
+  },
+  {
+   "a": "shiba",
+   "b": "akita",
+   "seed": 4,
+   "winnerCiv": "akita",
+   "conquest": false,
+   "minutes": 30,
+   "score": [
+    6153,
+    6630
+   ],
+   "ages": [
+    "feudal",
+    "feudal"
+   ]
+  },
+  {
+   "a": "shiba",
+   "b": "akita",
+   "seed": 8,
+   "winnerCiv": "akita",
+   "conquest": false,
+   "minutes": 30,
+   "score": [
+    5334,
+    5781
+   ],
+   "ages": [
+    "feudal",
+    "feudal"
+   ]
+  },
+  {
+   "a": "shiba",
+   "b": "akita",
+   "seed": 12,
+   "winnerCiv": "akita",
+   "conquest": false,
+   "minutes": 30,
+   "score": [
+    5519,
+    5725
+   ],
+   "ages": [
+    "feudal",
+    "feudal"
+   ]
+  },
+  {
+   "a": "shiba",
+   "b": "kishu",
+   "seed": 4,
+   "winnerCiv": "shiba",
+   "conquest": false,
+   "minutes": 30,
+   "score": [
+    6480,
+    5535
+   ],
+   "ages": [
+    "feudal",
+    "feudal"
+   ]
+  },
+  {
+   "a": "shiba",
+   "b": "kishu",
+   "seed": 8,
+   "winnerCiv": "kishu",
+   "conquest": false,
+   "minutes": 30,
+   "score": [
+    5083,
+    5726
+   ],
+   "ages": [
+    "feudal",
+    "feudal"
+   ]
+  },
+  {
+   "a": "shiba",
+   "b": "kishu",
+   "seed": 12,
+   "winnerCiv": "kishu",
+   "conquest": false,
+   "minutes": 30,
+   "score": [
+    5611,
+    6144
+   ],
+   "ages": [
+    "feudal",
+    "feudal"
+   ]
+  },
+  {
+   "a": "shiba",
+   "b": "shikoku",
+   "seed": 4,
+   "winnerCiv": "shikoku",
+   "conquest": false,
+   "minutes": 30,
+   "score": [
+    5931,
+    6057
+   ],
+   "ages": [
+    "feudal",
+    "feudal"
+   ]
+  },
+  {
+   "a": "shiba",
+   "b": "shikoku",
+   "seed": 8,
+   "winnerCiv": "shikoku",
+   "conquest": false,
+   "minutes": 30,
+   "score": [
+    5083,
+    5726
+   ],
+   "ages": [
+    "feudal",
+    "feudal"
+   ]
+  },
+  {
+   "a": "shiba",
+   "b": "shikoku",
+   "seed": 12,
+   "winnerCiv": "shikoku",
+   "conquest": false,
+   "minutes": 30,
+   "score": [
+    5611,
+    6144
+   ],
+   "ages": [
+    "feudal",
+    "feudal"
+   ]
+  },
+  {
+   "a": "shiba",
+   "b": "hokkaido",
+   "seed": 4,
+   "winnerCiv": "hokkaido",
+   "conquest": false,
+   "minutes": 30,
+   "score": [
+    5151,
+    5630
+   ],
+   "ages": [
+    "feudal",
+    "feudal"
+   ]
+  },
+  {
+   "a": "shiba",
+   "b": "hokkaido",
+   "seed": 8,
+   "winnerCiv": "hokkaido",
+   "conquest": false,
+   "minutes": 30,
+   "score": [
+    5977,
+    6484
+   ],
+   "ages": [
+    "feudal",
+    "feudal"
+   ]
+  },
+  {
+   "a": "shiba",
+   "b": "hokkaido",
+   "seed": 12,
+   "winnerCiv": "hokkaido",
+   "conquest": false,
+   "minutes": 30,
+   "score": [
+    4797,
+    5025
+   ],
+   "ages": [
+    "feudal",
+    "castle"
+   ]
+  },
+  {
+   "a": "shiba",
+   "b": "kai",
+   "seed": 4,
+   "winnerCiv": "shiba",
+   "conquest": false,
+   "minutes": 30,
+   "score": [
+    6006,
+    5739
+   ],
+   "ages": [
+    "feudal",
+    "feudal"
+   ]
+  },
+  {
+   "a": "shiba",
+   "b": "kai",
+   "seed": 8,
+   "winnerCiv": "kai",
+   "conquest": false,
+   "minutes": 30,
+   "score": [
+    5026,
+    5823
+   ],
+   "ages": [
+    "feudal",
+    "castle"
+   ]
+  },
+  {
+   "a": "shiba",
+   "b": "kai",
+   "seed": 12,
+   "winnerCiv": "kai",
+   "conquest": false,
+   "minutes": 30,
+   "score": [
+    5386,
+    5833
+   ],
+   "ages": [
+    "feudal",
+    "feudal"
+   ]
+  },
+  {
+   "a": "akita",
+   "b": "kishu",
+   "seed": 4,
+   "winnerCiv": "kishu",
+   "conquest": false,
+   "minutes": 30,
+   "score": [
+    5271,
+    5918
+   ],
+   "ages": [
+    "feudal",
+    "feudal"
+   ]
+  },
+  {
+   "a": "akita",
+   "b": "kishu",
+   "seed": 8,
+   "winnerCiv": "kishu",
+   "conquest": false,
+   "minutes": 30,
+   "score": [
+    3017,
+    5044
+   ],
+   "ages": [
+    "feudal",
+    "feudal"
+   ]
+  },
+  {
+   "a": "akita",
+   "b": "kishu",
+   "seed": 12,
+   "winnerCiv": "kishu",
+   "conquest": false,
+   "minutes": 30,
+   "score": [
+    3650,
+    5749
+   ],
+   "ages": [
+    "feudal",
+    "feudal"
+   ]
+  },
+  {
+   "a": "akita",
+   "b": "shikoku",
+   "seed": 4,
+   "winnerCiv": "shikoku",
+   "conquest": false,
+   "minutes": 30,
+   "score": [
+    5391,
+    5421
+   ],
+   "ages": [
+    "feudal",
+    "castle"
+   ]
+  },
+  {
+   "a": "akita",
+   "b": "shikoku",
+   "seed": 8,
+   "winnerCiv": "akita",
+   "conquest": false,
+   "minutes": 30,
+   "score": [
+    4968,
+    4348
+   ],
+   "ages": [
+    "feudal",
+    "feudal"
+   ]
+  },
+  {
+   "a": "akita",
+   "b": "shikoku",
+   "seed": 12,
+   "winnerCiv": "shikoku",
+   "conquest": false,
+   "minutes": 30,
+   "score": [
+    3829,
+    5784
+   ],
+   "ages": [
+    "feudal",
+    "feudal"
+   ]
+  },
+  {
+   "a": "akita",
+   "b": "hokkaido",
+   "seed": 4,
+   "winnerCiv": "hokkaido",
+   "conquest": false,
+   "minutes": 30,
+   "score": [
+    5084,
+    5626
+   ],
+   "ages": [
+    "feudal",
+    "feudal"
+   ]
+  },
+  {
+   "a": "akita",
+   "b": "hokkaido",
+   "seed": 8,
+   "winnerCiv": "hokkaido",
+   "conquest": false,
+   "minutes": 30,
+   "score": [
+    3754,
+    4786
+   ],
+   "ages": [
+    "feudal",
+    "feudal"
+   ]
+  },
+  {
+   "a": "akita",
+   "b": "hokkaido",
+   "seed": 12,
+   "winnerCiv": "hokkaido",
+   "conquest": false,
+   "minutes": 30,
+   "score": [
+    4402,
+    5391
+   ],
+   "ages": [
+    "feudal",
+    "feudal"
+   ]
+  },
+  {
+   "a": "akita",
+   "b": "kai",
+   "seed": 4,
+   "winnerCiv": "kai",
+   "conquest": false,
+   "minutes": 30,
+   "score": [
+    5273,
+    5793
+   ],
+   "ages": [
+    "feudal",
+    "feudal"
+   ]
+  },
+  {
+   "a": "akita",
+   "b": "kai",
+   "seed": 8,
+   "winnerCiv": "kai",
+   "conquest": false,
+   "minutes": 30,
+   "score": [
+    2943,
+    5034
+   ],
+   "ages": [
+    "feudal",
+    "feudal"
+   ]
+  },
+  {
+   "a": "akita",
+   "b": "kai",
+   "seed": 12,
+   "winnerCiv": "kai",
+   "conquest": false,
+   "minutes": 30,
+   "score": [
+    4357,
+    5427
+   ],
+   "ages": [
+    "feudal",
+    "feudal"
+   ]
+  },
+  {
+   "a": "kishu",
+   "b": "shikoku",
+   "seed": 4,
+   "winnerCiv": "kishu",
+   "conquest": false,
+   "minutes": 30,
+   "score": [
+    4814,
+    3028
+   ],
+   "ages": [
+    "feudal",
+    "feudal"
+   ]
+  },
+  {
+   "a": "kishu",
+   "b": "shikoku",
+   "seed": 8,
+   "winnerCiv": "kishu",
+   "conquest": false,
+   "minutes": 30,
+   "score": [
+    4884,
+    3618
+   ],
+   "ages": [
+    "feudal",
+    "feudal"
+   ]
+  },
+  {
+   "a": "kishu",
+   "b": "shikoku",
+   "seed": 12,
+   "winnerCiv": "kishu",
+   "conquest": false,
+   "minutes": 30,
+   "score": [
+    5078,
+    4971
+   ],
+   "ages": [
+    "feudal",
+    "feudal"
+   ]
+  },
+  {
+   "a": "kishu",
+   "b": "hokkaido",
+   "seed": 4,
+   "winnerCiv": "hokkaido",
+   "conquest": false,
+   "minutes": 30,
+   "score": [
+    4913,
+    4922
+   ],
+   "ages": [
+    "feudal",
+    "feudal"
+   ]
+  },
+  {
+   "a": "kishu",
+   "b": "hokkaido",
+   "seed": 8,
+   "winnerCiv": "kishu",
+   "conquest": false,
+   "minutes": 30,
+   "score": [
+    5750,
+    4840
+   ],
+   "ages": [
+    "feudal",
+    "feudal"
+   ]
+  },
+  {
+   "a": "kishu",
+   "b": "hokkaido",
+   "seed": 12,
+   "winnerCiv": "hokkaido",
+   "conquest": false,
+   "minutes": 30,
+   "score": [
+    4312,
+    4970
+   ],
+   "ages": [
+    "feudal",
+    "feudal"
+   ]
+  },
+  {
+   "a": "kishu",
+   "b": "kai",
+   "seed": 4,
+   "winnerCiv": "kai",
+   "conquest": false,
+   "minutes": 30,
+   "score": [
+    5041,
+    5199
+   ],
+   "ages": [
+    "feudal",
+    "feudal"
+   ]
+  },
+  {
+   "a": "kishu",
+   "b": "kai",
+   "seed": 8,
+   "winnerCiv": "kishu",
+   "conquest": false,
+   "minutes": 30,
+   "score": [
+    4888,
+    4447
+   ],
+   "ages": [
+    "feudal",
+    "feudal"
+   ]
+  },
+  {
+   "a": "kishu",
+   "b": "kai",
+   "seed": 12,
+   "winnerCiv": "kishu",
+   "conquest": false,
+   "minutes": 30,
+   "score": [
+    4390,
+    3810
+   ],
+   "ages": [
+    "feudal",
+    "castle"
+   ]
+  },
+  {
+   "a": "shikoku",
+   "b": "hokkaido",
+   "seed": 4,
+   "winnerCiv": "hokkaido",
+   "conquest": false,
+   "minutes": 30,
+   "score": [
+    4529,
+    4720
+   ],
+   "ages": [
+    "feudal",
+    "feudal"
+   ]
+  },
+  {
+   "a": "shikoku",
+   "b": "hokkaido",
+   "seed": 8,
+   "winnerCiv": "hokkaido",
+   "conquest": false,
+   "minutes": 30,
+   "score": [
+    3557,
+    5568
+   ],
+   "ages": [
+    "feudal",
+    "feudal"
+   ]
+  },
+  {
+   "a": "shikoku",
+   "b": "hokkaido",
+   "seed": 12,
+   "winnerCiv": "hokkaido",
+   "conquest": false,
+   "minutes": 30,
+   "score": [
+    4383,
+    4600
+   ],
+   "ages": [
+    "feudal",
+    "feudal"
+   ]
+  },
+  {
+   "a": "shikoku",
+   "b": "kai",
+   "seed": 4,
+   "winnerCiv": "kai",
+   "conquest": false,
+   "minutes": 30,
+   "score": [
+    4724,
+    5969
+   ],
+   "ages": [
+    "feudal",
+    "feudal"
+   ]
+  },
+  {
+   "a": "shikoku",
+   "b": "kai",
+   "seed": 8,
+   "winnerCiv": "shikoku",
+   "conquest": false,
+   "minutes": 30,
+   "score": [
+    5044,
+    3906
+   ],
+   "ages": [
+    "feudal",
+    "feudal"
+   ]
+  },
+  {
+   "a": "shikoku",
+   "b": "kai",
+   "seed": 12,
+   "winnerCiv": "shikoku",
+   "conquest": false,
+   "minutes": 30,
+   "score": [
+    4621,
+    4131
+   ],
+   "ages": [
+    "feudal",
+    "feudal"
+   ]
+  },
+  {
+   "a": "hokkaido",
+   "b": "kai",
+   "seed": 4,
+   "winnerCiv": "kai",
+   "conquest": false,
+   "minutes": 30,
+   "score": [
+    5305,
+    5426
+   ],
+   "ages": [
+    "feudal",
+    "feudal"
+   ]
+  },
+  {
+   "a": "hokkaido",
+   "b": "kai",
+   "seed": 8,
+   "winnerCiv": "hokkaido",
+   "conquest": false,
+   "minutes": 30,
+   "score": [
+    5149,
+    4561
+   ],
+   "ages": [
+    "feudal",
+    "feudal"
+   ]
+  },
+  {
+   "a": "hokkaido",
+   "b": "kai",
+   "seed": 12,
+   "winnerCiv": "hokkaido",
+   "conquest": false,
+   "minutes": 30,
+   "score": [
+    5887,
+    4092
+   ],
+   "ages": [
+    "feudal",
+    "feudal"
+   ]
+  },
+  {
+   "a": "akita",
+   "b": "shiba",
+   "seed": 4,
+   "winnerCiv": "shiba",
+   "conquest": false,
+   "minutes": 30,
+   "score": [
+    4809,
+    5033
+   ],
+   "ages": [
+    "feudal",
+    "castle"
+   ]
+  },
+  {
+   "a": "akita",
+   "b": "shiba",
+   "seed": 8,
+   "winnerCiv": "shiba",
+   "conquest": false,
+   "minutes": 30,
+   "score": [
+    4619,
+    5073
+   ],
+   "ages": [
+    "feudal",
+    "feudal"
+   ]
+  },
+  {
+   "a": "akita",
+   "b": "shiba",
+   "seed": 12,
+   "winnerCiv": "shiba",
+   "conquest": false,
+   "minutes": 30,
+   "score": [
+    3979,
+    5914
+   ],
+   "ages": [
+    "feudal",
+    "feudal"
+   ]
+  },
+  {
+   "a": "kishu",
+   "b": "shiba",
+   "seed": 4,
+   "winnerCiv": "shiba",
+   "conquest": false,
+   "minutes": 30,
+   "score": [
+    4563,
+    5314
+   ],
+   "ages": [
+    "feudal",
+    "feudal"
+   ]
+  },
+  {
+   "a": "kishu",
+   "b": "shiba",
+   "seed": 8,
+   "winnerCiv": "kishu",
+   "conquest": false,
+   "minutes": 30,
+   "score": [
+    4805,
+    4742
+   ],
+   "ages": [
+    "feudal",
+    "feudal"
+   ]
+  },
+  {
+   "a": "kishu",
+   "b": "shiba",
+   "seed": 12,
+   "winnerCiv": "shiba",
+   "conquest": false,
+   "minutes": 30,
+   "score": [
+    4702,
+    4917
+   ],
+   "ages": [
+    "feudal",
+    "feudal"
+   ]
+  },
+  {
+   "a": "shikoku",
+   "b": "shiba",
+   "seed": 4,
+   "winnerCiv": "shiba",
+   "conquest": false,
+   "minutes": 30,
+   "score": [
+    4860,
+    5122
+   ],
+   "ages": [
+    "feudal",
+    "feudal"
+   ]
+  },
+  {
+   "a": "shikoku",
+   "b": "shiba",
+   "seed": 8,
+   "winnerCiv": "shikoku",
+   "conquest": false,
+   "minutes": 30,
+   "score": [
+    5627,
+    3309
+   ],
+   "ages": [
+    "feudal",
+    "feudal"
+   ]
+  },
+  {
+   "a": "shikoku",
+   "b": "shiba",
+   "seed": 12,
+   "winnerCiv": "shiba",
+   "conquest": false,
+   "minutes": 30,
+   "score": [
+    5069,
+    5302
+   ],
+   "ages": [
+    "feudal",
+    "feudal"
+   ]
+  },
+  {
+   "a": "hokkaido",
+   "b": "shiba",
+   "seed": 4,
+   "winnerCiv": "hokkaido",
+   "conquest": false,
+   "minutes": 30,
+   "score": [
+    5075,
+    4701
+   ],
+   "ages": [
+    "feudal",
+    "feudal"
+   ]
+  },
+  {
+   "a": "hokkaido",
+   "b": "shiba",
+   "seed": 8,
+   "winnerCiv": "hokkaido",
+   "conquest": false,
+   "minutes": 30,
+   "score": [
+    5271,
+    4966
+   ],
+   "ages": [
+    "feudal",
+    "feudal"
+   ]
+  },
+  {
+   "a": "hokkaido",
+   "b": "shiba",
+   "seed": 12,
+   "winnerCiv": "shiba",
+   "conquest": false,
+   "minutes": 30,
+   "score": [
+    4603,
+    5179
+   ],
+   "ages": [
+    "feudal",
+    "feudal"
+   ]
+  },
+  {
+   "a": "kai",
+   "b": "shiba",
+   "seed": 4,
+   "winnerCiv": "kai",
+   "conquest": false,
+   "minutes": 30,
+   "score": [
+    4732,
+    4246
+   ],
+   "ages": [
+    "feudal",
+    "feudal"
+   ]
+  },
+  {
+   "a": "kai",
+   "b": "shiba",
+   "seed": 8,
+   "winnerCiv": "shiba",
+   "conquest": false,
+   "minutes": 30,
+   "score": [
+    4553,
+    4999
+   ],
+   "ages": [
+    "feudal",
+    "feudal"
+   ]
+  },
+  {
+   "a": "kai",
+   "b": "shiba",
+   "seed": 12,
+   "winnerCiv": "shiba",
+   "conquest": false,
+   "minutes": 30,
+   "score": [
+    4853,
+    4868
+   ],
+   "ages": [
+    "feudal",
+    "feudal"
+   ]
+  },
+  {
+   "a": "kishu",
+   "b": "akita",
+   "seed": 4,
+   "winnerCiv": "akita",
+   "conquest": false,
+   "minutes": 30,
+   "score": [
+    4670,
+    5836
+   ],
+   "ages": [
+    "feudal",
+    "feudal"
+   ]
+  },
+  {
+   "a": "kishu",
+   "b": "akita",
+   "seed": 8,
+   "winnerCiv": "kishu",
+   "conquest": false,
+   "minutes": 30,
+   "score": [
+    5184,
+    4468
+   ],
+   "ages": [
+    "feudal",
+    "feudal"
+   ]
+  },
+  {
+   "a": "kishu",
+   "b": "akita",
+   "seed": 12,
+   "winnerCiv": "kishu",
+   "conquest": false,
+   "minutes": 30,
+   "score": [
+    4916,
+    4375
+   ],
+   "ages": [
+    "feudal",
+    "feudal"
+   ]
+  },
+  {
+   "a": "shikoku",
+   "b": "akita",
+   "seed": 4,
+   "winnerCiv": "akita",
+   "conquest": false,
+   "minutes": 30,
+   "score": [
+    4633,
+    6643
+   ],
+   "ages": [
+    "feudal",
+    "feudal"
+   ]
+  },
+  {
+   "a": "shikoku",
+   "b": "akita",
+   "seed": 8,
+   "winnerCiv": "shikoku",
+   "conquest": false,
+   "minutes": 30,
+   "score": [
+    6079,
+    5448
+   ],
+   "ages": [
+    "feudal",
+    "feudal"
+   ]
+  },
+  {
+   "a": "shikoku",
+   "b": "akita",
+   "seed": 12,
+   "winnerCiv": "akita",
+   "conquest": false,
+   "minutes": 30,
+   "score": [
+    3598,
+    5093
+   ],
+   "ages": [
+    "feudal",
+    "feudal"
+   ]
+  },
+  {
+   "a": "hokkaido",
+   "b": "akita",
+   "seed": 4,
+   "winnerCiv": "akita",
+   "conquest": false,
+   "minutes": 30,
+   "score": [
+    4131,
+    5666
+   ],
+   "ages": [
+    "feudal",
+    "feudal"
+   ]
+  },
+  {
+   "a": "hokkaido",
+   "b": "akita",
+   "seed": 8,
+   "winnerCiv": "hokkaido",
+   "conquest": false,
+   "minutes": 30,
+   "score": [
+    5245,
+    4977
+   ],
+   "ages": [
+    "feudal",
+    "feudal"
+   ]
+  },
+  {
+   "a": "hokkaido",
+   "b": "akita",
+   "seed": 12,
+   "winnerCiv": "akita",
+   "conquest": false,
+   "minutes": 30,
+   "score": [
+    5415,
+    5566
+   ],
+   "ages": [
+    "feudal",
+    "feudal"
+   ]
+  },
+  {
+   "a": "kai",
+   "b": "akita",
+   "seed": 4,
+   "winnerCiv": "akita",
+   "conquest": false,
+   "minutes": 30,
+   "score": [
+    3338,
+    6256
+   ],
+   "ages": [
+    "feudal",
+    "feudal"
+   ]
+  },
+  {
+   "a": "kai",
+   "b": "akita",
+   "seed": 8,
+   "winnerCiv": "kai",
+   "conquest": false,
+   "minutes": 30,
+   "score": [
+    5610,
+    5121
+   ],
+   "ages": [
+    "feudal",
+    "feudal"
+   ]
+  },
+  {
+   "a": "kai",
+   "b": "akita",
+   "seed": 12,
+   "winnerCiv": "kai",
+   "conquest": false,
+   "minutes": 30,
+   "score": [
+    4331,
+    4052
+   ],
+   "ages": [
+    "feudal",
+    "feudal"
+   ]
+  },
+  {
+   "a": "shikoku",
+   "b": "kishu",
+   "seed": 4,
+   "winnerCiv": "kishu",
+   "conquest": false,
+   "minutes": 30,
+   "score": [
+    4851,
+    5433
+   ],
+   "ages": [
+    "feudal",
+    "castle"
+   ]
+  },
+  {
+   "a": "shikoku",
+   "b": "kishu",
+   "seed": 8,
+   "winnerCiv": "shikoku",
+   "conquest": false,
+   "minutes": 30,
+   "score": [
+    5504,
+    4724
+   ],
+   "ages": [
+    "feudal",
+    "feudal"
+   ]
+  },
+  {
+   "a": "shikoku",
+   "b": "kishu",
+   "seed": 12,
+   "winnerCiv": "kishu",
+   "conquest": false,
+   "minutes": 30,
+   "score": [
+    3890,
+    4310
+   ],
+   "ages": [
+    "feudal",
+    "feudal"
+   ]
+  },
+  {
+   "a": "hokkaido",
+   "b": "kishu",
+   "seed": 4,
+   "winnerCiv": "kishu",
+   "conquest": false,
+   "minutes": 30,
+   "score": [
+    4801,
+    5736
+   ],
+   "ages": [
+    "feudal",
+    "feudal"
+   ]
+  },
+  {
+   "a": "hokkaido",
+   "b": "kishu",
+   "seed": 8,
+   "winnerCiv": "hokkaido",
+   "conquest": false,
+   "minutes": 30,
+   "score": [
+    4958,
+    4463
+   ],
+   "ages": [
+    "feudal",
+    "feudal"
+   ]
+  },
+  {
+   "a": "hokkaido",
+   "b": "kishu",
+   "seed": 12,
+   "winnerCiv": "kishu",
+   "conquest": false,
+   "minutes": 30,
+   "score": [
+    4492,
+    4790
+   ],
+   "ages": [
+    "feudal",
+    "feudal"
+   ]
+  },
+  {
+   "a": "kai",
+   "b": "kishu",
+   "seed": 4,
+   "winnerCiv": "kai",
+   "conquest": false,
+   "minutes": 30,
+   "score": [
+    4799,
+    4276
+   ],
+   "ages": [
+    "feudal",
+    "feudal"
+   ]
+  },
+  {
+   "a": "kai",
+   "b": "kishu",
+   "seed": 8,
+   "winnerCiv": "kai",
+   "conquest": false,
+   "minutes": 30,
+   "score": [
+    4904,
+    4466
+   ],
+   "ages": [
+    "feudal",
+    "feudal"
+   ]
+  },
+  {
+   "a": "kai",
+   "b": "kishu",
+   "seed": 12,
+   "winnerCiv": "kishu",
+   "conquest": false,
+   "minutes": 30,
+   "score": [
+    3433,
+    5303
+   ],
+   "ages": [
+    "feudal",
+    "castle"
+   ]
+  },
+  {
+   "a": "hokkaido",
+   "b": "shikoku",
+   "seed": 4,
+   "winnerCiv": "shikoku",
+   "conquest": false,
+   "minutes": 30,
+   "score": [
+    4540,
+    5856
+   ],
+   "ages": [
+    "feudal",
+    "feudal"
+   ]
+  },
+  {
+   "a": "hokkaido",
+   "b": "shikoku",
+   "seed": 8,
+   "winnerCiv": "hokkaido",
+   "conquest": false,
+   "minutes": 30,
+   "score": [
+    5241,
+    3349
+   ],
+   "ages": [
+    "feudal",
+    "feudal"
+   ]
+  },
+  {
+   "a": "hokkaido",
+   "b": "shikoku",
+   "seed": 12,
+   "winnerCiv": "shikoku",
+   "conquest": false,
+   "minutes": 30,
+   "score": [
+    3160,
+    4809
+   ],
+   "ages": [
+    "feudal",
+    "feudal"
+   ]
+  },
+  {
+   "a": "kai",
+   "b": "shikoku",
+   "seed": 4,
+   "winnerCiv": "shikoku",
+   "conquest": false,
+   "minutes": 30,
+   "score": [
+    4227,
+    4711
+   ],
+   "ages": [
+    "feudal",
+    "feudal"
+   ]
+  },
+  {
+   "a": "kai",
+   "b": "shikoku",
+   "seed": 8,
+   "winnerCiv": "shikoku",
+   "conquest": false,
+   "minutes": 30,
+   "score": [
+    4238,
+    4508
+   ],
+   "ages": [
+    "feudal",
+    "feudal"
+   ]
+  },
+  {
+   "a": "kai",
+   "b": "shikoku",
+   "seed": 12,
+   "winnerCiv": "shikoku",
+   "conquest": false,
+   "minutes": 30,
+   "score": [
+    4149,
+    4752
+   ],
+   "ages": [
+    "feudal",
+    "feudal"
+   ]
+  },
+  {
+   "a": "kai",
+   "b": "hokkaido",
+   "seed": 4,
+   "winnerCiv": "hokkaido",
+   "conquest": false,
+   "minutes": 30,
+   "score": [
+    6134,
+    6318
+   ],
+   "ages": [
+    "feudal",
+    "feudal"
+   ]
+  },
+  {
+   "a": "kai",
+   "b": "hokkaido",
+   "seed": 8,
+   "winnerCiv": "hokkaido",
+   "conquest": false,
+   "minutes": 30,
+   "score": [
+    4341,
+    4771
+   ],
+   "ages": [
+    "feudal",
+    "feudal"
+   ]
+  },
+  {
+   "a": "kai",
+   "b": "hokkaido",
+   "seed": 12,
+   "winnerCiv": "hokkaido",
+   "conquest": false,
+   "minutes": 30,
+   "score": [
+    4349,
+    5343
+   ],
+   "ages": [
+    "feudal",
+    "feudal"
+   ]
+  }
+ ]
+}

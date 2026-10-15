@@ -40,7 +40,9 @@ const placeNear = async (wx, wy) => { // real mouse: move ghost around the targe
     const p = await scr(wx + dx, wy + dy); await page.mouse.move(p.x, p.y); await page.waitForTimeout(40);
     const g = await S(() => window.game.ui.ghost); if (g && g.valid) { await page.mouse.click(p.x, p.y); return g; } }
   return null; };
-const btn = a => page.locator(`#commands button[data-action=${a}]`);
+const btn = a => { const l = page.locator(`#commands button[data-action=${a}]`); // build buttons live in tabs: open the right tab with a real click first
+  const open = async () => { const k = await page.evaluate(t => window.game.buildTabOf?.(t), a); if (k) await page.locator(`#commands [data-action=btab-${k}]`).waitFor({ timeout: 3000 }).catch(() => {}); if (k && await page.locator(`#commands [data-action=btab-${k}]`).count() && !(await l.isVisible())) await page.click(`#commands [data-action=btab-${k}]`); };
+  return new Proxy(l, { get: (o, m) => typeof o[m] === 'function' ? async (...x) => { await open(); return o[m](...x); } : o[m] }); };
 const inside = () => S(() => { const w = window.game.world; return [...w.units, ...w.animals].filter(u => { const x = Math.floor(u.x), y = Math.floor(u.y);
   return w.buildings.some(b => !(b.walkable && b.complete) && x >= b.x && y >= b.y && x < b.x + b.size && y < b.y + b.size); }).length; });
 log(`round6 browser proof ${new Date().toISOString()}`);
@@ -48,9 +50,9 @@ const ids = await S(() => window.game.world.units.map(u => u.id));
 
 // 1. build menu (all 3 villagers box-selected; sheep nearby are not picked up)
 await drag(30, 33.6, 38, 36.6);
-check(/3 Villagers selected/.test(await text('#info')), `drag-box: ${await text('#info')}`);
-const labels = await page.locator('#commands button').allInnerTexts();
-check(['Build House', 'Lumber Camp', 'Mining Camp', 'Mill', 'Farm', 'Barracks'].every((n, i) => labels[i]?.startsWith(n)) && /25 wood/.test(labels[0]) && /175 wood/.test(labels[5]), `build menu: ${labels.map(l => l.replace(/\n/g, ' ')).join(' | ')}`);
+check(/3 Worker Pups selected/.test(await text('#info')), `drag-box: ${await text('#info')}`);
+const labels = await page.locator('#commands .bgrid button').allInnerTexts();
+check(['Kennel Hut', 'Granary', 'Rice Paddy', 'Timber Lodge', 'Dig Site', 'Bazaar'].every((n, i) => labels[i]?.startsWith(n)) && /25 wood/.test(labels[0]) && /100 wood/.test(labels[1]), `build menu: ${labels.map(l => l.replace(/\n/g, ' ')).join(' | ')}`);
 await shot('round6-01-build-menu.png');
 
 // 2. Lumber Camp by the forest
@@ -130,12 +132,12 @@ g = await placeNear(45.5, 37.5); const br = await bld('barracks');
 check(g && br, `barracks foundation at (${br?.x},${br?.y})`);
 check(await until(`window.game.world.buildings.find(b => b.id === ${br.id}).complete`, 150), 'barracks built');
 await at(br.x + 1.5, br.y + 1.5);
-check(/Train (Kai )?Militia/.test(await btn('militia').innerText()) && /60 food, 20 gold, 21s/.test(await btn('militia').innerText()), `barracks button: ${(await btn('militia').innerText()).replace(/\n/g, ' ')}`);
+check(/Train (Kai )?Footpaw/.test(await btn('militia').innerText()) && /60 food, 20 gold, 21s/.test(await btn('militia').innerText()), `barracks button: ${(await btn('militia').innerText()).replace(/\n/g, ' ')}`);
 const res0 = await S(() => ({ ...window.game.world.stockpile }));
 await btn('militia').click(); await btn('militia').click(); await advance(5);
 const res1 = await S(() => ({ ...window.game.world.stockpile }));
 check(res0.food - res1.food >= 120 && res0.gold - res1.gold === 40, `2 militia queued: gold ${res0.gold} -> ${res1.gold}`);
-check(/Queue: 2\/5 .*Training Kai Militia: 2\d%/.test(await text('#info')) && await page.locator('#info .qi').allInnerTexts().then(a => a.join('')) === 'KK', `barracks panel: ${await text('#info')}`);
+check(/Queue: 2\/5 .*Training Kai Footpaw: 2\d%/.test(await text('#info')) && await page.locator('#info .qi').allInnerTexts().then(a => a.join('')) === 'KK', `barracks panel: ${await text('#info')}`);
 await at(br.x + 6.5, br.y + 4.5, 'right');
 await shot('round6-16-barracks-queue.png');
 check(await until(`window.game.world.units.filter(u => u.type === 'militia').length === 2`, 50), '2 militia trained');

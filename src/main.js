@@ -6,8 +6,12 @@ import { BREEDS, unitLabel, breedText, queueIcon } from './inu.js';
 import { startTitle } from './title.js';
 import * as SIM from './sim.js';
 import { Lockstep } from './lockstep.js';
-import { NetSession, TabsBus, RelayBus, defaultRelayUrl, newRoomCode } from './net.js';
-import { initKibble } from './kibble-ui.js';
+import { NetSession, TabsBus, RelayBus, HttpBus, httpRelayBase, defaultRelayUrl, newRoomCode } from './net.js';
+import { CIVS, CIV_IDS } from './civs.js';
+import { setupComputers } from './ai.js';
+import { initKibble, kibbleState } from './kibble-ui.js';
+import { mountCivCards } from './civcards.js';
+import { CIV_LOOK } from './civs.js';
 import { createUi, startPlacing, cancelPlacing, updateGhost, pointerDown, pointerMove, pointerUp } from './ui-state.js';
 const canvas = document.getElementById('game'), ctx = canvas.getContext('2d');
 const params = new URLSearchParams(location.search);
@@ -47,6 +51,11 @@ canvas.addEventListener('mousemove', e => { mouse = { x: e.clientX, y: e.clientY
 // Attack cursor: crosshair when own units are selected and the pointer is over a visible enemy unit/building.
 function hoverEnemy() { const p = toWorld(mouse.x, mouse.y);
   return world.units.find(o => isFoe(o) && seen(o) && hyp(o.x - p.x, o.y - p.y) < 0.7) || (() => { const b = SIM.buildingAt(world, p.x, p.y); return b && isFoe(b) && seen(b) ? b : null; })(); }
+const BUILD_TABS = { eco: { label: '🌾 Economy', items: ['house', 'mill', 'farm', 'lumber_camp', 'mining_camp', 'market'] },
+  mil: { label: '⚔ Military', items: ['barracks', 'archery_range', 'stable', 'blacksmith', 'watch_tower', 'castle'] },
+  other: { label: '⛩ Other', items: ['monastery', 'university', 'wonder'] } };
+// any building not listed falls into Other so no build option is ever lost
+for (const t of BUILD_MENU) if (!Object.values(BUILD_TABS).some(v => v.items.includes(t))) BUILD_TABS.other.items.push(t);
 function updateCursor() { ui.cursor = !ui.placing && selectedUnits(world).length && hoverEnemy() ? 'attack' : 'default'; canvas.style.cursor = ui.cursor === 'attack' ? 'crosshair' : 'default'; }
 canvas.addEventListener('mouseleave', () => { mouse.inside = false; drag = null; });
 canvas.addEventListener('mousedown', e => {
@@ -149,11 +158,13 @@ setInterval(syncQb, 250);
 const bannerEl = $('banner'), hud = $('hud'), infoEl = $('info'), cmdEl = $('commands'), msgEl = $('msg'), netEl = $('net'), stallEl = $('stall'), desyncEl = $('desync');
 let lastCmd = '';
 const cmdTab = $('cmdtab'); cmdTab.addEventListener('click', () => { const o = document.body.classList.toggle('cmd-open'); cmdTab.setAttribute('aria-expanded', o); });
-cmdEl.addEventListener('click', e => { const btn = e.target.closest('button'); if (!btn || btn.disabled) return; if (BUILDING_DEFS[btn.dataset.action]) document.body.classList.remove('cmd-open'); // collapse so the placement ghost is visible
+cmdEl.addEventListener('click', e => { const btn = e.target.closest('button'); if (!btn || btn.disabled) return; if (btn.dataset.action?.startsWith('btab-')) { ui.buildTab = btn.dataset.action.slice(5); lastCmd = null; updateHud(); return; } if (BUILDING_DEFS[btn.dataset.action]) document.body.classList.remove('cmd-open'); // collapse so the placement ghost is visible
  const a = btn.dataset.action, b = selectedBuilding(world);
   if (a === 'train') issue('train', { id: b.id, unit: 'villager' });
   else if (a === 'age-up') issue('ageup', { id: b.id });
   else if (a === 'cancel') issue('cancel', { id: b.id });
+  else if (a === 'ungarrison') issue('ungarrison', { id: b.id });
+  else if (a.startsWith('stance-')) issue('stance', { ids: selectedUnits(world).map(u => u.id), stance: a.slice(7) });
   else if (a.startsWith('tech-')) issue('research', { id: b.id, tech: a.slice(5) });
   else if (UNIT_DEFS[a]) issue('train', { id: b.id, unit: a });
   else if (BUILDING_DEFS[a]) { startPlacing(ui, a); refreshGhost(); } });
@@ -161,7 +172,7 @@ const costText = c => Object.entries(c).map(([r, v]) => `${v} ${r}`).join(', ');
 function updateHud() {
   const pop = popCount(world), cap = popCap(world);
   hud.innerHTML = '<span id="brand">Inu Empires</span>' + RES_TYPES.map(r => `<span id="res-${r}">${r[0].toUpperCase() + r.slice(1)}: ${world.stockpile[r]}</span>`).join('') +
-    `<span id="pop" class="${pop >= cap ? 'capped' : ''}">Pop ${pop}/${cap}</span>` + (net ? `<span id="side" class="${net.me ? 'p2' : 'p1'}">Player ${net.me + 1} (${net.me ? 'Red' : 'Blue'})</span>` : '') + `<span id="age">${AGE_NAMES[world.age]}</span>`;
+    `<span id="pop" class="${pop >= cap ? 'capped' : ''}">Pop ${pop}/${cap}</span>` + (net ? `<span id="side" class="${net.me ? 'p2' : 'p1'}">Player ${net.me + 1} (${net.me ? 'Red' : 'Blue'})</span>` : '') + `<span id="age">${AGE_NAMES[world.age]}</span>` + (world.players?.[viewer()]?.civ ? `<span id="civ">${CIVS[world.players[viewer()].civ].name}</span>` : '');
   bannerEl.textContent = world.banner ? world.banner.text : ''; bannerEl.style.display = world.banner ? 'block' : 'none';
   msgEl.textContent = world.message ? breedText(world.message.text) : ''; msgEl.style.display = world.message ? 'block' : 'none';
   const info = selectionInfo(world);
@@ -175,11 +186,11 @@ function updateHud() {
   let cmd = '';
   const button = (action, label, sub, { disabled = false, grey = false, title = '' } = {}) =>
     `<button data-action="${action}" ${disabled ? 'disabled' : ''} class="${grey ? 'unaffordable' : ''}${ui.placing === action ? ' active' : ''}" title="${title}">${label}<br><small>${sub}</small></button>`;
-  if (b && b.complete && (b.trains.length || techsAt(b.type).length)) {
+  if (b && b.complete && (b.trains.length || techsAt(b.type).length || b.garrisonCap)) {
     const parts = b.trains.map(t => { const d = UNIT_DEFS[t], up = Object.keys(world.researched).map(k => TECHS[k].effect.upgrade?.[t]).find(Boolean), shown = up ? UNIT_DEFS[up] : d;
       if (isLocked(world, d.age)) return button(t === 'villager' ? 'train' : t, `Train ${unitLabel(t, d.name)}`, requiresText(d.age), { disabled: true, title: `${unitLabel(t, d.name)}: ${costText(d.cost)}, ${d.time}s` });
-      const miss = missingFor(world, shown.cost);
-      return button(t === 'villager' ? 'train' : t, `Train ${unitLabel(up || t, shown.name)}`, miss || `${costText(shown.cost)}, ${shown.time}s`, { grey: !!miss, title: `${unitLabel(up || t, shown.name)}: HP ${shown.hp}, attack ${shown.attack}, armor ${shown.armor}` }); });
+      const cost = SIM.unitCost(world, up || t, b), miss = missingFor(world, cost);
+      return button(t === 'villager' ? 'train' : t, `Train ${unitLabel(up || t, shown.name)}`, miss || `${costText(cost)}, ${Math.round(SIM.itemTime(up || t, world, b))}s`, { grey: !!miss, title: `${unitLabel(up || t, shown.name)}: HP ${shown.hp}, attack ${shown.attack}, armor ${shown.armor}` }); });
     for (const id of techsAt(b.type)) { const t = TECHS[id]; if (id in world.researched) continue;
       const c = canResearch(world, b, id); const queued = c.reason === 'queued';
       const sub = c.ok ? `${costText(t.cost)}, ${t.time}s` : c.reason === 'age' ? requiresText(t.age) : queued ? 'researching…' : c.reason === 'cost' ? c.text : c.text;
@@ -188,12 +199,20 @@ function updateHud() {
       if (st.next) { const c = canAgeUp(world, b), up = AGE_UPS[st.next];
         const sub = `${costText(up.cost)}, ${up.time}s` + (c.ok ? '' : ` | ${c.reason === 'queued' ? 'researching…' : c.text}`);
         parts.push(button('age-up', `Advance to ${AGE_NAMES[st.next]}`, sub, { disabled: !c.ok && c.reason !== 'cost', grey: c.reason === 'cost', title: `${AGE_NAMES[st.next]}: ${costText(up.cost)}, ${up.time}s; ${st.missing || 'requirements met'}` })); } }
+    if (b.garrisonCap) parts.push(button('ungarrison', `Ungarrison (${b.garrison.length}/${b.garrisonCap})`, b.garrison.length ? 'release units' : 'right-click with units to garrison', { disabled: !b.garrison.length, title: 'Garrisoned units are protected, heal, and add arrows' }));
     if (b.queue.length) parts.push(button('cancel', 'Cancel last', `refund ${breedText(SIM.itemName(b.queue[b.queue.length - 1]))}`, { title: 'Remove the last queued item and refund its cost' }));
     cmd = parts.join('');
-  } else if (us.some(u => u.type === 'villager')) cmd = BUILD_MENU.map(t => { const d = BUILDING_DEFS[t];
-    if (isLocked(world, d.age)) return button(t, t === 'house' ? 'Build House' : d.name, requiresText(d.age), { disabled: true, title: `${d.name}: ${costText(d.cost)}` });
-    const miss = missingFor(world, d.cost);
-    return button(t, t === 'house' ? 'Build House' : d.name, miss || costText(d.cost), { disabled: !!miss, title: `${d.name} (${d.size}x${d.size}): ${costText(d.cost)}${t === 'farm' ? ', must touch a Mill or Town Center' : ''}` }); }).join('');
+  } else if (us.some(u => u.type === 'villager')) { // compact build control: 3 tabs + a small grid of the open tab (all build options kept)
+    const tab = BUILD_TABS[ui.buildTab] ? ui.buildTab : 'eco';
+    const tabs = Object.entries(BUILD_TABS).map(([k, v]) => `<button data-action="btab-${k}" class="btab${k === tab ? ' on' : ''}" role="tab" aria-selected="${k === tab}">${v.label}</button>`).join('');
+    const grid = BUILD_TABS[tab].items.filter(t => BUILD_MENU.includes(t)).map(t => { const d = BUILDING_DEFS[t], nm = t === 'house' ? 'Kennel Hut' : d.name;
+      if (isLocked(world, d.age)) return button(t, nm, requiresText(d.age).replace('Requires ', '🔒 '), { disabled: true, title: `${d.name}: ${costText(d.cost)}` });
+      const miss = missingFor(world, d.cost);
+      return button(t, nm, miss || costText(d.cost), { grey: !!miss, disabled: !!miss, title: `${d.name} (${d.size}x${d.size}): ${miss || costText(d.cost)}${t === 'farm' ? ', must touch a Granary or Den Hall' : ''}` }); }).join('');
+    cmd = `<div class="btabs" role="tablist">${tabs}</div><div class="bgrid">${grid}</div>`; }
+  else if (us.length && us.every(u => u.type !== 'villager' && u.type !== 'sheep')) { const cur = us[0].stance || 'aggressive';
+    cmd = SIM.STANCES.map(st => button('stance-' + st, { aggressive: 'Aggressive', defensive: 'Defensive', stand: 'Stand Ground', passive: 'No Attack' }[st], st === cur ? '● current' : 'stance',
+      { title: { aggressive: 'Chase enemies in sight', defensive: 'Chase only a short distance', stand: 'Attack only what is in range, never move', passive: 'Never attack, never retaliate' }[st] })).join(''); }
   if (cmd !== lastCmd) { cmdEl.innerHTML = cmd; lastCmd = cmd; } cmdEl.style.display = cmd ? 'flex' : 'none';
   document.body.classList.toggle('has-cmd', !!cmd); if (!cmd) document.body.classList.remove('cmd-open'); cmdTab.textContent = document.body.classList.contains('cmd-open') ? '✕ Close menu' : (b ? '🏛 Train ▴' : '🔨 Build ▴');
   if (net) {
@@ -207,8 +226,11 @@ function updateHud() {
 }
 
 // ---- game start ----
-function startGame({ mp = false, seed = 1, me = 0, cfg = {}, session = null } = {}) {
-  world = mp ? createWorld({ mp: true, seed }) : createWorld({ enemy: params.get('enemy') !== '0', raids: params.get('raids') === '1', scenario: params.get('scenario') });
+function startGame({ mp = false, seed = 1, me = 0, cfg = {}, session = null, ai = null } = {}) {
+  world = mp || ai ? createWorld({ mp: true, seed }) : createWorld({ enemy: params.get('enemy') !== '0', raids: params.get('raids') === '1', scenario: params.get('scenario') });
+  if (mp && cfg.civs) OWNERS.forEach((o, i) => { if (CIVS[cfg.civs[i]]) world.players[o].civ = cfg.civs[i]; });
+  if (ai) { setupComputers(world, ai.spectate ? { player: ai.civ, enemy: ai.enemy } : { enemy: ai.enemy }); world.players.player.civ = ai.civ; world.viewer = 'player'; window.game.aiMode = true;
+    world.spectate = !!ai.spectate; fog = { explored: new Uint8Array(world.width * world.height), seenBuildings: new Set() }; }
   ui = createUi();
   if (mp) {
     world.viewer = OWNERS[me]; world.cur = world.viewer;
@@ -220,9 +242,9 @@ function startGame({ mp = false, seed = 1, me = 0, cfg = {}, session = null } = 
     window.game.net = net;
   }
   const tc = world.buildings.find(b => b.type === 'town_center' && b.owner === viewer());
-  const c = mp ? { x: tc.x + 2, y: tc.y + 2 } : { x: 34, y: 34 };
+  const c = mp || ai ? { x: tc.x + 2, y: tc.y + 2 } : { x: 34, y: 34 };
   cam.x = c.x * TILE - canvas.width / 2; cam.y = c.y * TILE - canvas.height / 2; clampCamera(cam, canvas.width, canvas.height, world);
-  Object.assign(window.game, { world, cam, ui, mode: mp ? 'mp' : 'sp' });
+  Object.assign(window.game, { world, cam, ui, mode: mp ? 'mp' : ai ? 'ai' : 'sp' });
   document.body.classList.add('ingame');
   for (const id of ['menu', 'lobby', 'title-bg']) $(id).style.display = 'none';
   last = performance.now(); requestAnimationFrame(frame);
@@ -237,7 +259,7 @@ function frame(now) {
   if (mouse.inside && !drag && !ui.press) { if (mouse.x < EDGE) dx--; if (mouse.x > innerWidth - EDGE) dx++; if (mouse.y < EDGE) dy--; if (mouse.y > innerHeight - EDGE) dy++; }
   if (dx || dy) { cam.x += dx * PAN * dt; cam.y += dy * PAN * dt; clampCamera(cam, canvas.width, canvas.height, world); }
   // fixed 20 Hz simulation ticks
-  if (!net) { acc += dt; let n = 0; while (acc >= TICK_DT && n++ < 8) { stepTick(world); acc -= TICK_DT; } }
+  if (!net) { acc += dt; let n = 0; while (acc >= TICK_DT && n++ < 8) { stepTick(world); acc -= TICK_DT; } if (world.computers && !world.spectate) { fog = computeFog(world, viewer(), fog); window.game.fog = fog; } }
   else {
     acc += real * net.speed; let n = 0, stalled = false;
     while (acc >= TICK_DT && n < 12) {
@@ -250,13 +272,13 @@ function frame(now) {
     else if (n) net.stallMs = 0;
     fog = computeFog(world, viewer(), fog); window.game.fog = fog;
   }
-  if (ui.placing) refreshGhost(); if (mouse.inside) updateCursor(); render(ctx, world, cam, ui, net ? fog : null); updateHud(); requestAnimationFrame(frame);
+  if (ui.placing) refreshGhost(); if (mouse.inside) updateCursor(); render(ctx, world, cam, ui, net || (world.computers && !world.spectate) ? fog : null); updateHud(); requestAnimationFrame(frame);
 }
 // Automation hook: read-only state access + time advance in single player (proof scripts must not use it to issue orders).
 window.game = { sim: SIM, world: null, cam, ui, selectionInfo, pickAt, toScreen: (x, y) => { const q = worldToScreen(x, y, cam); return { x: q.x * Z, y: q.y * Z }; }, zoom: () => Z, toWorld,
   tick: (s) => { if (net) throw new Error('no fast-forward in multiplayer'); const n = Math.round(s / TICK_DT); for (let i = 0; i < n; i++) stepTick(world); render(ctx, world, cam, ui); updateHud(); },
   stateHash: () => world && stateHash(world),
-  getSelected: () => getSelected(world), touch: { ...touchUi } };
+  getSelected: () => getSelected(world), touch: { ...touchUi }, buildTabOf: t => Object.keys(BUILD_TABS).find(k => BUILD_TABS[k].items.includes(t)) || null };
 
 // ---- main menu / lobby ----
 let session = null;
@@ -275,13 +297,21 @@ function showLobby() {
 }
 function openSession(role, code) {
   const transport = $('transport').value, relayUrl = $('relay-url').value.trim();
-  const bus = transport === 'tabs' ? new TabsBus(code) : new RelayBus(relayUrl, code);
+  const bus = transport === 'tabs' ? new TabsBus(code) : transport === 'http' ? new HttpBus(httpRelayBase(), code) : new RelayBus(relayUrl, code);
   session = new NetSession({ bus, role, code, onChange: () => { if (session.state !== 'playing') showLobby(); },
     onStart: cfg => startGame({ mp: true, seed: cfg.seed, me: session.me, cfg, session }) });
-  session.startCfg = { speed: +(params.get('speed') || 1), delay: +(params.get('delay') || 3) };
+  session.civ = $('civ').value;
+  session.startCfg = { speed: +(params.get('speed') || 1), delay: +(params.get('delay') || (transport === 'http' ? 8 : 3)) };
   window.game.session = session; showLobby();
 }
 $('btn-sp').onclick = () => startGame();
+// Clan picker (free for everyone; Kibble only buys cosmetics) + skirmish vs the computer.
+$('civ').innerHTML = CIV_IDS.map(id => `<option value="${id}">${CIVS[id].name} — ${CIVS[id].style}</option>`).join('');
+$('ai-civ').innerHTML = CIV_IDS.map(id => `<option value="${id}">${CIVS[id].name}</option>`).join('');
+$('civ').value = params.get('civ') && CIVS[params.get('civ')] ? params.get('civ') : 'shiba'; $('ai-civ').value = params.get('aiciv') && CIVS[params.get('aiciv')] ? params.get('aiciv') : 'akita';
+const showCiv = () => { $('civ-info').textContent = CIVS[$('civ').value].traits.join(' · '); }; $('civ').onchange = showCiv; showCiv();
+window.game.civCards = mountCivCards($('civ-cards'), { owned: kibbleState().owned || [], selected: $('civ').value, onPick: id => { $('civ').value = id; showCiv(); } });
+$('btn-ai').onclick = () => startGame({ ai: { civ: $('civ').value, enemy: $('ai-civ').value }, seed: +(params.get('seed') || 7) });
 $('btn-host').onclick = () => openSession('host', newRoomCode());
 $('btn-join').onclick = () => { const code = $('join-code').value.trim().toUpperCase(); if (!/^[A-Z0-9]{3,8}$/.test(code)) { $('menu-err').textContent = 'Enter the room code shown to the host'; return; } openSession('guest', code); };
 $('btn-ready').onclick = () => session.setReady(!session.ready);
@@ -291,7 +321,8 @@ $('transport').value = params.get('net') || (params.get('relay') ? 'relay' : /ve
 const syncTransport = () => { $('relay-row').style.display = $('transport').value === 'relay' ? 'block' : 'none'; }; $('transport').onchange = syncTransport; syncTransport();
 if (params.get('join')) $('join-code').value = params.get('join');
 // Legacy / direct single-player URLs (?enemy=, ?scenario=, ?raids=, ?play=sp) skip the menu.
-if (['enemy', 'scenario', 'raids'].some(k => params.has(k)) || params.get('play') === 'sp') startGame();
+if (params.get('play') === 'ai' || params.get('play') === 'watch') startGame({ ai: { civ: $('civ').value, enemy: $('ai-civ').value, spectate: params.get('play') === 'watch' }, seed: +(params.get('seed') || 7) });
+else if (['enemy', 'scenario', 'raids'].some(k => params.has(k)) || params.get('play') === 'sp') startGame();
 else { $('menu').style.display = 'flex'; $('title-bg').style.display = 'block'; startTitle($('title-bg')); }
 
 initKibble();

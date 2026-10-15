@@ -65,7 +65,7 @@ log('--- selection hit-testing ---');
   selectAt(w, tree.x, tree.y); assert(selectionInfo(w).title === 'Tree' && /100 remaining/.test(selectionInfo(w).lines[0]), 'resource info shows type + amount');
   tree.amount = 42; assert(/42 remaining/.test(selectionInfo(w).lines[0]), 'resource info updates live');
   selectAt(w, tc.x + 3.5, tc.y + 3.5); assert(selectionInfo(w).lines[0] === 'HP: 2400/2400', 'TC info shows HP 2400/2400');
-  selectAt(w, u.x, u.y); assert(selectionInfo(w).title === 'Villager' && getSelected(w) === u, 'villager selected via selectAt');
+  selectAt(w, u.x, u.y); assert(selectionInfo(w).title === 'Worker Pup' && getSelected(w) === u, 'villager selected via selectAt');
   selectAt(w, ex + 0.5, ey + 0.5); assert(selectionInfo(w).lines[0] === `(${ex}, ${ey})` && getSelected(w) === null, 'tile info shows (x, y) and deselects villager');
 }
 
@@ -197,7 +197,7 @@ log('--- round 4: A* pathfinding ---');
 log('--- round 4: drag-box multi-select + parallel gather ---');
 {
   const w = createWorld(); const init = new Map(w.resources.map(n => [n.id, n.amount])); const base = { ...w.stockpile };
-  const sel = boxSelect(w, 30, 33, 38, 37); assert(sel.length === 3 && selectionInfo(w).title === '3 Villagers selected', `box selects 3 villagers (${selectionInfo(w).title})`);
+  const sel = boxSelect(w, 30, 33, 38, 37); assert(sel.length === 3 && selectionInfo(w).title === '3 Worker Pups selected', `box selects 3 villagers (${selectionInfo(w).title})`);
   const bush = w.resources.find(n => n.res === 'food'); commandAt(w, bush.x, bush.y);
   assert(selectedUnits(w).every(u => u.state === 'to_resource'), 'all selected villagers ordered to gather');
   let onNode = 0; const g0 = () => buildGrid(w);
@@ -292,7 +292,7 @@ const rich = () => createWorld({ stockpile: { food: 2000, wood: 2000, gold: 1000
 }
 { // farms
   const w = rich(); const tc = w.buildings[0];
-  assert(!canPlace(w, 'farm', 46, 46) && /Mill or Town Center/.test((placeBuilding(w, 'farm', 46, 46, []), w.message.text)), 'farm far from Mill/TC invalid with message');
+  assert(!canPlace(w, 'farm', 46, 46) && /Granary or Den Hall/.test((placeBuilding(w, 'farm', 46, 46, []), w.message.text)), 'farm far from Mill/TC invalid with message');
   assert(canPlace(w, 'farm', 36, 33) && farmAnchorOk(w, 36, 33), 'farm adjacent to TC valid');
   assert(!canPlace(w, 'farm', 34, 33), 'farm overlapping TC invalid');
   const u = w.units[0]; const f = placeBuilding(w, 'farm', 36, 36, [u]);

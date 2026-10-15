@@ -20,6 +20,10 @@ html,body{margin:0;overflow:hidden;background:#000}
 #commands button small{font-size:9.5px}
 #commands button:disabled,#commands button.unaffordable{background:#3a3530;color:#8a8070;border-color:#5a5048;cursor:not-allowed}
 #commands button small{font-weight:normal}
+#commands .btabs{display:flex;gap:2px;width:100%}#commands .btabs button.btab{flex:1;width:auto;padding:3px 2px!important;font-size:10.5px!important;background:#2e1e0c;border-width:1px;border-bottom:none}
+#commands .btabs button.btab.on{background:#5a3c18;border-color:#ffd86b;color:#ffe9a8}
+#commands .bgrid{display:grid;grid-template-columns:repeat(3,68px);gap:3px;width:100%;background:#2a1a0acc;padding:3px;border:1px solid #a07a3a}
+#commands .bgrid button{width:68px;min-height:38px;font-size:9.5px!important;padding:2px!important;line-height:1.1}#commands .bgrid button small{font-size:8.5px}
 .bar.hp div{background:#4fd34f}.bar.hp.enemy div{background:#e04040}
 #commands button:disabled small,#commands button.unaffordable small{color:#ff8a7a}
 #side.p1{color:#7fa8ff}#side.p2{color:#ff7f7f}
@@ -35,8 +39,14 @@ html,body{margin:0;overflow:hidden;background:#000}
 .screen .row{display:flex;gap:8px;align-items:center}.screen .hint{font-size:13px;color:#c8b48a;max-width:560px;text-align:center}
 #lobby-code{font:bold 52px monospace;letter-spacing:10px;color:#fff;background:#2a1c0c;padding:6px 24px;border:2px solid #d4a640}
 .pl{padding:6px 14px;min-width:420px;background:#2a1c0c;border-left:6px solid}.pl.p1{border-color:#2a50c8}.pl.p2{border-color:#c83030}
+#civ-cards{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;max-width:560px}
+#civ-cards .civ-card{padding:3px!important;min-width:0!important;min-height:0!important;width:auto!important;font-size:11px!important;margin:0!important}
+.civ-card{position:relative;display:flex;flex-direction:column;align-items:center;padding:4px;background:#1a0e06;border:2px solid #5a3c18;color:#f4e2b8;border-radius:5px;cursor:pointer;min-width:0;font:12px sans-serif}
+.civ-card canvas{width:100%;max-width:176px;aspect-ratio:176/104;border-radius:3px;display:block}.civ-card b{font-size:12px;margin-top:2px}.civ-card small{opacity:.8}
+.civ-card .rar{font-size:10px;font-style:normal;text-transform:capitalize;opacity:.75}.civ-card.rar-rare{box-shadow:0 0 8px #7ac8ff}.civ-card.rar-legendary{box-shadow:0 0 10px #ffd86b}
+.civ-card.sel{border-color:#ffd86b;background:#3a2410}.civ-card.cine{transform:scale(1.04);z-index:2;border-color:#fff}.civ-card{transition:transform .15s}
 #menu-err{color:#ff8a7a;min-height:18px}
-#menu{align-items:flex-start;padding-left:5vw;box-sizing:border-box}#menu .panel{max-width:470px}#menu .hint{max-width:440px}
+#menu{align-items:flex-start;padding-left:5vw;box-sizing:border-box}#menu .panel{max-width:600px}#menu .hint{max-width:440px}
 #title-bg{position:fixed;inset:0;width:100%;height:100%;z-index:9;display:none}
 .screen .panel{display:flex;flex-direction:column;align-items:center;gap:12px;padding:22px 34px;background:linear-gradient(#24140ad8,#120a04e8);border:2px solid #d4a640;box-shadow:0 10px 40px #000c,inset 0 0 0 4px #5a3c1880;border-radius:6px}
 .screen h1{font:bold 64px Georgia,serif!important;letter-spacing:3px;background:linear-gradient(#fff2b0,#ffc040 55%,#c07a20);-webkit-background-clip:text;background-clip:text;color:transparent!important;filter:drop-shadow(0 4px 3px #000)}
@@ -59,10 +69,10 @@ html,body{position:fixed;inset:0;overscroll-behavior:none}
  #msg{top:30px;font-size:13px}#banner{font-size:20px;padding:10px 24px}#net{top:28px;font-size:10px}
  #info{left:max(8px,env(safe-area-inset-left));bottom:max(8px,env(safe-area-inset-bottom));min-width:170px;max-width:30vw;max-height:calc(100vh - 60px);overflow:hidden;font-size:12px;padding:6px 10px}#info b{font-size:13px}
  #commands{left:auto;right:max(8px,env(safe-area-inset-right));bottom:max(8px,env(safe-area-inset-bottom));max-height:calc(100vh - 190px);overflow-y:auto;flex-wrap:wrap;align-content:flex-start;width:min(348px,calc(100vw - 32vw - 30px));gap:3px!important}
- #commands button{width:84px;font-size:10px!important;padding:2px 3px!important}#commands button small{font-size:9px}
+ #commands button{width:84px;font-size:10px!important;padding:2px 3px!important}#commands button small{font-size:9px}#commands .bgrid{grid-template-columns:repeat(3,1fr)}#commands .bgrid button{width:auto}
  #touchbar{top:calc(30px + env(safe-area-inset-top))}#touchbar button{min-height:34px;min-width:84px;font-size:12px}
  .screen{justify-content:flex-start;overflow-y:auto;padding:8px 0}#menu{padding-left:max(5vw,env(safe-area-inset-left))}.screen .panel{gap:6px;padding:10px 20px}
- .screen h1{font-size:34px!important}.screen button{padding:6px 18px;font-size:14px}.screen .hint{font-size:11px}#lobby-code{font-size:30px}.pl{min-width:300px}
+ .screen h1{font-size:34px!important}.screen button{padding:6px 18px;font-size:14px}.screen .hint{font-size:11px}#civ-cards{grid-template-columns:repeat(6,104px);overflow-x:auto;max-width:calc(100vw - 60px)}.civ-card{font-size:10px}#lobby-code{font-size:30px}.pl{min-width:300px}
 }
 #quickbar{position:fixed;top:36px;left:50%;transform:translateX(-50%);display:none;gap:4px;z-index:4}
 body.ingame #quickbar{display:flex}
@@ -87,8 +97,10 @@ body.ingame #quickbar{display:flex}
 </style>
 </head><body><div id="hud"></div><div id="msg"></div><div id="banner"></div><div id="info"></div><div id="commands"></div><div id="net"></div><div id="stall"></div><div id="desync"></div><canvas id="game"></canvas><div id="touchbar"><button data-t="command">Command</button><button data-t="box">Box select</button><button data-t="cancel">Clear</button></div><button id="cmdtab" aria-expanded="false">🔨 Menu ▴</button><div id="quickbar"><button data-q="idle" title="Idle villager (.)">Idle 🐕 0</button><button data-q="army" title="All army (,)">Army</button><button id="kb-open" title="$KIBBLE network (simulated)">$K</button><button data-q="amove" title="Attack-move (Q): next order attacks on the way">A-move</button><button data-g="1" class="grp" title="Group 1: Ctrl+1 save, 1 recall; touch: long-press save, tap recall">1</button><button data-g="2" class="grp" title="Group 2: Ctrl+2 save, 2 recall; touch: long-press save, tap recall">2</button><button data-g="3" class="grp" title="Group 3: Ctrl+3 save, 3 recall; touch: long-press save, tap recall">3</button><button data-g="4" class="grp" title="Group 4: Ctrl+4 save, 4 recall; touch: long-press save, tap recall">4</button><button data-g="5" class="grp" title="Group 5: Ctrl+5 save, 5 recall; touch: long-press save, tap recall">5</button></div><div id="rotate">Rotate for best play ⟳</div><canvas id="title-bg"></canvas>
 <div id="menu" class="screen"><div class="panel"><h1>Inu Empires</h1><div class="tag">Rise of the Shiba Clans</div>
- <button id="btn-sp">Single Player</button>
- <div class="row"><label for="transport">Online via</label><select id="transport"><option value="tabs">Same browser (two tabs)</option><option value="relay">Relay server (WebSocket)</option></select></div>
+ <div id="civ-cards" aria-label="Choose your clan"></div><div class="row"><label for="civ">Your clan</label><select id="civ"></select></div><div id="civ-info" class="hint"></div>
+ <div class="row"><button id="btn-ai">⚔ Skirmish vs Computer</button><select id="ai-civ" title="Computer clan"></select></div>
+ <button id="btn-sp">Sandbox (practice camp)</button>
+ <div class="row"><label for="transport">Online via</label><select id="transport"><option value="tabs">Same browser (two tabs)</option><option value="relay">Relay server (WebSocket)</option><option value="http">Vercel relay (HTTP polling)</option></select></div>
  <div id="relay-row" class="row"><input id="relay-url" size="38" placeholder="wss://your-relay/ws"></div>
  <button id="btn-host">Host 1v1</button>
  <div class="row"><input id="join-code" size="8" maxlength="8" placeholder="CODE" style="text-transform:uppercase"><button id="btn-join" style="min-width:150px">Join 1v1</button></div>

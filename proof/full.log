@@ -1,0 +1,32 @@
+PASS: menu shows the Kishu clan traits
+PASS: skirmish vs computer started (Kishu vs Shikoku AI)
+PASS: HUD shows the clan
+PASS: drag-box selects 3 Worker Pups
+PASS: right-click berries: all 3 go gathering
+PASS: Kennel Hut foundation placed with a real click
+PASS: all selected Worker Pups build together (3 builders)
+PASS: Kennel Hut finished within 14 s incl. walking with 3 builders (25 s of work alone)
+PASS: right-click Den Hall garrisons the selection (3/3)
+PASS: Den Hall panel shows the garrison count
+PASS: Ungarrison button releases everyone
+PASS: right-click damaged Den Hall repairs it (1500 -> 1740)
+PASS: computer opponent built an economy in 10 min (17 Worker Pups, 21 buildings)
+PASS: stance buttons: 7 soldiers set to Stand Ground (stand)
+PASS: Forge placed
+PASS: Forge completed
+PASS: Forge offers attack + armor upgrade lines
+PASS: Tempered Claws researched
+PASS: AI-vs-AI: armies clash at 16 min (10 fighting)
+PASS: both computer players aged up (feudal,feudal)
+PASS: lobby carries each player's clan (akita,kai)
+PASS: host right-click move arrives on the guest through the HTTP relay
+PASS: HTTP relay lockstep: 7/7 hash checks matched, no desync
+PASS: iPhone: Skirmish button on screen in landscape menu
+PASS: iPhone: tap starts a skirmish vs computer
+PASS: iPhone: a Worker Pup is on screen
+PASS: iPhone: tap selects the Worker Pup
+PASS: iPhone: tap places a Kennel Hut foundation
+PASS: iPhone: Den Hall menu (train, age up, garrison) via tab
+PASS: iPhone: tap trains a Worker Pup
+PASS: iPhone: AI-vs-AI battle rendered in landscape
+RESULT: ALL PASSED

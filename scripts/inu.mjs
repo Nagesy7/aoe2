@@ -53,7 +53,7 @@ check(/Inu Empires/.test(await page.locator('#hud').innerText()), 'HUD shows Inu
 await shot('inu-play-economy.png');
 const v = await page.evaluate(() => { const u = window.game.world.units.find(u => u.type === 'villager'); return window.game.toScreen(u.x, u.y); });
 await page.mouse.click(v.x, v.y); await page.waitForTimeout(150);
-check(/Shiba Villager/.test(await page.locator('#info').innerText()), `villager info title: ${(await page.locator('#info').innerText()).split('\n')[0]}`);
+check(/Shiba Worker Pup/.test(await page.locator('#info').innerText()), `villager info title: ${(await page.locator('#info').innerText()).split('\n')[0]}`);
 await page.goto(`${BASE}?scenario=skirmish`); await page.waitForFunction(() => window.game);
 const added = await page.evaluate(() => { const w = window.game.world, p = w.units.find(u => u.owner === 'player' && u.type !== 'villager'); const id0 = w.nextId;
   const ts = ['crossbowman', 'scout_cavalry', 'knight', 'monk', 'trebuchet'];

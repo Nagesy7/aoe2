@@ -1,0 +1,108 @@
+PASS: tree: villager reaches node and gathers
+PASS: tree: chop uses axe (swing), expected axe
+PASS: tree: returning villager carries wood visibly (no tool)
+PASS: gold_mine: villager reaches node and gathers
+PASS: gold_mine: mine uses pick (swing), expected pick
+PASS: gold_mine: returning villager carries gold visibly (no tool)
+PASS: stone_mine: villager reaches node and gathers
+PASS: stone_mine: mine uses pick (swing), expected pick
+PASS: stone_mine: returning villager carries stone visibly (no tool)
+PASS: berries: villager reaches node and gathers
+PASS: berries: forage uses basket (pick), expected basket
+PASS: berries: returning villager carries food visibly (no tool)
+PASS: farm placed
+PASS: farm: villager builds then farms
+PASS: farm: farm with hoe
+PASS: build: build with hammer (swing)
+PASS: repair: repair with hammer
+PASS: hunt: approaching sheep with spear
+PASS: hunt: kill blow is a spear stab (stab)
+PASS: sheep butchered into a carcass and gathered
+PASS: butcher t=0.0: knife (stab)
+PASS: butcher t=0.1: knife (grab)
+PASS: butcher t=0.2: knife (grab)
+PASS: butcher t=0.3: knife (grab)
+PASS: butcher t=0.4: knife (grab)
+PASS: butcher t=0.5: knife (grab)
+PASS: butcher t=0.6: knife (grab)
+PASS: butcher t=0.7: knife (grab)
+PASS: butcher t=0.8: knife (stab)
+PASS: butcher t=0.9: knife (stab)
+PASS: butcher t=1.0: knife (stab)
+PASS: butcher t=1.1: knife (stab)
+PASS: butcher cycle = knife stab then grab meat
+PASS: returning with meat (carry, meat visible)
+PASS: villager: attack knife (stab)
+PASS: villager: move = walk
+PASS: villager: idle
+PASS: villager: death
+PASS: militia: attack sword (slash)
+PASS: militia: move = walk
+PASS: militia: idle
+PASS: militia: death
+PASS: spearman: attack spear (thrust)
+PASS: spearman: move = walk
+PASS: spearman: idle
+PASS: spearman: death
+PASS: archer: attack bow (draw)
+PASS: archer: move = walk
+PASS: archer: idle
+PASS: archer: death
+PASS: crossbowman: attack crossbow (draw)
+PASS: crossbowman: move = walk
+PASS: crossbowman: idle
+PASS: crossbowman: death
+PASS: scout_cavalry: attack lance (thrust)
+PASS: scout_cavalry: move = walk
+PASS: scout_cavalry: idle
+PASS: scout_cavalry: death
+PASS: knight: attack sword (slash)
+PASS: knight: move = walk
+PASS: knight: idle
+PASS: knight: death
+PASS: blade_paw: attack sword (slash)
+PASS: blade_paw: move = walk
+PASS: blade_paw: idle
+PASS: blade_paw: death
+PASS: halberd_pup: attack spear (thrust)
+PASS: halberd_pup: move = walk
+PASS: halberd_pup: idle
+PASS: halberd_pup: death
+PASS: swift_rider: attack lance (thrust)
+PASS: swift_rider: move = walk
+PASS: swift_rider: idle
+PASS: swift_rider: death
+PASS: red_fang: attack sword (slash)
+PASS: red_fang: move = walk
+PASS: red_fang: idle
+PASS: red_fang: death
+PASS: akita_guardian: attack sword (slash)
+PASS: akita_guardian: move = walk
+PASS: akita_guardian: idle
+PASS: akita_guardian: death
+PASS: kishu_longbow: attack crossbow (draw)
+PASS: kishu_longbow: move = walk
+PASS: kishu_longbow: idle
+PASS: kishu_longbow: death
+PASS: boar_rider: attack sword (slash)
+PASS: boar_rider: move = walk
+PASS: boar_rider: idle
+PASS: boar_rider: death
+PASS: frost_guard: attack spear (thrust)
+PASS: frost_guard: move = walk
+PASS: frost_guard: idle
+PASS: frost_guard: death
+PASS: brindle_striker: attack sword (slash)
+PASS: brindle_striker: move = walk
+PASS: brindle_striker: idle
+PASS: brindle_striker: death
+PASS: monk: attack staff (chant)
+PASS: monk: move = walk
+PASS: monk: idle
+PASS: monk: death
+PASS: trebuchet: attack sling (fling)
+PASS: trebuchet: move = walk
+PASS: trebuchet: idle
+PASS: trebuchet: death
+PASS: no gather type maps to the hammer
+RESULT: ALL 107 PASSED

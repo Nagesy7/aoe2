@@ -1,3 +1,5 @@
+import { unitAction } from './anim.js';
+import { CIV_LOOK } from './civs.js';
 import { drawUnitArt, drawBuildingArt } from './art.js';
 const ART_B = new WeakSet();
 import { drawTerrain } from './terrain.js';
@@ -49,7 +51,7 @@ export function render(ctx, world, cam, ui = {}, fog = null) {
       const f = b.progress / b.buildTime; ctx.fillStyle = '#8b6b43'; ctx.fillRect(px + 4, py + s - 4 - (s - 8) * f, s - 8, (s - 8) * f);
       bar(ctx, px, py - 9, s, f, '#e8c040');
     } else if (drawBuildingArt(ctx, b, b.owner ? (TEAM[b.owner] || TEAM.player) : null) && ART_B.add(b)) {
-      if (b.queue && b.queue.length) bar(ctx, px, py - 18, s, b.trainProgress / itemTime(b.queue[0]), b.blocked ? '#d33' : '#4fd34f');
+      if (b.queue && b.queue.length) bar(ctx, px, py - 18, s, b.trainProgress / itemTime(b.queue[0], world, b), b.blocked ? '#d33' : '#4fd34f');
     } else if (b.type === 'farm') {
       const n = world.resources.find(r => r.farm === b.id), f = n ? n.amount / 175 : 0;
       ctx.fillStyle = '#7a5a2a'; ctx.fillRect(px, py, s, s); ctx.fillStyle = `rgb(${150 + 60 * f | 0},${130 + 70 * f | 0},40)`;
@@ -59,20 +61,20 @@ export function render(ctx, world, cam, ui = {}, fog = null) {
       ctx.fillStyle = '#8b6b43'; ctx.fillRect(px + 3, py + 14, s - 6, s - 16);
       ctx.fillStyle = b.type === 'lumber_camp' ? '#2d5a1d' : b.type === 'mining_camp' ? '#6a6a6a' : '#b89030';
       ctx.beginPath(); ctx.moveTo(px, py + 16); ctx.lineTo(px + s / 2, py + 2); ctx.lineTo(px + s, py + 16); ctx.fill();
-      ctx.fillStyle = '#fff'; ctx.font = 'bold 10px sans-serif'; ctx.textAlign = 'center'; ctx.fillText(b.type === 'lumber_camp' ? 'LUMBER' : b.type === 'mining_camp' ? 'MINING' : 'MILL', px + s / 2, py + s - 8);
+      ctx.fillStyle = '#fff'; ctx.font = 'bold 10px sans-serif'; ctx.textAlign = 'center'; ctx.fillText(b.type === 'lumber_camp' ? 'TIMBER' : b.type === 'mining_camp' ? 'DIG' : 'GRANARY', px + s / 2, py + s - 8);
       if (b.type === 'mill') { ctx.strokeStyle = '#eee'; ctx.lineWidth = 2; const cx = px + s / 2, cy = py + 10; ctx.beginPath(); ctx.moveTo(cx - 9, cy - 9); ctx.lineTo(cx + 9, cy + 9); ctx.moveTo(cx + 9, cy - 9); ctx.lineTo(cx - 9, cy + 9); ctx.stroke(); ctx.lineWidth = 1; }
     } else if (b.type === 'barracks') {
       ctx.fillStyle = '#6a4a3a'; ctx.fillRect(px + 2, py + 18, s - 4, s - 20); ctx.fillStyle = '#3a2a2a'; ctx.fillRect(px - 2, py + 10, s + 4, 12);
       ctx.fillStyle = '#c02020'; ctx.fillRect(px + s / 2 - 1, py - 8, 2, 20); ctx.fillRect(px + s / 2 + 1, py - 8, 12, 8);
-      ctx.fillStyle = '#fff'; ctx.font = '12px sans-serif'; ctx.textAlign = 'center'; ctx.fillText('Barracks', px + s / 2, py + s + 14);
-      if (b.queue.length) bar(ctx, px, py - 18, s, b.trainProgress / itemTime(b.queue[0]), b.blocked ? '#d33' : '#4fd34f');
+      ctx.fillStyle = '#fff'; ctx.font = '12px sans-serif'; ctx.textAlign = 'center'; ctx.fillText(b.name, px + s / 2, py + s + 14);
+      if (b.queue.length) bar(ctx, px, py - 18, s, b.trainProgress / itemTime(b.queue[0], world, b), b.blocked ? '#d33' : '#4fd34f');
     } else if (GENERIC[b.type]) {
       const [wall, roof] = GENERIC[b.type];
       ctx.fillStyle = wall; ctx.fillRect(px + 2, py + Math.min(16, s * 0.4), s - 4, s - Math.min(16, s * 0.4) - 2);
       ctx.fillStyle = roof; ctx.beginPath(); ctx.moveTo(px - 2, py + Math.min(18, s * 0.45)); ctx.lineTo(px + s / 2, py); ctx.lineTo(px + s + 2, py + Math.min(18, s * 0.45)); ctx.fill();
       if (b.type === 'castle' || b.type === 'watch_tower') { ctx.fillStyle = '#5a5a5a'; for (let i = 0; i < b.size * 2; i++) if (i % 2 === 0) ctx.fillRect(px + i * TILE / 2, py + 10, TILE / 2, 6); }
       ctx.fillStyle = '#fff'; ctx.font = '11px sans-serif'; ctx.textAlign = 'center'; ctx.fillText(b.name, px + s / 2, py + s + 13);
-      if (b.queue.length) bar(ctx, px, py - 10, s, b.trainProgress / itemTime(b.queue[0]), b.blocked ? '#d33' : '#4fd34f');
+      if (b.queue.length) bar(ctx, px, py - 10, s, b.trainProgress / itemTime(b.queue[0], world, b), b.blocked ? '#d33' : '#4fd34f');
     } else if (b.type === 'house') {
       ctx.fillStyle = '#9b7b53'; ctx.fillRect(px + 4, py + 16, s - 8, s - 18);
       ctx.fillStyle = '#7a2a1a'; ctx.beginPath(); ctx.moveTo(px, py + 18); ctx.lineTo(px + s / 2, py + 2); ctx.lineTo(px + s, py + 18); ctx.fill();
@@ -82,7 +84,7 @@ export function render(ctx, world, cam, ui = {}, fog = null) {
       ctx.fillStyle = '#a33'; ctx.beginPath(); ctx.moveTo(px - 6, py + s * 0.45); ctx.lineTo(px + s / 2, py - 10); ctx.lineTo(px + s + 6, py + s * 0.45); ctx.fill();
       ctx.fillStyle = '#3a2a18'; ctx.fillRect(px + s / 2 - 10, py + s - 28, 20, 28);
       ctx.fillStyle = '#fff'; ctx.font = '12px sans-serif'; ctx.textAlign = 'center'; ctx.fillText(b.name, px + s / 2, py + s + 14);
-      if (b.queue.length) bar(ctx, px, py - 18, s, b.trainProgress / itemTime(b.queue[0]), b.blocked ? '#d33' : '#4fd34f');
+      if (b.queue.length) bar(ctx, px, py - 18, s, b.trainProgress / itemTime(b.queue[0], world, b), b.blocked ? '#d33' : '#4fd34f');
     }
     if (b.complete && b.type !== 'farm' && b.owner && !ART_B.has(b)) { const tc = TEAM[b.owner] || TEAM.player; ctx.fillStyle = '#4a3018'; ctx.fillRect(px + s - 8, py - 14, 2, 20); ctx.fillStyle = tc; ctx.fillRect(px + s - 6, py - 14, 13, 10); paw(ctx, px + s + 0.5, py - 9, 4.5, '#f6e6c8'); }
     if (red(b)) { ctx.fillStyle = '#c02020'; ctx.fillRect(px + 2, py + 2, 4, 14); ctx.fillRect(px + 6, py + 2, 9, 6); ctx.strokeStyle = '#e04040'; ctx.strokeRect(px + 0.5, py + 0.5, s - 1, s - 1); }
@@ -106,7 +108,7 @@ export function render(ctx, world, cam, ui = {}, fog = null) {
     if (selUnits.has(a.id) || (sel && sel.kind === 'unit' && sel.id === a.id)) { ctx.strokeStyle = '#fff'; ctx.lineWidth = 2; ctx.beginPath(); ctx.ellipse(px, py + 5, 11, 6, 0, 0, 7); ctx.stroke(); ctx.lineWidth = 1; }
     ctx.fillStyle = '#f4f0e6'; ctx.beginPath(); ctx.ellipse(px, py, 9, 6, 0, 0, 7); ctx.fill(); ctx.fillStyle = '#333'; ctx.beginPath(); ctx.arc(px + 8, py - 2, 3.5, 0, 7); ctx.fill();
     if (a.owner) { ctx.fillStyle = red(a) ? '#c02020' : '#2a50c8'; ctx.fillRect(px + 4, py - 6, 3, 8); } }]);
-  for (const u of [...world.units, ...dyingUnits(world)]) D.push([u.y * TILE + 6, () => {
+  for (const u of [...world.units.filter(o => o.state !== 'garrisoned'), ...dyingUnits(world)]) D.push([u.y * TILE + 6, () => {
     if (fog && foe(u) && !fog.sees(u)) return;
     const px = u.x * TILE, py = u.y * TILE;
     if (u.type !== 'villager' || red(u)) { ctx.fillStyle = red(u) ? '#ff2020d0' : '#3060ffb0'; ctx.beginPath(); ctx.ellipse(px, py + 6, 10, 5, 0, 0, 7); ctx.fill(); }
@@ -116,7 +118,12 @@ export function render(ctx, world, cam, ui = {}, fog = null) {
       if (u.path.length) { ctx.strokeStyle = '#ffffffaa'; ctx.setLineDash([3, 4]); ctx.beginPath(); ctx.moveTo(px, py); for (const q of u.path) ctx.lineTo(q.x * TILE, q.y * TILE); ctx.stroke(); ctx.setLineDash([]); }
       ctx.strokeStyle = '#fff'; ctx.lineWidth = 2; ctx.beginPath(); ctx.ellipse(px, py + 6, 11, 6, 0, 0, 7); ctx.stroke(); ctx.lineWidth = 1; }
     { let res = null, kind = null; if (u.type === 'villager' && u.target != null && !u.carry.amount) { const n = world.resources.find(r => r.id === u.target); if (n) { res = n.res; kind = n.kind; } }
-      if (!drawUnitArt(ctx, u, px, py, world.time || 0, TEAM[u.owner] || TEAM.player, u.lastAttackAt != null && world.time - u.lastAttackAt < 0.6)) drawInu(ctx, u, px, py, world.time || 0, { res, kind, attacking: u.lastAttackAt != null && world.time - u.lastAttackAt < 0.6 }); }
+      const act = unitAction(u, world, world.time || 0); // villagers: sprite sheet only for hammer work (build/repair) and death; otherwise procedural with the right tool
+      if (u.type === 'villager' && act.tool !== 'hammer' && act.action !== 'death') drawInu(ctx, u, px, py, world.time || 0, { res, kind, act, attacking: act.action === 'attack' });
+      else if (!drawUnitArt(ctx, u, px, py, world.time || 0, TEAM[u.owner] || TEAM.player, u.lastAttackAt != null && world.time - u.lastAttackAt < 0.6)) drawInu(ctx, u, px, py, world.time || 0, { res, kind, act, attacking: u.lastAttackAt != null && world.time - u.lastAttackAt < 0.6 }); }
+    { const civ = world.players?.[u.owner]?.civ, L = civ && CIV_LOOK[civ]; // clan skin: back-banner in the clan palette with its accent stripe
+      if (L) { const d = u.face && u.face[0] < -0.05 ? 1 : -1, bx = px + d * 7; ctx.fillStyle = '#2a1a10'; ctx.fillRect(bx, py - 26, 1.5, 16);
+        ctx.fillStyle = L.primary; ctx.fillRect(bx + (d > 0 ? 1.5 : -7), py - 26, 7, 7); ctx.fillStyle = L.accent; ctx.fillRect(bx + (d > 0 ? 1.5 : -7), py - 22, 7, 1.5); } }
   }]);
   D.sort((a, b) => a[0] - b[0]); for (const d of D) d[1]();
   for (const p of world.projectiles || []) { if (fog && !fog.visible[Math.floor(p.y) * world.width + Math.floor(p.x)]) continue; const x = p.x * TILE, y = p.y * TILE, a = p.dir ? Math.atan2(p.dir[1], p.dir[0]) : 0;

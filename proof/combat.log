@@ -1,15 +1,15 @@
-combat browser proof 2026-10-14T12:44:46.066Z url=http://localhost:43953/?scenario=skirmish
+combat browser proof 2026-10-15T05:36:42.430Z url=http://localhost:45505/?scenario=skirmish
 PASS: skirmish start: 7 player military (militia,militia,militia,spearman,spearman,archer,archer), 4 enemy guards
   saved proof/combat-01-start.png
-PASS: archer info panel: Shikoku Archer | Task: Idle | HP 30/30 Attack 4 Armor 0/0 Range 4 Speed 2.4 | Ranged (pierce damage) Reload 2s
-PASS: spearman info shows cavalry bonus: Kishu Spearman | Task: Idle | HP 45/45 Attack 3 Armor 0/0 Speed 2.5 | Melee Reload 3s +15 vs cavalry
+PASS: archer info panel: Shikoku Bow Pup | Task: Idle | HP 30/30 Attack 4 Armor 0/0 Range 4 Speed 2.4 | Ranged (pierce damage) Reload 2s
+PASS: spearman info shows cavalry bonus: Kishu Pike Pup | Task: Idle | HP 45/45 Attack 3 Armor 0/0 Speed 2.5 | Melee Reload 3s +15 vs cavalry
 PASS: info panel has an HP bar
   saved proof/combat-02-unit-info.png
 PASS: drag-box selected all 7 soldiers
 PASS: move target is on the canvas
 PASS: right-click ground issued a move
   saved proof/combat-03-move-order.png
-PASS: formation: 7 units on 7 distinct tiles (21,29 23,29 22,30 22,29 21,30 23,30 21,31)
+PASS: formation: 7 units on 7 distinct tiles (21,29 24,30 22,29 22,31 21,30 23,30 21,31)
 PASS: units gathered around the clicked point
 PASS: no unit inside a building or tree
   saved proof/combat-04-enemy-camp.png
@@ -17,13 +17,13 @@ PASS: attack cursor over enemy unit: attack,crosshair
 PASS: right-click enemy militia = attack order (target 170)
 PASS: all 7 selected units ordered to attack it
   saved proof/combat-05-attack-order.png
-  first contact t=22.2s: enemy militia:31:attacking militia:40:attacking spearman:45:attacking archer:30:attacking | own militia:40:attacking militia:40:attacking militia:40:attacking spearman:30:attacking spearman:45:attacking archer:30:attacking archer:30:attacking
+  first contact t=22.7s: enemy militia:31:attacking militia:40:attacking spearman:45:attacking archer:30:attacking | own militia:40:attacking militia:40:attacking militia:40:attacking spearman:45:attacking spearman:37:attacking archer:30:attacking archer:30:attacking
 PASS: enemy guards auto-acquired (aggro) without orders
-PASS: combat log has 7 hits
+PASS: combat log has 5 hits
   saved proof/combat-06-melee-and-arrows.png
 PASS: archer arrows landed (3 dmg vs militia)
 PASS: all enemy guards killed; 6/7 own soldiers survive
-  deaths: enemy:militia@25.3 player:spearman@27.6 enemy:spearman@31.3 enemy:militia@35.3 enemy:archer@37.0
+  deaths: enemy:militia@25.6 player:spearman@28.8 enemy:spearman@32.1 enemy:militia@33.0 enemy:archer@36.4
 PASS: dead units removed from the world (no 0-HP units remain)
 PASS: survivors auto-acquired follow-up targets after the first kill
 PASS: no stacking after the fight
@@ -31,8 +31,8 @@ PASS: no stacking after the fight
 PASS: re-selected 6 survivors
 PASS: attack cursor over enemy Barracks
 PASS: right-click enemy Barracks = attack order
-PASS: Barracks HP 1200 -> 1122
-PASS: enemy Barracks info: Barracks (Enemy) | HP: 1121/1200 | Armor 0/7
+PASS: Barracks HP 1200 -> 1123
+PASS: enemy Barracks info: Dojo (Enemy) | HP: 1121/1200 | Armor 0/7
 PASS: no train buttons for an enemy building
   saved proof/combat-08-attacking-building.png
 PASS: enemy Barracks destroyed at t=193s and removed

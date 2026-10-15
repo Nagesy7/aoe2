@@ -23,7 +23,7 @@ for (const [name, tag] of [['iPhone 13 landscape', 'iphone'], ['Pixel 7 landscap
   const vp = p.viewportSize();
   await p.goto(BASE); await p.waitForFunction(() => window.game);
   check(await S(() => document.querySelector('meta[name=viewport]').content.includes('viewport-fit=cover')), `${name}: viewport meta has viewport-fit=cover`);
-  const sp = await bb('#btn-sp'); check(sp && sp.y + sp.height <= vp.height, `${name}: Single Player button on screen in landscape menu`);
+  await p.locator('#btn-sp').scrollIntoViewIfNeeded(); const sp = await bb('#btn-sp'); check(sp && sp.y + sp.height <= vp.height, `${name}: Sandbox button reachable on screen (menu scrolls) in landscape`);
   await tap(await mid('#btn-sp')); await p.waitForFunction(() => window.game.world);
   const cv = await bb('#game'); check(cv.x === 0 && cv.y === 0 && Math.abs(cv.width - vp.width) < 1 && Math.abs(cv.height - vp.height) < 1, `${name}: canvas fills ${vp.width}x${vp.height}`);
   check(!(await bb('#rotate')), `${name}: no rotate hint in landscape`);

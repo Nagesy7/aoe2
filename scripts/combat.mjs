@@ -42,9 +42,9 @@ await shot('combat-01-start.png');
 
 // 2. click one archer: info panel shows attack / armor / range
 const archer = a0.find(u => u.type === 'archer'); await at(archer.x, archer.y);
-let info = await text('#info'); check(/Archer/.test(info) && /Attack 4/.test(info) && /Armor 0\/0/.test(info) && /Range 4/.test(info) && /Reload 2s/.test(info), `archer info panel: ${info}`);
+let info = await text('#info'); check(/Bow Pup/.test(info) && /Attack 4/.test(info) && /Armor 0\/0/.test(info) && /Range 4/.test(info) && /Reload 2s/.test(info), `archer info panel: ${info}`);
 const spear = a0.find(u => u.type === 'spearman'); await at(spear.x, spear.y);
-info = await text('#info'); check(/Spearman/.test(info) && /\+15 vs cavalry/.test(info), `spearman info shows cavalry bonus: ${info}`);
+info = await text('#info'); check(/Pike Pup/.test(info) && /\+15 vs cavalry/.test(info), `spearman info shows cavalry bonus: ${info}`);
 check(await S(() => !!document.querySelector('#info .bar.hp')), 'info panel has an HP bar');
 await shot('combat-02-unit-info.png');
 
@@ -108,7 +108,7 @@ check((await S(() => window.game.world.lastOrder)).target === rax.id, 'right-cli
 await advance(10);
 const raxHp = await S(`window.game.world.buildings.find(b => b.id === ${rax.id})?.hp`);
 check(raxHp < rax.hp, `Barracks HP ${rax.hp} -> ${raxHp}`);
-await at(rax.x + 1.5, rax.y + 1.5); info = await text('#info'); check(/Barracks \(Enemy\)/.test(info) && /Armor 0\/7/.test(info), `enemy Barracks info: ${info}`);
+await at(rax.x + 1.5, rax.y + 1.5); info = await text('#info'); check(/Dojo \(Enemy\)/.test(info) && /Armor 0\/7/.test(info), `enemy Barracks info: ${info}`);
 check((await S(() => document.querySelectorAll('#commands button').length)) === 0, 'no train buttons for an enemy building');
 await shot('combat-08-attacking-building.png');
 const razed = await until(`!window.game.world.buildings.some(b => b.id === ${rax.id})`, 900, 5);

@@ -43,7 +43,9 @@ const placeNear = async (wx, wy) => { // real mouse: move ghost around the targe
     const p = await scr(wx + dx, wy + dy); await page.mouse.move(p.x, p.y); await page.waitForTimeout(40);
     const g = await S(() => window.game.ui.ghost); if (g && g.valid) { await page.mouse.click(p.x, p.y); return g; } }
   return null; };
-const btn = a => page.locator(`#commands button[data-action=${a}]`);
+const btn = a => { const l = page.locator(`#commands button[data-action=${a}]`); // build buttons live in tabs: open the right tab with a real click first
+  const open = async () => { const k = await page.evaluate(t => window.game.buildTabOf?.(t), a); if (k) await page.locator(`#commands [data-action=btab-${k}]`).waitFor({ timeout: 3000 }).catch(() => {}); if (k && await page.locator(`#commands [data-action=btab-${k}]`).count() && !(await l.isVisible())) await page.click(`#commands [data-action=btab-${k}]`); };
+  return new Proxy(l, { get: (o, m) => typeof o[m] === 'function' ? async (...x) => { await open(); return o[m](...x); } : o[m] }); };
 // override: only hover/click canvas points that are not under a UI panel (real DOM hit test)
 const onCanvas = (x, y) => S(`document.elementFromPoint(${x}, ${y})?.id === 'game'`);
 const placeAt = async (wx, wy) => {
@@ -63,18 +65,18 @@ const [v0, v1, v2] = ids;
 
 // 1. Dark Age: locked menu
 await clickUnit(v0);
-check(/Dark Age/.test(await hud()), `HUD shows age: ${await hud()}`);
+check(/Puppy Age/.test(await hud()), `HUD shows age: ${await hud()}`);
 const locked = {};
 for (const t of ['archery_range', 'stable', 'blacksmith', 'market', 'watch_tower', 'castle', 'monastery', 'university', 'wonder']) locked[t] = { dis: await btn(t).isDisabled(), txt: (await btn(t).innerText()).replace(/\n/g, ' ') };
-check(['archery_range', 'stable', 'blacksmith', 'market', 'watch_tower'].every(t => locked[t].dis && /Requires Feudal Age/.test(locked[t].txt)), `Feudal buildings greyed: ${locked.archery_range.txt}; ${locked.watch_tower.txt}`);
-check(['castle', 'monastery', 'university'].every(t => locked[t].dis && /Requires Castle Age/.test(locked[t].txt)) && /Requires Imperial Age/.test(locked.wonder.txt), `Castle/Imperial greyed: ${locked.castle.txt}; ${locked.wonder.txt}`);
+check(['archery_range', 'stable', 'blacksmith', 'market', 'watch_tower'].every(t => locked[t].dis && /(Requires|🔒) Pack Age/.test(locked[t].txt)), `Feudal buildings greyed: ${locked.archery_range.txt}; ${locked.watch_tower.txt}`);
+check(['castle', 'monastery', 'university'].every(t => locked[t].dis && /(Requires|🔒) Fortress Age/.test(locked[t].txt)) && /(Requires|🔒) Shogun Age/.test(locked.wonder.txt), `Castle/Imperial greyed: ${locked.castle.txt}; ${locked.wonder.txt}`);
 await shot('ages-01-dark-locked-menu.png');
 
 // 2. TC: age-up requirements text; train 2 villagers; rally new villagers to the berries
 await at(34, 34);
 let ab = (await ageBtn().innerText()).replace(/\n/g, ' ');
-check(await ageBtn().isDisabled() && /Advance to Feudal Age/.test(ab) && /500 food, 130s/.test(ab) && /needs 2 of: House, Mill, Lumber Camp, Mining Camp, Barracks \(have 0\)/.test(ab), `age button: "${ab}"`);
-check(/Requires Castle Age/.test(await btn('tech-hand_cart').innerText()), 'Hand Cart shows Requires Castle Age at the TC');
+check(await ageBtn().isDisabled() && /Advance to Pack Age/.test(ab) && /500 food, 130s/.test(ab) && /needs 2 of: Kennel Hut, Granary, Timber Lodge, Dig Site, Dojo \(have 0\)/.test(ab), `age button: "${ab}"`);
+check(/Requires Fortress Age/.test(await btn('tech-hand_cart').innerText()), 'Hand Cart shows Requires Castle Age at the TC');
 await shot('ages-02-age-up-requirements.png');
 await btn('train').click(); await btn('train').click();
 await at(41.5, 31.5, 'right');
@@ -123,14 +125,14 @@ const f0 = (await st()).food; await ageBtn().click();
 check((await st()).food === f0 - 500, 'Feudal research started (-500 food)');
 await advance(40); await at(34, 34);
 const info = await text('#info');
-check(/Researching Feudal Age: 3\d%/.test(info) && await page.locator('#info .bar div').count() === 1 && /researching/.test(await ageBtn().innerText()), `research progress: ${info}`);
+check(/Researching Pack Age: 3\d%/.test(info) && await page.locator('#info .bar div').count() === 1 && /researching/.test(await ageBtn().innerText()), `research progress: ${info}`);
 await shot('ages-03-feudal-research-progress.png');
 check(await until(() => window.game.world.age === 'feudal', 100, 1), 'Feudal Age reached');
-check(/You have advanced to the Feudal Age/.test(await text('#banner')) && /Feudal Age/.test(await hud()), `banner: "${await text('#banner')}"; HUD ${await hud()}`);
+check(/You have advanced to the Pack Age/.test(await text('#banner')) && /Pack Age/.test(await hud()), `banner: "${await text('#banner')}"; HUD ${await hud()}`);
 await shot('ages-04-feudal-banner.png');
 await clickUnit(v2);
 const fe = { ar: (await btn('archery_range').innerText()).replace(/\n/g, ' '), bs: (await btn('blacksmith').innerText()).replace(/\n/g, ' '), ca: (await btn('castle').innerText()).replace(/\n/g, ' ') };
-check(!/Requires/.test(fe.ar) && !/Requires/.test(fe.bs) && /Requires Castle Age/.test(fe.ca), `unlocked in Feudal: "${fe.ar}", "${fe.bs}"; still locked: "${fe.ca}"`);
+check(!/Requires/.test(fe.ar) && !/Requires/.test(fe.bs) && /(Requires|🔒) Fortress Age/.test(fe.ca), `unlocked in Feudal: "${fe.ar}", "${fe.bs}"; still locked: "${fe.ca}"`);
 await shot('ages-05-feudal-unlocked-menu.png');
 
 // 5. Techs: Loom (TC) and Gold Mining (Mining Camp) with measured effect
@@ -138,14 +140,14 @@ const minerRate = async secs => { let got = 0, time = 0; let prev = await S(`win
   for (let t = 0; t < secs; t += 0.5) { await advance(0.5); const cur = await S(`window.game.world.units.filter(u => [${[...goldIds]}].includes(u.id)).map(u => [u.state, u.carry.amount])`);
     cur.forEach((c, i) => { if (c[0] === 'gathering' && prev[i][0] === 'gathering' && c[1] >= prev[i][1]) { got += c[1] - prev[i][1]; time += 0.5; } }); prev = cur; }
   return got / time; };
-const r0 = await minerRate(30);
+const r0 = await minerRate(60);
 await waitFor(() => window.game.world.stockpile.food >= 150 && window.game.world.stockpile.wood >= 80, 600);
 await at(mc.tx + 1, mc.ty + 1);
-check(/Gold Mining/.test(await btn('tech-gold_mining').innerText()) && /100 food, 75 wood, 30s/.test(await btn('tech-gold_mining').innerText()), `Mining Camp tech button: ${(await btn('tech-gold_mining').innerText()).replace(/\n/g, ' ')}`);
-check(/Requires Castle Age/.test(await btn('tech-gold_shaft_mining').innerText()), 'Gold Shaft Mining greyed: Requires Castle Age');
+check(/Gold Sniffing/.test(await btn('tech-gold_mining').innerText()) && /100 food, 75 wood, 30s/.test(await btn('tech-gold_mining').innerText()), `Mining Camp tech button: ${(await btn('tech-gold_mining').innerText()).replace(/\n/g, ' ')}`);
+check(/Requires Fortress Age/.test(await btn('tech-gold_shaft_mining').innerText()), 'Gold Shaft Mining greyed: Requires Fortress Age');
 await btn('tech-gold_mining').click();
 check(await until(() => 'gold_mining' in window.game.world.researched, 40, 1), 'Gold Mining researched');
-const r1 = await minerRate(30);
+const r1 = await minerRate(60);
 const GR = await S(() => window.game.sim.GATHER_RATES.gold_mine); const rates = await S(() => [window.game.sim.gatherRate(window.game.world, 'gold_mine'), window.game.sim.gatherRate(window.game.world, 'tree')]);
 check(Math.abs(rates[0] - GR * 1.15) < 1e-9 && r1 / r0 > 1.05 && r1 / r0 < 1.3, `Gold Mining effect: rate ${GR} -> ${rates[0].toFixed(2)}; measured miner rate ${r0.toFixed(3)} -> ${r1.toFixed(3)} /s (x${(r1 / r0).toFixed(2)})`);
 await at(mc.tx + 1, mc.ty + 1); await shot('ages-06-tech-gold-mining-researched.png');
@@ -163,16 +165,16 @@ await clickUnit(v1); await btn('market').click(); const mkg = await placeAt(48, 
 check(bsg && mkg, `Blacksmith at (${bsg?.tx},${bsg?.ty}), Market at (${mkg?.tx},${mkg?.ty})`);
 reserveWood = 0;
 check(await waitFor(() => ['blacksmith', 'market'].every(t => window.game.world.buildings.some(b => b.type === t && b.complete)), 400), 'Blacksmith + Market built (Feudal buildings)');
-await at(bsg.tx + 1.5, bsg.ty + 1.5); check(/Forging/.test(await btn('tech-forging').innerText()), 'Blacksmith offers Forging');
+await at(bsg.tx + 1.5, bsg.ty + 1.5); check(/Tempered Claws/.test(await btn('tech-forging').innerText()), 'Blacksmith offers Tempered Claws');
 await shot('ages-08-feudal-building-built.png');
 await clickUnit(v2); await at(24.5, 22.5, 'right');
 
 // 7. Castle Age
 check(await waitFor(() => window.game.world.stockpile.food >= 800 && window.game.world.stockpile.gold >= 200, 3000), `800 food + 200 gold: ${JSON.stringify(await st())}`);
-await at(34, 34); ab = (await ageBtn().innerText()).replace(/\n/g, ' '); check(/Advance to Castle Age/.test(ab) && /800 food, 200 gold, 160s/.test(ab) && !(await ageBtn().isDisabled()), `castle button: "${ab}"`);
+await at(34, 34); ab = (await ageBtn().innerText()).replace(/\n/g, ' '); check(/Advance to Fortress Age/.test(ab) && /800 food, 200 gold, 160s/.test(ab) && !(await ageBtn().isDisabled()), `castle button: "${ab}"`);
 await ageBtn().click();
 check(await waitFor(() => window.game.world.age === 'castle', 200, 2), 'Castle Age reached');
-check(/Castle Age/.test(await text('#banner')), `banner: ${await text('#banner')}`);
+check(/Fortress Age/.test(await text('#banner')), `banner: ${await text('#banner')}`);
 await shot('ages-09-castle-banner.png');
 
 // 8. Castle buildings: Monastery + University -> Imperial
@@ -188,7 +190,7 @@ await at(34, 34); ab = (await ageBtn().innerText()).replace(/\n/g, ' '); log(`  
 check(await waitFor(() => window.game.world.stockpile.food >= 1000 && window.game.world.stockpile.gold >= 800, 4000), `1000 food + 800 gold: ${JSON.stringify(await st())}`);
 await at(34, 34); await ageBtn().click();
 check(await waitFor(() => window.game.world.age === 'imperial', 250, 2), 'Imperial Age reached');
-check(/Imperial Age/.test(await text('#banner')) && /Imperial Age/.test(await hud()), `banner: ${await text('#banner')}; HUD ${await hud()}`);
+check(/Shogun Age/.test(await text('#banner')) && /Shogun Age/.test(await hud()), `banner: ${await text('#banner')}; HUD ${await hud()}`);
 await shot('ages-10-imperial-banner.png');
 await clickUnit(v2); const wonderTxt = (await btn('wonder').innerText()).replace(/\n/g, ' ');
 check(!/Requires/.test(wonderTxt), `Wonder unlocked in Imperial: "${wonderTxt}"`);

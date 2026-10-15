@@ -1,0 +1,36 @@
+PASS: desktop: 3 build tabs (Economy / Military / Other)
+PASS: desktop: tab 1 opens
+PASS: desktop: tab 1 panel fully on screen (212x111)
+PASS: desktop: panel is compact (3% of screen)
+PASS: desktop: tab 2 opens
+PASS: desktop: tab 2 panel fully on screen (212x111)
+PASS: desktop: panel is compact (3% of screen)
+PASS: desktop: tab 3 opens
+PASS: desktop: tab 3 panel fully on screen (212x70)
+PASS: desktop: panel is compact (2% of screen)
+PASS: desktop: every build option is still reachable (15/15)
+PASS: desktop: at most 6 buttons shown at once (was all 15)
+PASS: desktop: tapping Dojo in the Military tab starts placement
+PASS: anim wood: chop / axe / swing (state gathering)
+PASS: anim gold: mine / pick / swing (state gathering)
+PASS: anim stone: mine / pick / swing (state gathering)
+PASS: anim forage: forage / basket / pick (state gathering)
+PASS: anim farm: farm / hoe / swing (state gathering)
+PASS: anim sheep: butcher / knife / grab (state gathering)
+PASS: anim build: build / hammer / swing (state building)
+PASS: anim carry-meat: carry / null / walk (state to_drop)
+PASS: iPhone: tap selects a villager
+PASS: iphone: 3 build tabs (Economy / Military / Other)
+PASS: iphone: tab 1 opens
+PASS: iphone: tab 1 panel fully on screen (348x106)
+PASS: iphone: panel is compact (14% of screen)
+PASS: iphone: tab 2 opens
+PASS: iphone: tab 2 panel fully on screen (348x106)
+PASS: iphone: panel is compact (14% of screen)
+PASS: iphone: tab 3 opens
+PASS: iphone: tab 3 panel fully on screen (348x68)
+PASS: iphone: panel is compact (9% of screen)
+PASS: iphone: every build option is still reachable (15/15)
+PASS: iphone: at most 6 buttons shown at once (was all 15)
+PASS: iphone: tapping Dojo in the Military tab starts placement
+RESULT: ALL PASSED

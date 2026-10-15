@@ -1,4 +1,4 @@
-gather test 2026-10-14T12:44:13.280Z
+gather test 2026-10-15T05:31:55.628Z
 --- gathering ---
 [food] node berries 125 -> 91; stockpile food=30; carried=4; state=gathering
 PASS: food stockpile increased in trips of 10 (30)
@@ -140,7 +140,7 @@ PASS: right-click with TC selected sets rally
 PASS: queue 5th villager
 PASS: new villager walked to rally (at 45.5,36.5)
 PASS: pop now 5/5
-PASS: training blocked at cap with message: "Population cap reached (5/5): build a House"
+PASS: training blocked at cap with message: "Population cap reached (5/5): build a Kennel Hut"
 PASS: house invalid on TC / off-map edge / forest
 PASS: house valid on open grass
 PASS: house foundation placed, 25 wood spent
@@ -159,7 +159,7 @@ PASS: move to enclosed tile goes to nearest reachable walkable tile instead
 PASS: unreachable gather target handled gracefully (state idle, note unreachable)
 PASS: stays idle, no crash
 --- round 4: drag-box multi-select + parallel gather ---
-PASS: box selects 3 villagers (3 Villagers selected)
+PASS: box selects 3 villagers (3 Worker Pups selected)
 PASS: all selected villagers ordered to gather
 parallel: removed=74 delivered=60 carried=14 gatheringTiles=39,31 39,30 39,29
 PASS: 3 villagers: node decrease 74 == delivered 60 + carried 14

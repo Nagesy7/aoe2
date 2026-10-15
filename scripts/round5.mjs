@@ -78,7 +78,7 @@ check(st.done === 2 && maxIn === 0 && (await inside()) === 0, `2 houses complete
 check(st.mover[0] === 49 && st.mover[1] === 37 && st.mover[2] === 'idle', `mover arrived at (${st.mover[0]},${st.mover[1]})`);
 check(/Pop 3\/15/.test(await hud()), `HUD: ${await hud()}`);
 const hp = await scr(37, 35); await page.mouse.click(hp.x, hp.y);
-check(/House \| HP: 550\/550/.test(await text('#info')), `completed house selected: ${await text('#info')}`);
+check(/Kennel Hut \| HP: 550\/550/.test(await text('#info')), `completed house selected: ${await text('#info')}`);
 await shot('round5-04-completed-house-nobody-inside.png');
 
 await browser.close(); server.close();

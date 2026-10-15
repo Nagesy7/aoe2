@@ -4,7 +4,7 @@ export const RES_TYPES = ['food', 'wood', 'gold', 'stone'];
 const NODE_KIND = { food: 'berries', wood: 'tree', gold: 'gold_mine', stone: 'stone_mine' };
 const NODE_AMOUNT = { food: 125, wood: 100, gold: 800, stone: 350 };
 export const START_STOCKPILE = { food: 200, wood: 200, gold: 100, stone: 100 };
-import { AGES, AGE_NAMES, AGE_UPS, BUILDINGS, UNITS, TECHS, BUILD_MENU as TT_MENU, ageIndex, techsAt } from './techtree.js';
+import { AGES, AGE_NAMES, AGE_UPS, BUILDINGS, UNITS, TECHS, BUILD_MENU as TT_MENU, BUILDING_ARROW, ageIndex, techsAt } from './techtree.js';
 export { AGES, AGE_NAMES, AGE_UPS, TECHS, techsAt };
 export const UNIT_DEFS = UNITS;
 export const COSTS = Object.fromEntries([...Object.entries(UNITS), ...Object.entries(BUILDINGS)].map(([k, d]) => [k, d.cost]));
@@ -16,6 +16,8 @@ export const TRAIN_TIME = 25, HOUSE_BUILD_TIME = 25, POP_MAX = 200, QUEUE_MAX = 
 export const CARRY_MAX = 10, GATHER_RATE = 1.0, REACH = 0.9;
 export const BUILDING_DEFS = BUILDINGS;
 export const BUILD_MENU = TT_MENU;
+import { CIVS, civOf } from './civs.js';
+import { tickComputers, checkVictory } from './ai.js';
 import { orderAttack, orderAttackGroup, isEnemy, tickAttack, tickProjectiles, tickAggro, tickSeparation, tickAi, stepWithStuckCheck, unitStats, armorOf } from './combat.js';
 export * from './combat.js';
 
@@ -42,16 +44,17 @@ export const hyp = (dx, dy) => Math.sqrt(dx * dx + dy * dy);
 export function rng(seed) { let s = seed >>> 0; return () => ((s = (s * 1664525 + 1013904223) >>> 0) / 4294967296); }
 
 export function addBuilding(world, type, x, y, complete = true, owner = 'player') {
-  const d = BUILDING_DEFS[type];
-  const b = { id: world.nextId++, type, name: d.name, x, y, size: d.size, maxHp: d.maxHp, hp: complete ? d.maxHp : 1,
+  const d = BUILDING_DEFS[type], hpMul = 1 + (world.players ? techEffects(world, owner).buildingHpPct : 0) / 100;
+  const civ = world.players?.[owner]?.civ, uu = civ && CIVS[civ] ? CIVS[civ].unique : null;
+  const b = { id: world.nextId++, type, name: d.name, x, y, size: d.size, maxHp: Math.round(d.maxHp * hpMul), hp: complete ? Math.round(d.maxHp * hpMul) : 1,
     popCap: d.popCap || 0, complete, progress: complete ? (d.buildTime || 0) : 0, buildTime: d.buildTime || 0,
-    dropsite: !!d.accepts, accepts: d.accepts || [], trains: d.trains || [], walkable: !!d.walkable, queue: [], trainProgress: 0, rally: null, owner };
+    dropsite: !!d.accepts, accepts: d.accepts || [], trains: [...(d.trains || []), ...(type === 'castle' && uu ? [uu] : [])], garrison: [], garrisonCap: d.garrison || 0, arrows: d.arrows || 0, walkable: !!d.walkable, queue: [], trainProgress: 0, rally: null, owner };
   world.buildings.push(b); return b;
 }
 function newVillager(world, x, y, type = 'villager', owner = 'player') {
   const d = UNIT_DEFS[type], fx = techEffects(world, owner), vil = type === 'villager';
-  const maxHp = d.hp + (vil ? fx.villagerHp : 0);
-  const u = { id: world.nextId++, type, owner, x, y, speed: d.speed * (vil ? 1 + fx.villagerSpeedPct / 100 : 1), hp: maxHp, maxHp, state: 'idle', target: null, build: null,
+  const maxHp = Math.round((d.hp + (vil ? fx.villagerHp : 0)) * (d.infantry ? 1 + fx.infantryHpPct / 100 : 1));
+  const u = { id: world.nextId++, type, owner, stance: 'aggressive', x, y, speed: d.speed * (vil ? 1 + fx.villagerSpeedPct / 100 : d.cavalry ? 1 + fx.cavalrySpeedPct / 100 : 1), hp: maxHp, maxHp, state: 'idle', target: null, build: null,
     path: [], goal: null, carry: { res: null, amount: 0 }, gatherTimer: 0, note: null };
   world.units.push(u); return u;
 }
@@ -62,7 +65,7 @@ export const OWNERS = ['player', 'enemy'];
 // Per-player economy. world.stockpile / world.age / world.researched are views onto the player in world.cur, so all the
 // single-player rules (afford, pay, ages, techs) apply unchanged to whichever player a command or unit update belongs to.
 function attachPlayers(world, stockpile) {
-  world.players = {}; for (const o of OWNERS) world.players[o] = { stockpile: { ...stockpile }, age: 'dark', researched: {} };
+  world.players = {}; for (const o of OWNERS) world.players[o] = { stockpile: { ...stockpile }, age: 'dark', researched: {}, civ: null };
   world.cur = 'player';
   for (const k of ['stockpile', 'age', 'researched']) Object.defineProperty(world, k, { enumerable: true, configurable: true,
     get() { return this.players[this.cur || 'player'][k]; }, set(v) { this.players[this.cur || 'player'][k] = v; } });
@@ -208,7 +211,7 @@ export function townCenterCenter(b) { return { x: b.x + b.size / 2, y: b.y + b.s
 export function findResourceAt(world, x, y, r = 0.6) { return world.resources.find(n => n.amount > 0 && hyp(n.x - x, n.y - y) < r) || null; }
 export const mobiles = world => [...world.units, ...world.animals];
 export const mobile = (world, id) => world.units.find(u => u.id === id) || world.animals.find(a => a.id === id) || null;
-export function unitAt(world, x, y, r = 0.6) { return world.units.find(u => hyp(u.x - x, u.y - y) < r) || world.animals.find(u => hyp(u.x - x, u.y - y) < r) || null; }
+export function unitAt(world, x, y, r = 0.6) { return world.units.find(u => u.state !== 'garrisoned' && hyp(u.x - x, u.y - y) < r) || world.animals.find(u => hyp(u.x - x, u.y - y) < r) || null; }
 export function sheepAt(world, x, y, r = 0.6) { return world.animals.find(u => hyp(u.x - x, u.y - y) < r) || null; }
 // Ownership is relative to world.cur: the player whose turn of the simulation (command or unit update) is running.
 const curOf = world => world.cur || 'player';
@@ -227,7 +230,7 @@ export function getSelected(world) { return world.selected == null ? null : mobi
 export function selectedBuilding(world) { const s = world.selection; return s && s.kind === 'building' ? world.buildings.find(b => b.id === s.id) || null : null; }
 export function selectedOwnBuilding(world) { const b = selectedBuilding(world); return b && mine(world, b) ? b : null; }
 export function unitsInRect(world, x0, y0, x1, y1) { const [ax, bx] = [Math.min(x0, x1), Math.max(x0, x1)], [ay, by] = [Math.min(y0, y1), Math.max(y0, y1)];
-  const inBox = mobiles(world).filter(u => owned(world, u) && u.x >= ax && u.x <= bx && u.y >= ay && u.y <= by);
+  const inBox = mobiles(world).filter(u => owned(world, u) && u.state !== 'garrisoned' && u.x >= ax && u.x <= bx && u.y >= ay && u.y <= by);
   return inBox.some(u => u.type !== 'sheep') ? inBox.filter(u => u.type !== 'sheep') : inBox; }
 export function boxSelect(world, x0, y0, x1, y1) { const us = unitsInRect(world, x0, y0, x1, y1); selectUnits(world, us); return us; }
 export function pickAt(world, x, y) {
@@ -243,7 +246,7 @@ export function popCount(world) { return world.units.filter(u => owned(world, u)
 export function queuedCount(world) { return world.buildings.reduce((t, b) => t + (mine(world, b) ? b.queue.filter(isUnitItem).length : 0), 0); }
 export function popCap(world) { return Math.min(POP_MAX, world.buildings.reduce((t, b) => t + (b.complete && mine(world, b) ? b.popCap : 0), 0)); }
 const KIND_NAME = { berries: 'Berry Bush', tree: 'Tree', gold_mine: 'Gold Mine', stone_mine: 'Stone Mine' };
-const TASK_NAME = { attacking: 'Attacking', to_hunt: 'Going to sheep', idle: 'Idle', moving: 'Moving', to_resource: 'Walking to resource', gathering: 'Gathering', to_drop: 'Returning to Town Center', to_build: 'Walking to build', building: 'Building' };
+const TASK_NAME = { attacking: 'Attacking', to_hunt: 'Going to sheep', idle: 'Idle', moving: 'Moving', to_resource: 'Walking to resource', gathering: 'Gathering', to_drop: 'Returning to drop-off', to_build: 'Walking to build', building: 'Building' };
 export function selectionInfo(world) {
   const s = world.selection; if (!s) return null;
   if (s.kind === 'tile') return { kind: 'tile', title: 'Grass tile', lines: [`(${s.x}, ${s.y})`] };
@@ -252,19 +255,19 @@ export function selectionInfo(world) {
     const arm = armorOf(b); const lines = [`HP: ${Math.ceil(b.hp)}/${b.maxHp}`, `Armor ${arm.melee}/${arm.pierce}`];
     if (b.owner && b.owner !== curOf(world)) return { kind: 'building', type: b.type, title: `${b.name} (Enemy)`, enemy: true, hp: b.hp / b.maxHp, lines };
     if (b.trains.length || b.queue.length) { lines.push(`Queue: ${b.queue.length}/${QUEUE_MAX}`);
-      if (b.queue.length) lines.push(`${isUnitItem(b.queue[0]) ? 'Training' : 'Researching'} ${itemName(b.queue[0])}: ${Math.floor(100 * b.trainProgress / itemTime(b.queue[0]))}%`);
+      if (b.queue.length) lines.push(`${isUnitItem(b.queue[0]) ? 'Training' : 'Researching'} ${itemName(b.queue[0])}: ${Math.floor(100 * b.trainProgress / itemTime(b.queue[0], world, b))}%`);
       if (b.blocked) lines.push('Halted: population cap');
       if (b.rally) lines.push(`Rally: (${Math.floor(b.rally.x)}, ${Math.floor(b.rally.y)})`); }
     if (b.popCap && b.type !== 'town_center') lines.push(`Provides +${b.popCap} population`);
     if (b.type === 'farm') { const n = world.resources.find(r => r.farm === b.id); lines.push(`Food: ${n ? n.amount : 0}/${n ? n.max || n.amount : farmFood(world)}`); }
     if (b.accepts.length && b.type !== 'town_center') lines.push(`Drop-off: ${b.accepts.join(', ')}`);
-    return { kind: 'building', type: b.type, title: b.name, lines, queue: b.queue.length, queueTypes: [...b.queue], progress: b.queue.length ? b.trainProgress / itemTime(b.queue[0]) : null };
+    return { kind: 'building', type: b.type, title: b.name, lines, queue: b.queue.length, queueTypes: [...b.queue], progress: b.queue.length ? b.trainProgress / itemTime(b.queue[0], world, b) : null };
   }
   if (s.kind === 'resource') { const n = world.resources.find(o => o.id === s.id); return n && { kind: 'resource', title: KIND_NAME[n.kind], lines: [`${n.res}: ${n.amount} remaining`] }; }
   if (s.kind === 'units') { const us = selectedUnits(world); const counts = {};
     for (const u of us) counts[TASK_NAME[u.state]] = (counts[TASK_NAME[u.state]] || 0) + 1;
     const allV = us.every(u => u.type === 'villager');
-    return { kind: 'units', count: us.length, title: allV ? `${us.length} Villagers selected` : `${us.length} units selected`, lines: Object.entries(counts).map(([k, v]) => `${v} × ${k}`).concat([`Carrying: ${us.reduce((t, u) => t + u.carry.amount, 0)} total`]) }; }
+    return { kind: 'units', count: us.length, title: allV ? `${us.length} Worker Pups selected` : `${us.length} units selected`, lines: Object.entries(counts).map(([k, v]) => `${v} × ${k}`).concat([`Carrying: ${us.reduce((t, u) => t + u.carry.amount, 0)} total`]) }; }
   const u = mobile(world, s.id); if (!u) return null;
   if (u.type === 'sheep') return { kind: 'unit', type: 'sheep', title: 'Sheep', lines: [u.owner ? (u.owner === curOf(world) ? 'Owner: you' : 'Owner: enemy') : 'Neutral (touch with a villager to convert)', `Food: ${CARCASS_FOOD} when butchered`] };
   if (u.type !== 'villager') { const d = UNIT_DEFS[u.type], st = unitStats(world, u);
@@ -277,7 +280,7 @@ export function selectionInfo(world) {
     const gx = u.goal % world.width, gy = Math.floor(u.goal / world.width);
     const site = dropsitesFor(world, u.carry.res).find(b => gx >= b.x - 1 && gy >= b.y - 1 && gx <= b.x + b.size && gy <= b.y + b.size);
     if (site) task = `Returning to ${site.name}`; }
-  return { kind: 'unit', type: 'villager', title: 'Villager', hp: u.hp / u.maxHp, lines: [`Task: ${task}${u.note ? ` (${u.note})` : ''}`, `Carrying: ${u.carry.amount}${u.carry.amount ? ' ' + u.carry.res : ''}/${carryMax(world)}`, `HP: ${Math.ceil(u.hp)}/${u.maxHp}`, 'Attack 3  Armor 0/0'] };
+  return { kind: 'unit', type: 'villager', title: UNIT_DEFS.villager.name, hp: u.hp / u.maxHp, lines: [`Task: ${task}${u.note ? ` (${u.note})` : ''}`, `Carrying: ${u.carry.amount}${u.carry.amount ? ' ' + u.carry.res : ''}/${carryMax(world)}`, `HP: ${Math.ceil(u.hp)}/${u.maxHp}`, 'Attack 3  Armor 0/0'] };
 }
 // UI feedback only goes to the client whose own command / units produced it (never hashed).
 export const isViewer = world => !world.viewer || curOf(world) === world.viewer;
@@ -329,14 +332,64 @@ export function formationTiles(world, units, x, y, grid = buildGrid(world)) {
     if (t) { used.add(tkey(world, t[0], t[1])); out.push(t); } }
   return out;
 }
+// Flow field: one multi-source Dijkstra over the 8-connected grid (no corner cutting) from the goal tiles.
+// Large groups share it instead of running one A* each; every unit then descends the field (deterministic tie-break).
+export function flowField(world, goals, grid = buildGrid(world)) {
+  const W = world.width, H = world.height, dist = new Float64Array(W * H).fill(Infinity), heap = [];
+  const push = (d, i) => { heap.push([d, i]); let c = heap.length - 1; while (c > 0) { const p = (c - 1) >> 1; if (heap[p][0] < heap[c][0] || (heap[p][0] === heap[c][0] && heap[p][1] <= heap[c][1])) break; [heap[p], heap[c]] = [heap[c], heap[p]]; c = p; } };
+  const pop = () => { const top = heap[0], last = heap.pop(); if (heap.length) { heap[0] = last; let c = 0; for (;;) { const l = 2 * c + 1, r = l + 1; let m = c;
+    const lt = (a, b) => heap[a][0] < heap[b][0] || (heap[a][0] === heap[b][0] && heap[a][1] < heap[b][1]);
+    if (l < heap.length && lt(l, m)) m = l; if (r < heap.length && lt(r, m)) m = r; if (m === c) break; [heap[m], heap[c]] = [heap[c], heap[m]]; c = m; } } return top; };
+  for (const [gx, gy] of goals) if (walkable(world, gx, gy, grid)) { const i = tkey(world, gx, gy); dist[i] = 0; push(0, i); }
+  while (heap.length) {
+    const [d, cur] = pop(); if (d > dist[cur]) continue; const cx = cur % W, cy = (cur / W) | 0;
+    for (let dy = -1; dy <= 1; dy++) for (let dx = -1; dx <= 1; dx++) {
+      if (!dx && !dy) continue; const nx = cx + dx, ny = cy + dy;
+      if (!walkable(world, nx, ny, grid)) continue;
+      if (dx && dy && (!walkable(world, cx + dx, cy, grid) || !walkable(world, cx, cy + dy, grid))) continue;
+      const ni = tkey(world, nx, ny), nd = d + (dx && dy ? Math.SQRT2 : 1); if (nd < dist[ni]) { dist[ni] = nd; push(nd, ni); }
+    }
+  }
+  return dist;
+}
+// Waypoints from (sx,sy) down the field to a goal (dist 0). null if the start cannot reach any goal.
+export function pathFromField(world, dist, sx, sy, grid = buildGrid(world)) {
+  const W = world.width; let cur = tkey(world, sx, sy); if (!(dist[cur] < Infinity)) return null; const out = [];
+  for (let guard = 0; dist[cur] > 0 && guard < W * world.height; guard++) {
+    const cx = cur % W, cy = (cur / W) | 0; let best = -1, bd = dist[cur];
+    for (let dy = -1; dy <= 1; dy++) for (let dx = -1; dx <= 1; dx++) {
+      if (!dx && !dy) continue; const nx = cx + dx, ny = cy + dy; if (!walkable(world, nx, ny, grid)) continue;
+      if (dx && dy && (!walkable(world, cx + dx, cy, grid) || !walkable(world, cx, cy + dy, grid))) continue;
+      const ni = tkey(world, nx, ny); if (dist[ni] < bd) { bd = dist[ni]; best = ni; } }
+    if (best < 0) return null; cur = best; out.push({ x: (cur % W) + 0.5, y: ((cur / W) | 0) + 0.5 });
+  }
+  return out;
+}
+export const FLOW_MIN_GROUP = 6;
 export function orderMoveGroup(world, units, x, y) {
   const tiles = formationTiles(world, units, x, y);
+  if (units.length >= FLOW_MIN_GROUP && tiles.length >= units.length) return orderMoveFlow(world, units, tiles);
   // assign closest unit to each tile greedily
   const left = [...units]; let ok = 0;
   for (const t of tiles) { if (!left.length) break; left.sort((a, b) => hyp(a.x - t[0], a.y - t[1]) - hyp(b.x - t[0], b.y - t[1]));
     if (orderMove(world, left.shift(), 0, 0, t)) ok++; }
   for (const u of left) idle(u, 'unreachable');
   // formation moves at the speed of its slowest member
+  const slow = Math.min(...units.map(u => u.speed)); for (const u of units) if (u.state === 'moving') u.groupSpeed = slow;
+  return ok;
+}
+// Big groups: shared flow field to the formation box, then a short A* to each unit's own formation slot.
+function orderMoveFlow(world, units, tiles) {
+  const grid = buildGrid(world), field = flowField(world, tiles, grid), left = [...units]; let ok = 0;
+  world.lastFlow = { tiles: tiles.length, units: units.length, time: world.time };
+  for (const t of tiles) { if (!left.length) break; left.sort((a, b) => hyp(a.x - t[0], a.y - t[1]) - hyp(b.x - t[0], b.y - t[1]) || a.id - b.id); const u = left.shift();
+    const [sx, sy] = utile(u); let p = pathFromField(world, field, sx, sy, grid);
+    if (p) { const end = p.length ? p[p.length - 1] : { x: sx + 0.5, y: sy + 0.5 }; const ex = Math.floor(end.x), ey = Math.floor(end.y);
+      if (ex !== t[0] || ey !== t[1]) { const tail = findPath(world, ex, ey, [t], grid); if (tail) p = p.concat(tail); } }
+    if (!p) { if (orderMove(world, u, 0, 0, t)) ok++; continue; }
+    u.groupSpeed = null; u.attack = null; u.nudge = false; u.target = null; u.build = null; u.note = null; u.dest = [...t];
+    u.path = p; u.goal = tkey(world, t[0], t[1]); u.state = 'moving'; u.flow = true; ok++; }
+  for (const u of left) idle(u, 'unreachable');
   const slow = Math.min(...units.map(u => u.speed)); for (const u of units) if (u.state === 'moving') u.groupSpeed = slow;
   return ok;
 }
@@ -376,6 +429,8 @@ export function commandAt(world, x, y) {
     for (const u of vills) if (u.carry.amount > 0 && tb.accepts.includes(u.carry.res)) { u.attack = null; u.build = null; u.note = null; u.state = 'to_drop'; if (!planTo(world, u, ringTiles(tb.x, tb.y, tb.size))) idle(u, 'unreachable'); }
     moveOthers(); return 'dropoff'; }
   if (tb && !tb.complete && vills.length) { for (const u of vills) orderBuild(world, u, tb); moveOthers(); return 'build'; }
+  if (tb && tb.complete && mine(world, tb) && vills.length && tb.hp < tb.maxHp) { for (const u of vills) orderBuild(world, u, tb); moveOthers(); return 'repair'; }
+  if (tb && tb.complete && mine(world, tb) && tb.garrisonCap) { let n = 0; for (const u of us) if (orderGarrison(world, u, tb)) n++; return n ? 'garrison' : null; }
   if (us.length === 1) orderMove(world, us[0], x, y); else orderMoveGroup(world, us, x, y);
   return 'move';
 }
@@ -390,9 +445,10 @@ export function trainUnit(world, b, type) {
   if (!b || !b.complete || !mine(world, b) || !b.trains.includes(type)) return { ok: false, reason: 'invalid' };
   if (isLocked(world, UNIT_DEFS[type].age)) { say(world, `${UNIT_DEFS[type].name}: ${requiresText(UNIT_DEFS[type].age)}`); return { ok: false, reason: 'age' }; }
   if (b.queue.length >= QUEUE_MAX) { say(world, 'Queue is full'); return { ok: false, reason: 'queue' }; }
-  if (popCount(world) + queuedCount(world) >= popCap(world)) { say(world, `Population cap reached (${popCount(world)}/${popCap(world)}): build a House`); return { ok: false, reason: 'pop' }; }
-  if (!afford(world, COSTS[type])) { say(world, type === 'villager' ? 'Not enough food (50 needed)' : `Cannot train ${UNIT_DEFS[type].name}: ${missingFor(world, COSTS[type])}`); return { ok: false, reason: 'cost' }; }
-  pay(world, COSTS[type]); const up = techEffects(world).upgrade[type]; b.queue.push(up || type); return { ok: true, unit: up || type };
+  if (popCount(world) + queuedCount(world) >= popCap(world)) { say(world, `Population cap reached (${popCount(world)}/${popCap(world)}): build a Kennel Hut`); return { ok: false, reason: 'pop' }; }
+  const cost = unitCost(world, type, b);
+  if (!afford(world, cost)) { say(world, type === 'villager' ? 'Not enough food (50 needed)' : `Cannot train ${UNIT_DEFS[type].name}: ${missingFor(world, cost)}`); return { ok: false, reason: 'cost' }; }
+  pay(world, cost); const up = techEffects(world).upgrade[type]; b.queue.push(up || type); return { ok: true, unit: up || type };
 }
 export function trainVillager(world, tc) { if (!tc || tc.type !== 'town_center') return { ok: false, reason: 'invalid' }; return trainUnit(world, tc, 'villager'); }
 const rectsOverlap = (ax, ay, as, bx, by, bs) => ax < bx + bs && bx < ax + as && ay < by + bs && by < ay + as;
@@ -408,7 +464,7 @@ export function canPlace(world, type, tx, ty) {
 }
 export function placeBuilding(world, type, tx, ty, builders = []) {
   if (isLocked(world, BUILDING_DEFS[type].age)) { say(world, `${BUILDING_DEFS[type].name}: ${requiresText(BUILDING_DEFS[type].age)}`); return null; }
-  if (!canPlace(world, type, tx, ty)) { say(world, type === 'farm' && !farmAnchorOk(world, tx, ty) ? 'Farms must be placed next to a Mill or Town Center' : 'Cannot build there'); return null; }
+  if (!canPlace(world, type, tx, ty)) { say(world, type === 'farm' && !farmAnchorOk(world, tx, ty) ? 'Rice Paddies must be placed next to a Granary or Den Hall' : 'Cannot build there'); return null; }
   const cost = COSTS[type]; if (!afford(world, cost)) { say(world, `Cannot build ${BUILDING_DEFS[type].name}: ${missingFor(world, cost)}`); return null; }
   pay(world, cost); const b = addBuilding(world, type, tx, ty, false, curOf(world));
   onFootprintChanged(world, b);            // evict units inside, repath units crossing it
@@ -431,12 +487,16 @@ function spawnFromAs(world, tc, type, owner) {
 
 // ---------- ages & technologies ----------
 export function techEffects(world, owner = null) {
-  const fx = { villagerHp: 0, carryPct: 0, villagerSpeedPct: 0, ratePct: {}, farmFood: 0, meleeAttack: 0, upgrade: {} };
+  const fx = { villagerHp: 0, carryPct: 0, villagerSpeedPct: 0, ratePct: {}, farmFood: 0, meleeAttack: 0, upgrade: {},
+    meleeArmor: 0, pierceArmor: 0, archerAttack: 0, archerRange: 0, archerArmor: 0, buildingHpPct: 0, ageTimePct: 0, trainTimePct: {}, costPct: {},
+    cavalrySpeedPct: 0, buildSpeedPct: 0, extraArrows: 0, infantryHpPct: 0 };
+  const p = world.players ? world.players[owner || world.cur || 'player'] : null;
   const researched = owner && world.players ? world.players[owner]?.researched : world.researched;
-  for (const id of Object.keys(researched || {})) { const e = TECHS[id]?.effect; if (!e) continue;
-    for (const [k, v] of Object.entries(e)) {
-      if (k === 'ratePct') for (const [kind, pct] of Object.entries(v)) fx.ratePct[kind] = (fx.ratePct[kind] || 0) + pct;
-      else if (k === 'upgrade') Object.assign(fx.upgrade, v); else fx[k] += v; } }
+  const add = e => { for (const [k, v] of Object.entries(e)) {
+      if (k === 'ratePct' || k === 'trainTimePct' || k === 'costPct') for (const [kind, pct] of Object.entries(v)) fx[k][kind] = (fx[k][kind] || 0) + pct;
+      else if (k === 'upgrade') Object.assign(fx.upgrade, v); else fx[k] += v; } };
+  if (p && p.civ && CIVS[p.civ]) add(CIVS[p.civ].effect);
+  for (const id of Object.keys(researched || {})) { const e = TECHS[id]?.effect; if (e) add(e); }
   return fx;
 }
 export function carryMax(world) { return Math.round(CARRY_MAX * (1 + techEffects(world).carryPct / 100)); }
@@ -447,19 +507,25 @@ export const requiresText = age => `Requires ${AGE_NAMES[age]}`;
 export function nextAge(world) { return AGES[ageIndex(world.age) + 1] || null; }
 // What is still missing to start the next age-up (null = can research now, ignoring cost).
 export function ageStatus(world) {
-  const next = nextAge(world); if (!next) return { next: null, ok: false, missing: 'Already in the Imperial Age' };
+  const next = nextAge(world); if (!next) return { next: null, ok: false, missing: 'Already in the Shogun Age' };
   const req = AGE_UPS[next];
   const have = [...new Set(world.buildings.filter(b => b.complete && mine(world, b) && req.from.includes(b.type)).map(b => b.type))];
   const any = (req.orAny || []).some(t => world.buildings.some(b => b.complete && mine(world, b) && b.type === t));
   const ok = have.length >= req.needs || any;
   const names = req.from.filter(t => BUILDINGS[t]).map(t => BUILDINGS[t].name);
-  return { next, ok, have, req, missing: ok ? null : `needs ${req.needs} of: ${names.join(', ')}${req.orAny ? ' (or a Castle)' : ''} (have ${have.length})` };
+  return { next, ok, have, req, missing: ok ? null : `needs ${req.needs} of: ${names.join(', ')}${req.orAny ? ' (or a Fortress)' : ''} (have ${have.length})` };
 }
 const queuedAnywhere = (world, item) => world.buildings.some(b => b.queue.includes(item));
-export function itemTime(item) {
+export function itemTime(item, world = null, b = null) {
   if (item.startsWith('tech:')) return TECHS[item.slice(5)].time;
-  if (item.startsWith('age:')) return AGE_UPS[item.slice(4)].time;
-  return UNIT_DEFS[item].time;
+  const fx = world && b && world.players ? techEffects(world, b.owner) : null;
+  if (item.startsWith('age:')) return AGE_UPS[item.slice(4)].time * (1 + (fx ? fx.ageTimePct : 0) / 100);
+  return UNIT_DEFS[item].time * (1 + (fx ? fx.trainTimePct[b.type] || 0 : 0) / 100);
+}
+// Unit cost after civ modifiers for the building that trains it (integer resources).
+export function unitCost(world, type, b = null) {
+  const pct = b ? techEffects(world, b.owner).costPct[b.type] || 0 : 0;
+  return Object.fromEntries(Object.entries(COSTS[type]).map(([r, v]) => [r, Math.round(v * (1 + pct / 100))]));
 }
 export function itemName(item) {
   if (item.startsWith('tech:')) return TECHS[item.slice(5)].name;
@@ -484,7 +550,7 @@ export function research(world, b, techId) {
 }
 export function canAgeUp(world, tc) {
   const st = ageStatus(world);
-  if (!tc || tc.type !== 'town_center' || !tc.complete) return { ok: false, reason: 'invalid', text: 'Researched at the Town Center' };
+  if (!tc || tc.type !== 'town_center' || !tc.complete) return { ok: false, reason: 'invalid', text: 'Researched at the Den Hall' };
   if (!st.next) return { ok: false, reason: 'max', text: st.missing };
   if (world.buildings.some(b => b.queue.some(q => q.startsWith('age:')))) return { ok: false, reason: 'queued', text: 'Already advancing to the next age' };
   if (!st.ok) return { ok: false, reason: 'prereq', text: st.missing };
@@ -501,10 +567,60 @@ function finishItem(world, b, item) {
   if (item.startsWith('age:')) { world.age = item.slice(4); if (isViewer(world)) world.banner = { text: `You have advanced to the ${AGE_NAMES[world.age]}!`, until: world.time + 6 }; say(world, `${AGE_NAMES[world.age]} reached`); return; }
   const id = item.slice(5); world.researched[id] = world.time;
   const e = TECHS[id].effect;
+  if (e.buildingHpPct) for (const o of world.buildings) if (o.owner === b.owner) { const m = 1 + e.buildingHpPct / 100; o.maxHp = Math.round(o.maxHp * m); o.hp = Math.round(o.hp * m); }
   if (e.villagerHp) for (const u of world.units) if (u.type === 'villager' && u.owner === b.owner) { u.maxHp += e.villagerHp; u.hp += e.villagerHp; }
   if (e.villagerSpeedPct) for (const u of world.units) if (u.type === 'villager' && u.owner === b.owner) u.speed = UNIT_DEFS.villager.speed * (1 + techEffects(world).villagerSpeedPct / 100);
-  if (e.upgrade) for (const u of world.units) if (u.owner === b.owner && e.upgrade[u.type]) { const to = e.upgrade[u.type]; u.type = to; u.maxHp = UNIT_DEFS[to].hp; u.hp = u.maxHp; }
+  if (e.upgrade) for (const u of world.units) if (u.owner === b.owner && e.upgrade[u.type]) { const to = e.upgrade[u.type]; u.type = to; u.maxHp = Math.round(UNIT_DEFS[to].hp * (UNIT_DEFS[to].infantry ? 1 + techEffects(world, b.owner).infantryHpPct / 100 : 1)); u.hp = u.maxHp; }
   say(world, `${TECHS[id].name} researched`);
+}
+
+// ---------- construction repair, garrison, building arrows ----------
+// Repair: each villager restores HP at the construction rate; costs 50% of the building cost spread over its HP (paid per point, AoE-style).
+function repairStep(world, u, b, dt) {
+  const d = BUILDING_DEFS[b.type], cost = d.cost || {}, rate = b.maxHp / Math.max(1, b.buildTime) * dt;
+  b.repairDebt = (b.repairDebt || 0) + rate; const pts = Math.floor(b.repairDebt); if (!pts) return true;
+  const per = Object.entries(cost).map(([r, v]) => [r, v * 0.5 / b.maxHp]);
+  b.repairOwed ||= {}; for (const [r, v] of per) b.repairOwed[r] = (b.repairOwed[r] || 0) + v * pts;
+  const due = Object.fromEntries(Object.entries(b.repairOwed).map(([r, v]) => [r, Math.floor(v)]));
+  if (!afford(world, due) || per.some(([r]) => world.stockpile[r] <= 0)) { b.repairDebt -= pts; for (const [r, v] of per) b.repairOwed[r] -= v * pts; return false; }
+  pay(world, due); for (const r in due) b.repairOwed[r] -= due[r];
+  b.repairDebt -= pts; b.hp = Math.min(b.maxHp, b.hp + pts); return true;
+}
+export const STANCES = ['aggressive', 'defensive', 'stand', 'passive'];
+export function orderGarrison(world, u, b) {
+  if (u.type === 'sheep' || !b.garrisonCap || b.owner !== u.owner || !b.complete || u.state === 'garrisoned') return false;
+  if (b.garrison.length + world.units.filter(o => o.garrisonIn === b.id && o.state === 'to_garrison').length >= b.garrisonCap) return false;
+  u.attack = null; u.target = null; u.build = null; u.note = null; u.garrisonIn = b.id; u.state = 'to_garrison';
+  if (adjacentToRect(u, b.x, b.y, b.size)) { u.path = []; return true; }
+  if (!planTo(world, u, ringTiles(b.x, b.y, b.size))) { idle(u, 'unreachable'); return false; } return true;
+}
+function enterGarrison(world, u, b) {
+  if (b.garrison.length >= b.garrisonCap) { idle(u, 'building full'); return; }
+  b.garrison.push(u.id); u.state = 'garrisoned'; u.path = []; u.goal = null; u.x = b.x + b.size / 2; u.y = b.y + b.size / 2;
+  const s = world.selection; if (s && s.kind === 'units') s.ids = s.ids.filter(i => i !== u.id);
+}
+export function ungarrison(world, b) {
+  if (!b.garrison.length) return null; const grid = buildGrid(world), taken = new Set(); let n = 0;
+  for (const id of b.garrison) { const u = world.units.find(o => o.id === id); if (!u) continue;
+    const t = ringTiles(b.x, b.y, b.size).find(([x, y]) => walkable(world, x, y, grid) && !taken.has(tkey(world, x, y))) || nearestWalkable(world, b.x + b.size, b.y + b.size, 1, grid, taken)[0];
+    if (t) { taken.add(tkey(world, t[0], t[1])); u.x = t[0] + 0.5; u.y = t[1] + 0.5; }
+    u.garrisonIn = null; idle(u); u.goal = tkey(world, ...utile(u)); n++; }
+  b.garrison = []; return { ok: true, n };
+}
+export const isGarrisoned = u => u.state === 'garrisoned';
+// Den Halls, towers and fortresses shoot: base arrows + one per garrisoned unit (+ civ bonus), at the nearest enemy in range.
+function tickBuildingArrows(world, dt) {
+  for (const b of world.buildings) {
+    if (!b.complete || !b.arrows || !b.owner) continue;
+    b.arrowTimer = Math.max(0, (b.arrowTimer || 0) - dt); if (b.arrowTimer > 0) continue;
+    const cx = b.x + b.size / 2, cy = b.y + b.size / 2, R = BUILDING_ARROW.range + b.size / 2;
+    let best = null, bd = R; for (const o of world.units) if (o.owner && o.owner !== b.owner && o.state !== 'garrisoned') { const d = hyp(o.x - cx, o.y - cy); if (d < bd) { bd = d; best = o; } }
+    if (!best) continue;
+    const n = Math.min(b.arrows + b.garrison.length + techEffects(world, b.owner).extraArrows * (b.type === 'town_center' ? 1 : 0), 12);
+    b.arrowTimer = BUILDING_ARROW.reload;
+    const arm = armorOf(best), dmg = Math.max(1, BUILDING_ARROW.attack - arm.pierce);
+    for (let i = 0; i < n; i++) (world.projectiles ||= []).push({ from: b.id, owner: b.owner, x: cx, y: cy - 0.5, tgt: { kind: 'unit', id: best.id }, dmg, speed: 9 });
+  }
 }
 
 // ---------- eviction (AoE2-style): building placement ignores units; units inside get pushed out ----------
@@ -571,10 +687,10 @@ export function tick(world, dt) {
     // one item at a time (AoE2: a TC researching an age/tech is not training villagers meanwhile)
     if (isUnitItem(b.queue[0]) && popCount(world) >= popCap(world)) { b.blocked = true; continue; } b.blocked = false;
     b.trainProgress += dt;
-    if (b.trainProgress >= itemTime(b.queue[0])) { b.trainProgress = 0; finishItem(world, b, b.queue.shift()); }
+    if (b.trainProgress >= itemTime(b.queue[0], world, b)) { b.trainProgress = 0; finishItem(world, b, b.queue.shift()); }
   }
   world.cur = 'player'; // canonical context for shared systems: never the local viewer, so both clients compute the same
-  tickAi(world, spawnFrom); tickAggro(world);
+  tickAi(world, spawnFrom); tickComputers(world); tickBuildingArrows(world, dt); tickAggro(world);
   for (const u of [...world.units]) {
     if (u.dead) continue;
     world.cur = u.owner;
@@ -603,7 +719,7 @@ export function tick(world, dt) {
         u.lastKind = node.kind;
         u.gatherTimer += dt * gatherRate(world, node.kind);
         const cap = carryMax(world);
-        while (u.gatherTimer >= 1 && u.carry.amount < cap && node.amount > 0) { u.gatherTimer -= 1; node.amount -= 1; u.carry.res = node.res; u.carry.amount += 1; }
+        while (u.gatherTimer >= 1 && u.carry.amount < cap && node.amount > 0) { u.gatherTimer -= 1; node.amount -= 1; u.carry.res = node.res; u.carry.amount += 1; u.carry.kind = node.kind || (node.farm ? 'farm' : null); }
         if (node.amount <= 0 && node.farm) removeFarm(world, node);
         if (u.carry.amount >= cap || node.amount <= 0) { u.state = 'to_drop'; if (!planDrop(world, u)) idle(u, 'no drop-off reachable'); }
         break;
@@ -622,15 +738,21 @@ export function tick(world, dt) {
       }
       case 'to_build': case 'building': {
         const b = world.buildings.find(o => o.id === u.build);
-        if (!b || b.complete) { idle(u); break; }
+        if (!b || (b.complete && b.hp >= b.maxHp)) { idle(u); break; }
         if (u.state === 'to_build') { if (!moveAlong(u, dt)) break;
           if (adjacentToRect(u, b.x, b.y, b.size)) u.state = 'building'; else if (!planTo(world, u, ringTiles(b.x, b.y, b.size))) idle(u, 'unreachable'); break; }
+        if (b.complete) { if (!repairStep(world, u, b, dt)) idle(u, 'repair needs resources'); break; }
         if (!b.started) { b.started = true; onFootprintChanged(world, b); }   // safety pass at construction start
-        b.progress = Math.min(b.buildTime, b.progress + dt); // each builder adds its own work: n builders => n x speed
+        b.progress = Math.min(b.buildTime, b.progress + dt * (1 + techEffects(world, b.owner).buildSpeedPct / 100)); // each builder adds its own work: n builders => n x speed
         b.hp = Math.max(1, Math.round(b.maxHp * b.progress / b.buildTime));
         if (b.progress >= b.buildTime) completeBuilding(world, b);
         break;
       }
+      case 'to_garrison': { const b = world.buildings.find(o => o.id === u.garrisonIn);
+        if (!b || !b.complete || b.owner !== u.owner) { idle(u); break; }
+        if (adjacentToRect(u, b.x, b.y, b.size) || moveAlong(u, dt)) { if (adjacentToRect(u, b.x, b.y, b.size)) enterGarrison(world, u, b); else if (!planTo(world, u, ringTiles(b.x, b.y, b.size))) idle(u, 'unreachable'); }
+        break; }
+      case 'garrisoned': { if (u.hp < u.maxHp) u.hp = Math.min(u.maxHp, u.hp + dt * 0.5); break; }
       case 'to_hunt': {
         const sh = world.animals.find(a => a.id === u.hunt);
         if (!sh) { const c = world.resources.find(n => n.id === world.carcassOf?.[u.hunt] && n.amount > 0); c ? orderGather(world, u, c) : idle(u); break; }
@@ -650,6 +772,7 @@ export function tick(world, dt) {
     if (!a.owner) { const v = world.units.find(u => u.type === 'villager' && (u.owner === 'player' || world.mp) && hyp(u.x - a.x, u.y - a.y) < 1.0); if (v) convertSheep(world, a, v.owner); }
     if (a.state === 'moving' && moveAlong(a, dt)) a.state = 'idle';
   }
+  checkVictory(world);
   world.cur = view;
 }
 export function convertSheep(world, sh, owner = curOf(world)) { sh.owner = owner; }
@@ -695,7 +818,7 @@ export function worldToScreen(wx, wy, cam, tile = TILE) { const c = camPixel(cam
 // { tick, player, type, args } applied with applyCommand() at the start of its tick (single player applies them
 // immediately at the current tick boundary, multiplayer at tick + input delay once both players' sets have arrived).
 export const TICK_HZ = 20, TICK_DT = 1 / TICK_HZ;
-export const COMMAND_TYPES = ['order', 'rally', 'build', 'train', 'research', 'ageup', 'cancel', 'stop'];
+export const COMMAND_TYPES = ['order', 'rally', 'build', 'train', 'research', 'ageup', 'cancel', 'stop', 'stance', 'ungarrison', 'garrison'];
 const qpos = v => Math.round(v * 64) / 64;            // quantize world coords so commands are short and exact
 const isId = v => Number.isInteger(v) && v > 0;
 export function makeCommand(type, args, player = 0, tick = 0) {
@@ -734,9 +857,12 @@ export function applyCommand(world, cmd) {
       case 'cancel': { const b = ownBuilding(world, a.id); if (!b || !b.queue.length) return null;
         const i = Number.isInteger(a.index) && a.index >= 0 && a.index < b.queue.length ? a.index : b.queue.length - 1;
         const item = b.queue.splice(i, 1)[0]; if (i === 0) b.trainProgress = 0;
-        const cost = isUnitItem(item) ? COSTS[item] : item.startsWith('age:') ? AGE_UPS[item.slice(4)].cost : TECHS[item.slice(5)].cost;
+        const cost = isUnitItem(item) ? unitCost(world, item, b) : item.startsWith('age:') ? AGE_UPS[item.slice(4)].cost : TECHS[item.slice(5)].cost;
         for (const [r, v] of Object.entries(cost)) world.stockpile[r] += v; return { ok: true, item }; }
-      case 'stop': { for (const u of ownUnits(world, a.ids)) idle(u); return 'stop'; }
+      case 'stop': { for (const u of ownUnits(world, a.ids)) if (u.state !== 'garrisoned') idle(u); return 'stop'; }
+      case 'stance': { if (!STANCES.includes(a.stance)) return null; const us = ownUnits(world, a.ids).filter(u => u.type !== 'sheep'); for (const u of us) u.stance = a.stance; return us.length ? 'stance' : null; }
+      case 'garrison': { const b = ownBuilding(world, a.id); if (!b || !b.garrisonCap) return null; let n = 0; for (const u of ownUnits(world, a.ids)) if (orderGarrison(world, u, b)) n++; return n ? 'garrison' : null; }
+      case 'ungarrison': { const b = ownBuilding(world, a.id); return b ? ungarrison(world, b) : null; }
     }
     return null;
   });
@@ -755,9 +881,9 @@ export function stateHash(world) {
   const str = v => { const t = String(v); for (let i = 0; i < t.length; i++) byte(t.charCodeAt(i) & 255); byte(0); };
   num(world.tick); num(world.time); num(world.nextId);
   for (const o of OWNERS) { const p = world.players[o]; for (const r of RES_TYPES) num(p.stockpile[r]); str(p.age); str(Object.keys(p.researched).join(',')); }
-  for (const u of world.units) { num(u.id); str(u.type); str(u.owner); num(u.x); num(u.y); num(u.hp); str(u.state); num(u.carry.amount); num(u.target); num(u.path.length); num(u.atkTimer); }
+  str(world.winner || ''); for (const u of world.units) { num(u.id); str(u.type); str(u.owner); str(u.stance || ''); num(u.x); num(u.y); num(u.hp); str(u.state); num(u.carry.amount); num(u.target); num(u.path.length); num(u.atkTimer); }
   for (const a of world.animals) { num(a.id); str(a.owner); num(a.x); num(a.y); }
-  for (const b of world.buildings) { num(b.id); str(b.type); str(b.owner); num(b.x); num(b.y); num(b.hp); num(b.progress); num(b.complete ? 1 : 0); str(b.queue.join(',')); num(b.trainProgress); }
+  for (const b of world.buildings) { num(b.id); num((b.garrison || []).length); str(b.type); str(b.owner); num(b.x); num(b.y); num(b.hp); num(b.progress); num(b.complete ? 1 : 0); str(b.queue.join(',')); num(b.trainProgress); }
   for (const n of world.resources) { num(n.id); num(n.amount); }
   for (const p of world.projectiles || []) { num(p.x); num(p.y); num(p.dmg); }
   return h.toString(16).padStart(8, '0');
@@ -765,6 +891,6 @@ export function stateHash(world) {
 
 // nearest visible-or-not enemy unit/building within r tiles (deterministic: ties by id order of the arrays)
 function nearestFoe(world, u, r) { let best = null, bd = r;
-  for (const o of world.units) if (o.owner && o.owner !== u.owner && o.hp > 0) { const d = hyp(o.x - u.x, o.y - u.y); if (d < bd) { bd = d; best = o; } }
+  for (const o of world.units) if (o.owner && o.owner !== u.owner && o.hp > 0 && o.state !== 'garrisoned') { const d = hyp(o.x - u.x, o.y - u.y); if (d < bd) { bd = d; best = o; } }
   if (!best) for (const b of world.buildings) if (b.owner && b.owner !== u.owner) { const d = hyp(b.x + b.size / 2 - u.x, b.y + b.size / 2 - u.y); if (d < bd) { bd = d; best = b; } }
   return best; }

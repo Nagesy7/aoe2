@@ -23,12 +23,14 @@ export function unitAnim(u, t, attacking) {
   if (u.path && u.path.length) return { anim: 'walk', f: Math.floor(t * 8 + u.id) % 4 };
   return { anim: 'idle', f: Math.floor(t * 2 + u.id) % 2 };
 }
+// Upgraded / clan-unique units reuse the sprite sheet of their base line (same Inu Verse style, team-tinted).
+const ALIAS = { blade_paw: 'militia', halberd_pup: 'spearman', swift_rider: 'scout_cavalry', red_fang: 'militia', akita_guardian: 'militia', kishu_longbow: 'crossbowman', boar_rider: 'knight', frost_guard: 'spearman', brindle_striker: 'militia' };
 export function drawUnitArt(ctx, u, px, py, t, col, attacking) {
-  const a = U[u.type]; if (!a || !ok(a.img)) return false;
+  const a = U[u.type] || U[ALIAS[u.type]]; if (!a || !ok(a.img)) return false;
   const { anim, f } = unitAnim(u, t, attacking), w = a.frame_size.w, h = a.frame_size.h, col0 = a.animations[anim].start_col + f;
-  blit(ctx, a, 'u' + u.type, col0 * w, dirRow(u.face) * h, w, h, Math.round(px - a.anchor.x), Math.round(py + 6 - a.anchor.y), col, u.dying != null ? Math.max(0, 1 - u.dying * 0.8) : 1);
+  blit(ctx, a, 'u' + (U[u.type] ? u.type : ALIAS[u.type]), col0 * w, dirRow(u.face) * h, w, h, Math.round(px - a.anchor.x), Math.round(py + 6 - a.anchor.y), col, u.dying != null ? Math.max(0, 1 - u.dying * 0.8) : 1);
   return true; }
 export function drawBuildingArt(ctx, b, col) {
   const a = B[b.type]; if (!a || !ok(a.img)) return false; const T = 32, w = a.img.naturalWidth, h = a.img.naturalHeight;
   blit(ctx, a, 'b' + b.type, 0, 0, w, h, b.x * T, (b.y + b.size) * T - h, col); return true; }
-export const unitArtHeight = type => U[type] ? U[type].frame_size.h - (U[type].frame_size.h - U[type].anchor.y) : 30;
+export const unitArtHeight = type => (type = U[type] ? type : ALIAS[type] || type, U[type]) ? U[type].frame_size.h - (U[type].frame_size.h - U[type].anchor.y) : 30;

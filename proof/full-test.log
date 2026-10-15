@@ -1,0 +1,72 @@
+full RTS test 2026-10-15T06:00:13.876Z
+--- 1. pathfinding: A*, obstacles, flow field, formations ---
+PASS: A* path (32 steps) never enters a blocked tile
+PASS: A* goes through the only gap in the wall
+PASS: no diagonal corner cutting past obstacles
+PASS: flow-field path is walkable and as short as A* (32 vs 32)
+PASS: flow-field distance equals A* path length
+PASS: enclosed tile is unreachable for A* and flow field
+PASS: 12-unit order uses the shared flow field (12 moving)
+PASS: every unit has its own formation slot
+PASS: no unit ever stood inside a blocked tile during the move
+PASS: all 12 arrived on the far side (12/12)
+PASS: separation: 12 units on 12 distinct tiles after arrival
+PASS: formation (flow) moves at the slowest member speed
+--- 2. unit AI: stances, retaliation, auto-gather ---
+PASS: No-Attack stance: does not auto-acquire an enemy in sight
+PASS: Stand Ground: never walks to an enemy out of reach
+PASS: Aggressive: acquires the enemy in sight
+PASS: auto-retaliate: a unit that is shot fights back
+PASS: villager auto-retargets after a tree is exhausted (state to_resource)
+--- 3. construction: multi-builder speed, repair, garrison, arrows ---
+PASS: 3 builders finish a Dojo much faster than 1 (17.7 s vs 51.0 s)
+PASS: right-click damaged Den Hall = repair (HP 1400 -> 1713, wood -17)
+PASS: repair stops without resources (no free HP)
+PASS: 4 Worker Pups garrisoned in the Den Hall (4)
+PASS: Den Hall fires 1 + 4 garrison = 5 arrows per volley
+PASS: garrisoned units cannot be clicked, box-selected or targeted
+PASS: ungarrison releases all 4 next to the building
+PASS: released units stand on walkable tiles
+--- 4. ages + tech tree ---
+PASS: four ages with age-up costs
+PASS: Forge: infantry +1 attack, +1/+1 armor ({"melee":1,"pierce":2})
+PASS: Forge: archers +1 attack +1 range +1/+1 armor (range 5)
+PASS: armor techs reduce incoming damage
+PASS: unit-line upgrade: Footpaw -> Blade Paw (existing units upgraded)
+PASS: Dojo now trains Blade Paws
+PASS: Scout Rider line upgrades to Swift Rider
+PASS: economy techs stack (wood rate x1.40)
+PASS: tech tree has 27 techs with original names
+--- 5. civilizations: traits, unique units, no pay-to-win ---
+PASS: 6 clans, each with its own unique unit
+PASS: Kishu: archers +1 range
+PASS: Shikoku: Paddock units 15% cheaper (80 -> 68 food)
+PASS: Shikoku: cavalry +10% speed
+PASS: Akita: Pack Age researched 20% faster (130 -> 104 s)
+PASS: Hokkaido: buildings +10% HP, build 25% faster
+PASS: Kai: Dojo trains 30% faster
+PASS: Shiba: lumber +12%
+PASS: Fortress trains only the own clan unique unit
+PASS: another clan cannot train a unique unit it does not own
+PASS: Kibble unlocks are cosmetic only (banners/coats, no effects)
+PASS: every clan is free to play (no price / lock on a clan)
+--- 6. computer opponent (AI-vs-AI, real commands) ---
+PASS: AI builds an economy: 17 / 17 Worker Pups at 8:00
+PASS: AI builds houses, farms and drop sites (town_center, house, barracks, lumber_camp, farm)
+PASS: AI ages up (22:00: feudal / feudal)
+PASS: AI trains an army (6 / 3, deaths 60)
+PASS: AI attacks: 135 units and 6 buildings destroyed by 32:00
+PASS: score 5843 vs 4384
+--- 7. lockstep determinism: two AI-vs-AI clients, 10 min, hash every tick ---
+PASS: identical hashes on 12000/12000 ticks
+PASS: simulation progressed (34 units)
+PASS: new command types round-trip through encode/decode
+--- 8. balance report (sim/balance.mjs) ---
+PASS: 360 AI-vs-AI games across 6 clans (0 conquests)
+PASS: Shiba Clan: 48.3% (58/120) within 45-55%
+PASS: Akita Dominion: 51.7% (62/120) within 45-55%
+FAIL: Kishu Archers: 56.7% (68/120) within 45-55%
+PASS: Shikoku Riders: 45.8% (55/120) within 45-55%
+FAIL: Hokkaido Wardens: 57.5% (69/120) within 45-55%
+FAIL: Kai Brindles: 40.0% (48/120) within 45-55%
+RESULT: 3 FAILED, 59 PASSED

@@ -37,7 +37,9 @@ function genCommands(w, tick, R) {
     else if (r < 0.83) { const tc = bs.find(b => b.type === 'town_center'); if (tc) cmds.push(S.makeCommand('ageup', { id: tc.id }, player, tick)); }
     else if (r < 0.88 && bs.length) { const b = pick(bs); cmds.push(S.makeCommand('cancel', { id: b.id }, player, tick)); }
     else if (r < 0.94 && bs.length) { const b = pick(bs); cmds.push(S.makeCommand('rally', { id: b.id, x: R() * w.width, y: R() * w.height }, player, tick)); }
-    else if (units.length) cmds.push(S.makeCommand('stop', { ids: sub(units) }, player, tick));
+    else if (r < 0.96 && units.length) cmds.push(S.makeCommand('stop', { ids: sub(units) }, player, tick));
+    else if (r < 0.975 && units.length) cmds.push(S.makeCommand('stance', { ids: sub(units), stance: pick(S.STANCES) }, player, tick));
+    else { const tc = bs.find(b => b.type === 'town_center'); if (tc && units.length) cmds.push(R() < 0.5 ? S.makeCommand('garrison', { id: tc.id, ids: sub(units) }, player, tick) : S.makeCommand('ungarrison', { id: tc.id }, player, tick)); }
   }
   cmds.forEach((c, i) => c.seq = i);
   return cmds;

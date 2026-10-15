@@ -1,15 +1,24 @@
 // Inu reskin: every unit is drawn procedurally as an original anthropomorphic Japanese spitz-type dog.
 // Purely presentational. Reads unit state, never writes it, and is not used by the simulation.
 export const BREEDS = {
-  villager:      { breed: 'Shiba', label: 'Shiba Villager', fur: '#d4853a', belly: '#f6e6c8', dark: '#9a5420', size: 0.9 },
-  militia:       { breed: 'Kai', label: 'Kai Militia', fur: '#4a3426', belly: '#6e5440', dark: '#1c120c', brindle: true, size: 1 },
-  spearman:      { breed: 'Kishu', label: 'Kishu Spearman', fur: '#f4f1ea', belly: '#ffffff', dark: '#b8b0a0', size: 1 },
-  archer:        { breed: 'Shikoku', label: 'Shikoku Archer', fur: '#b8743c', belly: '#ecd9b8', dark: '#3a2618', sesame: true, size: 0.95 },
-  crossbowman:   { breed: 'Shikoku', label: 'Shikoku Crossbowman', fur: '#8e5a30', belly: '#e6d0a8', dark: '#2a1a10', sesame: true, size: 1 },
-  scout_cavalry: { breed: 'Hokkaido', label: 'Hokkaido Scout', fur: '#ece4d4', belly: '#ffffff', dark: '#a89c88', size: 0.85, mount: '#8a6a3a' },
-  knight:        { breed: 'Akita', label: 'Akita Knight', fur: '#c9612c', belly: '#fbf3e4', dark: '#7a3414', size: 1.0, mount: '#4a3a30', armored: true },
-  monk:          { breed: 'Japanese Spitz', label: 'Spitz Monk', fur: '#ffffff', belly: '#ffffff', dark: '#d8d8e0', fluffy: true, size: 0.95 },
-  trebuchet:     { breed: 'Shiba crew', label: 'Shiba Trebuchet', fur: '#2a2420', belly: '#d8b080', dark: '#000', size: 0.75 },
+  villager:      { breed: 'Shiba', label: 'Shiba Worker Pup', fur: '#d4853a', belly: '#f6e6c8', dark: '#9a5420', size: 0.9 },
+  militia:       { breed: 'Kai', label: 'Kai Footpaw', fur: '#4a3426', belly: '#6e5440', dark: '#1c120c', brindle: true, size: 1 },
+  spearman:      { breed: 'Kishu', label: 'Kishu Pike Pup', fur: '#f4f1ea', belly: '#ffffff', dark: '#b8b0a0', size: 1 },
+  archer:        { breed: 'Shikoku', label: 'Shikoku Bow Pup', fur: '#b8743c', belly: '#ecd9b8', dark: '#3a2618', sesame: true, size: 0.95 },
+  crossbowman:   { breed: 'Shikoku', label: 'Shikoku Longbow Pup', fur: '#8e5a30', belly: '#e6d0a8', dark: '#2a1a10', sesame: true, size: 1 },
+  scout_cavalry: { breed: 'Hokkaido', label: 'Hokkaido Scout Rider', fur: '#ece4d4', belly: '#ffffff', dark: '#a89c88', size: 0.85, mount: '#8a6a3a' },
+  knight:        { breed: 'Akita', label: 'Akita Armored Rider', fur: '#c9612c', belly: '#fbf3e4', dark: '#7a3414', size: 1.0, mount: '#4a3a30', armored: true },
+  monk:          { breed: 'Japanese Spitz', label: 'Spitz Shrine Keeper', fur: '#ffffff', belly: '#ffffff', dark: '#d8d8e0', fluffy: true, size: 0.95 },
+  blade_paw:     { breed: 'Kai', label: 'Kai Blade Paw', fur: '#3a2a20', belly: '#6e5440', dark: '#1c120c', brindle: true, size: 1.05, look: 'militia' },
+  halberd_pup:   { breed: 'Kishu', label: 'Kishu Halberd Pup', fur: '#f4f1ea', belly: '#ffffff', dark: '#b8b0a0', size: 1.05, look: 'spearman' },
+  swift_rider:   { breed: 'Hokkaido', label: 'Hokkaido Swift Rider', fur: '#ddd2bc', belly: '#ffffff', dark: '#a89c88', size: 0.9, mount: '#6a4a2a', look: 'scout_cavalry' },
+  red_fang:      { breed: 'Shiba', label: 'Shiba Red Fang', fur: '#e0682a', belly: '#f6e6c8', dark: '#9a3a10', size: 1, look: 'militia' },
+  akita_guardian:{ breed: 'Akita', label: 'Akita Guardian', fur: '#c9612c', belly: '#fbf3e4', dark: '#7a3414', size: 1.15, armored: true, look: 'militia' },
+  kishu_longbow: { breed: 'Kishu', label: 'Kishu Longbow', fur: '#f4f1ea', belly: '#ffffff', dark: '#b8b0a0', size: 1, look: 'archer' },
+  boar_rider:    { breed: 'Shikoku', label: 'Shikoku Boar Rider', fur: '#8e5a30', belly: '#e6d0a8', dark: '#2a1a10', sesame: true, size: 1.0, mount: '#5a3a2a', armored: true, look: 'knight' },
+  frost_guard:   { breed: 'Hokkaido', label: 'Hokkaido Frost Guard', fur: '#f2eee6', belly: '#ffffff', dark: '#a8b4c0', fluffy: true, size: 1.1, armored: true, look: 'spearman' },
+  brindle_striker:{ breed: 'Kai', label: 'Kai Brindle Striker', fur: '#4a3426', belly: '#6e5440', dark: '#1c120c', brindle: true, size: 1.05, look: 'militia' },
+  trebuchet:     { breed: 'Shiba crew', label: 'Shiba Boulder Thrower', fur: '#2a2420', belly: '#d8b080', dark: '#000', size: 0.75 },
 };
 export const unitLabel = (type, fallback) => BREEDS[type]?.label || fallback;
 export const TEAM = { player: '#2a50c8', enemy: '#c02020' };
@@ -60,6 +69,7 @@ const W = {
   hammer: ctx => { line(ctx, 0, 4, 0, -8, '#7a5a30', 1.6); ctx.fillStyle = '#777'; ctx.fillRect(-2.5, -10, 6, 3.5); },
   basket: ctx => { ctx.fillStyle = '#b08a4a'; ctx.fillRect(-2, -2, 6, 5); circ(ctx, 0, -2, 1.3, '#c0203a'); circ(ctx, 2.5, -2.3, 1.3, '#c0203a'); },
   hoe: ctx => { line(ctx, 0, 4, 0, -10, '#7a5a30', 1.6); line(ctx, 0, -10, 4, -10, '#999', 1.8); },
+  net: ctx => { line(ctx, 0, 4, 0, -10, '#7a5a30', 1.4); ctx.strokeStyle = '#ddd'; ctx.strokeRect(-3, -14, 6, 5); },
   knife: ctx => { line(ctx, 0, 0, 0, -6, '#ddd', 1.6); },
   staff: ctx => { line(ctx, 0, 9, 0, -15, '#8a6a3a', 1.6); circ(ctx, 0, -16, 2, '#f0d040'); },
   lance: ctx => { line(ctx, -6, 2, 16, -4, '#8a7050', 1.8); ctx.fillStyle = '#dfe4ea'; ctx.beginPath(); ctx.moveTo(15, -6); ctx.lineTo(20, -5); ctx.lineTo(16, -2); ctx.fill(); },
@@ -78,6 +88,7 @@ function horse(ctx, col, team, phase, armored) {
   ctx.fillStyle = team; ctx.fillRect(-6, -14, 10, 7); ctx.fillStyle = '#f0d040'; ctx.fillRect(-6, -8, 10, 1.2);
 }
 
+function meat(ctx, x, y) { ctx.fillStyle = '#c0504a'; ctx.beginPath(); ctx.ellipse(x, y, 3.6, 2.6, 0.4, 0, 7); ctx.fill(); ctx.fillStyle = '#f0e0c8'; ctx.fillRect(x + 2.4, y - 3, 1.4, 3.4); circ(ctx, x + 3.1, y - 3.4, 1.1, '#f0e0c8'); }
 // Draw one unit with its foot point at (px,py+6). t = render time in seconds.
 export function drawInu(ctx, u, px, py, t, extra = {}) {
   const b = BREEDS[u.type]; if (!b) return false;
@@ -92,18 +103,22 @@ export function drawInu(ctx, u, px, py, t, extra = {}) {
   if (attacking) swing = -1 + Math.abs(Math.sin(t * 7 + id)) * 2.2;
   const dir = u.face ? (u.face[0] < -0.05 ? -1 : 1) : (extra.dir || 1);
   ctx.save(); ctx.translate(px, py + 6 + bob); ctx.scale(dir * b.size * (extra.scale || 1), b.size * (extra.scale || 1)); ctx.lineCap = 'round';
-  const wide = u.type === 'knight' || u.type === 'scout_cavalry' || u.type === 'trebuchet';
+  const kind = b.look || u.type, wide = kind === 'knight' || kind === 'scout_cavalry' || kind === 'trebuchet';
   ell(ctx, 0, 0.5, wide ? 14 : 7, 2.4, '#00000040');
-  switch (u.type) {
-    case 'villager': {
-      const res = u.carry?.amount ? u.carry.res : extra.res;
-      const tool = u.state === 'building' || u.state === 'to_build' ? W.hammer : res === 'wood' ? W.axe : res === 'gold' || res === 'stone' ? W.pick : res === 'food' ? (extra.kind === 'farm' ? W.hoe : extra.kind === 'carcass' ? W.knife : W.basket) : null;
-      biped(ctx, b, team, phase, swing, { weapon: tool });
-      if (u.carry?.amount) { const c = RES_COL[u.carry.res];
-        if (u.carry.res === 'wood') for (let i = 0; i < 3; i++) { ctx.fillStyle = i % 2 ? '#8a5a2a' : '#6a3a14'; ctx.fillRect(-10, -18 + i * 2.4, 8, 2.2); }
-        else { ctx.fillStyle = '#a07a40'; ctx.fillRect(-10, -16, 6, 7); circ(ctx, -7, -16, 2.8, c); } }
+  switch (kind) {
+    case 'villager': { // tool + motion come from src/anim.js unitAction (hammer only for build/repair)
+      const act = extra.act || {}, tool = act.tool ? W[act.tool] : null;
+      let sw = swing; if (act.motion === 'stab') sw = 0.9 - Math.abs(Math.sin(t * 8 + id)) * 1.4; else if (act.motion === 'grab') sw = 1.2; else if (act.motion === 'pick') sw = 0.6 + Math.sin(t * 6 + id) * 0.35; else if (act.motion === 'walk' || act.motion === 'idle') sw = 0.2;
+      biped(ctx, b, team, phase, sw, { weapon: tool });
+      if (act.motion === 'grab') meat(ctx, 7, -8 - Math.abs(Math.sin(t * 4 + id)) * 3);
+      const cr = u.carry?.amount ? u.carry.res : null;
+      if (cr) { if (cr === 'wood') for (let i = 0; i < 3; i++) { ctx.fillStyle = i % 2 ? '#8a5a2a' : '#6a3a14'; ctx.fillRect(-10, -18 + i * 2.4, 8, 2.2); }
+        else if (u.carry.kind === 'carcass') meat(ctx, -8, -14);
+        else if (u.carry.kind === 'berries') { ctx.fillStyle = '#b08a4a'; ctx.fillRect(-11, -15, 7, 6); circ(ctx, -9, -15.5, 1.6, '#c0203a'); circ(ctx, -6.5, -16, 1.6, '#c0203a'); }
+        else if (u.carry.kind === 'farm') { ctx.fillStyle = '#e0c060'; ctx.fillRect(-11, -18, 7, 8); line(ctx, -10, -18, -12, -22, '#d0b040', 1.2); line(ctx, -6, -18, -4, -22, '#d0b040', 1.2); }
+        else { ctx.fillStyle = '#a07a40'; ctx.fillRect(-10, -16, 6, 7); circ(ctx, -7, -16, 2.8, RES_COL[cr]); } }
       break; }
-    case 'militia': biped(ctx, b, team, phase, swing, { weapon: W.sword, offhand: shield(team) }); break;
+    case 'militia': biped(ctx, b, team, phase, swing, { weapon: W.sword, offhand: shield(team), armor: b.armored, helmet: b.armored }); break;
     case 'spearman': biped(ctx, b, team, phase, attacking ? swing * 0.4 + 0.6 : 0, { weapon: W.spear, offhand: shield(team) }); break;
     case 'archer': biped(ctx, b, team, phase, attacking ? -0.25 : -0.1, { weapon: W.bow }); break;
     case 'crossbowman': biped(ctx, b, team, phase, attacking ? -0.15 : 0, { weapon: W.crossbow, helmet: true }); break;
@@ -111,7 +126,7 @@ export function drawInu(ctx, u, px, py, t, extra = {}) {
     case 'scout_cavalry': case 'knight': {
       horse(ctx, b.mount, team, phase, b.armored);
       ctx.save(); ctx.translate(0, -10); ctx.scale(0.85, 0.85);
-      biped(ctx, b, team, 0, attacking ? swing : 0.1, { weapon: u.type === 'knight' ? W.sword : W.lance, armor: b.armored, helmet: b.armored, offhand: u.type === 'knight' ? shield(team) : null });
+      biped(ctx, b, team, 0, attacking ? swing : 0.1, { weapon: kind === 'knight' ? W.sword : W.lance, armor: b.armored, helmet: b.armored, offhand: kind === 'knight' ? shield(team) : null });
       ctx.restore(); break; }
     case 'trebuchet': {
       const arm = attacking ? -0.9 + Math.abs(Math.sin(t * 1.5)) * 1.8 : -0.9;
@@ -131,7 +146,7 @@ export function paw(ctx, x, y, r, col) {
   for (const [dx, dy] of [[-0.6, -0.35], [-0.2, -0.65], [0.2, -0.65], [0.6, -0.35]]) circ(ctx, x + dx * r, y + dy * r, r * 0.22, col);
 }
 // UI-only display names: swap original unit names in player-visible text for breed labels (sim ids/state untouched).
-const ORIG = { villager: 'Villager', militia: 'Militia', spearman: 'Spearman', archer: 'Archer', crossbowman: 'Crossbowman', scout_cavalry: 'Scout Cavalry', knight: 'Knight', monk: 'Monk', trebuchet: 'Trebuchet' };
+const ORIG = { villager: 'Worker Pup', militia: 'Footpaw', spearman: 'Pike Pup', archer: 'Bow Pup', crossbowman: 'Longbow Pup', scout_cavalry: 'Scout Rider', knight: 'Armored Rider', monk: 'Shrine Keeper', trebuchet: 'Boulder Thrower' };
 const NAME_MAP = Object.entries(ORIG).map(([t, n]) => [n, BREEDS[t].label]).sort((a, b) => b[0].length - a[0].length);
 const NAME_RE = new RegExp(`\\b(${NAME_MAP.map(e => e[0]).join('|')})\\b(?!s\\b)`, 'g');
 export function breedText(text) {

@@ -1,3 +1,4 @@
+import { COSMETICS as CIV_COSMETICS } from './civs.js';
 // $KIBBLE network for Inu Empires: SIMULATED. No real wallet, no tokens move, no transactions are sent.
 // Mirrors Inu Verse's Kibble Mall (inu-verse/src/mall.js): amounts are integer millionths (U), fee in basis points,
 // owner takes the rounding remainder so every unit of the fee lands somewhere. Prize pools go by leaderboard rank
@@ -32,6 +33,8 @@ export const COSMETICS = {
   skin_snow_akita: { kind: 'skin', name: 'Snow Akita knights', price: 250, tier: 'none' },
   skin_kai_brindle: { kind: 'skin', name: 'Kai brindle militia', price: 400, tier: 'none' },
   skin_spitz_monk: { kind: 'skin', name: 'Spitz monk robe', price: 900, tier: 'pup' },
+  // clan shield finishes (match-select card glow; cosmetic only, every clan itself is free)
+  ...Object.fromEntries(Object.values(CIV_COSMETICS).flat().map(c => [c.id, { kind: 'civ', name: c.name, price: c.price, tier: 'none' }])),
 };
 export const SHOP = Object.entries(COSMETICS).filter(([, c]) => c.price).map(([id]) => id);
 export function newState(name = 'You') {

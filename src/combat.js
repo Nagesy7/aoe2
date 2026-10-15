@@ -14,14 +14,15 @@ export const isMilitary = u => u.type !== 'villager' && u.type !== 'sheep' && (U
 
 // Effective combat stats of a unit (player blacksmith techs apply to player infantry/cavalry only).
 export function unitStats(world, u) {
-  const d = UNITS[u.type]; const melee = u.owner && (d.infantry || d.cavalry) ? techEffects(world, u.owner).meleeAttack : 0;
-  return { attack: d.attack + melee, armor: parseArmor(d.armor), range: d.range || 0, ranged: !!d.range, reload: d.reload || 2, bonus: d.bonus || {}, los: Math.max(LOS, (d.range || 0) + 2) };
+  const d = UNITS[u.type], fx = u.owner ? techEffects(world, u.owner) : null, mc = fx && (d.infantry || d.cavalry), ar = fx && d.range && u.type !== 'trebuchet';
+  const base = parseArmor(d.armor), armor = { melee: base.melee + (mc ? fx.meleeArmor : 0) + (ar ? fx.archerArmor : 0), pierce: base.pierce + (mc ? fx.pierceArmor : 0) + (ar ? fx.archerArmor : 0) };
+  return { attack: d.attack + (mc ? fx.meleeAttack : 0) + (ar ? fx.archerAttack : 0), armor, range: (d.range || 0) + (ar ? fx.archerRange : 0), ranged: !!d.range, reload: d.reload || 2, bonus: d.bonus || {}, los: Math.max(LOS, (d.range || 0) + (ar ? fx.archerRange : 0) + 2) };
 }
-export function armorOf(t) { return t.size ? parseArmor(BUILDINGS[t.type].armor || '0/7') : parseArmor(UNITS[t.type]?.armor); }
+export function armorOf(t, world = null) { if (t.size) return parseArmor(BUILDINGS[t.type].armor || '0/7'); return world && t.owner ? unitStats(world, t).armor : parseArmor(UNITS[t.type]?.armor); }
 const classes = t => { if (t.size) return ['building']; const d = UNITS[t.type] || {}; return [d.infantry && 'infantry', d.cavalry && 'cavalry', d.range && 'archer'].filter(Boolean); };
 // AoE2 damage: max(1, attack + class bonuses - matching armor (melee or pierce))
 export function damageFor(world, att, tgt) {
-  const s = unitStats(world, att), arm = armorOf(tgt);
+  const s = unitStats(world, att), arm = armorOf(tgt, world);
   const bonus = classes(tgt).reduce((t, c) => t + (s.bonus[c] || 0), 0);
   return Math.max(1, s.attack + bonus - (s.ranged ? arm.pierce : arm.melee));
 }
@@ -52,7 +53,7 @@ function planAttack(world, u, t) {
   return planTo(world, u, near, grid);
 }
 export function orderAttack(world, u, t, auto = false) {
-  if (!t || t === u || !isEnemy(u, t) || !(UNITS[u.type]?.attack > 0)) return false;
+  if (!t || t === u || !isEnemy(u, t) || !(UNITS[u.type]?.attack > 0) || t.state === 'garrisoned' || u.state === 'garrisoned') return false;
   u.target = null; u.build = null; u.note = null; u.hunt = null;
   u.attack = { kind: t.size ? 'building' : 'unit', id: t.id, auto, home: { x: u.x, y: u.y } };
   u.state = 'attacking'; u.path = []; u.stuck = 0;
@@ -68,10 +69,12 @@ function hit(world, att, tgt, dmg) {
   (world.combatLog ||= []).push({ t: +world.time.toFixed(2), att: att.id, tgt: tgt.id, dmg, hp: Math.max(0, tgt.hp) });
   if (world.combatLog.length > 200) world.combatLog.shift();
   if (tgt.hp <= 0) kill(world, tgt);
+  else if (tgt.size && tgt.owner) (world.underAttack ||= {})[tgt.owner] = { t: world.time, x: tgt.x + tgt.size / 2, y: tgt.y + tgt.size / 2 };
   else if (!tgt.size) retaliate(world, tgt, att);
 }
 export function kill(world, t) {
   t.hp = 0; t.dead = true;
+  if (t.size && t.garrison?.length) { const ids = t.garrison; t.garrison = []; for (const id of ids) { const g = world.units.find(o => o.id === id); if (g) { g.state = 'idle'; g.garrisonIn = null; g.hp = Math.max(1, g.hp - 10); } } }
   (world.deaths ||= []).push({ id: t.id, type: t.type, owner: t.owner, t: world.time, building: !!t.size });
   if (t.size) { world.buildings = world.buildings.filter(b => b !== t);
     if (t.type === 'farm') world.resources = world.resources.filter(n => n.farm !== t.id); }
@@ -82,12 +85,13 @@ export function kill(world, t) {
   if (world.selected === t.id) world.selected = null;
 }
 function retaliate(world, victim, att) {
-  if (!world.units.includes(att) || !isMilitary(victim)) return;
+  if (!world.units.includes(att) || !isMilitary(victim) || victim.stance === 'passive') return;
+  if (victim.stance === 'stand' && !inRange(world, victim, att)) return;
   if (victim.state === 'idle' || (victim.state === 'attacking' && victim.attack?.auto && victim.attack.kind === 'building')) orderAttack(world, victim, att, true);
 }
 function nearestEnemy(world, u, r, buildingsToo = false) {
   let best = null, bd = r;
-  for (const o of world.units) if (isEnemy(u, o)) { const d = hyp(o.x - u.x, o.y - u.y); if (d <= bd) { bd = d; best = o; } }
+  for (const o of world.units) if (isEnemy(u, o) && o.state !== 'garrisoned') { const d = hyp(o.x - u.x, o.y - u.y); if (d <= bd) { bd = d; best = o; } }
   if (!best && buildingsToo) for (const b of world.buildings) if (isEnemy(u, b)) { const d = distTo(u, b); if (d <= bd) { bd = d; best = b; } }
   return best;
 }
@@ -96,12 +100,13 @@ export function tickAttack(world, u, dt) {
   const t = findTarget(world, u.attack);
   const s = unitStats(world, u);
   u.atkTimer = Math.max(0, (u.atkTimer || 0) - dt);
-  if (!t || t.dead || t.hp <= 0) { // target gone: look for the next one nearby, else stop
+  if (!t || t.dead || t.hp <= 0 || t.state === 'garrisoned') { // target gone: look for the next one nearby, else stop
     const auto = u.attack?.auto; u.attack = null; idleUnit(u);
     const n = nearestEnemy(world, u, s.los, aiOwned(world, u)); if (n) orderAttack(world, u, n, true); else if (auto) u.goal = tileKey(world, Math.floor(u.x), Math.floor(u.y));
     return;
   }
-  if (u.attack.auto && hyp(u.x - u.attack.home.x, u.y - u.attack.home.y) > s.los + LEASH) { u.attack = null; idleUnit(u, 'gave up chase'); return; }
+  if (u.attack.auto && u.stance === 'stand' && !inRange(world, u, t)) { u.attack = null; idleUnit(u); return; }
+  if (u.attack.auto && hyp(u.x - u.attack.home.x, u.y - u.attack.home.y) > s.los + (u.stance === 'defensive' ? 2 : LEASH)) { u.attack = null; idleUnit(u, 'gave up chase'); return; }
   if (u.nudge && u.path.length) { moveAlong(u, dt); return; } u.nudge = false;
   if (inRange(world, u, t)) {
     u.path = []; u.goal = tileKey(world, Math.floor(u.x), Math.floor(u.y)); u.stuck = 0; { const fx = center(t).x - u.x, fy = center(t).y - u.y, fd = hyp(fx, fy) || 1; u.face = [fx / fd, fy / fd]; } // no trig in the sim
@@ -144,8 +149,9 @@ export function tickAggro(world) {
     if (!isMilitary(u)) continue;
     // raiders marching on a building divert to defending units that come into sight
     if (aiOwned(world, u) && u.state === 'attacking' && u.attack?.kind === 'building') { const n = nearestEnemy(world, u, unitStats(world, u).los); if (n) orderAttack(world, u, n, true); continue; }
-    if (u.state !== 'idle') continue;
-    const n = nearestEnemy(world, u, unitStats(world, u).los, aiOwned(world, u)); if (n) orderAttack(world, u, n, true);
+    if (u.state !== 'idle' || u.stance === 'passive') continue;
+    const n = nearestEnemy(world, u, u.stance === 'stand' ? unitStats(world, u).range + 1 : unitStats(world, u).los, aiOwned(world, u) || !!world.computers);
+    if (n && (u.stance !== 'stand' || inRange(world, u, n))) orderAttack(world, u, n, true);
   }
 }
 // Separation: stationary non-villager units never share a tile; extras step to the nearest free tile.
@@ -153,7 +159,7 @@ export function tickSeparation(world) {
   if (world.time < (world.nextSep || 0)) return; world.nextSep = world.time + 0.3;
   const grid = buildGrid(world), occ = new Map();
   const still = u => (u.state === 'idle' || (u.state === 'attacking' && !u.path.length));
-  for (const u of world.units) { const k = tileKey(world, Math.floor(u.x), Math.floor(u.y)); if (!occ.has(k)) occ.set(k, []); occ.get(k).push(u); }
+  for (const u of world.units) { if (u.state === 'garrisoned') continue; const k = tileKey(world, Math.floor(u.x), Math.floor(u.y)); if (!occ.has(k)) occ.set(k, []); occ.get(k).push(u); }
   const taken = new Set([...occ.keys()]);
   for (const [, us] of occ) {
     const movers = us.filter(u => still(u) && u.type !== 'villager'); if (us.length < 2 || !movers.length) continue;
