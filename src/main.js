@@ -20,6 +20,10 @@ let world = null, cam = { x: 0, y: 0 }, ui = createUi(), net = null, fog = null;
 const keys = new Set(); addEventListener('blur', () => keys.clear());
 let mouse = { x: -1, y: -1, inside: false }, drag = null;
 let Z = 1; // touch pinch zoom: the canvas backing store is viewport/Z and CSS-stretched to the viewport (desktop Z=1: unchanged)
+// Render-only interpolation: the sim ticks at 20 Hz, so units drawn at raw sim positions hopped every 3rd frame (jitter).
+// Remember each unit/animal's position before a tick and draw between it and the current one (alpha = acc / TICK_DT). Sim untouched (lockstep-safe).
+const prevPos = new Map();
+function snapPrev() { if (!world) return; prevPos.clear(); for (const u of world.units) prevPos.set(u, [u.x, u.y]); for (const a of world.animals || []) prevPos.set(a, [a.x, a.y]); }
 function resize() { canvas.width = Math.round(innerWidth / Z); canvas.height = Math.round(innerHeight / Z); canvas.style.width = innerWidth + 'px'; canvas.style.height = innerHeight + 'px'; if (world) clampCamera(cam, canvas.width, canvas.height, world); } resize(); addEventListener('resize', resize);
 addEventListener('blur', () => { keys.clear(); drag = null; });   // no stuck pan keys after alt-tab
 addEventListener('keydown', e => { if (e.target.tagName === 'INPUT') return;
@@ -259,12 +263,12 @@ function frame(now) {
   if (mouse.inside && !drag && !ui.press) { if (mouse.x < EDGE) dx--; if (mouse.x > innerWidth - EDGE) dx++; if (mouse.y < EDGE) dy--; if (mouse.y > innerHeight - EDGE) dy++; }
   if (dx || dy) { cam.x += dx * PAN * dt; cam.y += dy * PAN * dt; clampCamera(cam, canvas.width, canvas.height, world); }
   // fixed 20 Hz simulation ticks
-  if (!net) { acc += dt; let n = 0; while (acc >= TICK_DT && n++ < 8) { stepTick(world); acc -= TICK_DT; } if (world.computers && !world.spectate) { fog = computeFog(world, viewer(), fog); window.game.fog = fog; } }
+  if (!net) { acc += dt; let n = 0; while (acc >= TICK_DT && n++ < 8) { snapPrev(); stepTick(world); acc -= TICK_DT; } if (world.computers && !world.spectate) { fog = computeFog(world, viewer(), fog); window.game.fog = fog; } }
   else {
     acc += real * net.speed; let n = 0, stalled = false;
     while (acc >= TICK_DT && n < 12) {
       const cmds = net.ls.next(); if (!cmds) { stalled = true; break; }
-      stepTick(world, cmds); acc -= TICK_DT; n++;
+      snapPrev(); stepTick(world, cmds); acc -= TICK_DT; n++;
       const h = stateHash(world); if (world.tick % net.ls.hashEvery === 0) net.hashes.push([world.tick, h]); net.ls.hash(world.tick, h);
     }
     if (stalled) { acc = Math.min(acc, TICK_DT); net.stallMs += real * 1000; net.stalledTotalMs += real * 1000;
@@ -272,7 +276,7 @@ function frame(now) {
     else if (n) net.stallMs = 0;
     fog = computeFog(world, viewer(), fog); window.game.fog = fog;
   }
-  if (ui.placing) refreshGhost(); if (mouse.inside) updateCursor(); render(ctx, world, cam, ui, net || (world.computers && !world.spectate) ? fog : null); updateHud(); requestAnimationFrame(frame);
+  if (ui.placing) refreshGhost(); if (mouse.inside) updateCursor(); ui.lerp = { prev: prevPos, a: Math.max(0, Math.min(1, acc / TICK_DT)) }; render(ctx, world, cam, ui, net || (world.computers && !world.spectate) ? fog : null); updateHud(); requestAnimationFrame(frame);
 }
 // Automation hook: read-only state access + time advance in single player (proof scripts must not use it to issue orders).
 window.game = { sim: SIM, world: null, cam, ui, selectionInfo, pickAt, toScreen: (x, y) => { const q = worldToScreen(x, y, cam); return { x: q.x * Z, y: q.y * Z }; }, zoom: () => Z, toWorld,

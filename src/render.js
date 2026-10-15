@@ -35,6 +35,7 @@ export function render(ctx, world, cam, ui = {}, fog = null) {
   const W = ctx.canvas.width, H = ctx.canvas.height;
   ctx.fillStyle = '#111'; ctx.fillRect(0, 0, W, H);
   const c = camPixel(cam);
+  const L = ui.lerp, ip = (o) => { const q = L && L.prev.get(o); if (!q) return [Math.round(o.x * TILE), Math.round(o.y * TILE)]; const r = [Math.round((q[0] + (o.x - q[0]) * L.a) * TILE), Math.round((q[1] + (o.y - q[1]) * L.a) * TILE)]; if (o.id === globalThis.__trackId) globalThis.__trackPx = r; return r; }; // interpolated, pixel-snapped draw pos
   ctx.save(); ctx.translate(-c.x, -c.y);
   const x0 = Math.max(0, Math.floor(c.x / TILE)), y0 = Math.max(0, Math.floor(c.y / TILE));
   const x1 = Math.min(world.width, Math.ceil((c.x + W) / TILE)), y1 = Math.min(world.height, Math.ceil((c.y + H) / TILE));
@@ -104,13 +105,13 @@ export function render(ctx, world, cam, ui = {}, fog = null) {
     else if (n.res === 'food') { ctx.fillStyle = '#2d6b2d'; ctx.beginPath(); ctx.arc(px, py, 11, 0, 7); ctx.fill(); ctx.fillStyle = '#c0203a'; for (let i = 0; i < 5; i++) { ctx.beginPath(); ctx.arc(px - 6 + (i * 5) % 13, py - 5 + (i * 7) % 11, 2.5, 0, 7); ctx.fill(); } }
     else { ctx.fillStyle = n.res === 'gold' ? '#e0b83a' : '#9a9a9a'; ctx.beginPath(); ctx.moveTo(px - 13, py + 9); ctx.lineTo(px - 4, py - 11); ctx.lineTo(px + 6, py - 6); ctx.lineTo(px + 13, py + 9); ctx.fill(); ctx.strokeStyle = '#333'; ctx.stroke(); }
   }]);
-  for (const a of world.animals) D.push([a.y * TILE + 6, () => { if (fog && !fog.visible[Math.floor(a.y) * world.width + Math.floor(a.x)]) return; const px = a.x * TILE, py = a.y * TILE;
+  for (const a of world.animals) D.push([a.y * TILE + 6, () => { if (fog && !fog.visible[Math.floor(a.y) * world.width + Math.floor(a.x)]) return; const [px, py] = ip(a);
     if (selUnits.has(a.id) || (sel && sel.kind === 'unit' && sel.id === a.id)) { ctx.strokeStyle = '#fff'; ctx.lineWidth = 2; ctx.beginPath(); ctx.ellipse(px, py + 5, 11, 6, 0, 0, 7); ctx.stroke(); ctx.lineWidth = 1; }
     ctx.fillStyle = '#f4f0e6'; ctx.beginPath(); ctx.ellipse(px, py, 9, 6, 0, 0, 7); ctx.fill(); ctx.fillStyle = '#333'; ctx.beginPath(); ctx.arc(px + 8, py - 2, 3.5, 0, 7); ctx.fill();
     if (a.owner) { ctx.fillStyle = red(a) ? '#c02020' : '#2a50c8'; ctx.fillRect(px + 4, py - 6, 3, 8); } }]);
   for (const u of [...world.units.filter(o => o.state !== 'garrisoned'), ...dyingUnits(world)]) D.push([u.y * TILE + 6, () => {
     if (fog && foe(u) && !fog.sees(u)) return;
-    const px = u.x * TILE, py = u.y * TILE;
+    const [px, py] = ip(u);
     if (u.type !== 'villager' || red(u)) { ctx.fillStyle = red(u) ? '#ff2020d0' : '#3060ffb0'; ctx.beginPath(); ctx.ellipse(px, py + 6, 10, 5, 0, 0, 7); ctx.fill(); }
     if (u.type !== 'villager' || u.hp < u.maxHp || selUnits.has(u.id)) bar(ctx, px - 11, py - 30, 22, u.hp / u.maxHp, red(u) ? '#e04040' : '#4fd34f');
     if (u.lastAttackAt != null && world.time - u.lastAttackAt < 0.25 && !UNIT_STYLE[u.type]?.ranged) { ctx.strokeStyle = '#fff'; ctx.lineWidth = 2; ctx.beginPath(); ctx.arc(px + (u.face ? u.face[0] : 1) * 10, py + (u.face ? u.face[1] : 0) * 10, 5, 0, 7); ctx.stroke(); ctx.lineWidth = 1; }
