@@ -1,7 +1,7 @@
-games 480 (conquest 0), side wins P1 239 / P2 241, 880 s
-shiba     71/160  44.4%
-akita     82/160  51.2%
-kishu     84/160  52.5%
-shikoku   71/160  44.4%
-hokkaido  87/160  54.4%
-kai       85/160  53.1%
+games 480 (conquest 0), side wins P1 245 / P2 235, 855 s
+shiba     75/160  46.9%
+akita     74/160  46.3%
+kishu     88/160  55.0%
+shikoku   75/160  46.9%
+hokkaido  85/160  53.1%
+kai       83/160  51.9%

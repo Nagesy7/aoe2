@@ -3,8 +3,8 @@
 // Effects use the same keys as technology effects (src/sim.js techEffects), so they stack with the tech tree.
 export const CIVS = {
   shiba: { name: 'Shiba Clan', style: 'Economy', unique: 'red_fang',
-    traits: ['Berry foraging +10%, lumber +5%', 'Unique: Red Fang (fast, cheap raider infantry)'],
-    effect: { ratePct: { tree: 5, berries: 10 } }, ai: { army: ['militia', 'archer', 'spearman'] } },
+    traits: ['Berry foraging +12%, lumber +8%', 'Unique: Red Fang (fast, cheap raider infantry)'],
+    effect: { ratePct: { tree: 8, berries: 12 } }, ai: { army: ['militia', 'archer', 'spearman'] } },
   akita: { name: 'Akita Dominion', style: 'Fast ages', unique: 'akita_guardian',
     traits: ['Age advancement researches 20% faster', 'Unique: Akita Guardian (armored heavy infantry)'],
     effect: { ageTimePct: -20 }, ai: { army: ['militia', 'archer', 'spearman'] } },
@@ -12,8 +12,8 @@ export const CIVS = {
     traits: ['Archers +1 range', 'Unique: Kishu Longbow (range 7)'],
     effect: { archerRange: 1 }, ai: { army: ['archer', 'militia', 'spearman'] } },
   shikoku: { name: 'Shikoku Riders', style: 'Cavalry', unique: 'boar_rider',
-    traits: ['Cavalry move 15% faster', 'Paddock units cost 30% less', 'Unique: Boar Rider (cavalry that breaks buildings)'],
-    effect: { cavalrySpeedPct: 15, costPct: { stable: -30 } }, ai: { army: ['scout_cavalry', 'archer', 'spearman', 'militia'] } },
+    traits: ['Cavalry move 15% faster', 'Paddock units cost 35% less', 'Unique: Boar Rider (cavalry that breaks buildings)'],
+    effect: { cavalrySpeedPct: 15, costPct: { stable: -35 } }, ai: { army: ['scout_cavalry', 'archer', 'spearman', 'militia'] } },
   hokkaido: { name: 'Hokkaido Wardens', style: 'Defense', unique: 'frost_guard',
     traits: ['Buildings +10% HP', 'Worker Pups build 20% faster', 'Den Hall fires +1 arrow', 'Unique: Frost Guard (anti-archer infantry)'],
     effect: { buildingHpPct: 10, buildSpeedPct: 20, extraArrows: 1 }, ai: { army: ['spearman', 'archer', 'militia'] } },

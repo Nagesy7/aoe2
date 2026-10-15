@@ -4,42 +4,42 @@
  "games": 480,
  "conquests": 0,
  "sideWins": {
-  "player": 239,
-  "enemy": 241
+  "player": 245,
+  "enemy": 235
  },
  "table": {
   "shiba": {
    "games": 160,
-   "wins": 71,
-   "winRate": 0.444
+   "wins": 75,
+   "winRate": 0.469
   },
   "akita": {
    "games": 160,
-   "wins": 82,
-   "winRate": 0.512
+   "wins": 74,
+   "winRate": 0.463
   },
   "kishu": {
    "games": 160,
-   "wins": 84,
-   "winRate": 0.525
+   "wins": 88,
+   "winRate": 0.55
   },
   "shikoku": {
    "games": 160,
-   "wins": 71,
-   "winRate": 0.444
+   "wins": 75,
+   "winRate": 0.469
   },
   "hokkaido": {
    "games": 160,
-   "wins": 87,
-   "winRate": 0.544
+   "wins": 85,
+   "winRate": 0.531
   },
   "kai": {
    "games": 160,
-   "wins": 85,
-   "winRate": 0.531
+   "wins": 83,
+   "winRate": 0.519
   }
  },
- "ms": 880060,
+ "ms": 855108,
  "results": [
   {
    "a": "shiba",
@@ -49,11 +49,11 @@
    "conquest": false,
    "minutes": 30,
    "score": [
-    4375,
-    3855
+    5640,
+    4387
    ],
    "ages": [
-    "castle",
+    "feudal",
     "feudal"
    ]
   },
@@ -65,8 +65,8 @@
    "conquest": false,
    "minutes": 30,
    "score": [
-    5708,
-    7208
+    5269,
+    5681
    ],
    "ages": [
     "feudal",
@@ -77,12 +77,12 @@
    "a": "shiba",
    "b": "akita",
    "seed": 9,
-   "winnerCiv": "akita",
+   "winnerCiv": "shiba",
    "conquest": false,
    "minutes": 30,
    "score": [
-    5048,
-    5562
+    4728,
+    4661
    ],
    "ages": [
     "feudal",
@@ -97,8 +97,8 @@
    "conquest": false,
    "minutes": 30,
    "score": [
-    4991,
-    3726
+    5163,
+    5053
    ],
    "ages": [
     "feudal",
@@ -109,12 +109,12 @@
    "a": "shiba",
    "b": "kishu",
    "seed": 1,
-   "winnerCiv": "kishu",
+   "winnerCiv": "shiba",
    "conquest": false,
    "minutes": 30,
    "score": [
-    4184,
-    5406
+    5206,
+    5044
    ],
    "ages": [
     "feudal",
@@ -125,12 +125,12 @@
    "a": "shiba",
    "b": "kishu",
    "seed": 5,
-   "winnerCiv": "shiba",
+   "winnerCiv": "kishu",
    "conquest": false,
    "minutes": 30,
    "score": [
-    6049,
-    4931
+    3331,
+    5641
    ],
    "ages": [
     "feudal",
@@ -145,8 +145,8 @@
    "conquest": false,
    "minutes": 30,
    "score": [
-    4024,
-    5099
+    4933,
+    5294
    ],
    "ages": [
     "feudal",
@@ -161,8 +161,8 @@
    "conquest": false,
    "minutes": 30,
    "score": [
-    5515,
-    4577
+    5152,
+    4471
    ],
    "ages": [
     "feudal",
@@ -173,63 +173,63 @@
    "a": "shiba",
    "b": "shikoku",
    "seed": 1,
-   "winnerCiv": "shiba",
-   "conquest": false,
-   "minutes": 30,
-   "score": [
-    5331,
-    3821
-   ],
-   "ages": [
-    "feudal",
-    "feudal"
-   ]
-  },
-  {
-   "a": "shiba",
-   "b": "shikoku",
-   "seed": 5,
    "winnerCiv": "shikoku",
    "conquest": false,
    "minutes": 30,
    "score": [
-    4030,
-    5578
-   ],
-   "ages": [
-    "feudal",
-    "feudal"
-   ]
-  },
-  {
-   "a": "shiba",
-   "b": "shikoku",
-   "seed": 9,
-   "winnerCiv": "shikoku",
-   "conquest": false,
-   "minutes": 30,
-   "score": [
-    4424,
-    5030
-   ],
-   "ages": [
-    "feudal",
-    "feudal"
-   ]
-  },
-  {
-   "a": "shiba",
-   "b": "shikoku",
-   "seed": 13,
-   "winnerCiv": "shiba",
-   "conquest": false,
-   "minutes": 30,
-   "score": [
-    4570,
-    4310
+    4363,
+    5445
    ],
    "ages": [
     "castle",
+    "castle"
+   ]
+  },
+  {
+   "a": "shiba",
+   "b": "shikoku",
+   "seed": 5,
+   "winnerCiv": "shiba",
+   "conquest": false,
+   "minutes": 30,
+   "score": [
+    5750,
+    5282
+   ],
+   "ages": [
+    "feudal",
+    "feudal"
+   ]
+  },
+  {
+   "a": "shiba",
+   "b": "shikoku",
+   "seed": 9,
+   "winnerCiv": "shikoku",
+   "conquest": false,
+   "minutes": 30,
+   "score": [
+    5025,
+    5172
+   ],
+   "ages": [
+    "feudal",
+    "feudal"
+   ]
+  },
+  {
+   "a": "shiba",
+   "b": "shikoku",
+   "seed": 13,
+   "winnerCiv": "shikoku",
+   "conquest": false,
+   "minutes": 30,
+   "score": [
+    4596,
+    4676
+   ],
+   "ages": [
+    "feudal",
     "feudal"
    ]
   },
@@ -241,8 +241,8 @@
    "conquest": false,
    "minutes": 30,
    "score": [
-    5448,
-    5184
+    5523,
+    5488
    ],
    "ages": [
     "feudal",
@@ -257,8 +257,8 @@
    "conquest": false,
    "minutes": 30,
    "score": [
-    5426,
-    6033
+    5281,
+    6048
    ],
    "ages": [
     "feudal",
@@ -273,8 +273,8 @@
    "conquest": false,
    "minutes": 30,
    "score": [
-    5406,
-    6740
+    5722,
+    5875
    ],
    "ages": [
     "feudal",
@@ -289,8 +289,8 @@
    "conquest": false,
    "minutes": 30,
    "score": [
-    4828,
-    5207
+    3797,
+    5600
    ],
    "ages": [
     "feudal",
@@ -305,40 +305,8 @@
    "conquest": false,
    "minutes": 30,
    "score": [
-    3085,
-    4908
-   ],
-   "ages": [
-    "feudal",
-    "feudal"
-   ]
-  },
-  {
-   "a": "shiba",
-   "b": "kai",
-   "seed": 5,
-   "winnerCiv": "kai",
-   "conquest": false,
-   "minutes": 30,
-   "score": [
-    3390,
-    5881
-   ],
-   "ages": [
-    "feudal",
-    "feudal"
-   ]
-  },
-  {
-   "a": "shiba",
-   "b": "kai",
-   "seed": 9,
-   "winnerCiv": "kai",
-   "conquest": false,
-   "minutes": 30,
-   "score": [
-    5200,
-    5867
+    3914,
+    4648
    ],
    "ages": [
     "feudal",
@@ -348,13 +316,45 @@
   {
    "a": "shiba",
    "b": "kai",
+   "seed": 5,
+   "winnerCiv": "shiba",
+   "conquest": false,
+   "minutes": 30,
+   "score": [
+    4967,
+    4235
+   ],
+   "ages": [
+    "feudal",
+    "feudal"
+   ]
+  },
+  {
+   "a": "shiba",
+   "b": "kai",
+   "seed": 9,
+   "winnerCiv": "shiba",
+   "conquest": false,
+   "minutes": 30,
+   "score": [
+    4675,
+    4379
+   ],
+   "ages": [
+    "feudal",
+    "feudal"
+   ]
+  },
+  {
+   "a": "shiba",
+   "b": "kai",
    "seed": 13,
    "winnerCiv": "shiba",
    "conquest": false,
    "minutes": 30,
    "score": [
-    5192,
-    4230
+    4925,
+    4442
    ],
    "ages": [
     "feudal",
@@ -1005,12 +1005,12 @@
    "a": "akita",
    "b": "shiba",
    "seed": 1,
-   "winnerCiv": "shiba",
+   "winnerCiv": "akita",
    "conquest": false,
    "minutes": 30,
    "score": [
-    4126,
-    4978
+    5139,
+    4821
    ],
    "ages": [
     "feudal",
@@ -1025,8 +1025,8 @@
    "conquest": false,
    "minutes": 30,
    "score": [
-    4935,
-    4783
+    5250,
+    4481
    ],
    "ages": [
     "feudal",
@@ -1041,8 +1041,8 @@
    "conquest": false,
    "minutes": 30,
    "score": [
-    3787,
-    4210
+    3829,
+    6003
    ],
    "ages": [
     "feudal",
@@ -1053,12 +1053,12 @@
    "a": "akita",
    "b": "shiba",
    "seed": 13,
-   "winnerCiv": "akita",
+   "winnerCiv": "shiba",
    "conquest": false,
    "minutes": 30,
    "score": [
-    6197,
-    4598
+    3892,
+    4894
    ],
    "ages": [
     "feudal",
@@ -1073,8 +1073,8 @@
    "conquest": false,
    "minutes": 30,
    "score": [
-    4637,
-    3843
+    5626,
+    5395
    ],
    "ages": [
     "feudal",
@@ -1089,8 +1089,8 @@
    "conquest": false,
    "minutes": 30,
    "score": [
-    5263,
-    4619
+    5686,
+    3938
    ],
    "ages": [
     "feudal",
@@ -1105,8 +1105,8 @@
    "conquest": false,
    "minutes": 30,
    "score": [
-    3496,
-    4616
+    4144,
+    4910
    ],
    "ages": [
     "feudal",
@@ -1117,12 +1117,12 @@
    "a": "kishu",
    "b": "shiba",
    "seed": 13,
-   "winnerCiv": "kishu",
+   "winnerCiv": "shiba",
    "conquest": false,
    "minutes": 30,
    "score": [
-    5006,
-    4670
+    5024,
+    5195
    ],
    "ages": [
     "feudal",
@@ -1137,8 +1137,8 @@
    "conquest": false,
    "minutes": 30,
    "score": [
-    4343,
-    5316
+    4721,
+    5155
    ],
    "ages": [
     "feudal",
@@ -1153,8 +1153,8 @@
    "conquest": false,
    "minutes": 30,
    "score": [
-    5389,
-    4234
+    5444,
+    3391
    ],
    "ages": [
     "feudal",
@@ -1169,8 +1169,8 @@
    "conquest": false,
    "minutes": 30,
    "score": [
-    3872,
-    4645
+    4489,
+    5906
    ],
    "ages": [
     "feudal",
@@ -1181,12 +1181,12 @@
    "a": "shikoku",
    "b": "shiba",
    "seed": 13,
-   "winnerCiv": "shikoku",
+   "winnerCiv": "shiba",
    "conquest": false,
    "minutes": 30,
    "score": [
-    5191,
-    4244
+    4960,
+    5110
    ],
    "ages": [
     "feudal",
@@ -1197,12 +1197,12 @@
    "a": "hokkaido",
    "b": "shiba",
    "seed": 1,
-   "winnerCiv": "hokkaido",
+   "winnerCiv": "shiba",
    "conquest": false,
    "minutes": 30,
    "score": [
-    5621,
-    5411
+    4016,
+    5760
    ],
    "ages": [
     "feudal",
@@ -1217,8 +1217,8 @@
    "conquest": false,
    "minutes": 30,
    "score": [
-    5502,
-    5208
+    6333,
+    4776
    ],
    "ages": [
     "feudal",
@@ -1233,8 +1233,8 @@
    "conquest": false,
    "minutes": 30,
    "score": [
-    5504,
-    5450
+    5883,
+    5446
    ],
    "ages": [
     "feudal",
@@ -1249,8 +1249,8 @@
    "conquest": false,
    "minutes": 30,
    "score": [
-    6458,
-    5032
+    5543,
+    3692
    ],
    "ages": [
     "feudal",
@@ -1261,12 +1261,12 @@
    "a": "kai",
    "b": "shiba",
    "seed": 1,
-   "winnerCiv": "kai",
+   "winnerCiv": "shiba",
    "conquest": false,
    "minutes": 30,
    "score": [
-    5472,
-    4601
+    3629,
+    5936
    ],
    "ages": [
     "feudal",
@@ -1281,8 +1281,8 @@
    "conquest": false,
    "minutes": 30,
    "score": [
-    5218,
-    2913
+    4549,
+    4111
    ],
    "ages": [
     "feudal",
@@ -1297,8 +1297,8 @@
    "conquest": false,
    "minutes": 30,
    "score": [
-    3777,
-    4806
+    4086,
+    4962
    ],
    "ages": [
     "feudal",
@@ -1309,12 +1309,12 @@
    "a": "kai",
    "b": "shiba",
    "seed": 13,
-   "winnerCiv": "kai",
+   "winnerCiv": "shiba",
    "conquest": false,
    "minutes": 30,
    "score": [
-    4456,
-    4408
+    3405,
+    5279
    ],
    "ages": [
     "feudal",
@@ -1965,28 +1965,28 @@
    "a": "shiba",
    "b": "akita",
    "seed": 2,
-   "winnerCiv": "shiba",
+   "winnerCiv": "akita",
    "conquest": false,
    "minutes": 30,
    "score": [
-    5237,
-    4887
+    4987,
+    6432
    ],
    "ages": [
     "feudal",
-    "feudal"
+    "castle"
    ]
   },
   {
    "a": "shiba",
    "b": "akita",
    "seed": 6,
-   "winnerCiv": "shiba",
+   "winnerCiv": "akita",
    "conquest": false,
    "minutes": 30,
    "score": [
-    4522,
-    4350
+    4144,
+    5124
    ],
    "ages": [
     "feudal",
@@ -2001,8 +2001,8 @@
    "conquest": false,
    "minutes": 30,
    "score": [
-    6091,
-    4745
+    5545,
+    5078
    ],
    "ages": [
     "feudal",
@@ -2017,8 +2017,8 @@
    "conquest": false,
    "minutes": 30,
    "score": [
-    4523,
-    5617
+    5274,
+    6132
    ],
    "ages": [
     "feudal",
@@ -2029,12 +2029,12 @@
    "a": "shiba",
    "b": "kishu",
    "seed": 2,
-   "winnerCiv": "shiba",
+   "winnerCiv": "kishu",
    "conquest": false,
    "minutes": 30,
    "score": [
-    5332,
-    3791
+    3908,
+    5435
    ],
    "ages": [
     "feudal",
@@ -2045,28 +2045,28 @@
    "a": "shiba",
    "b": "kishu",
    "seed": 6,
-   "winnerCiv": "shiba",
+   "winnerCiv": "kishu",
    "conquest": false,
    "minutes": 30,
    "score": [
-    4959,
-    4537
+    4353,
+    4791
    ],
    "ages": [
     "feudal",
-    "castle"
+    "feudal"
    ]
   },
   {
    "a": "shiba",
    "b": "kishu",
    "seed": 10,
-   "winnerCiv": "kishu",
+   "winnerCiv": "shiba",
    "conquest": false,
    "minutes": 30,
    "score": [
-    4356,
-    5685
+    5056,
+    5055
    ],
    "ages": [
     "feudal",
@@ -2081,8 +2081,8 @@
    "conquest": false,
    "minutes": 30,
    "score": [
-    4764,
-    5172
+    5020,
+    6028
    ],
    "ages": [
     "feudal",
@@ -2093,12 +2093,12 @@
    "a": "shiba",
    "b": "shikoku",
    "seed": 2,
-   "winnerCiv": "shiba",
+   "winnerCiv": "shikoku",
    "conquest": false,
    "minutes": 30,
    "score": [
-    5389,
-    4776
+    4228,
+    4636
    ],
    "ages": [
     "feudal",
@@ -2113,12 +2113,12 @@
    "conquest": false,
    "minutes": 30,
    "score": [
-    4118,
-    4393
+    4611,
+    4886
    ],
    "ages": [
     "feudal",
-    "castle"
+    "feudal"
    ]
   },
   {
@@ -2129,8 +2129,8 @@
    "conquest": false,
    "minutes": 30,
    "score": [
-    4990,
-    4849
+    5521,
+    4861
    ],
    "ages": [
     "feudal",
@@ -2145,8 +2145,8 @@
    "conquest": false,
    "minutes": 30,
    "score": [
-    4107,
-    5958
+    5020,
+    5853
    ],
    "ages": [
     "feudal",
@@ -2157,12 +2157,12 @@
    "a": "shiba",
    "b": "hokkaido",
    "seed": 2,
-   "winnerCiv": "shiba",
+   "winnerCiv": "hokkaido",
    "conquest": false,
    "minutes": 30,
    "score": [
-    4779,
-    4516
+    4767,
+    5237
    ],
    "ages": [
     "feudal",
@@ -2177,8 +2177,8 @@
    "conquest": false,
    "minutes": 30,
    "score": [
-    5249,
-    5038
+    5671,
+    4729
    ],
    "ages": [
     "feudal",
@@ -2189,12 +2189,12 @@
    "a": "shiba",
    "b": "hokkaido",
    "seed": 10,
-   "winnerCiv": "hokkaido",
+   "winnerCiv": "shiba",
    "conquest": false,
    "minutes": 30,
    "score": [
-    4922,
-    5064
+    5171,
+    5125
    ],
    "ages": [
     "feudal",
@@ -2209,8 +2209,8 @@
    "conquest": false,
    "minutes": 30,
    "score": [
-    3925,
-    4821
+    3981,
+    4637
    ],
    "ages": [
     "feudal",
@@ -2221,12 +2221,12 @@
    "a": "shiba",
    "b": "kai",
    "seed": 2,
-   "winnerCiv": "shiba",
+   "winnerCiv": "kai",
    "conquest": false,
    "minutes": 30,
    "score": [
-    5162,
-    4414
+    3514,
+    5392
    ],
    "ages": [
     "feudal",
@@ -2241,8 +2241,8 @@
    "conquest": false,
    "minutes": 30,
    "score": [
-    5235,
-    5205
+    4993,
+    4660
    ],
    "ages": [
     "feudal",
@@ -2257,8 +2257,8 @@
    "conquest": false,
    "minutes": 30,
    "score": [
-    4858,
-    4892
+    4407,
+    4840
    ],
    "ages": [
     "feudal",
@@ -2273,8 +2273,8 @@
    "conquest": false,
    "minutes": 30,
    "score": [
-    4791,
-    5153
+    5111,
+    5566
    ],
    "ages": [
     "feudal",
@@ -2929,8 +2929,8 @@
    "conquest": false,
    "minutes": 30,
    "score": [
-    5084,
-    4059
+    5826,
+    5147
    ],
    "ages": [
     "feudal",
@@ -2945,8 +2945,8 @@
    "conquest": false,
    "minutes": 30,
    "score": [
-    5024,
-    4060
+    5081,
+    4458
    ],
    "ages": [
     "feudal",
@@ -2961,11 +2961,11 @@
    "conquest": false,
    "minutes": 30,
    "score": [
-    4652,
-    4694
+    4127,
+    4730
    ],
    "ages": [
-    "castle",
+    "feudal",
     "feudal"
    ]
   },
@@ -2973,12 +2973,12 @@
    "a": "akita",
    "b": "shiba",
    "seed": 14,
-   "winnerCiv": "akita",
+   "winnerCiv": "shiba",
    "conquest": false,
    "minutes": 30,
    "score": [
-    5297,
-    4458
+    3898,
+    5130
    ],
    "ages": [
     "feudal",
@@ -2993,8 +2993,8 @@
    "conquest": false,
    "minutes": 30,
    "score": [
-    5385,
-    4381
+    6065,
+    4944
    ],
    "ages": [
     "feudal",
@@ -3009,8 +3009,8 @@
    "conquest": false,
    "minutes": 30,
    "score": [
-    5090,
-    5176
+    4966,
+    5861
    ],
    "ages": [
     "feudal",
@@ -3021,12 +3021,12 @@
    "a": "kishu",
    "b": "shiba",
    "seed": 10,
-   "winnerCiv": "shiba",
+   "winnerCiv": "kishu",
    "conquest": false,
    "minutes": 30,
    "score": [
-    5065,
-    5478
+    6303,
+    4306
    ],
    "ages": [
     "feudal",
@@ -3041,8 +3041,8 @@
    "conquest": false,
    "minutes": 30,
    "score": [
-    6604,
-    4683
+    5510,
+    4564
    ],
    "ages": [
     "feudal",
@@ -3057,8 +3057,8 @@
    "conquest": false,
    "minutes": 30,
    "score": [
-    5752,
-    4743
+    5045,
+    4552
    ],
    "ages": [
     "feudal",
@@ -3073,8 +3073,8 @@
    "conquest": false,
    "minutes": 30,
    "score": [
-    4480,
-    5398
+    5197,
+    5570
    ],
    "ages": [
     "feudal",
@@ -3085,12 +3085,12 @@
    "a": "shikoku",
    "b": "shiba",
    "seed": 10,
-   "winnerCiv": "shiba",
+   "winnerCiv": "shikoku",
    "conquest": false,
    "minutes": 30,
    "score": [
-    4436,
-    5387
+    5531,
+    4544
    ],
    "ages": [
     "feudal",
@@ -3105,8 +3105,8 @@
    "conquest": false,
    "minutes": 30,
    "score": [
-    4593,
-    5500
+    4788,
+    4993
    ],
    "ages": [
     "feudal",
@@ -3121,8 +3121,8 @@
    "conquest": false,
    "minutes": 30,
    "score": [
-    4572,
-    4563
+    6041,
+    5217
    ],
    "ages": [
     "feudal",
@@ -3133,12 +3133,12 @@
    "a": "hokkaido",
    "b": "shiba",
    "seed": 6,
-   "winnerCiv": "shiba",
+   "winnerCiv": "hokkaido",
    "conquest": false,
    "minutes": 30,
    "score": [
-    4852,
-    5905
+    5429,
+    5406
    ],
    "ages": [
     "feudal",
@@ -3153,8 +3153,8 @@
    "conquest": false,
    "minutes": 30,
    "score": [
-    4957,
-    5428
+    4409,
+    5190
    ],
    "ages": [
     "feudal",
@@ -3165,12 +3165,12 @@
    "a": "hokkaido",
    "b": "shiba",
    "seed": 14,
-   "winnerCiv": "shiba",
+   "winnerCiv": "hokkaido",
    "conquest": false,
    "minutes": 30,
    "score": [
-    5256,
-    5349
+    5600,
+    4017
    ],
    "ages": [
     "feudal",
@@ -3185,8 +3185,8 @@
    "conquest": false,
    "minutes": 30,
    "score": [
-    5428,
-    4397
+    4898,
+    4666
    ],
    "ages": [
     "feudal",
@@ -3201,8 +3201,8 @@
    "conquest": false,
    "minutes": 30,
    "score": [
-    4964,
-    4478
+    4176,
+    4110
    ],
    "ages": [
     "feudal",
@@ -3213,15 +3213,15 @@
    "a": "kai",
    "b": "shiba",
    "seed": 10,
-   "winnerCiv": "shiba",
+   "winnerCiv": "kai",
    "conquest": false,
    "minutes": 30,
    "score": [
-    4779,
-    5688
+    5543,
+    4877
    ],
    "ages": [
-    "castle",
+    "feudal",
     "feudal"
    ]
   },
@@ -3229,12 +3229,12 @@
    "a": "kai",
    "b": "shiba",
    "seed": 14,
-   "winnerCiv": "shiba",
+   "winnerCiv": "kai",
    "conquest": false,
    "minutes": 30,
    "score": [
-    4223,
-    5483
+    4921,
+    4689
    ],
    "ages": [
     "feudal",
@@ -3885,12 +3885,12 @@
    "a": "shiba",
    "b": "akita",
    "seed": 3,
-   "winnerCiv": "shiba",
+   "winnerCiv": "akita",
    "conquest": false,
    "minutes": 30,
    "score": [
-    5590,
-    5056
+    4535,
+    4970
    ],
    "ages": [
     "feudal",
@@ -3901,63 +3901,63 @@
    "a": "shiba",
    "b": "akita",
    "seed": 7,
-   "winnerCiv": "akita",
-   "conquest": false,
-   "minutes": 30,
-   "score": [
-    5380,
-    5436
-   ],
-   "ages": [
-    "feudal",
-    "feudal"
-   ]
-  },
-  {
-   "a": "shiba",
-   "b": "akita",
-   "seed": 11,
    "winnerCiv": "shiba",
    "conquest": false,
    "minutes": 30,
    "score": [
-    5444,
-    5187
-   ],
-   "ages": [
-    "feudal",
-    "feudal"
-   ]
-  },
-  {
-   "a": "shiba",
-   "b": "akita",
-   "seed": 15,
-   "winnerCiv": "akita",
-   "conquest": false,
-   "minutes": 30,
-   "score": [
-    5383,
-    6481
-   ],
-   "ages": [
-    "feudal",
-    "feudal"
-   ]
-  },
-  {
-   "a": "shiba",
-   "b": "kishu",
-   "seed": 3,
-   "winnerCiv": "kishu",
-   "conquest": false,
-   "minutes": 30,
-   "score": [
-    4205,
+    5119,
     5104
    ],
    "ages": [
     "feudal",
+    "castle"
+   ]
+  },
+  {
+   "a": "shiba",
+   "b": "akita",
+   "seed": 11,
+   "winnerCiv": "shiba",
+   "conquest": false,
+   "minutes": 30,
+   "score": [
+    5310,
+    4572
+   ],
+   "ages": [
+    "feudal",
+    "feudal"
+   ]
+  },
+  {
+   "a": "shiba",
+   "b": "akita",
+   "seed": 15,
+   "winnerCiv": "akita",
+   "conquest": false,
+   "minutes": 30,
+   "score": [
+    5318,
+    6133
+   ],
+   "ages": [
+    "feudal",
+    "feudal"
+   ]
+  },
+  {
+   "a": "shiba",
+   "b": "kishu",
+   "seed": 3,
+   "winnerCiv": "kishu",
+   "conquest": false,
+   "minutes": 30,
+   "score": [
+    4067,
+    5666
+   ],
+   "ages": [
+    "feudal",
     "feudal"
    ]
   },
@@ -3969,12 +3969,12 @@
    "conquest": false,
    "minutes": 30,
    "score": [
-    5395,
-    5035
+    5928,
+    5647
    ],
    "ages": [
     "feudal",
-    "castle"
+    "feudal"
    ]
   },
   {
@@ -3985,8 +3985,8 @@
    "conquest": false,
    "minutes": 30,
    "score": [
-    5474,
-    4604
+    6831,
+    4849
    ],
    "ages": [
     "feudal",
@@ -4001,8 +4001,8 @@
    "conquest": false,
    "minutes": 30,
    "score": [
-    4451,
-    6513
+    4360,
+    5043
    ],
    "ages": [
     "feudal",
@@ -4017,8 +4017,8 @@
    "conquest": false,
    "minutes": 30,
    "score": [
-    5443,
-    4526
+    5002,
+    4422
    ],
    "ages": [
     "feudal",
@@ -4033,8 +4033,8 @@
    "conquest": false,
    "minutes": 30,
    "score": [
-    5996,
-    5097
+    6256,
+    5294
    ],
    "ages": [
     "feudal",
@@ -4049,8 +4049,8 @@
    "conquest": false,
    "minutes": 30,
    "score": [
-    4296,
-    4726
+    3840,
+    5257
    ],
    "ages": [
     "feudal",
@@ -4065,8 +4065,8 @@
    "conquest": false,
    "minutes": 30,
    "score": [
-    4243,
-    6254
+    4191,
+    5043
    ],
    "ages": [
     "feudal",
@@ -4081,8 +4081,8 @@
    "conquest": false,
    "minutes": 30,
    "score": [
-    4846,
-    6397
+    5384,
+    6299
    ],
    "ages": [
     "feudal",
@@ -4097,8 +4097,8 @@
    "conquest": false,
    "minutes": 30,
    "score": [
-    4542,
-    5337
+    4851,
+    5454
    ],
    "ages": [
     "feudal",
@@ -4109,12 +4109,12 @@
    "a": "shiba",
    "b": "hokkaido",
    "seed": 11,
-   "winnerCiv": "hokkaido",
+   "winnerCiv": "shiba",
    "conquest": false,
    "minutes": 30,
    "score": [
-    4300,
-    5698
+    5464,
+    4387
    ],
    "ages": [
     "feudal",
@@ -4125,12 +4125,12 @@
    "a": "shiba",
    "b": "hokkaido",
    "seed": 15,
-   "winnerCiv": "shiba",
+   "winnerCiv": "hokkaido",
    "conquest": false,
    "minutes": 30,
    "score": [
-    6316,
-    5635
+    4075,
+    5505
    ],
    "ages": [
     "feudal",
@@ -4145,8 +4145,8 @@
    "conquest": false,
    "minutes": 30,
    "score": [
-    5085,
-    4749
+    4836,
+    4798
    ],
    "ages": [
     "feudal",
@@ -4157,12 +4157,12 @@
    "a": "shiba",
    "b": "kai",
    "seed": 7,
-   "winnerCiv": "kai",
+   "winnerCiv": "shiba",
    "conquest": false,
    "minutes": 30,
    "score": [
-    4346,
-    5340
+    5587,
+    4715
    ],
    "ages": [
     "feudal",
@@ -4177,8 +4177,8 @@
    "conquest": false,
    "minutes": 30,
    "score": [
-    6311,
-    3853
+    5770,
+    4222
    ],
    "ages": [
     "feudal",
@@ -4193,8 +4193,8 @@
    "conquest": false,
    "minutes": 30,
    "score": [
-    5103,
-    5018
+    4568,
+    3800
    ],
    "ages": [
     "feudal",
@@ -4849,8 +4849,8 @@
    "conquest": false,
    "minutes": 30,
    "score": [
-    5964,
-    5913
+    5073,
+    4262
    ],
    "ages": [
     "feudal",
@@ -4861,12 +4861,12 @@
    "a": "akita",
    "b": "shiba",
    "seed": 7,
-   "winnerCiv": "akita",
+   "winnerCiv": "shiba",
    "conquest": false,
    "minutes": 30,
    "score": [
-    5487,
-    3787
+    4481,
+    5892
    ],
    "ages": [
     "feudal",
@@ -4881,8 +4881,8 @@
    "conquest": false,
    "minutes": 30,
    "score": [
-    5214,
-    5267
+    4405,
+    5553
    ],
    "ages": [
     "feudal",
@@ -4897,8 +4897,8 @@
    "conquest": false,
    "minutes": 30,
    "score": [
-    5365,
-    5664
+    3710,
+    6097
    ],
    "ages": [
     "feudal",
@@ -4913,8 +4913,8 @@
    "conquest": false,
    "minutes": 30,
    "score": [
-    4953,
-    4272
+    5807,
+    4536
    ],
    "ages": [
     "feudal",
@@ -4929,8 +4929,8 @@
    "conquest": false,
    "minutes": 30,
    "score": [
-    4637,
-    5054
+    4593,
+    6250
    ],
    "ages": [
     "feudal",
@@ -4941,12 +4941,12 @@
    "a": "kishu",
    "b": "shiba",
    "seed": 11,
-   "winnerCiv": "shiba",
+   "winnerCiv": "kishu",
    "conquest": false,
    "minutes": 30,
    "score": [
-    4261,
-    4345
+    4678,
+    4520
    ],
    "ages": [
     "feudal",
@@ -4957,12 +4957,12 @@
    "a": "kishu",
    "b": "shiba",
    "seed": 15,
-   "winnerCiv": "shiba",
+   "winnerCiv": "kishu",
    "conquest": false,
    "minutes": 30,
    "score": [
-    4369,
-    5251
+    4890,
+    4791
    ],
    "ages": [
     "feudal",
@@ -4977,8 +4977,8 @@
    "conquest": false,
    "minutes": 30,
    "score": [
-    5095,
-    4204
+    5807,
+    4536
    ],
    "ages": [
     "feudal",
@@ -4993,8 +4993,8 @@
    "conquest": false,
    "minutes": 30,
    "score": [
-    5266,
-    5301
+    5562,
+    6160
    ],
    "ages": [
     "feudal",
@@ -5005,12 +5005,12 @@
    "a": "shikoku",
    "b": "shiba",
    "seed": 11,
-   "winnerCiv": "shiba",
+   "winnerCiv": "shikoku",
    "conquest": false,
    "minutes": 30,
    "score": [
-    4621,
-    4982
+    4678,
+    4520
    ],
    "ages": [
     "feudal",
@@ -5021,12 +5021,12 @@
    "a": "shikoku",
    "b": "shiba",
    "seed": 15,
-   "winnerCiv": "shiba",
+   "winnerCiv": "shikoku",
    "conquest": false,
    "minutes": 30,
    "score": [
-    4344,
-    5520
+    5081,
+    5012
    ],
    "ages": [
     "feudal",
@@ -5037,12 +5037,12 @@
    "a": "hokkaido",
    "b": "shiba",
    "seed": 3,
-   "winnerCiv": "hokkaido",
+   "winnerCiv": "shiba",
    "conquest": false,
    "minutes": 30,
    "score": [
-    5962,
-    5911
+    4476,
+    5308
    ],
    "ages": [
     "feudal",
@@ -5053,12 +5053,12 @@
    "a": "hokkaido",
    "b": "shiba",
    "seed": 7,
-   "winnerCiv": "hokkaido",
+   "winnerCiv": "shiba",
    "conquest": false,
    "minutes": 30,
    "score": [
-    5657,
-    5207
+    5087,
+    6124
    ],
    "ages": [
     "feudal",
@@ -5073,8 +5073,8 @@
    "conquest": false,
    "minutes": 30,
    "score": [
-    5314,
-    4965
+    5607,
+    5524
    ],
    "ages": [
     "feudal",
@@ -5089,11 +5089,11 @@
    "conquest": false,
    "minutes": 30,
    "score": [
-    5910,
-    5711
+    6107,
+    5225
    ],
    "ages": [
-    "castle",
+    "feudal",
     "feudal"
    ]
   },
@@ -5101,44 +5101,44 @@
    "a": "kai",
    "b": "shiba",
    "seed": 3,
-   "winnerCiv": "shiba",
-   "conquest": false,
-   "minutes": 30,
-   "score": [
-    3828,
-    4493
-   ],
-   "ages": [
-    "feudal",
-    "feudal"
-   ]
-  },
-  {
-   "a": "kai",
-   "b": "shiba",
-   "seed": 7,
-   "winnerCiv": "shiba",
-   "conquest": false,
-   "minutes": 30,
-   "score": [
-    4496,
-    5602
-   ],
-   "ages": [
-    "feudal",
-    "feudal"
-   ]
-  },
-  {
-   "a": "kai",
-   "b": "shiba",
-   "seed": 11,
    "winnerCiv": "kai",
    "conquest": false,
    "minutes": 30,
    "score": [
-    5197,
-    3807
+    4797,
+    4355
+   ],
+   "ages": [
+    "feudal",
+    "feudal"
+   ]
+  },
+  {
+   "a": "kai",
+   "b": "shiba",
+   "seed": 7,
+   "winnerCiv": "kai",
+   "conquest": false,
+   "minutes": 30,
+   "score": [
+    5023,
+    4290
+   ],
+   "ages": [
+    "feudal",
+    "feudal"
+   ]
+  },
+  {
+   "a": "kai",
+   "b": "shiba",
+   "seed": 11,
+   "winnerCiv": "shiba",
+   "conquest": false,
+   "minutes": 30,
+   "score": [
+    4663,
+    5446
    ],
    "ages": [
     "feudal",
@@ -5149,12 +5149,12 @@
    "a": "kai",
    "b": "shiba",
    "seed": 15,
-   "winnerCiv": "shiba",
+   "winnerCiv": "kai",
    "conquest": false,
    "minutes": 30,
    "score": [
-    4750,
-    4941
+    4857,
+    4605
    ],
    "ages": [
     "feudal",
@@ -5805,12 +5805,12 @@
    "a": "shiba",
    "b": "akita",
    "seed": 4,
-   "winnerCiv": "akita",
+   "winnerCiv": "shiba",
    "conquest": false,
    "minutes": 30,
    "score": [
-    5254,
-    6105
+    5919,
+    5742
    ],
    "ages": [
     "feudal",
@@ -5821,12 +5821,12 @@
    "a": "shiba",
    "b": "akita",
    "seed": 8,
-   "winnerCiv": "akita",
+   "winnerCiv": "shiba",
    "conquest": false,
    "minutes": 30,
    "score": [
-    4534,
-    5728
+    5264,
+    4424
    ],
    "ages": [
     "feudal",
@@ -5837,12 +5837,12 @@
    "a": "shiba",
    "b": "akita",
    "seed": 12,
-   "winnerCiv": "akita",
+   "winnerCiv": "shiba",
    "conquest": false,
    "minutes": 30,
    "score": [
-    5275,
-    5513
+    5364,
+    5090
    ],
    "ages": [
     "feudal",
@@ -5853,75 +5853,11 @@
    "a": "shiba",
    "b": "akita",
    "seed": 16,
-   "winnerCiv": "akita",
-   "conquest": false,
-   "minutes": 30,
-   "score": [
-    4742,
-    5568
-   ],
-   "ages": [
-    "feudal",
-    "feudal"
-   ]
-  },
-  {
-   "a": "shiba",
-   "b": "kishu",
-   "seed": 4,
-   "winnerCiv": "kishu",
-   "conquest": false,
-   "minutes": 30,
-   "score": [
-    5133,
-    8003
-   ],
-   "ages": [
-    "feudal",
-    "feudal"
-   ]
-  },
-  {
-   "a": "shiba",
-   "b": "kishu",
-   "seed": 8,
    "winnerCiv": "shiba",
    "conquest": false,
    "minutes": 30,
    "score": [
-    4553,
-    4213
-   ],
-   "ages": [
-    "feudal",
-    "feudal"
-   ]
-  },
-  {
-   "a": "shiba",
-   "b": "kishu",
-   "seed": 12,
-   "winnerCiv": "shiba",
-   "conquest": false,
-   "minutes": 30,
-   "score": [
-    5316,
-    4016
-   ],
-   "ages": [
-    "feudal",
-    "feudal"
-   ]
-  },
-  {
-   "a": "shiba",
-   "b": "kishu",
-   "seed": 16,
-   "winnerCiv": "kishu",
-   "conquest": false,
-   "minutes": 30,
-   "score": [
-    4173,
+    5272,
     5001
    ],
    "ages": [
@@ -5931,14 +5867,78 @@
   },
   {
    "a": "shiba",
+   "b": "kishu",
+   "seed": 4,
+   "winnerCiv": "kishu",
+   "conquest": false,
+   "minutes": 30,
+   "score": [
+    4713,
+    6438
+   ],
+   "ages": [
+    "feudal",
+    "feudal"
+   ]
+  },
+  {
+   "a": "shiba",
+   "b": "kishu",
+   "seed": 8,
+   "winnerCiv": "shiba",
+   "conquest": false,
+   "minutes": 30,
+   "score": [
+    4707,
+    4688
+   ],
+   "ages": [
+    "feudal",
+    "feudal"
+   ]
+  },
+  {
+   "a": "shiba",
+   "b": "kishu",
+   "seed": 12,
+   "winnerCiv": "shiba",
+   "conquest": false,
+   "minutes": 30,
+   "score": [
+    4897,
+    4683
+   ],
+   "ages": [
+    "feudal",
+    "feudal"
+   ]
+  },
+  {
+   "a": "shiba",
+   "b": "kishu",
+   "seed": 16,
+   "winnerCiv": "shiba",
+   "conquest": false,
+   "minutes": 30,
+   "score": [
+    5361,
+    5212
+   ],
+   "ages": [
+    "feudal",
+    "castle"
+   ]
+  },
+  {
+   "a": "shiba",
    "b": "shikoku",
    "seed": 4,
    "winnerCiv": "shikoku",
    "conquest": false,
    "minutes": 30,
    "score": [
-    6282,
-    6842
+    4723,
+    6003
    ],
    "ages": [
     "feudal",
@@ -5949,44 +5949,60 @@
    "a": "shiba",
    "b": "shikoku",
    "seed": 8,
-   "winnerCiv": "shiba",
-   "conquest": false,
-   "minutes": 30,
-   "score": [
-    4553,
-    4213
-   ],
-   "ages": [
-    "feudal",
-    "feudal"
-   ]
-  },
-  {
-   "a": "shiba",
-   "b": "shikoku",
-   "seed": 12,
-   "winnerCiv": "shiba",
-   "conquest": false,
-   "minutes": 30,
-   "score": [
-    5663,
-    4455
-   ],
-   "ages": [
-    "feudal",
-    "feudal"
-   ]
-  },
-  {
-   "a": "shiba",
-   "b": "shikoku",
-   "seed": 16,
    "winnerCiv": "shikoku",
    "conquest": false,
    "minutes": 30,
    "score": [
-    4177,
-    4941
+    4966,
+    5944
+   ],
+   "ages": [
+    "feudal",
+    "feudal"
+   ]
+  },
+  {
+   "a": "shiba",
+   "b": "shikoku",
+   "seed": 12,
+   "winnerCiv": "shiba",
+   "conquest": false,
+   "minutes": 30,
+   "score": [
+    5336,
+    4507
+   ],
+   "ages": [
+    "feudal",
+    "feudal"
+   ]
+  },
+  {
+   "a": "shiba",
+   "b": "shikoku",
+   "seed": 16,
+   "winnerCiv": "shiba",
+   "conquest": false,
+   "minutes": 30,
+   "score": [
+    5436,
+    4951
+   ],
+   "ages": [
+    "feudal",
+    "castle"
+   ]
+  },
+  {
+   "a": "shiba",
+   "b": "hokkaido",
+   "seed": 4,
+   "winnerCiv": "hokkaido",
+   "conquest": false,
+   "minutes": 30,
+   "score": [
+    4622,
+    5421
    ],
    "ages": [
     "feudal",
@@ -5996,77 +6012,61 @@
   {
    "a": "shiba",
    "b": "hokkaido",
+   "seed": 8,
+   "winnerCiv": "hokkaido",
+   "conquest": false,
+   "minutes": 30,
+   "score": [
+    5549,
+    6415
+   ],
+   "ages": [
+    "feudal",
+    "feudal"
+   ]
+  },
+  {
+   "a": "shiba",
+   "b": "hokkaido",
+   "seed": 12,
+   "winnerCiv": "shiba",
+   "conquest": false,
+   "minutes": 30,
+   "score": [
+    5587,
+    4861
+   ],
+   "ages": [
+    "feudal",
+    "castle"
+   ]
+  },
+  {
+   "a": "shiba",
+   "b": "hokkaido",
+   "seed": 16,
+   "winnerCiv": "shiba",
+   "conquest": false,
+   "minutes": 30,
+   "score": [
+    4703,
+    4468
+   ],
+   "ages": [
+    "feudal",
+    "feudal"
+   ]
+  },
+  {
+   "a": "shiba",
+   "b": "kai",
    "seed": 4,
    "winnerCiv": "shiba",
    "conquest": false,
    "minutes": 30,
    "score": [
-    5509,
-    4780
-   ],
-   "ages": [
-    "feudal",
-    "feudal"
-   ]
-  },
-  {
-   "a": "shiba",
-   "b": "hokkaido",
-   "seed": 8,
-   "winnerCiv": "hokkaido",
-   "conquest": false,
-   "minutes": 30,
-   "score": [
-    4345,
-    4655
-   ],
-   "ages": [
-    "feudal",
-    "feudal"
-   ]
-  },
-  {
-   "a": "shiba",
-   "b": "hokkaido",
-   "seed": 12,
-   "winnerCiv": "hokkaido",
-   "conquest": false,
-   "minutes": 30,
-   "score": [
-    3229,
-    5039
-   ],
-   "ages": [
-    "feudal",
-    "feudal"
-   ]
-  },
-  {
-   "a": "shiba",
-   "b": "hokkaido",
-   "seed": 16,
-   "winnerCiv": "hokkaido",
-   "conquest": false,
-   "minutes": 30,
-   "score": [
-    3948,
-    4967
-   ],
-   "ages": [
-    "feudal",
-    "feudal"
-   ]
-  },
-  {
-   "a": "shiba",
-   "b": "kai",
-   "seed": 4,
-   "winnerCiv": "kai",
-   "conquest": false,
-   "minutes": 30,
-   "score": [
-    4335,
-    5531
+    5391,
+    3971
    ],
    "ages": [
     "feudal",
@@ -6081,8 +6081,8 @@
    "conquest": false,
    "minutes": 30,
    "score": [
-    5015,
-    5297
+    3426,
+    5080
    ],
    "ages": [
     "feudal",
@@ -6097,8 +6097,8 @@
    "conquest": false,
    "minutes": 30,
    "score": [
-    4769,
-    5238
+    4182,
+    5768
    ],
    "ages": [
     "feudal",
@@ -6113,8 +6113,8 @@
    "conquest": false,
    "minutes": 30,
    "score": [
-    4908,
-    5513
+    5075,
+    5538
    ],
    "ages": [
     "feudal",
@@ -6765,12 +6765,12 @@
    "a": "akita",
    "b": "shiba",
    "seed": 4,
-   "winnerCiv": "akita",
+   "winnerCiv": "shiba",
    "conquest": false,
    "minutes": 30,
    "score": [
-    5581,
-    5430
+    4397,
+    5784
    ],
    "ages": [
     "feudal",
@@ -6781,12 +6781,12 @@
    "a": "akita",
    "b": "shiba",
    "seed": 8,
-   "winnerCiv": "akita",
+   "winnerCiv": "shiba",
    "conquest": false,
    "minutes": 30,
    "score": [
-    5230,
-    4521
+    4428,
+    5402
    ],
    "ages": [
     "feudal",
@@ -6801,8 +6801,8 @@
    "conquest": false,
    "minutes": 30,
    "score": [
-    4794,
-    5672
+    4211,
+    5186
    ],
    "ages": [
     "feudal",
@@ -6813,16 +6813,16 @@
    "a": "akita",
    "b": "shiba",
    "seed": 16,
-   "winnerCiv": "akita",
+   "winnerCiv": "shiba",
    "conquest": false,
    "minutes": 30,
    "score": [
-    5895,
-    4512
+    4427,
+    4922
    ],
    "ages": [
     "feudal",
-    "feudal"
+    "castle"
    ]
   },
   {
@@ -6833,8 +6833,8 @@
    "conquest": false,
    "minutes": 30,
    "score": [
-    6104,
-    4916
+    5565,
+    5175
    ],
    "ages": [
     "feudal",
@@ -6849,8 +6849,8 @@
    "conquest": false,
    "minutes": 30,
    "score": [
-    5183,
-    5258
+    4724,
+    5633
    ],
    "ages": [
     "feudal",
@@ -6861,12 +6861,12 @@
    "a": "kishu",
    "b": "shiba",
    "seed": 12,
-   "winnerCiv": "shiba",
+   "winnerCiv": "kishu",
    "conquest": false,
    "minutes": 30,
    "score": [
-    4969,
-    5197
+    5111,
+    4146
    ],
    "ages": [
     "feudal",
@@ -6877,12 +6877,12 @@
    "a": "kishu",
    "b": "shiba",
    "seed": 16,
-   "winnerCiv": "shiba",
+   "winnerCiv": "kishu",
    "conquest": false,
    "minutes": 30,
    "score": [
-    4484,
-    4537
+    6188,
+    3852
    ],
    "ages": [
     "feudal",
@@ -6897,8 +6897,8 @@
    "conquest": false,
    "minutes": 30,
    "score": [
-    6104,
-    4916
+    5565,
+    5175
    ],
    "ages": [
     "feudal",
@@ -6909,44 +6909,44 @@
    "a": "shikoku",
    "b": "shiba",
    "seed": 8,
-   "winnerCiv": "shiba",
-   "conquest": false,
-   "minutes": 30,
-   "score": [
-    5170,
-    6091
-   ],
-   "ages": [
-    "feudal",
-    "feudal"
-   ]
-  },
-  {
-   "a": "shikoku",
-   "b": "shiba",
-   "seed": 12,
-   "winnerCiv": "shiba",
-   "conquest": false,
-   "minutes": 30,
-   "score": [
-    4802,
-    5786
-   ],
-   "ages": [
-    "feudal",
-    "feudal"
-   ]
-  },
-  {
-   "a": "shikoku",
-   "b": "shiba",
-   "seed": 16,
    "winnerCiv": "shikoku",
    "conquest": false,
    "minutes": 30,
    "score": [
-    4968,
-    4834
+    5804,
+    5337
+   ],
+   "ages": [
+    "feudal",
+    "feudal"
+   ]
+  },
+  {
+   "a": "shikoku",
+   "b": "shiba",
+   "seed": 12,
+   "winnerCiv": "shiba",
+   "conquest": false,
+   "minutes": 30,
+   "score": [
+    5385,
+    5411
+   ],
+   "ages": [
+    "feudal",
+    "feudal"
+   ]
+  },
+  {
+   "a": "shikoku",
+   "b": "shiba",
+   "seed": 16,
+   "winnerCiv": "shiba",
+   "conquest": false,
+   "minutes": 30,
+   "score": [
+    4562,
+    5903
    ],
    "ages": [
     "feudal",
@@ -6961,8 +6961,8 @@
    "conquest": false,
    "minutes": 30,
    "score": [
-    4942,
-    4610
+    5937,
+    4970
    ],
    "ages": [
     "feudal",
@@ -6977,8 +6977,8 @@
    "conquest": false,
    "minutes": 30,
    "score": [
-    6292,
-    4238
+    6099,
+    4996
    ],
    "ages": [
     "feudal",
@@ -6989,12 +6989,12 @@
    "a": "hokkaido",
    "b": "shiba",
    "seed": 12,
-   "winnerCiv": "shiba",
+   "winnerCiv": "hokkaido",
    "conquest": false,
    "minutes": 30,
    "score": [
-    5471,
-    5877
+    5468,
+    4243
    ],
    "ages": [
     "feudal",
@@ -7005,12 +7005,12 @@
    "a": "hokkaido",
    "b": "shiba",
    "seed": 16,
-   "winnerCiv": "hokkaido",
+   "winnerCiv": "shiba",
    "conquest": false,
    "minutes": 30,
    "score": [
-    5688,
-    4482
+    4482,
+    4858
    ],
    "ages": [
     "feudal",
@@ -7021,12 +7021,12 @@
    "a": "kai",
    "b": "shiba",
    "seed": 4,
-   "winnerCiv": "kai",
+   "winnerCiv": "shiba",
    "conquest": false,
    "minutes": 30,
    "score": [
-    5968,
-    4423
+    5065,
+    5162
    ],
    "ages": [
     "feudal",
@@ -7037,12 +7037,12 @@
    "a": "kai",
    "b": "shiba",
    "seed": 8,
-   "winnerCiv": "kai",
+   "winnerCiv": "shiba",
    "conquest": false,
    "minutes": 30,
    "score": [
-    4574,
-    4566
+    5280,
+    5497
    ],
    "ages": [
     "feudal",
@@ -7057,8 +7057,8 @@
    "conquest": false,
    "minutes": 30,
    "score": [
-    4527,
-    6510
+    4596,
+    4894
    ],
    "ages": [
     "feudal",
@@ -7069,12 +7069,12 @@
    "a": "kai",
    "b": "shiba",
    "seed": 16,
-   "winnerCiv": "shiba",
+   "winnerCiv": "kai",
    "conquest": false,
    "minutes": 30,
    "score": [
-    4134,
-    4631
+    8335,
+    6001
    ],
    "ages": [
     "feudal",
