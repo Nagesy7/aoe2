@@ -87,6 +87,7 @@ async function buyReal(id, b) {
 async function bootReal() {
   try { glue = await import(API + '/inu-games.js'); const R = await glue.initKibble({ game: GAME }); glue.mountFooter(R.mode); KP = R.kp; if (!KP) return;
     KP.pools().then(P => { serverPools = P.pools; }).catch(() => {});
+    glue.mountHome?.(); // 🏠 Back to Inu Verse (title/pause/results; confirms + saves via globalThis.__inuHome)
     walletUi = glue.mountWallet(R, { game: GAME, keys: [KEY], position: 'top-right',
       progress: g => { try { const x = JSON.parse(g(KEY) || 'null'); return x ? (x.me?.wins || 0) * 10 + (x.me?.losses || 0) + (x.bones || 0) / 25 : 0; } catch { return 0; } },
       label: g => { try { const x = JSON.parse(g(KEY) || 'null'); return x ? `${x.me?.rating ?? 1200} Elo · ${x.me?.wins || 0}W ${x.me?.losses || 0}L` : ''; } catch { return ''; } },

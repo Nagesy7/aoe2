@@ -327,3 +327,5 @@ else if (['enemy', 'scenario', 'raids'].some(k => params.has(k)) || params.get('
 else { $('menu').style.display = 'flex'; $('title-bg').style.display = 'block'; startTitle($('title-bg')); }
 
 initKibble();
+// 🏠 Back to Inu Verse hooks (kibble-pay mountHome): confirm mid-match, save first.
+globalThis.__inuHome = { busy: () => world && !world.winner ? 'Leave this match and go back to Inu Verse? The match is abandoned.' : false };
