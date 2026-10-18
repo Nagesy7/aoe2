@@ -1,0 +1,15 @@
+deploying cde13324f863 from clean export /tmp/inu-deploy-cde13324f863: vercel deploy --yes
+  Inspect         https://vercel.com/prosper33/aoe2/GoDmFU8vwdrGgSnoMww7krTJiT1p
+  Preview         https://aoe2-7u85fkicd-prosper33.vercel.app
+[2K[1A[2K[G  Preview         https://aoe2-7u85fkicd-prosper33.vercel.app
+    "url": "https://aoe2-7u85fkicd-prosper33.vercel.app",
+    "productionUrl": null,
+    "inspectorUrl": "https://vercel.com/prosper33/aoe2/GoDmFU8vwdrGgSnoMww7krTJiT1p",
+    "deploymentApiUrl": "https://api.vercel.com/v13/deployments/dpl_GoDmFU8vwdrGgSnoMww7krTJiT1p",
+      "command": "vercel curl https://aoe2-7u85fkicd-prosper33.vercel.app",
+      "command": "vercel inspect aoe2-7u85fkicd-prosper33.vercel.app",
+      "when": "Inspect deployment"
+      "when": "Promote to production"
+DEPLOY OK cde13324f863 https://aoe2-7u85fkicd-prosper33.vercel.app
+preview https://aoe2-7u85fkicd-prosper33.vercel.app is behind Vercel Authentication: get a share link (Vercel MCP get_access_to_vercel_url), save it to a file, then
+  CTL_SHARE_FILE=<file> node scripts/ctl.mjs ship --preview-url https://aoe2-7u85fkicd-prosper33.vercel.app
