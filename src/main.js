@@ -4,12 +4,13 @@ import { screenToWorld, worldToScreen, createWorld, TILE, pickAt, selectionInfo,
 import { render, computeFog } from './render.js';
 import { BREEDS, unitLabel, breedText, queueIcon } from './inu.js';
 import { startTitle } from './title.js';
+import { startMood, lineFor, MOODS, loadShared } from './mood.js';
 import * as SIM from './sim.js';
 import { Lockstep } from './lockstep.js';
 import { NetSession, TabsBus, RelayBus, HttpBus, httpRelayBase, defaultRelayUrl, newRoomCode } from './net.js';
 import { CIVS, CIV_IDS } from './civs.js';
 import { setupComputers } from './ai.js';
-import { initKibble, kibbleState } from './kibble-ui.js';
+import { initKibble, kibbleState, myLoadout, loadoutWire, loadoutFromWire } from './kibble-ui.js';
 import { mountCivCards } from './civcards.js';
 import { CIV_LOOK } from './civs.js';
 import * as SFX from './sfx.js';
@@ -247,6 +248,9 @@ function startGame({ mp = false, seed = 1, me = 0, cfg = {}, session = null, ai 
   if (ai) { setupComputers(world, ai.spectate ? { player: ai.civ, enemy: ai.enemy } : { enemy: ai.enemy }); world.players.player.civ = ai.civ; world.viewer = 'player'; window.game.aiMode = true;
     world.spectate = !!ai.spectate; fog = { explored: new Uint8Array(world.width * world.height), seenBuildings: new Set() }; }
   ui = createUi();
+  // Kibble Kennel cosmetics: render-only loadouts per owner. Never passed to the sim; opponents get ids + name via the lobby.
+  const meO = mp ? OWNERS[me] : 'player', themO = OWNERS.find(o => o !== meO);
+  ui.cosmetics = { [meO]: world.spectate ? null : myLoadout(), [themO]: mp ? loadoutFromWire(session?.peer?.cos) : null };
   if (mp) {
     world.viewer = OWNERS[me]; world.cur = world.viewer;
     const ls = new Lockstep({ me, delay: cfg.delay || 3, hashEvery: cfg.hashEvery || 20, send: m => session.send(m),
@@ -335,20 +339,33 @@ $('ai-civ').innerHTML = CIV_IDS.map(id => `<option value="${id}">${CIVS[id].name
 $('civ').value = params.get('civ') && CIVS[params.get('civ')] ? params.get('civ') : 'shiba'; $('ai-civ').value = params.get('aiciv') && CIVS[params.get('aiciv')] ? params.get('aiciv') : 'akita';
 const showCiv = () => { $('civ-info').textContent = CIVS[$('civ').value].traits.join(' · '); }; $('civ').onchange = showCiv; showCiv();
 window.game.civCards = mountCivCards($('civ-cards'), { owned: kibbleState().owned || [], selected: $('civ').value, variant: UI_VARIANT, onPick: id => { $('civ').value = id; showCiv(); } });
+addEventListener('empires:kennel', () => { if (ui && ui.cosmetics && world && !world.spectate) { const o = net ? world.viewer : 'player'; ui.cosmetics[o] = myLoadout(); } });
 addEventListener('empires:wallet', () => { $('civ-cards').innerHTML = ''; window.game.civCards = mountCivCards($('civ-cards'), { owned: kibbleState().owned || [], selected: $('civ').value, variant: UI_VARIANT, onPick: id => { $('civ').value = id; showCiv(); } }); });
 $('btn-ai').onclick = () => startGame({ ai: { civ: $('civ').value, enemy: $('ai-civ').value }, seed: +(params.get('seed') || 7) });
 $('btn-host').onclick = () => openSession('host', newRoomCode());
 $('btn-join').onclick = () => { const code = $('join-code').value.trim().toUpperCase(); if (!/^[A-Z0-9]{3,8}$/.test(code)) { $('menu-err').textContent = 'Enter the room code shown to the host'; return; } openSession('guest', code); };
-$('btn-ready').onclick = () => session.setReady(!session.ready);
+$('btn-ready').onclick = () => { session.cos = loadoutWire(); session.setReady(!session.ready); };
 $('btn-leave').onclick = () => { session.leave(); session = null; $('lobby').style.display = 'none'; $('menu').style.display = 'flex'; };
 $('relay-url').value = defaultRelayUrl();
 $('transport').value = params.get('net') || (params.get('relay') ? 'relay' : /vercel\.app$/.test(location.hostname) ? 'tabs' : 'relay');
 const syncTransport = () => { $('relay-row').style.display = $('transport').value === 'relay' ? 'block' : 'none'; }; $('transport').onchange = syncTransport; syncTransport();
 if (params.get('join')) $('join-code').value = params.get('join');
+// Light Kibble Mood: title, lobby and between-match screens only. Never polled, painted or changed while a match runs.
+const moodState = { mood: 'chill', seed: Math.floor(Math.random() * 3), screen: null };
+const inMatch = () => !!world && !world.winner;
+const moodScreen = () => inMatch() ? null : world && world.winner ? 'between' : $('lobby').style.display !== 'none' && $('lobby').style.display !== '' ? 'lobby' : 'title';
+function paintMood() { const el = $('mood-line'), scr = moodScreen(), ln = scr && lineFor(moodState.mood, scr, moodState.seed);
+  moodState.screen = scr; el.style.display = ln ? 'block' : 'none'; if (!ln) return;
+  el.textContent = '🐕 ' + ln; el.dataset.mood = moodState.mood; el.dataset.screen = scr; el.style.borderColor = MOODS[moodState.mood].color; }
+const moodClient = startMood({ inMatch, onMood: m => { if (inMatch()) return; moodState.mood = m.mood; moodState.data = m; paintMood(); } });
+setInterval(() => { const scr = moodScreen(); if (scr !== moodState.screen) { if (!inMatch() && moodState.screen === null) moodClient.resume(); paintMood(); } }, 500);
+loadShared().then(fn => { if (fn) { moodClient.useShared(fn); moodState.shared = true; } });
+window.game.mood = { get: () => moodState.mood, state: moodState, client: moodClient, screen: moodScreen };
 // Legacy / direct single-player URLs (?enemy=, ?scenario=, ?raids=, ?play=sp) skip the menu.
 if (params.get('play') === 'ai' || params.get('play') === 'watch') startGame({ ai: { civ: $('civ').value, enemy: $('ai-civ').value, spectate: params.get('play') === 'watch' }, seed: +(params.get('seed') || 7) });
 else if (['enemy', 'scenario', 'raids'].some(k => params.has(k)) || params.get('play') === 'sp') startGame();
-else { $('menu').style.display = 'flex'; $('title-bg').style.display = 'block'; startTitle($('title-bg')); }
+else { $('menu').style.display = 'flex'; $('title-bg').style.display = 'block'; startTitle($('title-bg'), () => moodState.mood); }
+
 
 initKibble();
 // 🏠 Back to Inu Verse hooks (kibble-pay mountHome): confirm mid-match, save first.

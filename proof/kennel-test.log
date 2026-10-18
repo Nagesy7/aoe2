@@ -1,0 +1,40 @@
+kennel test 2026-10-18T07:19:30.071Z
+PASS: Pup unlocks name tag + bronze banner
+PASS: Guard Dog adds collars, flag recolour, silver banner
+PASS: Alpha adds paw aura, animated Den Hall banner, Alpha title
+PASS: Top Dog unlocks everything incl. gold aura, building skins, golden name
+PASS: no tier: nothing unlocked
+PASS: default loadout picks the best item per slot
+PASS: after a tier drop only still-allowed items show
+PASS: expired tier item = "Relock to keep"
+PASS: never-reached item = locked
+PASS: on / available states
+PASS: equip refuses above-tier items; unequip clears the slot
+PASS: peer ids: unknown dropped, one per slot
+PASS: peer ids: non-arrays ignored
+PASS: peer name stripped of markup and capped
+PASS: ?kennel= override parsing
+PASS: fixture pup: tier, locked, unlock date, next tier
+PASS: fixture guard: tier, locked, unlock date, next tier
+PASS: fixture alpha: tier, locked, unlock date, next tier
+PASS: fixture top: tier, locked, unlock date, next tier
+PASS: fixture none: no tier, next = Pup
+PASS: unknown tier / junk values normalised to no tier
+PASS: missing response = holder-only, stale
+PASS: kennel API down: degrades to no tier (no crash)
+PASS: fetch uses /api/kennel?wallet=&refresh=1
+PASS: 1M for 60 days: Guard Dog 30 days, then Pup 53 days; raw 6-decimals
+PASS: unlock time = now + duration (+10 min margin)
+PASS: rejects zero amount, odd duration, more than the balance
+PASS: small lock: no tier on its own
+PASS: exact can't-sell warning
+PASS: no buy / sell / pump it / moon / dump in Kennel copy
+PASS: lock form states: no yield, no rewards, no draws
+PASS: render with every Kennel cosmetic leaves the sim hash unchanged on every frame
+PASS: 2400 ticks AI vs AI: identical state hashes with and without cosmetics (60 checkpoints, final 6f5c3ca5)
+PASS: cosmetics really were drawn in the test (golden name tag rendered)
+PASS: same unit/building counts and outcome
+PASS: sim / AI / lockstep code never reads cosmetics or Kennel data
+PASS: kennel-draw.js never assigns to unit/building fields
+
+37 passed, 0 failed

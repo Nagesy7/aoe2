@@ -2,6 +2,8 @@
 // cloud save to the wallet. Demo (?demo=1): the original simulated wallet. Cosmetics only.
 import * as K from './kibble.js';
 import { TEAM } from './inu.js';
+import { initKennel, kennelBody, kennelClick, kennelInput, refreshKennel, myLoadout } from './kennel-ui.js';
+export { myLoadout, loadoutWire, loadoutFromWire } from './kennel-ui.js';
 const REAL = !K.SIMULATED, API = 'https://kibble-pay.vercel.app', GAME = 'inu-empires';
 const KEY = REAL ? 'inu-empires-kibble' : 'inu-empires-kibble-sim';
 let KP = null, glue = null, walletUi = null, serverPools = null;
@@ -16,7 +18,7 @@ function apply() { const c = K.COSMETICS[s.equipped.colour]; if (c && c.value) T
 const period = () => { const d = new Date(); return { day: d.toISOString().slice(0, 10), month: d.toISOString().slice(0, 7) }; };
 function render() {
   const tr = K.tier(s), tab = $('kb').dataset.tab || 'wallet', B = (a, l, dis = false) => `<button data-k="${a}" ${dis ? 'disabled' : ''}>${l}</button>`;
-  const tabs = ['wallet', 'shop', 'ladder', 'pools', 'packs', 'cup'].map(t => `<button class="kt${t === tab ? ' on' : ''}" data-tab="${t}">${{ wallet: 'Wallet & tiers', shop: 'Kibble shop', ladder: 'Ranked ladder', pools: "Pools & treasury", packs: 'Packs', cup: 'Kibble Cup' }[t]}</button>`).join('');
+  const tabs = ['wallet', 'kennel', 'shop', 'ladder', 'pools', 'packs', 'cup'].map(t => `<button class="kt${t === tab ? ' on' : ''}" data-tab="${t}">${{ wallet: 'Wallet & tiers', kennel: 'Kibble Kennel', shop: 'Kibble shop', ladder: 'Ranked ladder', pools: "Pools & treasury", packs: 'Packs', cup: 'Kibble Cup' }[t]}</button>`).join('');
   let body = '';
   if (tab === 'wallet') body = `<p>${s.wallet ? `Connected <code>${s.wallet.address}</code> ${REAL ? '(Phantom, signed in)' : '(demo wallet, nothing on-chain)'}` : REAL ? 'Not connected. Connect Phantom to save your progress to your wallet, use your $KIBBLE cosmetics and get your holder tier.' : 'Not connected.'}</p>
     <p>Balance: <b>${K.fmtK(s.kibbleU)} $KIBBLE</b> ${REAL ? '(on-chain)' : '(demo)'} · Tier: <b id="kb-tier">${tr.name}</b> · Bones (free, never cashed out): ${s.bones}</p>
@@ -45,6 +47,7 @@ function render() {
     <table><tr><th>Pack</th><th>Points</th></tr>${Object.entries(pk).sort((a, b) => b[1] - a[1]).map(([p, v]) => `<tr><td>[${p}]</td><td>${v}</td></tr>`).join('')}</table>`; }
   if (tab === 'cup') body = `<p><b>Kibble Cup</b>, ${period().month} (stub). Free monthly holder tournament: any tier may enter, no entry fee. The bracket runs on the future server.</p>
     ${B('cup', 'Enter Kibble Cup (free)')}<div id="kb-msg"></div><p>Entrants: ${s.cup.month === period().month ? s.cup.entrants.join(', ') || 'none yet' : 'none yet'}</p>`;
+  if (tab === 'kennel') body = kennelBody();
   $('kb-body').innerHTML = `<div class="ktabs">${tabs}</div>${body}`;
 }
 function msg(t) { const m = $('kb-msg'); if (m) m.textContent = t; }
@@ -54,6 +57,7 @@ export function initKibble() {
   $('kb-close').onclick = () => { $('kb').style.display = 'none'; };
   $('kb').addEventListener('click', e => { const b = e.target.closest('button'); if (!b || b.disabled) return;
     if (b.dataset.tab) $('kb').dataset.tab = b.dataset.tab;
+    if (kennelClick(b)) return;
     const k = b.dataset.k;
     if (REAL && k === 'connect') { msg('Approve the sign-in message in Phantom…'); walletUi?.connect(); return; }
     if (REAL && k === 'disconnect') { KP?.disconnect().then(() => { K.applyWallet(s, {}); save(); apply(); render(); walletUi?.el && location.reload(); }); return; }
@@ -68,11 +72,15 @@ export function initKibble() {
     if (b.dataset.buy) { const r = K.buy(s, b.dataset.buy); note = r.ok ? `Bought (simulated). Fee ${K.fmtK(r.q.fee)}: ${K.fmtK(r.q.owner)} to treasury, ${K.fmtK(r.q.daily + r.q.weekly + r.q.monthly)} to pools.` : r.reason; }
     if (k === 'cup') { const r = K.joinCup(s, period().month); note = r.ok ? 'Entered (free).' : r.reason; }
     save(); apply(); render(); if (note) msg(note); });
+  $('kb').addEventListener('input', kennelInput);
+  initKennel(s, { real: REAL, kp: () => KP, connect: () => walletUi?.connect(), wallet: () => s.wallet?.address || null, balance: () => s.wallet ? Number(s.kibbleU || 0) / 1e6 : Infinity,
+    onChange: persist => { if (persist) save(); if ($('kb')?.style.display === 'flex' && $('kb').dataset.tab === 'kennel') render(); try { dispatchEvent(new CustomEvent('empires:kennel', { detail: myLoadout() })); } catch {} } });
   apply();
   if (REAL) bootReal();
 }
 async function syncWallet(w) { // on connect / restore: on-chain balance -> tier, server inventory -> owned items
   if (!w?.address) { K.applyWallet(s, {}); } else { const inv = await KP.inventory(GAME).catch(() => ({})); K.applyWallet(s, { address: w.address, units: w.units ?? (await KP.balance().catch(() => ({ units: 0 }))).units, inventory: inv }); }
+  refreshKennel().catch(() => {});
   save(); apply(); if ($('kb')?.style.display === 'flex') render(); try { dispatchEvent(new CustomEvent('empires:wallet', { detail: { owned: s.owned, tier: K.tier(s) } })); } catch {}
 }
 async function buyReal(id, b) {

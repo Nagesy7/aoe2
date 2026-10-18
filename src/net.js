@@ -94,12 +94,12 @@ export class NetSession {
     switch (m.t) {
       case 'ping': this.send({ t: 'pong', ts: m.ts }); return;
       case 'pong': { const r = performance.now() - m.ts; this.rtt = this.rtt == null ? r : this.rtt * 0.7 + r * 0.3; return; }
-      case 'ready': this.peer.ready = !!m.v; this.peer.civ = m.civ || null; this.onChange(this); this.maybeStart(); return;
+      case 'ready': this.peer.ready = !!m.v; this.peer.civ = m.civ || null; this.peer.cos = m.cos && typeof m.cos === 'object' ? { ids: Array.isArray(m.cos.ids) ? m.cos.ids.slice(0, 16) : [], name: String(m.cos.name || '').slice(0, 20) } : null; /* Kennel cosmetic ids + name only (render) */ this.onChange(this); this.maybeStart(); return;
       case 'start': if (this.role === 'guest' && this.state === 'lobby') { this.state = 'playing'; this.onStart(m.cfg); this.onChange(this); } return;
       default: if (this.state === 'playing') this.onGame(m);
     }
   }
-  setReady(v) { this.ready = v; this.send({ t: 'ready', v, civ: this.civ || null }); this.onChange(this); this.maybeStart(); }
+  setReady(v) { this.ready = v; this.send({ t: 'ready', v, civ: this.civ || null, cos: this.cos || null }); this.onChange(this); this.maybeStart(); }
   maybeStart(cfgExtra = {}) {
     if (this.role !== 'host' || this.state !== 'lobby' || !this.ready || !this.peer?.ready) return;
     const cfg = { seed: (Math.random() * 2 ** 31) | 0, delay: this.bus.kind === 'http' ? 8 : 3, hashEvery: 20, speed: 1, civs: [this.civ || null, this.peer.civ || null], ...this.startCfg, ...cfgExtra };

@@ -1,0 +1,16 @@
+PASS: title zoomies: banner line "🐕 The whole town's got the zoomies today!"
+PASS: title zoomies: no page errors 
+PASS: title happy: banner line "🐕 Good vibes at the Kibble statue today."
+PASS: title happy: no page errors 
+PASS: title chill: banner line "🐕 Quiet day in the Verse. Perfect for a nap."
+PASS: title chill: no page errors 
+PASS: title grumpy: banner line "🐕 Rain never stopped a good walk."
+PASS: title grumpy: no page errors 
+PASS: title doghouse: banner line "🐕 Diamond paws, pup."
+PASS: title doghouse: no page errors 
+PASS: the 5 moods paint 5 different title scenes
+PASS: mood API unreachable (3 blocked): falls back to Chill
+PASS: mid-match: no mood line, no poll (polls 1 -> 1), title backdrop off
+PASS: match over: mood line on the between-match screen ("🐕 Just sniffing around, nothing to report.")
+PASS: no page errors 
+PASS: live mood: chill (shared kibble-mood.js loaded, source https://inu-verse-tawny.vercel.app, stale false)

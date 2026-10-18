@@ -3,6 +3,7 @@ import { CIV_LOOK } from './civs.js';
 import { drawUnitArt, drawBuildingArt, drawVillagerArt } from './art.js';
 const ART_B = new WeakSet();
 import { drawTerrain } from './terrain.js';
+import * as KD from './kennel-draw.js'; // Kibble Kennel cosmetics (render-only, from ui.cosmetics)
 import { drawInu, paw, TEAM } from './inu.js';
 import { TILE, camPixel, selectedUnits, itemTime, unitStats, FISH_FOOD } from './sim.js';
 // Per-player fog of war (multiplayer): what the viewer's own units and buildings currently see, plus explored memory.
@@ -32,6 +33,7 @@ const GRASS = ['#4a7a2c', '#4f8030', '#457228', '#538634'];
 function bar(ctx, x, y, w, frac, col = '#4fd34f') { ctx.fillStyle = '#000a'; ctx.fillRect(x, y, w, 6); ctx.fillStyle = col; ctx.fillRect(x + 1, y + 1, (w - 2) * Math.max(0, Math.min(1, frac)), 4); }
 export function render(ctx, world, cam, ui = {}, fog = null) {
   const me = world.viewer || 'player', foe = o => !!o.owner && o.owner !== me, red = o => o.owner === 'enemy';
+  const COS = ui.cosmetics || null, tnow = world.time || 0; // { player: { ids:Set, name }, enemy: {...} } - presentation only
   const W = ctx.canvas.width, H = ctx.canvas.height;
   ctx.fillStyle = '#111'; ctx.fillRect(0, 0, W, H);
   const c = camPixel(cam);
@@ -88,6 +90,7 @@ export function render(ctx, world, cam, ui = {}, fog = null) {
       if (b.queue.length) bar(ctx, px, py - 18, s, b.trainProgress / itemTime(b.queue[0], world, b), b.blocked ? '#d33' : '#4fd34f');
     }
     if (b.complete && b.type !== 'farm' && b.owner && !ART_B.has(b)) { const tc = TEAM[b.owner] || TEAM.player; ctx.fillStyle = '#4a3018'; ctx.fillRect(px + s - 8, py - 14, 2, 20); ctx.fillStyle = tc; ctx.fillRect(px + s - 6, py - 14, 13, 10); paw(ctx, px + s + 0.5, py - 9, 4.5, '#f6e6c8'); }
+    if (COS && b.owner && COS[b.owner]) KD.buildingOver(ctx, b, px, py, s, tnow, COS[b.owner]);
     if (red(b)) { ctx.fillStyle = '#c02020'; ctx.fillRect(px + 2, py + 2, 4, 14); ctx.fillRect(px + 6, py + 2, 9, 6); ctx.strokeStyle = '#e04040'; ctx.strokeRect(px + 0.5, py + 0.5, s - 1, s - 1); }
     if (b.complete && (b.hp < b.maxHp || foe(b) || (sel && sel.kind === 'building' && sel.id === b.id))) bar(ctx, px, py - (b.queue.length ? 26 : 9), s, b.hp / b.maxHp, red(b) ? '#e04040' : '#4fd34f');
     if (sel && sel.kind === 'building' && sel.id === b.id) { ctx.strokeStyle = '#fff'; ctx.lineWidth = 2; ctx.strokeRect(px - 3, py - 3, s + 6, s + 6); ctx.lineWidth = 1;
@@ -118,6 +121,7 @@ export function render(ctx, world, cam, ui = {}, fog = null) {
   for (const u of [...world.units.filter(o => o.state !== 'garrisoned'), ...dyingUnits(world)]) D.push([u.y * TILE + 6, () => {
     if (fog && foe(u) && !fog.sees(u)) return;
     const [px, py] = ip(u);
+    const KL = COS && u.owner ? COS[u.owner] : null; if (KL) KD.unitUnder(ctx, u, px, py, tnow, KL);
     if (u.type !== 'villager' || red(u)) { ctx.fillStyle = red(u) ? '#ff2020d0' : '#3060ffb0'; ctx.beginPath(); ctx.ellipse(px, py + 6, 10, 5, 0, 0, 7); ctx.fill(); }
     if (u.type !== 'villager' || u.hp < u.maxHp || selUnits.has(u.id)) bar(ctx, px - 11, py - 30, 22, u.hp / u.maxHp, red(u) ? '#e04040' : '#4fd34f');
     if (u.lastAttackAt != null && world.time - u.lastAttackAt < 0.25 && !UNIT_STYLE[u.type]?.ranged) { ctx.strokeStyle = '#fff'; ctx.lineWidth = 2; ctx.beginPath(); ctx.arc(px + (u.face ? u.face[0] : 1) * 10, py + (u.face ? u.face[1] : 0) * 10, 5, 0, 7); ctx.stroke(); ctx.lineWidth = 1; }
@@ -132,6 +136,7 @@ export function render(ctx, world, cam, ui = {}, fog = null) {
     { const civ = world.players?.[u.owner]?.civ, L = civ && CIV_LOOK[civ]; // clan skin: back-banner in the clan palette with its accent stripe
       if (L) { const d = u.face && u.face[0] < -0.05 ? 1 : -1, bx = px + d * 7; ctx.fillStyle = '#2a1a10'; ctx.fillRect(bx, py - 26, 1.5, 16);
         ctx.fillStyle = L.primary; ctx.fillRect(bx + (d > 0 ? 1.5 : -7), py - 26, 7, 7); ctx.fillStyle = L.accent; ctx.fillRect(bx + (d > 0 ? 1.5 : -7), py - 22, 7, 1.5); } }
+    if (KL) KD.unitOver(ctx, u, px, py, tnow, KL, u.owner);
   }]);
   D.sort((a, b) => a[0] - b[0]); for (const d of D) d[1]();
   for (const p of world.projectiles || []) { if (fog && !fog.visible[Math.floor(p.y) * world.width + Math.floor(p.x)]) continue; const x = p.x * TILE, y = p.y * TILE, a = p.dir ? Math.atan2(p.dir[1], p.dir[0]) : 0;
