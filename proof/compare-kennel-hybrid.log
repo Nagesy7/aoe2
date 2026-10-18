@@ -1,0 +1,35 @@
+base 3d0e4f7 (3d0e4f7): simulating 4 seeds x 30 min ...
+head HEAD (9724c87): simulating 4 seeds x 30 min ...
+
+per-clan win rate (4 vs 4 seeds, 30/30 min)   base 3d0e4f7  ->  head 9724c87
+shiba      37.5%  ->  37.5%   +0.0   <-- OUTSIDE 45-55%
+akita      50.0%  ->  50.0%   +0.0
+kishu      52.5%  ->  52.5%   +0.0
+shikoku    42.5%  ->  42.5%   +0.0   <-- OUTSIDE 45-55%
+hokkaido   57.5%  ->  57.5%   +0.0   <-- OUTSIDE 45-55%
+kai        60.0%  ->  60.0%   +0.0   <-- OUTSIDE 45-55%
+
+flipped matchups (0):
+
+FLAGGED (outside 45-55%): shiba, shikoku, hokkaido, kai
+
+npm test @ base 3d0e4f7: exit 1
+  RESULT: ALL 223 PASSED
+  RESULT: ALL 94 PASSED
+  RESULT: ALL 53 PASSED
+  RESULT: ALL 35 PASSED
+  RESULT: ALL 22 PASSED
+  RESULT: ALL 25 PASSED
+  FAIL: docs/INU_SCORE.md mirrors the Inu Verse keeper's spec exactly (plus our replay-verified section after it)
+
+npm test @ head 9724c87: exit 1
+  RESULT: ALL 223 PASSED
+  RESULT: ALL 94 PASSED
+  RESULT: ALL 53 PASSED
+  RESULT: ALL 35 PASSED
+  RESULT: ALL 22 PASSED
+  RESULT: ALL 25 PASSED
+  FAIL: docs/INU_SCORE.md mirrors the Inu Verse keeper's spec exactly (plus our replay-verified section after it)
+
+wrote proof/compare-kennel-hybrid.json
+EXIT 1
