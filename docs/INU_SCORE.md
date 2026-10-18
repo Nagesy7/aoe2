@@ -61,6 +61,7 @@ Inu Empires no longer posts a score. `config/games.json` marks `inu-empires` `se
   - Measured on the box (Node 20): about 0.43 ms per tick for a busy AI-vs-AI game over its first 20 min, 0.62 ms per tick averaged over 45 min, and 4.1 s for the real 19.8-min fixture verification. The worst case is about 50 s for 60 min.
   - Real time already bounds abuse: a 60-min replay needs a ticket at least 60 min old, plus one result per 30 s per wallet.
   - `GET /api/empires?bench=1` (one run per 2 min, globally) times the exact verification path plus 20 busy minutes on the live deployment and returns `projectedWorstMsAt60Min`.
+  - **Live, measured 18 Oct 2026 19:47 AEDT** on kibble-pay production (`GET /api/empires?bench=1`): the real 19.8-min fixture (23,762 ticks, 316 commands) was verified in 7.1 s with the hash matching. 20 busy AI-vs-AI minutes took 16.6 s (0.69 ms per tick). The projected worst case for a 60-min match is 79.5 s, about 27% of the 300 s limit. Memory is one small world, far under 2 GB. The largest allowed body (3 MB) is under 4.5 MB.
 - **Not provable (stated plainly).** A replay proves the inputs produce the win in real time. It cannot prove a human typed them: a bot that plays in real time is indistinguishable, the same as for Boss Raids. The vs-computer seed and clans come from the client, so a player can replay a known map.
 - Tests: kibble-pay `test/empires.test.js`. Covered:
   - vendored files byte-identical;
