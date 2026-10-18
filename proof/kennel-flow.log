@@ -72,6 +72,6 @@ PASS: tampered lock responses (other recipient, cancelable, other payer, error) 
 PASS: lock flow: no page errors 
 PASS: MP: host sees the guest's Pup cosmetics (2), guest sees the host's Top Dog cosmetics (8)
 PASS: MP: lobby carries only cosmetic ids + name
-PASS: MP: lockstep in sync with different cosmetics on each side (tick 64)
+PASS: MP: lockstep in sync with different cosmetics on each side (tick 65)
 PASS: mood line shows in the lobby
 PASS: MP: no page errors 

@@ -75,7 +75,8 @@ export default async function (argv) {
     await p.S(() => document.querySelector('[data-kn-lock]').click());
     await p.waitForFunction(() => globalThis.__kp?.sent, null, { timeout: 15000 }).catch(async () => console.log('lock note:', await p.S(() => document.getElementById('kn-note')?.textContent + ' | kp ' + !!globalThis.__kp), p.errors));
     const sent = await p.S(() => ({ ...globalThis.__kp.sent, reqs: globalThis.__kp.reqs }));
-    c(sent.reqs[0][0] === '/api/kennel-lock' && sent.reqs[0][1].amount === 1000000 && sent.reqs[0][1].days === 60, 'asks kibble-pay to build the lock (amount + days only)');
+    const lk = sent.reqs.filter(r => r[0] === '/api/kennel-lock');
+    c(lk.length === 1 && lk[0][1].amount === 1000000 && lk[0][1].days === 60 && Object.keys(lk[0][1]).length === 2, 'asks kibble-pay to build the lock (amount + days only)');
     c(sent.payer === W && !sent.sig0 && sent.sig1, 'Phantom gets the real self-lock tx: fee payer = player, player signature empty (signed in Phantom), metadata pre-signed');
     await p.waitForFunction(() => /Lock confirmed/.test(document.getElementById('kn-note')?.textContent || ''), null, { timeout: 40000 }).catch(() => {});
     const done = await tabInfo(p); c(done.tier === 'Guard Dog' && /Lock confirmed: Guard Dog/.test(done.text), 'server confirms: tier refreshes to Guard Dog');
