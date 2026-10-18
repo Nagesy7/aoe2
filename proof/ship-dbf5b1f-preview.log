@@ -1,0 +1,16 @@
+deploying dbf5b1fc9e18 from clean export /tmp/inu-deploy-dbf5b1fc9e18: vercel deploy --yes
+  Inspect         https://vercel.com/prosper33/aoe2/2Zjc61HxS1EVEVTBry6Qf6GNnaPz
+  Preview         https://aoe2-o17d8gjrm-prosper33.vercel.app
+  Preview         https://aoe2-o17d8gjrm-prosper33.vercel.app
+    "url": "https://aoe2-o17d8gjrm-prosper33.vercel.app",
+    "productionUrl": null,
+    "inspectorUrl": "https://vercel.com/prosper33/aoe2/2Zjc61HxS1EVEVTBry6Qf6GNnaPz",
+    "deploymentApiUrl": "https://api.vercel.com/v13/deployments/dpl_2Zjc61HxS1EVEVTBry6Qf6GNnaPz",
+      "command": "vercel curl https://aoe2-o17d8gjrm-prosper33.vercel.app",
+      "command": "vercel inspect aoe2-o17d8gjrm-prosper33.vercel.app",
+      "when": "Inspect deployment"
+      "when": "Promote to production"
+DEPLOY OK dbf5b1fc9e18 https://aoe2-o17d8gjrm-prosper33.vercel.app
+preview https://aoe2-o17d8gjrm-prosper33.vercel.app is behind Vercel Authentication: get a share link (Vercel MCP get_access_to_vercel_url), save it to a file, then
+  CTL_SHARE_FILE=<file> node scripts/ctl.mjs ship --preview-url https://aoe2-o17d8gjrm-prosper33.vercel.app
+EXIT 2
