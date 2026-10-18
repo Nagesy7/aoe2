@@ -34,7 +34,7 @@ body.ingame #minimap{display:block}
 #net{position:fixed;top:34px;right:12px;padding:4px 10px;background:rgba(40,25,10,.85);color:#f4e2b8;font:12px sans-serif;border:1px solid #a07a3a;display:none;pointer-events:none}
 #stall{position:fixed;top:45%;left:50%;transform:translate(-50%,-50%);padding:12px 26px;background:rgba(0,0,0,.8);color:#ffd86b;font:bold 20px sans-serif;border:2px solid #d4a640;display:none;pointer-events:none}
 #desync{position:fixed;top:64px;left:50%;transform:translateX(-50%);padding:10px 20px;background:#a00;color:#fff;font:bold 18px sans-serif;border:2px solid #fff;display:none;pointer-events:none}
-.screen{position:fixed;inset:0;display:none;flex-direction:column;align-items:center;justify-content:center;gap:14px;background:transparent;color:#f4e2b8;font:15px sans-serif;z-index:10}
+.screen{position:fixed;inset:0;display:none;flex-direction:column;align-items:center;justify-content:flex-start;overflow-y:auto;box-sizing:border-box;padding:8px 0 28px;gap:14px;background:transparent;color:#f4e2b8;font:15px sans-serif;z-index:10}
 .screen h1{font:bold 44px serif;color:#ffd86b;margin:0 0 6px;text-shadow:0 3px 6px #000}
 .screen h2{font:bold 26px serif;color:#ffd86b;margin:0}
 .screen button{font:bold 17px sans-serif;padding:10px 26px;min-width:260px;background:#5a3c18;color:#f4e2b8;border:2px solid #a07a3a;cursor:pointer}
@@ -54,12 +54,14 @@ body.ingame #minimap{display:block}
 @media (max-height:520px){#civ-cards[data-ui=b]{grid-template-columns:repeat(3,minmax(0,1fr));overflow:visible;max-width:calc(100vw - 60px)}#civ-cards[data-ui=b] .tr{font-size:9.5px}#civ-cards[data-ui=b] .uq{display:none}}
 .civ-card.sel{border-color:#ffd86b;background:#3a2410}.civ-card.cine{transform:scale(1.04);z-index:2;border-color:#fff}.civ-card{transition:transform .15s}
 #menu-err{color:#ff8a7a;min-height:18px}
+.screen>.panel{margin-block:auto;flex:none}
 #menu{align-items:flex-start;padding-left:5vw;box-sizing:border-box}#menu .panel{max-width:600px}#menu .hint{max-width:440px}
 #title-bg{position:fixed;inset:0;width:100%;height:100%;z-index:9;display:none}
 .screen .panel{display:flex;flex-direction:column;align-items:center;gap:12px;padding:22px 34px;background:linear-gradient(#24140ad8,#120a04e8);border:2px solid #d4a640;box-shadow:0 10px 40px #000c,inset 0 0 0 4px #5a3c1880;border-radius:6px}
 .screen h1{font:bold 64px Georgia,serif!important;letter-spacing:3px;background:linear-gradient(#fff2b0,#ffc040 55%,#c07a20);-webkit-background-clip:text;background-clip:text;color:transparent!important;filter:drop-shadow(0 4px 3px #000)}
 .screen .tag{font:italic 16px Georgia,serif;color:#f4d8a0;margin-top:-10px;letter-spacing:2px}
 #brand{color:#ffd86b;font-family:Georgia,serif}
+@media (min-height:521px) and (max-height:900px){.screen .panel{gap:8px;padding:14px 30px}.screen h1{font-size:50px!important}.screen .tag{margin-top:-6px}}
 html,body{position:fixed;inset:0;overscroll-behavior:none}
 #game{display:block;touch-action:none}
 #touchbar,#rotate{display:none}

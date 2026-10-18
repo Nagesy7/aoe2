@@ -1,0 +1,72 @@
+PASS: 1366x768 default: title on screen at load (h1 top 32, tag bottom 132, panel top 8, panel h 1004, menu scrollTop 0)
+PASS: 1366x768 default: all 5 menu buttons reachable (menu scrolls)
+PASS: 1366x768 default: no page errors 
+PASS: 1366x768 a: title on screen at load (h1 top 32, tag bottom 132, panel top 8, panel h 1042, menu scrollTop 0)
+PASS: 1366x768 a: all 5 menu buttons reachable (menu scrolls)
+PASS: 1366x768 a: no page errors 
+PASS: 1280x720 default: title on screen at load (h1 top 32, tag bottom 132, panel top 8, panel h 1004, menu scrollTop 0)
+PASS: 1280x720 default: all 5 menu buttons reachable (menu scrolls)
+PASS: 1280x720 default: no page errors 
+PASS: 1280x720 a: title on screen at load (h1 top 32, tag bottom 132, panel top 8, panel h 1042, menu scrollTop 0)
+PASS: 1280x720 a: all 5 menu buttons reachable (menu scrolls)
+PASS: 1280x720 a: no page errors 
+PASS: 1440x900 default: title on screen at load (h1 top 32, tag bottom 132, panel top 8, panel h 1004, menu scrollTop 0)
+PASS: 1440x900 default: all 5 menu buttons reachable (menu scrolls)
+PASS: 1440x900 default: no page errors 
+PASS: 1440x900 a: title on screen at load (h1 top 32, tag bottom 132, panel top 8, panel h 1042, menu scrollTop 0)
+PASS: 1440x900 a: all 5 menu buttons reachable (menu scrolls)
+PASS: 1440x900 a: no page errors 
+PASS: 1536x864 default: title on screen at load (h1 top 32, tag bottom 132, panel top 8, panel h 1004, menu scrollTop 0)
+PASS: 1536x864 default: all 5 menu buttons reachable (menu scrolls)
+PASS: 1536x864 default: no page errors 
+PASS: 1536x864 a: title on screen at load (h1 top 32, tag bottom 132, panel top 8, panel h 1042, menu scrollTop 0)
+PASS: 1536x864 a: all 5 menu buttons reachable (menu scrolls)
+PASS: 1536x864 a: no page errors 
+PASS: 1920x1080 default: title on screen at load (h1 top 52, tag bottom 152, panel top 28, panel h 1004, menu scrollTop 0)
+PASS: 1920x1080 default: all 5 menu buttons reachable (fits, no scroll)
+PASS: 1920x1080 default: no page errors 
+PASS: 1920x1080 a: title on screen at load (h1 top 33, tag bottom 133, panel top 9, panel h 1042, menu scrollTop 0)
+PASS: 1920x1080 a: all 5 menu buttons reachable (fits, no scroll)
+PASS: 1920x1080 a: no page errors 
+PASS: 1024x768 default: title on screen at load (h1 top 32, tag bottom 132, panel top 8, panel h 1004, menu scrollTop 0)
+PASS: 1024x768 default: all 5 menu buttons reachable (menu scrolls)
+PASS: 1024x768 default: no page errors 
+PASS: 1024x768 a: title on screen at load (h1 top 32, tag bottom 132, panel top 8, panel h 1042, menu scrollTop 0)
+PASS: 1024x768 a: all 5 menu buttons reachable (menu scrolls)
+PASS: 1024x768 a: no page errors 
+PASS: 1280x800 default: title on screen at load (h1 top 32, tag bottom 132, panel top 8, panel h 1004, menu scrollTop 0)
+PASS: 1280x800 default: all 5 menu buttons reachable (menu scrolls)
+PASS: 1280x800 default: no page errors 
+PASS: 1280x800 a: title on screen at load (h1 top 32, tag bottom 132, panel top 8, panel h 1042, menu scrollTop 0)
+PASS: 1280x800 a: all 5 menu buttons reachable (menu scrolls)
+PASS: 1280x800 a: no page errors 
+PASS: 844x390 default: title on screen at load (h1 top 20, tag bottom 78, panel top 8, panel h 707, menu scrollTop 0)
+PASS: 844x390 default: all 5 menu buttons reachable (menu scrolls)
+PASS: 844x390 default: no page errors 
+PASS: 844x390 a: title on screen at load (h1 top 20, tag bottom 78, panel top 8, panel h 641, menu scrollTop 0)
+PASS: 844x390 a: all 5 menu buttons reachable (menu scrolls)
+PASS: 844x390 a: no page errors 
+PASS: 667x375 default: title on screen at load (h1 top 20, tag bottom 78, panel top 8, panel h 707, menu scrollTop 0)
+PASS: 667x375 default: all 5 menu buttons reachable (menu scrolls)
+PASS: 667x375 default: no page errors 
+PASS: 667x375 a: title on screen at load (h1 top 20, tag bottom 78, panel top 8, panel h 641, menu scrollTop 0)
+PASS: 667x375 a: all 5 menu buttons reachable (menu scrolls)
+PASS: 667x375 a: no page errors 
+PASS: 932x430 default: title on screen at load (h1 top 20, tag bottom 78, panel top 8, panel h 707, menu scrollTop 0)
+PASS: 932x430 default: all 5 menu buttons reachable (menu scrolls)
+PASS: 932x430 default: no page errors 
+PASS: 932x430 a: title on screen at load (h1 top 20, tag bottom 78, panel top 8, panel h 641, menu scrollTop 0)
+PASS: 932x430 a: all 5 menu buttons reachable (menu scrolls)
+PASS: 932x430 a: no page errors 
+PASS: 390x844 default: title on screen at load (h1 top 32, tag bottom 132, panel top 8, panel h 1083, menu scrollTop 0)
+PASS: 390x844 default: all 5 menu buttons reachable (menu scrolls)
+PASS: 390x844 default: no page errors 
+PASS: 390x844 a: title on screen at load (h1 top 32, tag bottom 132, panel top 8, panel h 998, menu scrollTop 0)
+PASS: 390x844 a: all 5 menu buttons reachable (menu scrolls)
+PASS: 390x844 a: no page errors 
+PASS: 768x1024 default: title on screen at load (h1 top 32, tag bottom 132, panel top 8, panel h 1006, menu scrollTop 0)
+PASS: 768x1024 default: all 5 menu buttons reachable (menu scrolls)
+PASS: 768x1024 default: no page errors 
+PASS: 768x1024 a: title on screen at load (h1 top 32, tag bottom 132, panel top 8, panel h 1044, menu scrollTop 0)
+PASS: 768x1024 a: all 5 menu buttons reachable (menu scrolls)
+PASS: 768x1024 a: no page errors 
