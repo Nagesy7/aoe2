@@ -1,0 +1,38 @@
+
+== verify preview https://aoe2-p1ufbyz9x-prosper33.vercel.app
+PASS: 844x390: title buttons match index.html (⚔ Skirmish vs Computer | Sandbox (practice camp) | Host 1v1 | Join 1v1 | 🦴 $KIBBLE network)
+PASS: 844x390: skirmish started (3 own units)
+PASS: 844x390: canvas fills viewport
+PASS: 844x390: real tap selects a Worker Pup ({"kind":"unit","id":54})
+PASS: 844x390: Command tap on berries issues an order (move)
+PASS: 844x390: no page errors 
+PASS: 1366x768: title buttons match index.html (⚔ Skirmish vs Computer | Sandbox (practice camp) | Host 1v1 | Join 1v1 | 🦴 $KIBBLE network)
+PASS: 1366x768: skirmish started (3 own units)
+PASS: 1366x768: canvas fills viewport
+PASS: 1366x768: real click selects a Worker Pup ({"kind":"unit","id":54})
+PASS: 1366x768: right-click on berries issues an order (move)
+PASS: 1366x768: no page errors 
+PASS: build id: page be15aa82e43d vs expected be15aa82e43d
+VERIFY: ALL PASSED
+deploying be15aa82e43d from clean export /tmp/inu-deploy-be15aa82e43d: vercel deploy --prod --yes
+  Inspect         https://vercel.com/prosper33/aoe2/4CLzBR4bCKLXFprBBUT1g4ad31YZ
+  Production      https://aoe2-k6uwe0vad-prosper33.vercel.app
+▲ Aliased         https://aoe2-ashen.vercel.app
+DEPLOY OK be15aa82e43d https://aoe2-k6uwe0vad-prosper33.vercel.app
+
+== verify live https://inu-empires.vercel.app
+PASS: 844x390: title buttons match index.html (⚔ Skirmish vs Computer | Sandbox (practice camp) | Host 1v1 | Join 1v1 | 🦴 $KIBBLE network)
+PASS: 844x390: skirmish started (3 own units)
+PASS: 844x390: canvas fills viewport
+PASS: 844x390: real tap selects a Worker Pup ({"kind":"unit","id":54})
+PASS: 844x390: Command tap on berries issues an order (move)
+PASS: 844x390: no page errors 
+PASS: 1366x768: title buttons match index.html (⚔ Skirmish vs Computer | Sandbox (practice camp) | Host 1v1 | Join 1v1 | 🦴 $KIBBLE network)
+PASS: 1366x768: skirmish started (3 own units)
+PASS: 1366x768: canvas fills viewport
+PASS: 1366x768: real click selects a Worker Pup ({"kind":"unit","id":54})
+PASS: 1366x768: right-click on berries issues an order (move)
+PASS: 1366x768: no page errors 
+PASS: build id: page be15aa82e43d vs expected be15aa82e43d
+VERIFY: ALL PASSED
+EXIT 0
