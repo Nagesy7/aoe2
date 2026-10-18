@@ -12,7 +12,7 @@ import { CIVS, CIV_IDS } from './civs.js';
 import { setupComputers } from './ai.js';
 import { initKibble, kibbleState, kibblePay, tierNow, myLoadout, loadoutWire, loadoutFromWire } from './kibble-ui.js';
 import { initRaid, openRaid } from './raid-ui.js';
-import { reportMatch } from './score.js';
+import { startTicket, submitMatch, resultText } from './score.js';
 import { mountCivCards } from './civcards.js';
 import { CIV_LOOK } from './civs.js';
 import * as SFX from './sfx.js';
@@ -247,6 +247,7 @@ function updateHud() {
 function startGame({ mp = false, seed = 1, me = 0, cfg = {}, session = null, ai = null } = {}) {
   world = mp || ai ? createWorld({ mp: true, seed }) : createWorld({ enemy: params.get('enemy') !== '0', raids: params.get('raids') === '1', scenario: params.get('scenario') });
   if (mp && cfg.civs) OWNERS.forEach((o, i) => { if (CIVS[cfg.civs[i]]) world.players[o].civ = cfg.civs[i]; });
+  if (mp) world.victory = true; // online 1v1 ends by conquest too (Den Halls + Fortresses destroyed), same rule as vs computer; kibble-pay's replay sets it the same way
   if (ai) { setupComputers(world, ai.spectate ? { player: ai.civ, enemy: ai.enemy } : { enemy: ai.enemy }); world.players.player.civ = ai.civ; world.viewer = 'player'; window.game.aiMode = true;
     world.spectate = !!ai.spectate; fog = { explored: new Uint8Array(world.width * world.height), seenBuildings: new Set() }; }
   ui = createUi();
@@ -268,16 +269,21 @@ function startGame({ mp = false, seed = 1, me = 0, cfg = {}, session = null, ai 
   Object.assign(window.game, { world, cam, ui, mode: mp ? 'mp' : ai ? 'ai' : 'sp' });
   document.body.classList.add('ingame');
   for (const id of ['menu', 'lobby', 'title-bg']) $(id).style.display = 'none';
-  last = performance.now(); matchRep = { t0: performance.now(), done: false, mode: mp ? 'mp' : ai && !ai.spectate ? 'ai' : 'sp' }; requestAnimationFrame(frame);
+  last = performance.now(); matchRep = { t0: performance.now(), done: false, mode: mp ? 'mp' : ai && !ai.spectate ? 'ai' : 'sp', win: null, lockstep: mp ? [] : null, spectate: !!world.spectate };
+  // One Inu Score: a signed start ticket now (signed-in players only), the recorded inputs at the end; kibble-pay replays them.
+  if (matchRep.mode === 'ai') matchRep.ticketP = startTicket(kibblePay(), { mode: 'ai', seed, civ: ai.civ, enemy: ai.enemy });
+  else if (mp) matchRep.ticketP = startTicket(kibblePay(), { mode: 'mp', seed, civs: cfg.civs || [null, null], me });
+  requestAnimationFrame(frame);
 }
 const minimap = createMinimap($('minimap'), { getWorld: () => world, getFog: () => (net || (world && world.computers && !world.spectate) ? fog : null),
   getView: () => { const a = toWorld(0, 0), b = toWorld(innerWidth, innerHeight); return { x: a.x, y: a.y, w: b.x - a.x, h: b.y - a.y }; },
   jump: (x, y) => { cam.x = x * TILE - canvas.width / 2; cam.y = y * TILE - canvas.height / 2; clampCamera(cam, canvas.width, canvas.height, world); } });
-// One Inu Score: report a won match once (render side; reads only the result). See src/score.js.
+// One Inu Score: capture the winning step (tick + state hash, read-only), then send the inputs once. See src/score.js.
 let matchRep = null;
-function maybeReport() { if (!world || !world.winner || !matchRep || matchRep.done) return; matchRep.done = true;
-  const m = { mode: matchRep.mode, win: world.winner === viewer(), simSeconds: world.winTime || world.time, realMs: performance.now() - matchRep.t0, spectate: !!world.spectate };
-  reportMatch(kibblePay(), m).then(r => { window.game.lastScore = r; if (r.sent) world.message = { text: `Match score ${r.score} sent${r.inuScore != null ? ` · Inu Score ${r.inuScore}` : ''}`, until: world.time + 8 }; }); }
+const noteWin = () => { if (world.winner && matchRep && !matchRep.win) matchRep.win = { tick: world.tick, hash: stateHash(world), winner: world.winner, winTime: world.winTime }; };
+function maybeReport() { if (!world || !matchRep?.win || matchRep.done) return; matchRep.done = true;
+  const rep = { ...matchRep, commands: world.commandLog || [], desync: !!net?.ls?.desync };
+  submitMatch(kibblePay(), rep).then(r => { window.game.lastScore = r; const t = resultText(r); if (t && world) world.message = { text: t, until: world.time + 10 }; }); }
 const PAN = 600, EDGE = 12; let last = performance.now(), acc = 0, running = false;
 // Phase 5: the render loop stops while the tab is hidden (single player / vs computer) and restarts on return without
 // a catch-up burst. Online games keep ticking (rAF is throttled by the browser anyway) so lockstep peers never stall on us.
@@ -295,12 +301,13 @@ function frame(now) {
   if (mouse.inside && !drag && !ui.press) { if (mouse.x < EDGE) dx--; if (mouse.x > innerWidth - EDGE) dx++; if (mouse.y < EDGE) dy--; if (mouse.y > innerHeight - EDGE) dy++; }
   if (dx || dy) { cam.x += dx * PAN * dt; cam.y += dy * PAN * dt; clampCamera(cam, canvas.width, canvas.height, world); }
   // fixed 20 Hz simulation ticks
-  if (!net) { acc += dt; let n = 0; while (acc >= TICK_DT && n++ < 8) { snapPrev(); stepTick(world); acc -= TICK_DT; } if (world.computers && !world.spectate) { fog = computeFog(world, viewer(), fog); window.game.fog = fog; } }
+  if (!net) { acc += dt; let n = 0; while (acc >= TICK_DT && n++ < 8) { snapPrev(); stepTick(world); acc -= TICK_DT; noteWin(); } if (world.computers && !world.spectate) { fog = computeFog(world, viewer(), fog); window.game.fog = fog; } }
   else {
     acc += real * net.speed; let n = 0, stalled = false;
     while (acc >= TICK_DT && n < 12) {
       const cmds = net.ls.next(); if (!cmds) { stalled = true; break; }
-      snapPrev(); stepTick(world, cmds); acc -= TICK_DT; n++;
+      if (matchRep?.lockstep && !matchRep.win) for (const c of cmds) matchRep.lockstep.push([world.tick, c.player, c.seq ?? 0, c.type, c.args]);
+      snapPrev(); stepTick(world, cmds); acc -= TICK_DT; n++; noteWin();
       const h = stateHash(world); if (world.tick % net.ls.hashEvery === 0) net.hashes.push([world.tick, h]); net.ls.hash(world.tick, h);
     }
     if (stalled) { acc = Math.min(acc, TICK_DT); net.stallMs += real * 1000; net.stalledTotalMs += real * 1000;
@@ -312,7 +319,8 @@ function frame(now) {
 }
 // Automation hook: read-only state access + time advance in single player (proof scripts must not use it to issue orders).
 window.game = { sim: SIM, world: null, cam, ui, selectionInfo, pickAt, toScreen: (x, y) => { const q = worldToScreen(x, y, cam); return { x: q.x * Z, y: q.y * Z }; }, zoom: () => Z, toWorld,
-  tick: (s) => { if (net) throw new Error('no fast-forward in multiplayer'); const n = Math.round(s / TICK_DT); for (let i = 0; i < n; i++) stepTick(world); render(ctx, world, cam, ui); updateHud(); },
+  tick: (s) => { if (net) throw new Error('no fast-forward in multiplayer'); const n = Math.round(s / TICK_DT); for (let i = 0; i < n; i++) { stepTick(world); noteWin(); } render(ctx, world, cam, ui); updateHud(); },
+  matchRep: () => matchRep,
   stateHash: () => world && stateHash(world),
   getSelected: () => getSelected(world), sfx: SFX, minimap, touchTips, loop, touch: { ...touchUi }, buildTabOf: t => Object.keys(BUILD_TABS).find(k => BUILD_TABS[k].items.includes(t)) || null };
 
