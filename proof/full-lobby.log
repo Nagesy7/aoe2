@@ -1,6 +1,6 @@
 PASS: six clan cards on the match-select menu
-PASS: shield glow follows owned cosmetics (Akita rare, Kishu legendary, rest common)
-PASS: card previews are animated
+FAIL: shield glow follows owned cosmetics (Akita rare, Kishu legendary, rest common)
+FAIL: card previews are animated
 PASS: mouse hover starts the Shikoku cinematic
 PASS: cinematic ends after ~4 s
 PASS: click selects Shikoku and shows its traits
@@ -8,4 +8,4 @@ PASS: picked clan is played in game
 PASS: iPhone: card on screen in landscape
 PASS: iPhone: tap plays the hover cinematic
 PASS: iPhone: tap selects Hokkaido
-RESULT: ALL PASSED
+RESULT: 2 FAILED

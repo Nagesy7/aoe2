@@ -18,7 +18,7 @@ import { installTouchTips } from './touchtips.js';
 import { createUi, startPlacing, cancelPlacing, updateGhost, pointerDown, pointerMove, pointerUp } from './ui-state.js';
 const canvas = document.getElementById('game'), ctx = canvas.getContext('2d');
 const params = new URLSearchParams(location.search);
-const UI_VARIANT = params.get('ui') === 'b' ? 'b' : 'a'; // ?ui=a|b clan-card A/B (default a = unchanged)
+const UI_VARIANT = params.get('ui') === 'a' ? 'a' : 'b'; // clan cards: default b (trait-first, picked Oct 18); ?ui=a keeps the old art card for comparison
 SFX.install();
 window.BUILD_ID = document.querySelector('meta[name=build-id]')?.content || 'dev'; // stamped with the commit at deploy (scripts/ctl.mjs deploy)
 const $ = id => document.getElementById(id);

@@ -47,9 +47,9 @@ export function paintCard(ctx, id, W, H, t, cine = 0, rarity = 'common') {
   if (cine) { ctx.fillStyle = `rgba(0,0,0,${0.35 * Math.max(0, 1 - cine * 4)})`; ctx.fillRect(0, 0, W, H); ctx.fillStyle = '#000'; ctx.fillRect(0, 0, W, 8); ctx.fillRect(0, H - 8, W, 8); }
 }
 // Build the card grid into `root`. owned = Kibble-owned cosmetic ids (only for the glow). onPick(id).
-// variant 'a' (default): art card (animated scene + name + style). variant 'b' (?ui=b): trait-first card (shield, name,
-// style chip, the clan's two key traits as text, unique unit); same pick / hover-cinematic behaviour, smaller canvas.
-export function mountCivCards(root, { owned = [], selected = 'shiba', onPick = () => {}, variant = 'a' } = {}) {
+// variant 'b' (default, picked Oct 18): trait-first card (shield, name, style chip, the clan's two key traits as text,
+// unique unit). variant 'a' (?ui=a, kept for comparison): art card (animated scene + name + style). Same pick / hover-cinematic behaviour.
+export function mountCivCards(root, { owned = [], selected = 'shiba', onPick = () => {}, variant = 'b' } = {}) {
   const rar = civRarity(owned), cards = [];
   root.innerHTML = ''; root.dataset.ui = variant;
   for (const id of CIV_IDS) {

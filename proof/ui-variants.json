@@ -1,6 +1,7 @@
 [
  {
   "viewport": "844x390",
+  "query": "?ui=a",
   "ui": "a",
   "cards": 6,
   "fullyVisible": 6,
@@ -12,6 +13,19 @@
  },
  {
   "viewport": "844x390",
+  "query": "?ui=b",
+  "ui": "b",
+  "cards": 6,
+  "fullyVisible": 6,
+  "gridW": 600,
+  "gridH": 183,
+  "hScroll": false,
+  "text": "Shiba Clan Economy • Berry foraging +15%, lumber +10% Common Shield",
+  "minFont": 9.5
+ },
+ {
+  "viewport": "844x390",
+  "query": "(none)",
   "ui": "b",
   "cards": 6,
   "fullyVisible": 6,
@@ -23,6 +37,7 @@
  },
  {
   "viewport": "1366x768",
+  "query": "?ui=a",
   "ui": "a",
   "cards": 6,
   "fullyVisible": 3,
@@ -34,6 +49,19 @@
  },
  {
   "viewport": "1366x768",
+  "query": "?ui=b",
+  "ui": "b",
+  "cards": 6,
+  "fullyVisible": 6,
+  "gridW": 560,
+  "gridH": 266,
+  "hScroll": false,
+  "text": "Shiba Clan Economy • Berry foraging +15%, lumber +10% Unique: Red Fang (fast, cheap raider infantry) Common Shield",
+  "minFont": 10
+ },
+ {
+  "viewport": "1366x768",
+  "query": "(none)",
   "ui": "b",
   "cards": 6,
   "fullyVisible": 6,

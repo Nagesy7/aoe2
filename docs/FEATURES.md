@@ -32,7 +32,7 @@ Each row: where the feature lives, which headless test covers it, and which brow
 | Corner minimap (tap/drag to jump, fog-aware) | `src/minimap.js` | - | `run minimap` -> proof/phase3-minimap.log |
 | Long-press tooltips, collapsible quick bar, compact info (<420px) | `src/touchtips.js`, `src/main.js`, `index.html` | - | `run touchui` -> proof/phase4-touchui.log |
 | Render loop pauses when the tab is hidden | `src/main.js` (frame/loop) | - | `run visibility` -> proof/phase5-visibility.log |
-| Clan card A/B (`?ui=a|b`) | `src/civcards.js`, `index.html` | - | `run uivariants` -> proof/ui-variants.{json,log} |
+| Clan cards: layout B (trait-first) is the default; `?ui=a` = old art card for comparison | `src/civcards.js`, `src/main.js`, `index.html` | - | `run uivariants` (checks default = b, ?ui=a, ?ui=b) -> proof/ui-variants.{json,log} |
 | Build id (`<meta name=build-id>`, `window.BUILD_ID`) + shipping | `index.html`, `src/main.js`, `scripts/ctl.mjs` (deploy/ship/build-id) | - | `ctl ship`, `ctl build-id`, `run live-title` -> proof/ship-*.log, proof/live-lag-*; docs/SHIPPING.md |
 | Module preload (load time) | `index.html` `<link rel=modulepreload>` | `tests/preload.test.mjs` | `run load` -> proof/load-{baseline,after}.json |
 | Balance A/B between refs | `sim/compare.mjs` | - | proof/compare-hokkaido.{log,json} |
