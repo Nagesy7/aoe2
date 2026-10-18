@@ -153,7 +153,12 @@ export async function buildCheck(url, expect = '') {
   const html = await (await fetch(url, { cache: 'no-store' })).text(); const m = html.match(/<meta name="build-id" content="([^"]*)"/);
   if (!m) return { ok: false, msg: `build id: page at ${url} has no <meta name="build-id">` };
   if (!expect) { try { execSync('git fetch -q origin main', { cwd: ROOT, stdio: 'ignore', timeout: 30000 }); } catch {} expect = execSync('git rev-parse origin/main', { cwd: ROOT }).toString().trim(); }
-  const ok = m[1] && expect.startsWith(m[1].slice(0, 7)) && m[1].length >= 7; return { ok, msg: `build id: live ${m[1] || '(dev)'} vs expected ${expect.slice(0, 12)}` };
+  const id = m[1]; if (id && id.length >= 7 && expect.startsWith(id)) return { ok: true, msg: `build id: live ${id} vs expected ${expect.slice(0, 12)}` };
+  // newer commits that touch only undeployed files (.vercelignore: proof/, tests/, scripts/, server/, sim/) or docs/README do not make the game lag
+  let deployable = null; try { const ign = readFileSync(join(ROOT, '.vercelignore'), 'utf8').split('\n').map(l => l.trim().replace(/\/$/, '')).filter(Boolean);
+    deployable = execSync(`git diff --name-only ${id} ${expect}`, { cwd: ROOT }).toString().trim().split('\n').filter(f => f && !ign.some(d => f === d || f.startsWith(d + '/')) && !/^(docs\/|README\.md$|\.gitignore$)/.test(f)); } catch {}
+  const ok = !!id && deployable !== null && deployable.length === 0;
+  return { ok, msg: `build id: live ${id || '(dev)'} vs expected ${expect.slice(0, 12)}${deployable === null ? ' (unknown commit)' : deployable.length ? `; served files changed since: ${deployable.slice(0, 8).join(', ')}` : ' (newer commits touch only undeployed files or docs/README: game identical to origin/main)'}` };
 }
 
 // deploy: never from the working tree. Export the commit with git worktree, stamp the build id, deploy that directory.

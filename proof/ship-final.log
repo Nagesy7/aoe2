@@ -1,0 +1,45 @@
+ship4.log:deploying b17ba9c34407 from clean export /tmp/inu-deploy-b17ba9c34407: vercel deploy --yes
+ship4.log:  Inspect         https://vercel.com/prosper33/aoe2/Gf6vyfuJgAbso4qXDPBtazHtPqha
+ship4.log:  Preview         https://aoe2-mir0fgc58-prosper33.vercel.app
+ship4.log:DEPLOY OK b17ba9c34407 https://aoe2-mir0fgc58-prosper33.vercel.app
+ship4.log:preview https://aoe2-mir0fgc58-prosper33.vercel.app is behind Vercel Authentication: get a share link (Vercel MCP get_access_to_vercel_url), save it to a file, then
+ship4.log:  CTL_SHARE_FILE=<file> node scripts/ctl.mjs ship --preview-url https://aoe2-mir0fgc58-prosper33.vercel.app
+ship4.log:EXIT 2
+ship4b.log:
+ship4b.log:== verify preview https://aoe2-mir0fgc58-prosper33.vercel.app
+ship4b.log:PASS: 844x390: title buttons match index.html (⚔ Skirmish vs Computer | Sandbox (practice camp) | Host 1v1 | Join 1v1 | 🦴 $KIBBLE network)
+ship4b.log:PASS: 844x390: skirmish started (3 own units)
+ship4b.log:PASS: 844x390: canvas fills viewport
+ship4b.log:PASS: 844x390: real tap selects a Worker Pup ({"kind":"unit","id":54})
+ship4b.log:PASS: 844x390: Command tap on berries issues an order (move)
+ship4b.log:PASS: 844x390: no page errors 
+ship4b.log:PASS: 1366x768: title buttons match index.html (⚔ Skirmish vs Computer | Sandbox (practice camp) | Host 1v1 | Join 1v1 | 🦴 $KIBBLE network)
+ship4b.log:PASS: 1366x768: skirmish started (3 own units)
+ship4b.log:PASS: 1366x768: canvas fills viewport
+ship4b.log:PASS: 1366x768: real click selects a Worker Pup ({"kind":"unit","id":54})
+ship4b.log:PASS: 1366x768: right-click on berries issues an order (move)
+ship4b.log:PASS: 1366x768: no page errors 
+ship4b.log:PASS: build id: page b17ba9c34407 vs expected b17ba9c34407
+ship4b.log:VERIFY: ALL PASSED
+ship4b.log:deploying b17ba9c34407 from clean export /tmp/inu-deploy-b17ba9c34407: vercel deploy --prod --yes
+ship4b.log:  Inspect         https://vercel.com/prosper33/aoe2/2693TqHiNFe2dRHXvNe2EkHWeUPj
+ship4b.log:  Production      https://aoe2-bchitv6we-prosper33.vercel.app
+ship4b.log:▲ Aliased         https://aoe2-ashen.vercel.app
+ship4b.log:DEPLOY OK b17ba9c34407 https://aoe2-bchitv6we-prosper33.vercel.app
+ship4b.log:
+ship4b.log:== verify live https://inu-empires.vercel.app
+ship4b.log:PASS: 844x390: title buttons match index.html (⚔ Skirmish vs Computer | Sandbox (practice camp) | Host 1v1 | Join 1v1 | 🦴 $KIBBLE network)
+ship4b.log:PASS: 844x390: skirmish started (3 own units)
+ship4b.log:PASS: 844x390: canvas fills viewport
+ship4b.log:PASS: 844x390: real tap selects a Worker Pup ({"kind":"unit","id":54})
+ship4b.log:PASS: 844x390: Command tap on berries issues an order (move)
+ship4b.log:PASS: 844x390: no page errors 
+ship4b.log:PASS: 1366x768: title buttons match index.html (⚔ Skirmish vs Computer | Sandbox (practice camp) | Host 1v1 | Join 1v1 | 🦴 $KIBBLE network)
+ship4b.log:PASS: 1366x768: skirmish started (3 own units)
+ship4b.log:PASS: 1366x768: canvas fills viewport
+ship4b.log:PASS: 1366x768: real click selects a Worker Pup ({"kind":"unit","id":54})
+ship4b.log:PASS: 1366x768: right-click on berries issues an order (move)
+ship4b.log:PASS: 1366x768: no page errors 
+ship4b.log:PASS: build id: page b17ba9c34407 vs expected b17ba9c34407
+ship4b.log:VERIFY: ALL PASSED
+ship4b.log:EXIT 0
