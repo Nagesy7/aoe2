@@ -1,16 +1,19 @@
-# One Inu Score: shared contract (formula v2)
+# One Inu Score: shared contract (formula v4)
 
 Owner: Inu Verse keeper. Host: kibble-pay. The public formula page is https://kibble-pay.vercel.app/inu-score.
-Written 18 Oct 2026 (AEDT).
+Written 18 Oct 2026 (AEDT). Formula v3: 18 Oct 2026 (AEDT). Formula v4: 18 Oct 2026 (AEDT).
 
 ## What it is
 One lifetime score per wallet, shared by every Inu game. **It never resets.** It is built only from lifetime personal bests, and those only go up. It is skill only: purchases, $KIBBLE holdings, Kennel tiers, cosmetics, luck and time played never change it. Any prize tied to it is awarded by rank only under the Prize Rules (free entry, no draws, no raffles).
 
-## Formula v2 (also `GET /api/inu-score?formula=1`)
+## Formula v4 (also `GET /api/inu-score?formula=1`)
 - **Inu Score** = Σ game points + Σ raid points.
-- **Game points**, per game in `config/games.json` `scoreGames` (v2: `serverOnly` games count too; their only write path is their own server hook): `floor(1000 × √(min(lifetime best, cap) ÷ cap))`, where `cap` = that game's `max`.
+- **Game points**, per game in `config/games.json` `scoreGames` (v2: `serverOnly` games count too; their only write path is their own server hook): `floor(1000 × √(min(lifetime best, cap) ÷ cap))`, where `cap` = that game's `inuCap` if set, else its `max`. `inuCap` is the Inu Score normalisation cap only: it never changes the prize-board `max`/`perSec`/`minMs` checks. v3: Kibble Chomp `inuCap` = 50,000 (its prize-board `max` stays 500,000).
 - **Raid points**, per boss: `floor(1000 × min(best raid score, boss max) ÷ boss max)`, where boss max = `hp + 1000 + 2×900 + 3×200`.
-- Today's maximum is 9 games × 1000 + 4 bosses × 1000 = 13,000. (v1 was 8 games, 12,000, before Meme Brawl joined.)
+- Today's maximum is 11 games × 1000 + 4 bosses × 1000 = **15,000**. (v3 was 10 games, 14,000; v2 was 9 games, 13,000; v1 was 8 games, 12,000, before Meme Brawl joined.)
+- **Games (11):** kibble-chomp (cap 50,000), bark-invaders (500,000), bone-breaker (500,000), pup-crossing (200,000), street-sniffer (50,000), paw-fu-tower (100,000), meme-brawl (100,000, serverOnly), inu-empires (100,000, serverOnly), pepeballz (100,000), inu-rescue (2,000,000), inu-quest (50,000).
+- **v3 changes (18 Oct 2026):** Inu Arcade: Street Sniffer joins (`street-sniffer`, max 50,000, 400/s, min 5 s, game version 2; the arcade sends `kp.submitScore('street-sniffer', score, ms, { v: 2 })`) and counts for the `arcade-run` quest. Kibble Chomp's Inu Score cap drops from 500,000 to a realistic 50,000 via `inuCap`.
+- **v4 changes (18 Oct 2026):** Inu Arcade: Paw-Fu Tower joins (`paw-fu-tower`, max 100,000, 400/s, min 5 s, game version 2; the arcade sends `kp.submitScore('paw-fu-tower', score, ms, { v: 2 })`) and counts for the `arcade-run` quest. Cap rationale (human-sim, 100 seeds): median 2,700 (Classic) / 4,100 (Inu), p90 4,600 / 6,500, best 9,400; the perfect-play bot reaches ~17,000–21,500 in a 6–7 min run and the tower loops, so 100,000 leaves headroom while a median run already earns ~170–200 points.
 
 ## Where it is stored (the wallet cloud save)
 `save:inu-score:<wallet>` in the kibble-pay Upstash store, the same store and namespace as the per-game cloud saves (`save:<game>:<wallet>`). It holds `{ pb: {gameId: best}, raid: {bossId: best}, score, formula, updatedAt }`. `inu-score` is **not** a `SAVE_GAMES` slot, so `PUT /api/save` refuses it: only the server writes it. The lifetime board is the hash `inuscore:board:v1`.
