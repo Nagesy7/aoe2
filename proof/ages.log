@@ -1,5 +1,5 @@
-ages browser proof 2026-10-15T05:59:25.158Z
-PASS: HUD shows age: Inu Empires | Food: 200 | Wood: 200 | Gold: 100 | Stone: 100 | Pop 3/5 | Puppy Age
+ages browser proof 2026-10-18T06:16:49.152Z
+PASS: HUD shows age: Inu Empires | 🍖 | Food: | 200 | 🪵 | Wood: | 200 | 🪙 | Gold: | 100 | 🪨 | Stone: | 100 | 🐾 | Pop | 3/5 | Puppy Age
 PASS: Feudal buildings greyed: Bow Yard 🔒 Pack Age; Lookout Tower 🔒 Pack Age
 PASS: Castle/Imperial greyed: Fortress 🔒 Fortress Age; Grand Torii 🔒 Shogun Age
   saved proof/ages-01-dark-locked-menu.png
@@ -12,43 +12,43 @@ PASS: wood for Mining Camp + House
 PASS: mining camp at (40,41)
 PASS: mining camp built
 PASS: house built by the miner
-PASS: 500+ food gathered: {"food":552,"wood":346,"gold":320,"stone":100,"age":"dark","t":728.749999999885}
+PASS: 500+ food gathered: {"food":552,"wood":349,"gold":320,"stone":100,"age":"dark","t":729.2999999998844}
 PASS: requirements met: "Advance to Pack Age 500 food, 130s"
 PASS: Feudal research started (-500 food)
 PASS: research progress: Den Hall | HP: 2400/2400 | Armor 3/5 | Queue: 1/5 | Researching Pack Age: 30% | Rally: (41, 31) | A
   saved proof/ages-03-feudal-research-progress.png
 PASS: Feudal Age reached
-PASS: banner: "You have advanced to the Pack Age!"; HUD Inu Empires | Food: 75 | Wood: 545 | Gold: 370 | Stone: 100 | Pop 8/10 | Pack Age
+PASS: banner: "You have advanced to the Pack Age!"; HUD Inu Empires | 🍖 | Food: | 75 | 🪵 | Wood: | 539 | 🪙 | Gold: | 370 | 🪨 | Stone: | 100 | 🐾 | Pop | 8/10 | Pack Age
   saved proof/ages-04-feudal-banner.png
 PASS: unlocked in Feudal: "Bow Yard 175 wood", "Forge 150 wood"; still locked: "Fortress 🔒 Fortress Age"
   saved proof/ages-05-feudal-unlocked-menu.png
 PASS: Mining Camp tech button: Gold Sniffing 100 food, 75 wood, 30s
 PASS: Gold Shaft Mining greyed: Requires Fortress Age
 PASS: Gold Mining researched
-PASS: Gold Mining effect: rate 0.38 -> 0.44; measured miner rate 0.356 -> 0.407 /s (x1.14)
+PASS: Gold Mining effect: rate 0.38 -> 0.44; measured miner rate 0.359 -> 0.407 /s (x1.13)
   saved proof/ages-06-tech-gold-mining-researched.png
 PASS: Loom researched
 PASS: Loom effect on villager panel: Shiba Worker Pup | Task: Gathering | Carrying: 7 food/10 | HP: 40/40 | Attack 3 Armor 0/0
   saved proof/ages-07-loom-villager-hp.png
-PASS: wood for Blacksmith + Market: {"food":115,"wood":853,"gold":540,"stone":100,"age":"feudal","t":1194.0999999994617}
+PASS: wood for Blacksmith + Market: {"food":115,"wood":854,"gold":540,"stone":100,"age":"feudal","t":1194.4499999994614}
 PASS: Blacksmith at (46,30), Market at (46,37)
 PASS: Blacksmith + Market built (Feudal buildings)
 PASS: Blacksmith offers Tempered Claws
   saved proof/ages-08-feudal-building-built.png
-PASS: 800 food + 200 gold: {"food":805,"wood":1875,"gold":1422,"stone":100,"age":"feudal","t":2309.2499999996353}
+PASS: 800 food + 200 gold: {"food":805,"wood":1880,"gold":1422,"stone":100,"age":"feudal","t":2309.499999999636}
 PASS: castle button: "Advance to Fortress Age 800 food, 200 gold, 160s"
 PASS: Castle Age reached
 PASS: banner: You have advanced to the Fortress Age!
   saved proof/ages-09-castle-banner.png
-PASS: wood for Monastery + University: {"food":115,"wood":2108,"gold":1362,"stone":100,"age":"castle","t":2470.200000000221}
+PASS: wood for Monastery + University: {"food":115,"wood":2115,"gold":1362,"stone":100,"age":"castle","t":2470.4000000002216}
 PASS: Monastery at (45,24), University at (50,32)
 PASS: Monastery + University built [["monastery",true,40],["university",true,60]]
   imperial button: "Advance to Shogun Age 1000 food, 800 gold, 190s | need 865 food"
-PASS: 1000 food + 800 gold: {"food":1000,"wood":3235,"gold":2007,"stone":100,"age":"castle","t":3954.1500000056194}
+PASS: 1000 food + 800 gold: {"food":1000,"wood":3299,"gold":2007,"stone":100,"age":"castle","t":3953.9000000056185}
 PASS: Imperial Age reached
-PASS: banner: You have advanced to the Shogun Age!; HUD Inu Empires | Food: 110 | Wood: 3220 | Gold: 1287 | Stone: 100 | Pop 8/10 | Shogun Age
+PASS: banner: You have advanced to the Shogun Age!; HUD Inu Empires | 🍖 | Food: | 110 | 🪵 | Wood: | 3279 | 🪙 | Gold: | 1287 | 🪨 | Stone: | 100 | 🐾 | Pop | 8/10 | Shogun Age
   saved proof/ages-10-imperial-banner.png
 PASS: Wonder unlocked in Imperial: "Grand Torii need 900 stone"
   saved proof/ages-11-imperial-menu.png
-  final: {"food":110,"wood":3220,"gold":1287,"stone":100,"age":"imperial","t":4146.65000000632}, villagers 8, sim time 4147s
+  final: {"food":110,"wood":3279,"gold":1287,"stone":100,"age":"imperial","t":4146.65000000632}, villagers 8, sim time 4147s
 RESULT: ALL PASSED

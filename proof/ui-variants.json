@@ -18,10 +18,10 @@
   "cards": 6,
   "fullyVisible": 6,
   "gridW": 600,
-  "gridH": 183,
+  "gridH": 107,
   "hScroll": false,
-  "text": "Shiba Clan Economy • Berry foraging +15%, lumber +10% Common Shield",
-  "minFont": 9.5
+  "text": "Shiba Clan Economy • Berry foraging +15%, lumber +10%",
+  "minFont": 9
  },
  {
   "viewport": "844x390",
@@ -30,17 +30,17 @@
   "cards": 6,
   "fullyVisible": 6,
   "gridW": 600,
-  "gridH": 183,
+  "gridH": 107,
   "hScroll": false,
-  "text": "Shiba Clan Economy • Berry foraging +15%, lumber +10% Common Shield",
-  "minFont": 9.5
+  "text": "Shiba Clan Economy • Berry foraging +15%, lumber +10%",
+  "minFont": 9
  },
  {
   "viewport": "1366x768",
   "query": "?ui=a",
   "ui": "a",
   "cards": 6,
-  "fullyVisible": 3,
+  "fullyVisible": 6,
   "gridW": 560,
   "gridH": 304,
   "hScroll": false,

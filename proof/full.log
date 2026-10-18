@@ -9,18 +9,18 @@ PASS: Kennel Hut finished within 14 s incl. walking with 3 builders (25 s of wor
 PASS: right-click Den Hall garrisons the selection (3/3)
 PASS: Den Hall panel shows the garrison count
 PASS: Ungarrison button releases everyone
-PASS: right-click damaged Den Hall repairs it (1500 -> 1740)
-PASS: computer opponent built an economy in 10 min (17 Worker Pups, 21 buildings)
+PASS: right-click damaged Den Hall repairs it (1500 -> 1739)
+PASS: computer opponent built an economy in 10 min (19 Worker Pups, 15 buildings)
 PASS: stance buttons: 7 soldiers set to Stand Ground (stand)
 PASS: Forge placed
 PASS: Forge completed
 PASS: Forge offers attack + armor upgrade lines
 PASS: Tempered Claws researched
-PASS: AI-vs-AI: armies clash at 16 min (10 fighting)
+PASS: AI-vs-AI: armies clash at 15 min (14 fighting)
 PASS: both computer players aged up (feudal,feudal)
 PASS: lobby carries each player's clan (akita,kai)
 PASS: host right-click move arrives on the guest through the HTTP relay
-PASS: HTTP relay lockstep: 7/7 hash checks matched, no desync
+PASS: HTTP relay lockstep: 6/7 hash checks matched, no desync
 PASS: iPhone: Skirmish button on screen in landscape menu
 PASS: iPhone: tap starts a skirmish vs computer
 PASS: iPhone: a Worker Pup is on screen

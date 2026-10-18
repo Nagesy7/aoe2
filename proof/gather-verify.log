@@ -1,4 +1,4 @@
-gather verification 2026-10-15T05:35:33.117Z
+gather verification 2026-10-18T06:19:01.004Z
 PASS: forager reached the bush and is gathering
 PASS: FOOD BUG CHECK: villager panel while foraging shows "Carrying: 1 food" (non-zero food)
   saved proof/gather-verify-01-forager-carrying-food.png
@@ -16,9 +16,9 @@ PASS: all three dropped at the Town Center
   saved proof/gather-verify-02-food-gold-stone-to-tc.png
   woodcutter panel: Shiba Worker Pup | Task: Walking to resource | Carrying: 0/10 | HP: 25/25 | Attack 3 Armor 0/0
 PASS: [to TC] wood stockpile rose 200 -> 210 (+10)
-PASS: [to TC] wood nodes decreased by 12
-PASS: [to TC] balance: node decrease 12 == delivered 10 + change in carried 2
-PASS: tree at (50,30) 100 -> 88
+PASS: [to TC] wood nodes decreased by 11
+PASS: [to TC] balance: node decrease 11 == delivered 10 + change in carried 1
+PASS: tree at (17,34) 100 -> 89
   saved proof/gather-verify-03-wood-to-tc.png
 PASS: mill at (40,28), mining camp at (40,41)
 PASS: mill + mining camp built
@@ -27,20 +27,20 @@ PASS: [mill] food stockpile rose 213 -> 223 (+10)
 PASS: [mill] food nodes decreased by 19
 PASS: [mill] balance: node decrease 19 == delivered 10 + change in carried 9
 PASS: [mining camp] gold stockpile rose 130 -> 150 (+20)
-PASS: [mining camp] gold nodes decreased by 26
-PASS: [mining camp] balance: node decrease 26 == delivered 20 + change in carried 6
+PASS: [mining camp] gold nodes decreased by 25
+PASS: [mining camp] balance: node decrease 25 == delivered 20 + change in carried 5
 PASS: [stone (nearest of TC/mining camp)] stone stockpile rose 140 -> 160 (+20)
-PASS: [stone (nearest of TC/mining camp)] stone nodes decreased by 21
-PASS: [stone (nearest of TC/mining camp)] balance: node decrease 21 == delivered 20 + change in carried 1
+PASS: [stone (nearest of TC/mining camp)] stone nodes decreased by 19
+PASS: [stone (nearest of TC/mining camp)] balance: node decrease 19 == delivered 20 + change in carried -1
   stone miner last drop: town_center
   forager panel at mill: Shiba Worker Pup | Task: Gathering | Carrying: 9 food/10 | HP: 25/25 | Attack 3 Armor 0/0
   saved proof/gather-verify-04-mill-and-mining-camp.png
 PASS: drop-off label names the Mill: Shiba Worker Pup | Task: Gathering | Carrying: 9 food/10 | HP: 25/25 | Attack 3 Armor 0/0
-PASS: woodcut to TC until lumber camp affordable: Inu Empires | Food: 325 | Wood: 112 | Gold: 280 | Stone: 162 | Pop 3/5 | Puppy Age
+PASS: woodcut to TC until lumber camp affordable: Inu Empires | 🍖 | Food: | 325 | 🪵 | Wood: | 111 | 🪙 | Gold: | 280 | 🪨 | Stone: | 163 | 🐾 | Pop | 3/5 | Puppy Age
 PASS: lumber camp at (24,24) under the forest
 PASS: lumber camp built
 PASS: woodcutter drops at the Lumber Camp
-PASS: [lumber camp] wood stockpile rose 12 -> 22 (+10)
+PASS: [lumber camp] wood stockpile rose 11 -> 21 (+10)
 PASS: [lumber camp] wood nodes decreased by 17
 PASS: [lumber camp] balance: node decrease 17 == delivered 10 + change in carried 7
 PASS: forest tree (25,22) 100 -> 83
@@ -54,7 +54,7 @@ PASS: [farm] food nodes decreased by 14
 PASS: [farm] balance: node decrease 14 == delivered 20 + change in carried -6
 PASS: farm food 175 -> 161
   farmer last drop: mill
-PASS: sheep on screen (id 160, owner player)
+PASS: sheep on screen (id 164, owner player)
 PASS: sheep butchered, carcass being gathered
 PASS: butcher panel shows "Carrying: 2 food"
   saved proof/gather-verify-07-butchering.png
@@ -63,5 +63,5 @@ PASS: [carcass (+ farm still running)] food nodes decreased by 32
 PASS: [carcass (+ farm still running)] balance: node decrease 32 == delivered 20 + change in carried 12
 PASS: carcass 100 -> 85
   saved proof/gather-verify-08-final-stockpile.png
-  final HUD: Inu Empires | Food: 425 | Wood: 52 | Gold: 385 | Stone: 162 | Pop 3/5 | Puppy Age
+  final HUD: Inu Empires | 🍖 | Food: | 425 | 🪵 | Wood: | 51 | 🪙 | Gold: | 383 | 🪨 | Stone: | 163 | 🐾 | Pop | 3/5 | Puppy Age
 RESULT: ALL PASSED

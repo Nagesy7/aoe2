@@ -1,0 +1,73 @@
+# All ctl flows (scripts/flows/*.mjs) + ctl verify on 972f266 (clan cards default = layout B), local server, 2026-10-18 17:23 AEDT
+# live-title runs against the live site: run after ctl ship (see bottom). load: --runs 5; shots-v2: served by python http.server on :5173.
+# baseline = same flow on 555dcc2 (default layout A, before today's changes), run for every flow that failed here.
+
+flow           exit    pass  fail   time  baseline 555dcc2 / note
+ages           0         39     0    28s  
+ai-eco         0          0     0    32s  probe/screenshots, no PASS/FAIL lines; no page errors
+art            0          3     0     7s  
+buildmenu      0         35     0    10s  
+camera         0         56     0    17s  
+combat         0         29     0    10s  
+efficiency     1         15     3     6s  exit 1 pass 15 fail 3: identical FAILs -> pre-existing, not a B/menu regression; attack-move/shift-queue by click not registering: NOT investigated (could be a real game bug or a stale flow)
+full           0         31     0    22s  exit 0 pass 31 fail 0 (first run on 640b750 B default: 23 pass 1 FAIL 'iPhone: Skirmish button on screen' + timeout -> fixed in fffea2e)
+gather-verify  0         52     0     7s  
+hud            0         10     0     4s  
+inu            0          6     0     4s  
+kibble         0         11     0     4s  
+landscape      0         96     0    18s  
+load           0          0     0     2s  probe/screenshots, no PASS/FAIL lines; no page errors
+lobby          0         19     0    17s  was 8 pass 2 FAIL before b0f84ad (cosmetics seeded without ?demo=1); rewritten
+lockstep       1          8     0    41s  exit 1 pass 8 fail 0: same timeout -> pre-existing, not a B/menu regression; times out waiting for #commands button[data-action=barracks] (likely the flow predates the tabbed build menu; not investigated), not fixed
+menufit        0        102     0    41s  
+minimap        0         20     0     5s  
+round4         1         11    10     8s  exit 1 pass 11 fail 10: identical FAILs -> pre-existing; regexes expect old HUD text ('Food: 200 ... Pop 3/5') / 'Town Center': stale flow, not fixed
+round5         1          7     1     3s  exit 1 pass 7 fail 1: identical FAIL -> pre-existing; old HUD text regex: stale flow, not fixed
+round6         1         31     5    45s  exit 1 pass 31 fail 5: identical FAILs + timeout -> pre-existing; old HUD text regexes: stale flow; depleted-farm + militia lines and the timeout not investigated; not fixed
+screenshot     1         12     3    23s  exit 1 pass 12 fail 3: identical FAILs + timeout -> pre-existing; expects 'Town Center' (now Den Hall): stale flow; barracks-button timeout not investigated; not fixed
+sfx            0         10     0     6s  
+shots-v2       0          0     0     6s  probe/screenshots, no PASS/FAIL lines; no page errors
+touchui        0         10     0     8s  
+uivariants     0         24     0    11s  
+visibility     0          6     0     4s  
+verify         0         12     0     5s  
+
+## FAIL lines of the pre-existing failures
+-- efficiency
+FAIL: attack-move order issued by click
+FAIL: Shift+right-click queues a waypoint
+FAIL: tap after A-move issues attack-move order (mode resets)
+-- round4
+FAIL: start HUD: Inu Empires | 🍖 | Food: | 200 | 🪵 | Wood: | 200 | 🪙 | Gold: | 100 | 🪨 | Stone: | 100 | 🐾 | Pop | 3/5 | Puppy Age
+FAIL: 2 villagers queued, food 200 -> 100: Inu Empires | 🍖 | Food: | 100 | 🪵 | Wood: | 200 | 🪙 | Gold: | 100 | 🪨 | Stone: | 100 | 🐾 | Pop | 3/5 | Puppy Age
+FAIL: TC panel: Den Hall | HP: 2400/2400 | Armor 3/5 | Queue: 2/5 | Training Shiba Worker Pup: 26% | S | S
+FAIL: HUD Inu Empires | 🍖 | Food: | 100 | 🪵 | Wood: | 200 | 🪙 | Gold: | 100 | 🪨 | Stone: | 100 | 🐾 | Pop | 5/5 | Puppy Age
+FAIL: training blocked at cap: "Population cap reached (5/5): build a Kennel Hut"
+FAIL: foundation placed at (38,38), wood 200 -> 175
+FAIL: drag-selected rally villagers: 2 Worker Pups selected | 2 × Idle | Carrying: 0 total
+FAIL: 3 villagers building; panel: Kennel Hut (foundation) | HP: 322/550 | Construction: 58%
+FAIL: house complete: Inu Empires | 🍖 | Food: | 100 | 🪵 | Wood: | 175 | 🪙 | Gold: | 100 | 🪨 | Stone: | 100 | 🐾 | Pop | 5/10 | Puppy Age
+FAIL: drag-box: 5 Worker Pups selected | 5 × Idle | Carrying: 0 total
+-- round5
+FAIL: HUD: Inu Empires | 🍖 | Food: | 200 | 🪵 | Wood: | 150 | 🪙 | Gold: | 100 | 🪨 | Stone: | 100 | 🐾 | Pop | 3/15 | Puppy Age
+-- round6
+FAIL: lumber camp foundation at (24,24); Inu Empires | 🍖 | Food: | 200 | 🪵 | Wood: | 100 | 🪙 | Gold: | 100 | 🪨 | Stone: | 100 | 🐾 | Pop | 3/5 | Puppy Age
+FAIL: depleted farm disappears
+FAIL: HUD Inu Empires | 🍖 | Food: | 230 | 🪵 | Wood: | 517 | 🪙 | Gold: | 70 | 🪨 | Stone: | 100 | 🐾 | Pop | 5/5 | Puppy Age
+FAIL: militia selected: Dojo | HP: 1200/1200 | Armor 0/7 | Queue: 0/5
+FAIL: militia move on command
+  - waiting for locator('#commands button[data-action=house]')
+  log: [ "  - waiting for locator('#commands button[data-action=house]')" ],
+  name: 'TimeoutError'
+-- screenshot
+FAIL: TC info: Den Hall | HP: 2400/2400 | Armor 3/5 | Queue: 0/5
+FAIL: villager info: Shiba Worker Pup | Task: Idle | Carrying: 0/10 | HP: 25/25 | Attack 3 Armor 0/0
+FAIL: retask with 7 wood: Shiba Worker Pup | Task: Returning to Den Hall | Carrying: 7 wood/10 | HP: 25/25 | Attack 3 Armor 0/0
+-- lockstep
+  - waiting for locator('#commands button[data-action="barracks"]')
+    `  - waiting for locator('#commands button[data-action="barracks"]')`
+  name: 'TimeoutError'
+
+## npm test
+npm test exit 0
+RESULT: ALL 66 PASSED

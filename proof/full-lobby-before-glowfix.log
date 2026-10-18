@@ -1,11 +1,12 @@
-# new lobby checks run against the pre-fix card code (52x60 B shield canvas, uncoloured finish label) to show they catch the bug
+# final lobby checks (6-frame sampling) run against the pre-fix card code at 01d56c5 (52x60 B shield canvas, uncoloured finish label).
+# 3 FAIL. Correction to b0f84ad's message: the Kishu 'never moved' result there was the 2-sample flake fixed in 972f266; the old B pulse did move, but the halo was clipped square (proof/lobby-cards-b-before-glowfix.png) and the ring test cannot tell a halo from shield body in the old geometry.
 PASS: default (b): renders layout b
 PASS: default (b): shield finish follows owned cosmetics (Akita rare, Kishu legendary, rest common)
 PASS: default (b): owned finishes glow on the card (Akita blue, Kishu gold; Shiba none)
 FAIL: default (b): finish label coloured (Akita "rare shield" rgb(244, 226, 184), Kishu "legendary shield" rgb(244, 226, 184), Shiba rgb(244, 226, 184))
 FAIL: default (b): glow halo drawn around owned shields (ring alpha Shiba 42136, Akita 43161, Kishu 43161)
 PASS: default (b): halo fades out inside the canvas, not clipped at its edge (edge alpha Akita 10356, Kishu 10356)
-FAIL: default (b): owned shields animate (glow pulse), common shield static by design (Shiba false, Akita true, Kishu false)
+PASS: default (b): owned shields animate (glow pulse), common shield static by design (Shiba false, Akita true, Kishu true)
 PASS: mouse hover starts the Shikoku cinematic
 PASS: cinematic ends after ~4 s
 PASS: click selects Shikoku and shows its traits
@@ -18,4 +19,4 @@ PASS: ?ui=a: card previews are animated scenes (Shiba true, Akita true, Kishu tr
 PASS: iPhone: card on screen in landscape
 PASS: iPhone: tap plays the hover cinematic
 PASS: iPhone: tap selects Hokkaido
-RESULT: 4 FAILED
+RESULT: 3 FAILED

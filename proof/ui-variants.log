@@ -17,8 +17,8 @@ PASS: 1366x768 (no ?ui): 6 clan cards rendered, expect variant b, got b
 PASS: 1366x768 (no ?ui): click picks Kai
 PASS: 1366x768 (no ?ui): no page errors 
 PASS: 844x390 ?ui=a -> ui=a: grid 654x117, 6/6 fully on screen, h-scroll false, min font 9.16667px, card text: "Shiba Clan Economy Common Shield"
-PASS: 844x390 ?ui=b -> ui=b: grid 600x183, 6/6 fully on screen, h-scroll false, min font 9.5px, card text: "Shiba Clan Economy • Berry foraging +15%, lumber +10% Common Shield"
-PASS: 844x390 (none) -> ui=b: grid 600x183, 6/6 fully on screen, h-scroll false, min font 9.5px, card text: "Shiba Clan Economy • Berry foraging +15%, lumber +10% Common Shield"
-PASS: 1366x768 ?ui=a -> ui=a: grid 560x304, 3/6 fully on screen, h-scroll false, min font 9.16667px, card text: "Shiba Clan Economy Common Shield"
+PASS: 844x390 ?ui=b -> ui=b: grid 600x107, 6/6 fully on screen, h-scroll false, min font 9px, card text: "Shiba Clan Economy • Berry foraging +15%, lumber +10%"
+PASS: 844x390 (none) -> ui=b: grid 600x107, 6/6 fully on screen, h-scroll false, min font 9px, card text: "Shiba Clan Economy • Berry foraging +15%, lumber +10%"
+PASS: 1366x768 ?ui=a -> ui=a: grid 560x304, 6/6 fully on screen, h-scroll false, min font 9.16667px, card text: "Shiba Clan Economy Common Shield"
 PASS: 1366x768 ?ui=b -> ui=b: grid 560x266, 6/6 fully on screen, h-scroll false, min font 10px, card text: "Shiba Clan Economy • Berry foraging +15%, lumber +10% Unique: Red Fang (fast, cheap raider infantry) Common Sh"
 PASS: 1366x768 (none) -> ui=b: grid 560x266, 6/6 fully on screen, h-scroll false, min font 10px, card text: "Shiba Clan Economy • Berry foraging +15%, lumber +10% Unique: Red Fang (fast, cheap raider infantry) Common Sh"
