@@ -7,6 +7,7 @@
 //   node scripts/ctl.mjs verify [--url U]                smoke: title buttons match index.html, skirmish starts, no page errors (phone + desktop)
 //   node scripts/ctl.mjs deploy [--prod] [--ref main]    clean export of the commit (git worktree), stamp <meta name=build-id>, vercel deploy
 //   node scripts/ctl.mjs build-id [--url U]              live build id vs origin/main (exit 1 if live lags main)
+//   node scripts/ctl.mjs ship [--ref main]               preview deploy -> verify the preview -> prod deploy -> verify live (docs/SHIPPING.md)
 // Shared helpers are exported so flows import them instead of copying a static server / launch / tap boilerplate.
 // Video: pass --video <dir> (or RECORD=dir) and every context records .webm into it (Playwright recordVideo).
 import { chromium, devices } from 'playwright';
@@ -166,11 +167,22 @@ async function cmdDeploy(argv) {
       let o = ''; c.stdout.on('data', d => { o += d; }); c.stderr.on('data', d => { o += d; }); c.on('close', code => ok({ code, o })); });
     const url = (res.o.match(/(?:Production|Preview)\s+(https:\/\/[a-z0-9-]+\.vercel\.app)/) || res.o.match(/"url": "(https:[^"]+)"/) || [])[1];
     console.log(res.o.split('\n').filter(l => /https:|Error|Production|Preview|Inspect/i.test(l)).join('\n'));
-    console.log(`DEPLOY ${res.code ? 'FAILED' : 'OK'} ${sha.slice(0, 12)} ${url || ''}`); return res.code;
+    console.log(`DEPLOY ${res.code ? 'FAILED' : 'OK'} ${sha.slice(0, 12)} ${url || ''}`); if (argv.result) Object.assign(argv.result, { url, sha }); return res.code;
   } finally { execSync(`git worktree remove --force ${dir}`, { cwd: ROOT, stdio: 'ignore' }); }
 }
 async function cmdBuildId(argv) { const url = argOf('url', 'https://inu-empires.vercel.app/', argv); const r = await buildCheck(url, argOf('expect', '', argv)); console.log(`${r.ok ? 'PASS' : 'FAIL'}: ${r.msg}`); return r.ok ? 0 : 1; }
-const CMDS = { deploy: cmdDeploy, 'build-id': cmdBuildId, shot: cmdShot, start: cmdStart, run: cmdRun, balance: cmdBalance, verify };
+// ship: the only way to production. main must be pushed; the same commit goes to a preview, gets verified there, then prod.
+async function cmdShip(argv) {
+  const ref = argOf('ref', 'main', argv); try { execSync('git fetch -q origin', { cwd: ROOT, timeout: 30000 }); } catch {}
+  const sha = execSync(`git rev-parse ${ref}`, { cwd: ROOT }).toString().trim(), om = execSync('git rev-parse origin/main', { cwd: ROOT }).toString().trim();
+  if (sha !== om && !flag('force', argv)) { console.log(`refusing: ${ref} (${sha.slice(0, 12)}) != origin/main (${om.slice(0, 12)}); push main first so live always matches main`); return 1; }
+  const pre = Object.assign(['--ref', sha], { result: {} }); if (await cmdDeploy(pre) || !pre.result.url) return 1;
+  console.log(`\n== verify preview ${pre.result.url}`); if (await verify(['--url', pre.result.url, '--expect', sha, '--tag', `ship-preview-${sha.slice(0, 7)}`])) { console.log('preview failed verify: NOT promoting'); return 1; }
+  const prod = Object.assign(['--ref', sha, '--prod'], { result: {} }); if (await cmdDeploy(prod)) return 1;
+  console.log('\n== verify live https://inu-empires.vercel.app'); await new Promise(r => setTimeout(r, 4000));
+  return verify(['--url', 'https://inu-empires.vercel.app/', '--expect', sha, '--shots', '--tag', argOf('tag', `ship-live-${sha.slice(0, 7)}`, argv)]);
+}
+const CMDS = { ship: cmdShip, deploy: cmdDeploy, 'build-id': cmdBuildId, shot: cmdShot, start: cmdStart, run: cmdRun, balance: cmdBalance, verify };
 if (process.argv[1] && resolve(process.argv[1]) === fileURLToPath(import.meta.url)) {
   const [cmd, ...rest] = process.argv.slice(2);
   if (!CMDS[cmd]) { console.log(readFileSync(fileURLToPath(import.meta.url), 'utf8').split('\n').slice(1, 8).join('\n')); process.exit(cmd ? 1 : 0); }
