@@ -176,10 +176,11 @@ cmdEl.addEventListener('click', e => { const btn = e.target.closest('button'); i
   else if (UNIT_DEFS[a]) issue('train', { id: b.id, unit: a });
   else if (BUILDING_DEFS[a]) { startPlacing(ui, a); refreshGhost(); } });
 const costText = c => Object.entries(c).map(([r, v]) => `${v} ${r}`).join(', ');
+const RES_ICON = { food: '🍖', wood: '🪵', gold: '🪙', stone: '🪨' };
 function updateHud() {
   const pop = popCount(world), cap = popCap(world);
-  hud.innerHTML = '<span id="brand">Inu Empires</span>' + RES_TYPES.map(r => `<span id="res-${r}">${r[0].toUpperCase() + r.slice(1)}: ${world.stockpile[r]}</span>`).join('') +
-    `<span id="pop" class="${pop >= cap ? 'capped' : ''}">Pop ${pop}/${cap}</span>` + (net ? `<span id="side" class="${net.me ? 'p2' : 'p1'}">Player ${net.me + 1} (${net.me ? 'Red' : 'Blue'})</span>` : '') + `<span id="age">${AGE_NAMES[world.age]}</span>` + (world.players?.[viewer()]?.civ ? `<span id="civ">${CIVS[world.players[viewer()].civ].name}</span>` : '');
+  hud.innerHTML = '<span id="brand">Inu Empires</span>' + RES_TYPES.map(r => `<span id="res-${r}" class="res" title="${r[0].toUpperCase() + r.slice(1)}"><i aria-hidden="true">${RES_ICON[r]}</i><span class="lbl">${r[0].toUpperCase() + r.slice(1)}: </span>${world.stockpile[r]}</span>`).join('') +
+    `<span id="pop" class="res ${pop >= cap ? 'capped' : ''}" title="Population"><i aria-hidden="true">🐾</i><span class="lbl">Pop </span>${pop}/${cap}</span>` + (net ? `<span id="side" class="${net.me ? 'p2' : 'p1'}">Player ${net.me + 1} (${net.me ? 'Red' : 'Blue'})</span>` : '') + `<span id="age">${AGE_NAMES[world.age]}</span>` + (world.players?.[viewer()]?.civ ? `<span id="civ">${CIVS[world.players[viewer()].civ].name}</span>` : '');
   bannerEl.textContent = world.banner ? world.banner.text : ''; bannerEl.style.display = world.banner ? 'block' : 'none';
   msgEl.textContent = world.message ? breedText(world.message.text) : ''; msgEl.style.display = world.message ? 'block' : 'none';
   const info = selectionInfo(world);

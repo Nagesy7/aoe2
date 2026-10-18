@@ -1,0 +1,10 @@
+PASS: 844x390: resource bar content fits (no overflow clipping)
+PASS: 844x390: every item inside the bar (res-food:🍖 Food: 99999 | res-wood:🪵 Wood: 99999 | res-gold:🪙 Gold: 99999 | res-stone:🪨 Stone: 99999 | pop:🐾 Pop 3/5 | age:Shogun Age)
+PASS: 844x390: last item ends at 412px, left of the wallet/home widgets at 654px
+PASS: 844x390: icons keep an accessible label (title / screen-reader text)
+PASS: 844x390: no page errors 
+PASS: 1366x768: resource bar content fits (no overflow clipping)
+PASS: 1366x768: every item inside the bar (brand:Inu Empires | res-food:🍖 Food: 99999 | res-wood:🪵 Wood: 99999 | res-gold:🪙 Gold: 99999 | res-stone:🪨 Stone: 99999 | pop:🐾 Pop 3/5 | age:Shogun Age | civ:Shiba Clan)
+PASS: 1366x768: last item ends at 1116px, left of the wallet/home widgets at 1176px
+PASS: 1366x768: icons keep an accessible label (title / screen-reader text)
+PASS: 1366x768: no page errors 
