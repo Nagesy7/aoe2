@@ -1,0 +1,34 @@
+ages           exit 0 pass 39 fail 0 53s pageerrors 0
+ai-eco         exit 0 pass 0 fail 0 50s pageerrors 0
+amove          exit 0 pass 10 fail 0 6s pageerrors 0
+art            exit 0 pass 3 fail 0 11s pageerrors 0
+buildmenu      exit 0 pass 35 fail 0 15s pageerrors 0
+camera         exit 0 pass 56 fail 0 21s pageerrors 0
+combat         exit 0 pass 29 fail 0 13s pageerrors 0
+efficiency     exit 0 pass 18 fail 0 9s pageerrors 0
+full           exit 0 pass 31 fail 0 32s pageerrors 0
+gather-verify  exit 0 pass 52 fail 0 12s pageerrors 0
+hud            exit 0 pass 10 fail 0 6s pageerrors 0
+inu            exit 0 pass 6 fail 0 6s pageerrors 0
+kennel         exit 1 pass 76 fail 1 58s pageerrors 0
+kibble         exit 0 pass 11 fail 0 9s pageerrors 0
+landscape      exit 0 pass 96 fail 0 22s pageerrors 0
+load           exit 0 pass 0 fail 0 7s pageerrors 0
+lobby          exit 0 pass 19 fail 0 21s pageerrors 0
+lockstep       exit 0 pass 19 fail 0 70s pageerrors 0
+menufit        exit 0 pass 102 fail 0 69s pageerrors 0
+minimap        exit 0 pass 20 fail 0 8s pageerrors 0
+mood           exit 0 pass 16 fail 0 19s pageerrors 0
+raid           exit 0 pass 13 fail 0 76s pageerrors 0
+round4         exit 0 pass 21 fail 0 11s pageerrors 0
+round5         exit 0 pass 8 fail 0 5s pageerrors 0
+round6         exit 0 pass 41 fail 0 21s pageerrors 0
+screenshot     exit 0 pass 15 fail 0 25s pageerrors 0
+sfx            exit 0 pass 10 fail 0 7s pageerrors 0
+shots-v2       exit 0 pass 6 fail 0 7s pageerrors 0
+touchui        exit 0 pass 10 fail 0 9s pageerrors 0
+uivariants     exit 0 pass 24 fail 0 13s pageerrors 0
+visibility     exit 0 pass 6 fail 0 5s pageerrors 0
+verify exit 0 pass 12 fail 0
+DONE
+kennel (rerun after 7753d77 fix): exit 0 pass 77 fail 0

@@ -1,0 +1,146 @@
+{
+ "base": {
+  "ref": "6ba8eda",
+  "sha": "6ba8eda",
+  "table": {
+   "shiba": {
+    "games": 40,
+    "wins": 15,
+    "winRate": 0.375
+   },
+   "akita": {
+    "games": 40,
+    "wins": 20,
+    "winRate": 0.5
+   },
+   "kishu": {
+    "games": 40,
+    "wins": 21,
+    "winRate": 0.525
+   },
+   "shikoku": {
+    "games": 40,
+    "wins": 17,
+    "winRate": 0.425
+   },
+   "hokkaido": {
+    "games": 40,
+    "wins": 23,
+    "winRate": 0.575
+   },
+   "kai": {
+    "games": 40,
+    "wins": 24,
+    "winRate": 0.6
+   }
+  }
+ },
+ "head": {
+  "ref": "df4d743",
+  "sha": "df4d743",
+  "table": {
+   "shiba": {
+    "games": 40,
+    "wins": 15,
+    "winRate": 0.375
+   },
+   "akita": {
+    "games": 40,
+    "wins": 20,
+    "winRate": 0.5
+   },
+   "kishu": {
+    "games": 40,
+    "wins": 21,
+    "winRate": 0.525
+   },
+   "shikoku": {
+    "games": 40,
+    "wins": 17,
+    "winRate": 0.425
+   },
+   "hokkaido": {
+    "games": 40,
+    "wins": 23,
+    "winRate": 0.575
+   },
+   "kai": {
+    "games": 40,
+    "wins": 24,
+    "winRate": 0.6
+   }
+  }
+ },
+ "flagged": [
+  "shiba",
+  "shikoku",
+  "hokkaido",
+  "kai"
+ ],
+ "flipped": [],
+ "tests": {
+  "base": {
+   "code": 0,
+   "lines": [
+    "RESULT: ALL 223 PASSED",
+    "RESULT: ALL 94 PASSED",
+    "RESULT: ALL 53 PASSED",
+    "RESULT: ALL 35 PASSED",
+    "RESULT: ALL 22 PASSED",
+    "RESULT: ALL 25 PASSED",
+    "RESULT: ALL 107 PASSED",
+    "RESULT: ALL 39 PASSED",
+    "RESULT: ALL 51 PASSED",
+    "RESULT: ALL 66 PASSED"
+   ]
+  },
+  "head": {
+   "code": 0,
+   "lines": [
+    "RESULT: ALL 223 PASSED",
+    "RESULT: ALL 94 PASSED",
+    "RESULT: ALL 53 PASSED",
+    "RESULT: ALL 35 PASSED",
+    "RESULT: ALL 22 PASSED",
+    "RESULT: ALL 25 PASSED",
+    "RESULT: ALL 107 PASSED",
+    "RESULT: ALL 45 PASSED",
+    "RESULT: ALL 59 PASSED",
+    "RESULT: ALL 66 PASSED"
+   ]
+  }
+ },
+ "text": [
+  "\nper-clan win rate (4 vs 4 seeds, 30/30 min)   base 6ba8eda  ->  head df4d743",
+  "shiba      37.5%  ->  37.5%   +0.0   <-- OUTSIDE 45-55%",
+  "akita      50.0%  ->  50.0%   +0.0",
+  "kishu      52.5%  ->  52.5%   +0.0",
+  "shikoku    42.5%  ->  42.5%   +0.0   <-- OUTSIDE 45-55%",
+  "hokkaido   57.5%  ->  57.5%   +0.0   <-- OUTSIDE 45-55%",
+  "kai        60.0%  ->  60.0%   +0.0   <-- OUTSIDE 45-55%",
+  "\nflipped matchups (0):",
+  "\nFLAGGED (outside 45-55%): shiba, shikoku, hokkaido, kai",
+  "\nnpm test @ base 6ba8eda: exit 0",
+  "  RESULT: ALL 223 PASSED",
+  "  RESULT: ALL 94 PASSED",
+  "  RESULT: ALL 53 PASSED",
+  "  RESULT: ALL 35 PASSED",
+  "  RESULT: ALL 22 PASSED",
+  "  RESULT: ALL 25 PASSED",
+  "  RESULT: ALL 107 PASSED",
+  "  RESULT: ALL 39 PASSED",
+  "  RESULT: ALL 51 PASSED",
+  "  RESULT: ALL 66 PASSED",
+  "\nnpm test @ head df4d743: exit 0",
+  "  RESULT: ALL 223 PASSED",
+  "  RESULT: ALL 94 PASSED",
+  "  RESULT: ALL 53 PASSED",
+  "  RESULT: ALL 35 PASSED",
+  "  RESULT: ALL 22 PASSED",
+  "  RESULT: ALL 25 PASSED",
+  "  RESULT: ALL 107 PASSED",
+  "  RESULT: ALL 45 PASSED",
+  "  RESULT: ALL 59 PASSED",
+  "  RESULT: ALL 66 PASSED"
+ ]
+}

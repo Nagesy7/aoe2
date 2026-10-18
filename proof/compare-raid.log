@@ -1,0 +1,41 @@
+base 6ba8eda (6ba8eda): simulating 4 seeds x 30 min ...
+head df4d743 (df4d743): simulating 4 seeds x 30 min ...
+
+per-clan win rate (4 vs 4 seeds, 30/30 min)   base 6ba8eda  ->  head df4d743
+shiba      37.5%  ->  37.5%   +0.0   <-- OUTSIDE 45-55%
+akita      50.0%  ->  50.0%   +0.0
+kishu      52.5%  ->  52.5%   +0.0
+shikoku    42.5%  ->  42.5%   +0.0   <-- OUTSIDE 45-55%
+hokkaido   57.5%  ->  57.5%   +0.0   <-- OUTSIDE 45-55%
+kai        60.0%  ->  60.0%   +0.0   <-- OUTSIDE 45-55%
+
+flipped matchups (0):
+
+FLAGGED (outside 45-55%): shiba, shikoku, hokkaido, kai
+
+npm test @ base 6ba8eda: exit 0
+  RESULT: ALL 223 PASSED
+  RESULT: ALL 94 PASSED
+  RESULT: ALL 53 PASSED
+  RESULT: ALL 35 PASSED
+  RESULT: ALL 22 PASSED
+  RESULT: ALL 25 PASSED
+  RESULT: ALL 107 PASSED
+  RESULT: ALL 39 PASSED
+  RESULT: ALL 51 PASSED
+  RESULT: ALL 66 PASSED
+
+npm test @ head df4d743: exit 0
+  RESULT: ALL 223 PASSED
+  RESULT: ALL 94 PASSED
+  RESULT: ALL 53 PASSED
+  RESULT: ALL 35 PASSED
+  RESULT: ALL 22 PASSED
+  RESULT: ALL 25 PASSED
+  RESULT: ALL 107 PASSED
+  RESULT: ALL 45 PASSED
+  RESULT: ALL 59 PASSED
+  RESULT: ALL 66 PASSED
+
+wrote proof/compare-raid.json
+EXIT 1
