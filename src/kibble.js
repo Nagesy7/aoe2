@@ -8,9 +8,12 @@ import { COSMETICS as CIV_COSMETICS } from './civs.js';
 // Demo (?demo=1): the original fully simulated wallet below. Ladder, packs and Cup stay local stubs in both modes.
 export const SIMULATED = (() => { try { return new URLSearchParams(location.search).get('demo') === '1'; } catch { return false; } })();
 export const U = 1_000_000;
-export const OWNER = { name: 'President Inu', title: "President's treasury" };
-export const OWNER_WALLET = 'BzLYTFAfUsjzQ5x8bx5BbPK4DFtaHrLCuferkvkxTNGJ'; // Solana receive address, display only (simulated: no transfers)
-export const FEE_BPS = { owner: 100, daily: 25, weekly: 50, monthly: 25 }; // 2% total: 1% treasury, 0.25/0.5/0.25% pools
+export const OWNER = { name: 'President Inu', title: "President's Vault" }; // public name of the creator-share wallet
+export const OWNER_WALLET = 'BzLYTFAfUsjzQ5x8bx5BbPK4DFtaHrLCuferkvkxTNGJ'; // President's Vault: Solana receive address, display only (simulated: no transfers)
+export const shortAddr = a => `${a.slice(0, 4)}…${a.slice(-4)}`;
+export const solscan = a => `https://solscan.io/account/${a}`;
+export const vaultLink = (a = OWNER_WALLET, id = '') => `<a${id ? ` id="${id}"` : ''} href="${solscan(a)}" target="_blank" rel="noopener" title="${a}">${shortAddr(a)} ↗</a>`;
+export const FEE_BPS = { owner: 100, daily: 25, weekly: 50, monthly: 25 }; // 2% total: 1% President's Vault, 0.25/0.5/0.25% pools
 export const FEE_TOTAL_BPS = 200;
 export const toU = k => Math.round(k * U);
 export const fmtK = u => (u / U).toLocaleString('en-US', { maximumFractionDigits: 6 });
