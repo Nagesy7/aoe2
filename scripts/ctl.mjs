@@ -49,6 +49,8 @@ export async function newPage({ phone = false, video = process.env.RECORD, ctxOp
   const b = await browser(); const opts = { ...(phone ? PHONE : DESKTOP), ...ctxOpts };
   if (video) { mkdirSync(video, { recursive: true }); opts.recordVideo = { dir: video, size: opts.viewport }; }
   const ctx = await b.newContext(opts); const p = await ctx.newPage(); p.errors = []; p.phone = phone;
+  // protected Vercel previews: CTL_SHARE_FILE holds a _vercel_share link (from the Vercel MCP get_access_to_vercel_url); opening it sets the auth cookie. Never printed.
+  if (process.env.CTL_SHARE_FILE && existsSync(process.env.CTL_SHARE_FILE)) await p.goto(readFileSync(process.env.CTL_SHARE_FILE, 'utf8').trim(), { waitUntil: 'domcontentloaded' });
   p.on('pageerror', e => p.errors.push(String(e)));
   const cdp = phone ? await ctx.newCDPSession(p) : null;
   p.touch = (type, pts) => cdp.send('Input.dispatchTouchEvent', { type, touchPoints: pts.map((q, i) => ({ x: q.x, y: q.y, id: q.id ?? i })) });
@@ -141,7 +143,9 @@ export async function verify(argv = []) {
     if (flag('shots', argv)) await shot(p, join(SHOTS, `oct18-${tag}-skirmish-${name}.png`));
     c(!p.errors.length, `${name}: no page errors ${p.errors.join(' | ')}`); await p.context().close();
   }
-  if (flag('build', argv) || argOf('url', '', argv)) { const r = await buildCheck(srv.url, argOf('expect', '', argv)); if (r !== null) c(r.ok, r.msg); }
+  if (flag('build', argv) || remote) { const p = await newPage({}); await openTitle(p, srv.url); const id = await p.S(() => window.BUILD_ID); await p.context().close();
+    let expect = argOf('expect', '', argv); if (!expect) { try { execSync('git fetch -q origin main', { cwd: ROOT, stdio: 'ignore', timeout: 30000 }); } catch {} expect = execSync('git rev-parse origin/main', { cwd: ROOT }).toString().trim(); }
+    c(id && id.length >= 7 && expect.startsWith(id), `build id: page ${id} vs expected ${expect.slice(0, 12)}`); }
   await closeAll(); srv.close(); console.log(c.fails ? `VERIFY: ${c.fails} FAILED` : 'VERIFY: ALL PASSED'); return c.fails ? 1 : 0;
 }
 // build id check: <meta name=build-id> on the page vs expected commit (default origin/main). Returns null if the page has no build id.
@@ -176,10 +180,12 @@ async function cmdShip(argv) {
   const ref = argOf('ref', 'main', argv); try { execSync('git fetch -q origin', { cwd: ROOT, timeout: 30000 }); } catch {}
   const sha = execSync(`git rev-parse ${ref}`, { cwd: ROOT }).toString().trim(), om = execSync('git rev-parse origin/main', { cwd: ROOT }).toString().trim();
   if (sha !== om && !flag('force', argv)) { console.log(`refusing: ${ref} (${sha.slice(0, 12)}) != origin/main (${om.slice(0, 12)}); push main first so live always matches main`); return 1; }
-  const pre = Object.assign(['--ref', sha], { result: {} }); if (await cmdDeploy(pre) || !pre.result.url) return 1;
+  const pre = Object.assign(['--ref', sha], { result: {} }); if (argOf('preview-url', '', argv)) pre.result.url = argOf('preview-url', '', argv); else if (await cmdDeploy(pre) || !pre.result.url) return 1;
+  const r = await fetch(pre.result.url, { redirect: 'manual' }).catch(() => null);
+  if (r && r.status >= 300 && r.status < 400 && !process.env.CTL_SHARE_FILE) { console.log(`preview ${pre.result.url} is behind Vercel Authentication: get a share link (Vercel MCP get_access_to_vercel_url), save it to a file, then\n  CTL_SHARE_FILE=<file> node scripts/ctl.mjs ship --preview-url ${pre.result.url}`); return 2; }
   console.log(`\n== verify preview ${pre.result.url}`); if (await verify(['--url', pre.result.url, '--expect', sha, '--tag', `ship-preview-${sha.slice(0, 7)}`])) { console.log('preview failed verify: NOT promoting'); return 1; }
   const prod = Object.assign(['--ref', sha, '--prod'], { result: {} }); if (await cmdDeploy(prod)) return 1;
-  console.log('\n== verify live https://inu-empires.vercel.app'); await new Promise(r => setTimeout(r, 4000));
+  console.log('\n== verify live https://inu-empires.vercel.app'); await new Promise(r => setTimeout(r, 4000)); delete process.env.CTL_SHARE_FILE;
   return verify(['--url', 'https://inu-empires.vercel.app/', '--expect', sha, '--shots', '--tag', argOf('tag', `ship-live-${sha.slice(0, 7)}`, argv)]);
 }
 const CMDS = { ship: cmdShip, deploy: cmdDeploy, 'build-id': cmdBuildId, shot: cmdShot, start: cmdStart, run: cmdRun, balance: cmdBalance, verify };
