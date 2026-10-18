@@ -83,3 +83,42 @@ export function lockPlan(amount, days, balance = Infinity) { // validate the pla
 export const WARNING = "Locked tokens can't be sold until the unlock date.";
 export const fmtAmt = n => Number(n || 0).toLocaleString('en-US', { maximumFractionDigits: 2 });
 export const fmtDate = s => { if (!s) return '-'; const d = new Date(s); return isNaN(d) ? '-' : d.toLocaleDateString('en-AU', { day: 'numeric', month: 'short', year: 'numeric' }); };
+// ---- lock review card: what the lock costs, shown BEFORE Phantom opens (kibble-pay docs/KENNEL_API.md "What a lock costs") ----
+// The server reads Streamflow's on-chain fee oracle + live rent; the client re-derives what it can from the built transaction itself
+// (signatures, priority fee) and from the plan (token fee = Streamflow's deposit formula), and refuses to open Phantom if the server's
+// numbers and the transaction disagree or the costs could not be read. Nothing is hardcoded here: no costs -> no card -> no signing.
+export const LAMPORTS = 1_000_000_000, LAMPORTS_PER_SIGNATURE = 5000;
+export const fmtSol = l => { const s = (Number(l) / LAMPORTS).toFixed(9).replace(/0+$/, '').replace(/\.$/, ''); return s === '0' ? '0' : s; };
+export const fmtRaw = raw => { const r = BigInt(raw), U = 10n ** BigInt(DECIMALS), w = r / U, f = (r % U).toString().padStart(DECIMALS, '0').replace(/0+$/, '');
+  return Number(w).toLocaleString('en-US') + (f ? '.' + f : ''); };
+export const tokenFeeRaw = (raw, pct) => (BigInt(raw) * BigInt(Math.round(Number(pct) * 1e4))) / 1_000_000n;
+export function txFacts(tx) { // from a web3.js VersionedTransaction
+  const m = tx.message, keys = m.staticAccountKeys.map(k => k.toBase58()); let price = 0, limit = 200_000;
+  for (const ix of m.compiledInstructions) { if (keys[ix.programIdIndex] !== 'ComputeBudget111111111111111111111111111111') continue; const d = ix.data, dv = new DataView(d.buffer, d.byteOffset, d.byteLength);
+    if (d[0] === 3) price = Number(dv.getBigUint64(1, true)); if (d[0] === 2) limit = dv.getUint32(1, true); }
+  const signatures = m.header.numRequiredSignatures; return { signatures, priorityMicroLamports: price, networkLamports: signatures * LAMPORTS_PER_SIGNATURE + Math.ceil(price * limit / 1e6) };
+}
+export function feeCard(costs, facts, plan) {
+  if (!costs || costs.error || !costs.sol || !costs.token) return { ok: false, reason: `Couldn't read Streamflow's fees right now${costs?.error ? ` (${String(costs.error).slice(0, 60)})` : ''}, so Phantom stays closed. Try again in a moment.` };
+  const s = costs.sol, r = s.rent || {}, nums = [s.protocolFee, r.metadata, r.escrow, r.treasuryAta || 0, r.playerAta || 0, s.network, s.total];
+  if (nums.some(n => !Number.isInteger(n) || n < 0)) return { ok: false, reason: 'The fee numbers look wrong, so Phantom stays closed.' };
+  const raw = BigInt(plan.raw), fee = tokenFeeRaw(raw, costs.token.feePercent);
+  if (String(raw) !== String(costs.token.lockedRaw) || String(fee) !== String(costs.token.feeRaw) || String(raw + fee) !== String(costs.token.totalDebitRaw)) return { ok: false, reason: 'The token fee does not add up, so Phantom stays closed.' };
+  if (facts && facts.networkLamports !== s.network) return { ok: false, reason: 'The network fee in the transaction does not match, so Phantom stays closed.' };
+  const sum = s.protocolFee + r.metadata + r.escrow + (r.treasuryAta || 0) + (r.playerAta || 0) + s.network;
+  if (sum !== s.total) return { ok: false, reason: 'The SOL total does not add up, so Phantom stays closed.' };
+  const rows = [
+    { k: 'protocol', label: 'Streamflow creation fee', amount: `${fmtSol(s.protocolFee)} SOL`, back: false, note: 'kept by Streamflow' },
+    { k: 'token', label: `Streamflow lock fee (${costs.token.feePercent}% on top)`, amount: `${fmtRaw(fee)} $KIBBLE`, back: false, note: 'kept by Streamflow' },
+    { k: 'rent-meta', label: 'Rent: lock record account', amount: `${fmtSol(r.metadata)} SOL`, back: false, note: 'stays with the lock' },
+    { k: 'rent-escrow', label: 'Rent: lock token account', amount: `${fmtSol(r.escrow)} SOL`, back: false, note: 'stays with the lock' },
+    ...(r.treasuryAta ? [{ k: 'rent-treasury', label: "Rent: Streamflow's $KIBBLE account (first lock ever only)", amount: `${fmtSol(r.treasuryAta)} SOL`, back: false, note: 'one time' }] : []),
+    ...(r.playerAta ? [{ k: 'rent-ata', label: 'Rent: your $KIBBLE account', amount: `${fmtSol(r.playerAta)} SOL`, back: false, note: '' }] : []),
+    { k: 'network', label: `Network fee (${facts?.signatures ?? costs.tx?.signatures ?? 2} signatures${facts?.priorityMicroLamports ? ' + priority' : ''})`, amount: `${fmtSol(s.network)} SOL`, back: false, note: 'Solana' },
+  ];
+  const b = costs.balances || {}, warn = [];
+  if (b.enoughSol === false) warn.push(`This wallet has ${fmtSol(b.lamports)} SOL; the lock needs ${fmtSol(s.total)} SOL.`);
+  if (b.enoughToken === false) warn.push(`This wallet has ${fmtRaw(b.tokenRaw)} $KIBBLE; the lock needs ${fmtRaw(raw + fee)} $KIBBLE (amount + fee).`);
+  return { ok: true, rows, totalSol: fmtSol(s.total), totalSolLamports: s.total, locked: fmtRaw(raw), tokenFee: fmtRaw(fee), tokenDebit: fmtRaw(raw + fee), back: fmtRaw(raw),
+    canSign: !warn.length, warn, source: costs.source?.fees || 'unknown' };
+}

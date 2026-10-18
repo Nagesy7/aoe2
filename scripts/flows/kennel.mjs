@@ -60,7 +60,9 @@ export default async function (argv) {
     const p = await newPage({ phone: true }); let kennelCalls = 0;
     await p.route('https://kibble-pay.vercel.app/inu-games.js', r => r.fulfill({ contentType: 'text/javascript', body: `
       const kp = { session: 'test', address: '${W}', live: true, sent: null, reqs: [],
-        async _req(path, body) { kp.reqs.push([path, body]); if (path === '/api/kennel-lock') return ${JSON.stringify(fx)}; throw new Error('unexpected ' + path); },
+        async _req(path, body) { kp.reqs.push([path, body]); if (path === '/api/kennel-lock') { const fx = ${JSON.stringify(fx)}, raw = BigInt(body.amount) * 1000000n, fee = raw * 5000n / 1000000n;
+          // the real response for the real tx, with the token lines for the amount asked and a funded wallet (the real fixture wallet has 0.0079 SOL; tests/kennel.test.mjs covers that case)
+          const unlockAt = Math.floor(Date.now() / 1000) + body.days * 86400 + 600; return { ...fx, amount: body.amount, days: body.days, unlockAt, unlockDate: new Date(unlockAt * 1000).toISOString(), costs: { ...fx.costs, token: { ...fx.costs.token, lockedRaw: String(raw), feeRaw: String(fee), totalDebitRaw: String(raw + fee), returnedAtUnlockRaw: String(raw) }, balances: { lamports: 250000000, tokenRaw: '5000000000000', enoughSol: true, enoughToken: true } } }; } throw new Error('unexpected ' + path); },
         wallet: { async signAndSend(tx) { kp.sent = { sig0: [...tx.signatures[0]].some(b => b), sig1: [...tx.signatures[1]].some(b => b), payer: tx.message.staticAccountKeys[0].toBase58() }; return '5igTEST'; } },
         async inventory() { return {}; }, async balance() { return { units: 5000000000000n }; }, async pools() { return { pools: null }; }, async disconnect() {} };
       globalThis.__kp = kp;
@@ -73,6 +75,25 @@ export default async function (argv) {
     await p.fill('#kn-amt', '1000000'); await p.S(() => document.querySelector('[data-kn-days="60"]').click()); await p.waitForTimeout(100);
     c(/Guard Dog for 30 days, then Pup for 53 days/.test(await p.S(() => document.querySelector('.kn-plan').textContent)), 'lock form explains the tier timeline (1M for 60 days)');
     await p.S(() => document.querySelector('[data-kn-lock]').click());
+    // review card first: every fee before Phantom opens
+    await p.waitForSelector('#kn-review', { timeout: 15000 }).catch(async () => console.log('lock note:', await p.S(() => document.getElementById('kn-note')?.textContent), p.errors));
+    const rv = await p.S(() => { const q = s => document.querySelector(s); return { sent: !!globalThis.__kp.sent, sign: q('#kn-sign')?.disabled, sol: q('#kn-total-sol')?.textContent, kib: q('#kn-total-kib')?.textContent,
+      rows: [...document.querySelectorAll('.kn-fees tr[data-fee]')].map(r => [r.dataset.fee, r.children[1].textContent, r.children[2].textContent]), text: q('#kn-review').textContent }; });
+    c(!rv.sent && rv.sign === true, 'review card shows before Phantom: nothing sent, Sign disabled until the box is ticked');
+    c(rv.sol === '0.16927084 SOL' && rv.kib === '1,005,000 $KIBBLE', `review card totals from the built tx + live fee read: ${rv.sol}, ${rv.kib} (1,000,000 locked + 0.5%)`);
+    const fr = Object.fromEntries(rv.rows.map(r => [r[0], r[1]]));
+    c(fr.protocol === '0.16 SOL' && fr.token === '5,000 $KIBBLE' && fr['rent-meta'] === '0.00625856 SOL' && fr['rent-escrow'] === '0.00148844 SOL' && fr['rent-treasury'] === '0.00151384 SOL' && fr.network === '0.00001 SOL' && rv.rows.every(r => /^no/.test(r[2])),
+      'review card rows: creation fee, 0.5% lock fee, rent x3, network fee, each marked "no" for coming back');
+    c(/1,000,000 \$KIBBLE/.test(rv.text) && /can't be cancelled/.test(rv.text) && /can't be sold until the unlock date/.test(rv.text), 'review card: amount, unlock date, cannot cancel, required warning');
+    const vp = p.viewportSize(); await p.setViewportSize({ width: 1280, height: 800 }); await p.waitForTimeout(200);
+    await p.S(() => document.getElementById('kn-review').scrollIntoView({ block: 'center' })); await p.waitForTimeout(150); await p.screenshot({ path: join(out, 'kennel-fee-card.png') });
+    await p.setViewportSize(vp); await p.waitForTimeout(200);
+    const fit = await p.S(() => { const r = document.getElementById('kn-review').getBoundingClientRect(), b = document.getElementById('kn-sign'); b.scrollIntoView({ block: 'end' }); const q = b.getBoundingClientRect(); return { w: r.width, vw: innerWidth, sb: q.bottom <= innerHeight && q.top >= 0 }; });
+    c(fit.w <= fit.vw && fit.sb, `phone landscape ${vp.width}x${vp.height}: review card fits the width and Sign in Phantom scrolls into view`);
+    await p.waitForTimeout(150); await p.screenshot({ path: join(out, 'kennel-fee-card-phone.png') });
+    await p.S(() => { const b = document.getElementById('kn-ack'); b.click(); });
+    c(await p.S(() => !document.getElementById('kn-sign').disabled && !globalThis.__kp.sent), 'ticking the box enables Sign in Phantom (still nothing sent)');
+    await p.S(() => document.getElementById('kn-sign').click());
     await p.waitForFunction(() => globalThis.__kp?.sent, null, { timeout: 15000 }).catch(async () => console.log('lock note:', await p.S(() => document.getElementById('kn-note')?.textContent + ' | kp ' + !!globalThis.__kp), p.errors));
     const sent = await p.S(() => ({ ...globalThis.__kp.sent, reqs: globalThis.__kp.reqs }));
     const lk = sent.reqs.filter(r => r[0] === '/api/kennel-lock');

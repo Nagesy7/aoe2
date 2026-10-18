@@ -1,4 +1,4 @@
-kennel test 2026-10-18T08:02:17.548Z
+kennel test 2026-10-18T08:21:32.335Z
 PASS: Pup unlocks name tag + bronze banner
 PASS: Guard Dog adds collars, flag recolour, silver banner
 PASS: Alpha adds paw aura, animated Den Hall banner, Alpha title
@@ -36,5 +36,23 @@ PASS: cosmetics really were drawn in the test (golden name tag rendered)
 PASS: same unit/building counts and outcome
 PASS: sim / AI / lockstep code never reads cosmetics or Kennel data
 PASS: kennel-draw.js never assigns to unit/building fields
+PASS: fee card: real built tx -> 2 signatures, no priority fee, network 10,000 lamports ({"signatures":2,"priorityMicroLamports":0,"networkLamports":10000})
+PASS: fee card: real kibble-pay response (with costs) renders: 
+PASS: fee card rows = fork-measured numbers: 0.16 SOL creation fee, 500 $KIBBLE (0.5%), rent 0.00625856 + 0.00148844 + 0.00151384 SOL, network 0.00001 SOL
+PASS: fee card totals: 0.16927084 SOL, 100,500 $KIBBLE out, 100,000 back at unlock (0.16927084, 100,500)
+PASS: fee card: no fee or rent is marked as coming back
+PASS: fee card: treasury test wallet (0.0079 SOL) -> "not enough SOL" warning and the sign button stays off
+PASS: fee card: funded wallet -> can sign
+PASS: fee card: once Streamflow's $KIBBLE account exists the one-time rent row disappears (0.167757 SOL)
+PASS: fee card refuses to open Phantom when the SOL total does not add up (The SOL total does not add up, so Phantom stays closed.)
+PASS: fee card refuses to open Phantom when the token fee is understated (The token fee does not add up, so Phantom stays closed.)
+PASS: fee card refuses to open Phantom when the locked amount differs from the form (The token fee does not add up, so Phantom stays closed.)
+PASS: fee card refuses to open Phantom when the network fee does not match the transaction (The network fee in the transaction does not match, so Phantom stays closed.)
+PASS: fee card refuses to open Phantom when a fee is negative (The fee numbers look wrong, so Phantom stays closed.)
+PASS: fee card: no made-up numbers when costs are null
+PASS: fee card: no made-up numbers when costs are {"error":"rpc down"}
+PASS: fee card: no made-up numbers when costs are {}
+PASS: kennel-ui: the build shows the review card; signAndSend only runs from the card's Sign button
+PASS: fee card copy: no banned words
 
-37 passed, 0 failed
+55 passed, 0 failed

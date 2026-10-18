@@ -5,7 +5,7 @@
 // Cosmetics only. Nothing here changes stats, resources, matchmaking or rewards.
 import * as N from './kennel.js';
 const $ = id => document.getElementById(id);
-const K = { data: null, loading: false, at: 0, lastForce: 0, form: { amount: '', days: 30 }, busy: false, note: '', forced: N.overrideTier() };
+const K = { data: null, loading: false, at: 0, lastForce: 0, form: { amount: '', days: 30 }, busy: false, review: null, note: '', forced: N.overrideTier() };
 let S = null, ctx = { wallet: () => null, balance: () => Infinity, onChange: () => {}, real: true };
 export const kennelState = () => K;
 function st() { S.kennel ||= { equipped: {}, everTier: null }; S.kennel.equipped ||= {}; return S.kennel; }
@@ -45,8 +45,8 @@ export function kennelBody() {
     <div class="kn-row"><input id="kn-amt" inputmode="numeric" placeholder="Amount of $KIBBLE" value="${f.amount}"> ${N.DURATIONS.map(dd => `<button class="kn-d${dd === f.days ? ' on' : ''}" data-kn-days="${dd}">${dd}d</button>`).join('')}</div>
     <div class="kn-plan">${plan ? plan.ok ? `Unlocks ${N.fmtDate(plan.unlockAt * 1000)}. ${plan.timeline.length ? 'This lock alone gives ' + plan.timeline.map(x => `${x.name} for ${x.days} days`).join(', then ') + '.' : 'Below the Pup tier on its own (other locks add up).'}` : plan.reason : 'Pup: 100,000 for 7+ days · Guard Dog: 1M for 30+ · Alpha: 10M for 90+ · Top Dog: 50M for 180+ days left.'}</div>
     <div class="kn-row"><button data-kn-lock="1" ${!plan?.ok || K.busy || K.forced || !ctx.real ? 'disabled' : ''}>${K.busy ? 'Waiting for Phantom…' : 'Lock $KIBBLE'}</button> <button data-kn-refresh="1" ${K.loading ? 'disabled' : ''}>${K.loading ? 'Checking…' : 'Refresh tier'}</button></div>
-    <p class="kh">Streamflow charges its own small fee (SOL) to create a lock; Phantom shows the exact cost before you approve. You can see the lock on app.streamflow.finance.</p><p class="kwarn">⚠ ${N.WARNING}</p><p class="kh" id="kn-note">${K.note}</p></div>`;
-  return `<div class="kennel">${head}<div class="kn-grid">${items}</div>${lock}</div>`;
+    <p class="kh">Streamflow charges its own fees to create a lock (SOL plus 0.5% of the amount in $KIBBLE, read live from Streamflow). You see every fee on the next step before Phantom opens. You can see the lock on app.streamflow.finance.</p><p class="kwarn">⚠ ${N.WARNING}</p><p class="kh" id="kn-note">${K.note}</p></div>`;
+  return `<div class="kennel">${head}<div class="kn-grid">${items}</div>${K.review ? reviewCard(K.review) : lock}</div>`;
 }
 // returns true when the click was a Kennel control
 export function kennelClick(b) {
@@ -55,10 +55,13 @@ export function kennelClick(b) {
   if (b.dataset.knOff) { N.unequip(k.equipped, b.dataset.knOff); ctx.onChange(true); return true; }
   if (b.dataset.knDays) { K.form.amount = ($('kn-amt')?.value || '').replace(/[^0-9]/g, ''); K.form.days = +b.dataset.knDays; ctx.onChange(); return true; }
   if (b.dataset.knRefresh) { refreshKennel({ force: true }).catch(() => {}); return true; }
+  if (b.dataset.knBack) { K.review = null; K.busy = false; K.note = ''; ctx.onChange(); return true; }
+  if (b.dataset.knSign) { signReview().catch(e => { K.busy = false; K.note = 'Lock not sent: ' + (e?.message || e); ctx.onChange(); }); return true; }
   if (b.dataset.knLock) { K.form.amount = ($('kn-amt')?.value || '').replace(/[^0-9]/g, ''); lockNow().catch(e => { K.busy = false; K.note = 'Lock not sent: ' + (e?.message || e); ctx.onChange(); }); return true; }
   return false;
 }
-export function kennelInput(e) { if (e.target?.id !== 'kn-amt') return; K.form.amount = e.target.value.replace(/[^0-9]/g, ''); const p = $('kn-amt').closest('.kn-lock'), plan = K.form.amount ? N.lockPlan(K.form.amount, K.form.days, ctx.balance()) : null;
+export function kennelInput(e) { if (e.target?.id === 'kn-ack' && K.review) { K.review.ack = !!e.target.checked; const sb = $('kn-sign'); if (sb) sb.disabled = !(K.review.ack && K.review.card.canSign && !K.busy); return; }
+  if (e.target?.id !== 'kn-amt') return; K.form.amount = e.target.value.replace(/[^0-9]/g, ''); const p = $('kn-amt').closest('.kn-lock'), plan = K.form.amount ? N.lockPlan(K.form.amount, K.form.days, ctx.balance()) : null;
   const el = p?.querySelector('.kn-plan'); if (el) el.textContent = plan ? plan.ok ? `Unlocks ${N.fmtDate(plan.unlockAt * 1000)}. ${plan.timeline.length ? 'This lock alone gives ' + plan.timeline.map(x => `${x.name} for ${x.days} days`).join(', then ') + '.' : 'Below the Pup tier on its own (other locks add up).'}` : plan.reason : '';
   const lb = p?.querySelector('[data-kn-lock]'); if (lb) lb.disabled = !plan?.ok || K.busy; }
 // Lock flow: kibble-pay POST /api/kennel-lock builds the Streamflow self-lock (sender = recipient = player, not cancelable, everything
@@ -72,14 +75,33 @@ export function checkLockTx(r, wallet, web3) { // never hand Phantom anything th
   const progs = new Set(tx.message.compiledInstructions.map(ix => keys[ix.programIdIndex]));
   if (keys[0] !== wallet || !progs.has(N.STREAMFLOW_PROGRAM) || [...progs].some(p => ![N.STREAMFLOW_PROGRAM, 'ComputeBudget111111111111111111111111111111', '11111111111111111111111111111111', N.TOKEN_2022, 'ATokenGPvbdGVxr1b2hvZbsiqW5xWH25efTNsLJA8knL'].includes(p))) throw new Error('unexpected programs in the lock transaction');
   return tx; }
+// Review card (like the Inu Verse Launch Hall cost card): itemised costs from the built transaction + kibble-pay's live read of
+// Streamflow's fee oracle; an acknowledgement box; Phantom opens only from the "Sign in Phantom" button on this card.
+function reviewCard(R) { const c = R.card, p = R.plan;
+  if (!c.ok) return `<div class="kn-lock kn-review" id="kn-review"><b>Review your lock</b><p class="kwarn">${c.reason}</p><div class="kn-row"><button data-kn-back="1">Back</button></div></div>`;
+  return `<div class="kn-lock kn-review" id="kn-review"><b>Review your lock</b> <small>(nothing is signed yet)</small>
+    <div class="kn-facts"><span>Lock: <b>${c.locked} $KIBBLE</b></span><span>Unlock date: <b>${N.fmtDate(R.unlockDate)}</b></span><span>From and back to: <b>your wallet</b></span><span>Cancel early: <b>no</b></span></div>
+    <table class="kn-fees"><tr><th>Cost</th><th>Amount</th><th>Back at unlock?</th></tr>${c.rows.map(r => `<tr data-fee="${r.k}"><td>${r.label}</td><td><b>${r.amount}</b></td><td>${r.back ? 'yes' : 'no'}${r.note ? ` <small>(${r.note})</small>` : ''}</td></tr>`).join('')}
+    <tr class="kn-total"><td>Total SOL from your wallet</td><td><b id="kn-total-sol">${c.totalSol} SOL</b></td><td>no</td></tr>
+    <tr class="kn-total"><td>$KIBBLE leaving your wallet now</td><td><b id="kn-total-kib">${c.tokenDebit} $KIBBLE</b></td><td>${c.back} at unlock</td></tr></table>
+    ${c.warn.map(w => `<p class="kwarn">${w}</p>`).join('')}
+    <p class="kh">Fees read live from Streamflow's on-chain fee settings (${c.source}) and checked against the transaction. Phantom also shows the transaction before you approve.</p>
+    <p class="kwarn">⚠ ${N.WARNING}</p>
+    <label class="kn-ack"><input type="checkbox" id="kn-ack" ${R.ack ? 'checked' : ''}> I understand the fees and that this lock can't be cancelled.</label>
+    <div class="kn-row"><button data-kn-sign="1" id="kn-sign" ${R.ack && c.canSign && !K.busy ? '' : 'disabled'}>${K.busy ? 'Waiting for Phantom…' : 'Sign in Phantom'}</button> <button data-kn-back="1" ${K.busy ? 'disabled' : ''}>Back</button></div><p class="kh" id="kn-note">${K.note}</p></div>`; }
 async function lockNow() {
   const w = ctx.wallet(), plan = N.lockPlan(K.form.amount, K.form.days, ctx.balance()); if (!w || !plan.ok) { K.note = plan.reason || 'Connect your wallet first.'; ctx.onChange(); return; }
   const kp = ctx.kp?.(); if (!kp?.session) { K.note = 'Sign in with your wallet first (Connect Wallet).'; ctx.onChange(); ctx.connect?.(); return; }
   K.busy = true; K.note = 'Preparing your Streamflow lock…'; ctx.onChange();
   const web3 = await import('@solana/web3.js');
-  const tx = checkLockTx(await requestLockTx(kp, plan), w, web3);
-  K.note = 'Check the lock in Phantom (amount, unlock date, Streamflow fee) and approve it…'; ctx.onChange();
-  const signature = await kp.wallet.signAndSend(tx);
+  const r = await requestLockTx(kp, plan), tx = checkLockTx(r, w, web3);
+  K.review = { tx, plan, unlockDate: r.unlockDate, card: N.feeCard(r.costs, N.txFacts(tx), plan), ack: false }; K.busy = false; K.note = ''; ctx.onChange();
+}
+async function signReview() {
+  const R = K.review, kp = ctx.kp?.(); if (!R?.card?.ok || !R.card.canSign || !R.ack || !kp) return;
+  K.busy = true; K.note = 'Approve the lock in Phantom…'; ctx.onChange();
+  let signature; try { signature = await kp.wallet.signAndSend(R.tx); } catch (e) { K.busy = false; K.note = 'Lock not sent: ' + (e?.message || e); ctx.onChange(); return; }
+  K.review = null;
   K.note = `Lock sent (${String(signature).slice(0, 10)}…). Checking your tier…`; ctx.onChange();
   const before = K.data?.lockedAmount || 0;
   for (let i = 0; i < 8; i++) { await new Promise(r => setTimeout(r, 16_000)); K.lastForce = 0; const d = await refreshKennel({ force: true }); if ((d?.lockedAmount || 0) > before) break; }

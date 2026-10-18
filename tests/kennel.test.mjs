@@ -76,6 +76,42 @@ assert(!/kennel(?! hut)|cosmetic/i.test(simSrc), 'sim / AI / lockstep code never
 const drawSrc = fs.readFileSync(new URL('../src/kennel-draw.js', import.meta.url), 'utf8');
 assert(!/\b(u|b)\.[a-zA-Z_]+\s*(=(?!=)|\+\+|--|\+=|-=)/.test(drawSrc), 'kennel-draw.js never assigns to unit/building fields');
 
+// ---- lock review card (fees shown before Phantom opens) ----
+{ const B58 = '123456789ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz';
+  const b58 = u => { let n = 0n; for (const b of u) n = n * 256n + BigInt(b); let s = ''; while (n > 0n) { s = B58[Number(n % 58n)] + s; n /= 58n; } for (const b of u) { if (b) break; s = '1' + s; } return s; };
+  const sv = (d, o) => { let v = 0, sh = 0, b; do { b = d[o++]; v |= (b & 127) << sh; sh += 7; } while (b & 128); return [v, o]; };
+  function parseTx(b64) { const d = Uint8Array.from(Buffer.from(b64, 'base64')); let [ns, o] = sv(d, 0); o += 64 * ns; if (d[o] & 128) o++;
+    const header = { numRequiredSignatures: d[o], numReadonlySignedAccounts: d[o + 1], numReadonlyUnsignedAccounts: d[o + 2] }; o += 3;
+    let nk; [nk, o] = sv(d, o); const staticAccountKeys = []; for (let i = 0; i < nk; i++, o += 32) { const k = d.slice(o, o + 32); staticAccountKeys.push({ toBase58: () => b58(k) }); }
+    o += 32; let ni; [ni, o] = sv(d, o); const compiledInstructions = [];
+    for (let i = 0; i < ni; i++) { const programIdIndex = d[o++]; let na, nd; [na, o] = sv(d, o); const accountKeyIndexes = [...d.slice(o, o + na)]; o += na; [nd, o] = sv(d, o); compiledInstructions.push({ programIdIndex, accountKeyIndexes, data: d.slice(o, o + nd) }); o += nd; }
+    return { message: { header, staticAccountKeys, compiledInstructions } }; }
+  const fx = JSON.parse(fs.readFileSync(new URL('./fixtures/kennel-lock-tx.json', import.meta.url))), tx = parseTx(fx.tx), facts = N.txFacts(tx);
+  assert(facts.signatures === 2 && facts.priorityMicroLamports === 0 && facts.networkLamports === 10_000, `fee card: real built tx -> 2 signatures, no priority fee, network 10,000 lamports (${JSON.stringify(facts)})`);
+  const plan = N.lockPlan(100_000, 14), card = N.feeCard(fx.costs, facts, plan);
+  assert(card.ok, 'fee card: real kibble-pay response (with costs) renders: ' + (card.reason || ''));
+  const row = k => card.rows.find(r => r.k === k)?.amount;
+  assert(row('protocol') === '0.16 SOL' && row('token') === '500 $KIBBLE' && row('rent-meta') === '0.00625856 SOL' && row('rent-escrow') === '0.00148844 SOL' && row('rent-treasury') === '0.00151384 SOL' && row('network') === '0.00001 SOL',
+    'fee card rows = fork-measured numbers: 0.16 SOL creation fee, 500 $KIBBLE (0.5%), rent 0.00625856 + 0.00148844 + 0.00151384 SOL, network 0.00001 SOL');
+  assert(card.totalSol === '0.16927084' && card.tokenDebit === '100,500' && card.back === '100,000', `fee card totals: 0.16927084 SOL, 100,500 $KIBBLE out, 100,000 back at unlock (${card.totalSol}, ${card.tokenDebit})`);
+  assert(card.rows.every(r => r.back === false), 'fee card: no fee or rent is marked as coming back');
+  assert(!card.canSign && /0\.007887646 SOL/.test(card.warn[0] || ''), 'fee card: treasury test wallet (0.0079 SOL) -> "not enough SOL" warning and the sign button stays off');
+  const ok2 = N.feeCard({ ...fx.costs, balances: { lamports: 2e8, tokenRaw: '200000000000', enoughSol: true, enoughToken: true } }, facts, plan); assert(ok2.ok && ok2.canSign && !ok2.warn.length, 'fee card: funded wallet -> can sign');
+  const later = structuredClone(fx.costs); later.sol.rent.treasuryAta = 0; later.sol.total -= 1_513_840; const c3 = N.feeCard(later, facts, plan);
+  assert(c3.ok && !c3.rows.some(r => r.k === 'rent-treasury') && c3.totalSol === '0.167757', 'fee card: once Streamflow\'s $KIBBLE account exists the one-time rent row disappears (0.167757 SOL)');
+  const tamper = (f, why) => { const c = structuredClone(fx.costs); f(c); const r = N.feeCard(c, facts, plan); assert(!r.ok, `fee card refuses to open Phantom when ${why} (${r.reason})`); };
+  tamper(c => { c.sol.total -= 1; }, 'the SOL total does not add up');
+  tamper(c => { c.token.feeRaw = '0'; }, 'the token fee is understated');
+  tamper(c => { c.token.lockedRaw = '1'; }, 'the locked amount differs from the form');
+  tamper(c => { c.sol.network = 5000; c.sol.total -= 5000; }, 'the network fee does not match the transaction');
+  tamper(c => { c.sol.protocolFee = -1; }, 'a fee is negative');
+  for (const bad of [null, { error: 'rpc down' }, {}]) assert(!N.feeCard(bad, facts, plan).ok, `fee card: no made-up numbers when costs are ${JSON.stringify(bad)}`);
+  const ui = fs.readFileSync(new URL('../src/kennel-ui.js', import.meta.url), 'utf8');
+  assert(/K\.review = \{[^}]*card: N\.feeCard/.test(ui) && ui.indexOf('signAndSend') > ui.indexOf('async function signReview'), 'kennel-ui: the build shows the review card; signAndSend only runs from the card\'s Sign button');
+  const copy = (ui.match(/reviewCard[\s\S]*?\n\}/)?.[0] || '') + card.rows.map(r => r.label + ' ' + r.note).join(' ');
+  assert(!/\b(buy|pump it|moon|dump)\b/i.test(copy) && !/\bsell\b/i.test(copy.replace(N.WARNING, '')), 'fee card copy: no banned words');
+}
+
 out(`\n${pass} passed, ${fail} failed`);
 fs.mkdirSync(new URL('../proof/', import.meta.url), { recursive: true }); fs.writeFileSync(new URL('../proof/kennel-test.log', import.meta.url), log.join('\n') + '\n');
 process.exit(fail ? 1 : 0);
