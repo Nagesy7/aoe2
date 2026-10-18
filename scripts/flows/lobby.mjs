@@ -14,7 +14,8 @@ const seed0 = () => localStorage.setItem('inu-empires-kibble-sim', JSON.stringif
 // Cosmetics are granted through the simulated wallet (?demo=1, localStorage 'inu-empires-kibble-sim'); without ?demo=1 the
 // game is in real-wallet mode and owned cosmetics come only from the kibble-pay inventory after a Phantom sign-in.
 const px = (p, sel) => p.evaluate(s => { const c = document.querySelector(s); return c.getContext('2d').getImageData(0, 0, c.width, c.height).data.reduce((a, v, i) => (a + v * (i % 7)) % 1e9, 0); }, sel);
-const moving = async (p, id) => { const a = await px(p, `.civ-card[data-civ=${id}] canvas`); await p.waitForTimeout(400); return a !== await px(p, `.civ-card[data-civ=${id}] canvas`); };
+// 6 samples 170 ms apart (not 2): the glow pulse is a sine, so two samples straddling its peak can render identical frames
+const moving = async (p, id) => { const h = new Set(); for (let i = 0; i < 6; i++) { h.add(await px(p, `.civ-card[data-civ=${id}] canvas`)); await p.waitForTimeout(170); } return h.size > 1; };
 for (const ui of ['b', 'a']) { // b = default layout (no ?ui), a = ?ui=a comparison layout
   const ctx = await browser.newContext({ viewport: { width: 1280, height: 720 } }); const p = await ctx.newPage(); const tag = ui === 'b' ? 'default (b)' : '?ui=a';
   p.on('pageerror', e => { check(false, 'pageerror ' + e.message); });

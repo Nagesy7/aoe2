@@ -7,7 +7,8 @@ Each row: where the feature lives, which headless test covers it, and which brow
 | Feature | Source | Test (section) | Proof flow -> output |
 |---|---|---|---|
 | Title menu, clan pick, skirmish / sandbox / 1v1 entry | `index.html`, `src/main.js`, `src/title.js` | `tests/ip.test.mjs` (names) | `ctl verify`, `ctl shot title`, `run live-title` -> proof/live-lag-*.{log,webm} |
-| Clan cards (hover cinematic, rarity glow) | `src/civcards.js` | `tests/full.test.mjs` §5 | `run lobby` -> proof/full-lobby-* |
+| Menu fits any screen (title never above the viewport; scrolls when taller; compact at 521-900px tall) | `index.html` (`.screen`, `.screen>.panel`) | - | `run menufit` (12 viewports x default/?ui=a) -> proof/menufit.{json,log} |
+| Clan cards (hover cinematic, rarity glow; owned finishes: card glow + coloured label in A and B, pulsing shield halo in B, common B shield static by design) | `src/civcards.js`, `index.html` | `tests/full.test.mjs` §5 | `run lobby` (cosmetics via ?demo=1; default B + ?ui=a) -> proof/full-lobby-* |
 | Camera pan (WASD, edge, middle-drag, touch drag, pinch) + clamp | `src/main.js`, `src/sim.js` (clamp) | `tests/gather.test.mjs` camera clamp | `run camera` -> proof/camera-*; `run landscape` |
 | Selection (click, box, tap, long-press) + hit-testing | `src/sim.js`, `src/ui-state.js`, `src/main.js` | `tests/gather.test.mjs` hit-testing, multi-select | `run screenshot` -> proof/01..11-*; `run efficiency` |
 | Gathering, drop-off, retask, conservation | `src/sim.js` | `tests/gather.test.mjs` gathering, retask, round 6 | `run gather-verify` -> proof/gather-verify-* |
