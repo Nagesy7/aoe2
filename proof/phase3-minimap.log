@@ -1,0 +1,20 @@
+PASS: 844x390: minimap visible in the corner (8,256 108x108)
+PASS: 844x390: minimap does not overlap #hud
+PASS: 844x390: minimap does not overlap #quickbar
+PASS: 844x390: minimap does not overlap #info
+PASS: 844x390: minimap does not overlap #commands
+PASS: 844x390: minimap does not overlap #cmdtab
+PASS: 844x390: minimap does not overlap #touchbar
+PASS: 844x390: own Den Hall / Worker Pups drawn in team blue (85 px)
+PASS: 844x390: tap on the minimap moves the camera (282,509 -> 1831,2058)
+PASS: 844x390: minimap tap keeps the selection (does not reach the map)
+PASS: 844x390: no page errors 
+PASS: 1366x768: minimap visible in the corner (1182,584 172x172)
+PASS: 1366x768: minimap does not overlap #hud
+PASS: 1366x768: minimap does not overlap #quickbar
+PASS: 1366x768: minimap does not overlap #info
+PASS: 1366x768: minimap does not overlap #commands
+PASS: 1366x768: own Den Hall / Worker Pups drawn in team blue (85 px)
+PASS: 1366x768: click on the minimap moves the camera (21,320 -> 1450,1869)
+PASS: 1366x768: minimap tap keeps the selection (does not reach the map)
+PASS: 1366x768: no page errors 

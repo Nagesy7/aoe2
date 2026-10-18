@@ -13,6 +13,7 @@ import { initKibble, kibbleState } from './kibble-ui.js';
 import { mountCivCards } from './civcards.js';
 import { CIV_LOOK } from './civs.js';
 import * as SFX from './sfx.js';
+import { createMinimap } from './minimap.js';
 import { createUi, startPlacing, cancelPlacing, updateGhost, pointerDown, pointerMove, pointerUp } from './ui-state.js';
 const canvas = document.getElementById('game'), ctx = canvas.getContext('2d');
 const params = new URLSearchParams(location.search);
@@ -257,6 +258,9 @@ function startGame({ mp = false, seed = 1, me = 0, cfg = {}, session = null, ai 
   for (const id of ['menu', 'lobby', 'title-bg']) $(id).style.display = 'none';
   last = performance.now(); requestAnimationFrame(frame);
 }
+const minimap = createMinimap($('minimap'), { getWorld: () => world, getFog: () => (net || (world && world.computers && !world.spectate) ? fog : null),
+  getView: () => { const a = toWorld(0, 0), b = toWorld(innerWidth, innerHeight); return { x: a.x, y: a.y, w: b.x - a.x, h: b.y - a.y }; },
+  jump: (x, y) => { cam.x = x * TILE - canvas.width / 2; cam.y = y * TILE - canvas.height / 2; clampCamera(cam, canvas.width, canvas.height, world); } });
 const PAN = 600, EDGE = 12; let last = performance.now(), acc = 0, running = false;
 function frame(now) {
   if (!world) return;
@@ -280,13 +284,13 @@ function frame(now) {
     else if (n) net.stallMs = 0;
     fog = computeFog(world, viewer(), fog); window.game.fog = fog;
   }
-  if (ui.placing) refreshGhost(); if (mouse.inside) updateCursor(); ui.lerp = { prev: prevPos, a: Math.max(0, Math.min(1, acc / TICK_DT)) }; render(ctx, world, cam, ui, net || (world.computers && !world.spectate) ? fog : null); updateHud(); SFX.watch(world, viewer()); requestAnimationFrame(frame);
+  if (ui.placing) refreshGhost(); if (mouse.inside) updateCursor(); ui.lerp = { prev: prevPos, a: Math.max(0, Math.min(1, acc / TICK_DT)) }; render(ctx, world, cam, ui, net || (world.computers && !world.spectate) ? fog : null); updateHud(); SFX.watch(world, viewer()); minimap.draw(now); requestAnimationFrame(frame);
 }
 // Automation hook: read-only state access + time advance in single player (proof scripts must not use it to issue orders).
 window.game = { sim: SIM, world: null, cam, ui, selectionInfo, pickAt, toScreen: (x, y) => { const q = worldToScreen(x, y, cam); return { x: q.x * Z, y: q.y * Z }; }, zoom: () => Z, toWorld,
   tick: (s) => { if (net) throw new Error('no fast-forward in multiplayer'); const n = Math.round(s / TICK_DT); for (let i = 0; i < n; i++) stepTick(world); render(ctx, world, cam, ui); updateHud(); },
   stateHash: () => world && stateHash(world),
-  getSelected: () => getSelected(world), sfx: SFX, touch: { ...touchUi }, buildTabOf: t => Object.keys(BUILD_TABS).find(k => BUILD_TABS[k].items.includes(t)) || null };
+  getSelected: () => getSelected(world), sfx: SFX, minimap, touch: { ...touchUi }, buildTabOf: t => Object.keys(BUILD_TABS).find(k => BUILD_TABS[k].items.includes(t)) || null };
 
 // ---- main menu / lobby ----
 let session = null;
