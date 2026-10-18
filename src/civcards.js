@@ -56,7 +56,7 @@ export function mountCivCards(root, { owned = [], selected = 'shiba', onPick = (
     const r = rar(id), el = document.createElement('button'); el.type = 'button'; el.className = `civ-card rar-${r}${id === selected ? ' sel' : ''}`; el.dataset.civ = id;
     const rarTag = `<i class="rar" title="Cosmetic shield finish from Kibble cosmetics. No gameplay effect.">${r} shield</i>`;
     el.innerHTML = variant === 'b'
-      ? `<canvas width="52" height="60" class="shield"></canvas><span class="txt"><b>${CIVS[id].name}</b><small class="chip">${CIVS[id].style}</small><span class="tr">${CIVS[id].traits.filter(t => !t.startsWith('Unique')).slice(0, 2).map(t => `<span>• ${t}</span>`).join('')}</span><span class="uq">${CIVS[id].traits.find(t => t.startsWith('Unique')) || ''}</span>${rarTag}</span>`
+      ? `<canvas width="64" height="72" class="shield"></canvas><span class="txt"><b>${CIVS[id].name}</b><small class="chip">${CIVS[id].style}</small><span class="tr">${CIVS[id].traits.filter(t => !t.startsWith('Unique')).slice(0, 2).map(t => `<span>• ${t}</span>`).join('')}</span><span class="uq">${CIVS[id].traits.find(t => t.startsWith('Unique')) || ''}</span>${rarTag}</span>`
       : `<canvas width="176" height="104"></canvas><b>${CIVS[id].name}</b><small>${CIVS[id].style}</small>${rarTag}`;
     const card = { id, el, cv: el.querySelector('canvas'), cineAt: 0, rarity: r }; cards.push(card);
     const start = () => { card.cineAt = performance.now(); el.classList.add('cine'); };
@@ -68,7 +68,7 @@ export function mountCivCards(root, { owned = [], selected = 'shiba', onPick = (
   let raf = 0; const loop = now => { if (!root.isConnected || root.offsetParent === null) { raf = requestAnimationFrame(loop); return; }
     for (const c of cards) { const ctx = c.cv.getContext('2d'), age = c.cineAt ? (now - c.cineAt) / CINE_MS : 1;
       if (age >= 1 && c.el.classList.contains('cine')) c.el.classList.remove('cine');
-      if (variant === 'b') { ctx.clearRect(0, 0, c.cv.width, c.cv.height); drawShield(ctx, 26, 30, age < 1 ? 1.05 + 0.05 * Math.sin(age * 20) : 1, c.id, now / 1000, c.rarity); }
+      if (variant === 'b') { ctx.clearRect(0, 0, c.cv.width, c.cv.height); drawShield(ctx, 32, 34, 0.9 * (age < 1 ? 1.05 + 0.05 * Math.sin(age * 20) : 1), c.id, now / 1000, c.rarity); } // canvas leaves ~10px round the shield so an owned finish's glow is not clipped
       else paintCard(ctx, c.id, c.cv.width, c.cv.height, now / 1000, age < 1 ? Math.max(0.001, age) : 0, c.rarity); }
     raf = requestAnimationFrame(loop); };
   raf = requestAnimationFrame(loop);
