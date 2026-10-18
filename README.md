@@ -175,6 +175,8 @@ Tests: `node tests/full.test.mjs` (pathfinding, AI, construction, tech tree, cla
 - `src/main.js`: menu/lobby, input (all actions issued as commands), camera, HUD/panels/buttons, fixed-tick loop. Exposes `window.game` for automation (read state + `tick(seconds)` time advance)
 
 ## Tests / proof
+Tooling: `node scripts/ctl.mjs` (start / shot / run <flow> / balance / verify / deploy / ship / build-id), flows in `scripts/flows/`,
+balance A/B with `node sim/compare.mjs`. Maps: docs/FEATURES.md (feature -> source/test/proof), docs/SHIPPING.md, docs/PLAN.md, docs/BUGS.md.
 ```
 node tests/gather.test.mjs      # headless: gathering + conservation, retask, hit-testing, camera clamp,
                                 #   training/pop cap/houses, A* pathfinding, multi-select + parallel gather,

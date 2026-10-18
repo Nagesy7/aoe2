@@ -27,4 +27,13 @@ Each row: where the feature lives, which headless test covers it, and which brow
 | Phone landscape layout (844x390), touch controls | `index.html` CSS, `src/main.js` | - | `run landscape` -> proof/landscape-*, proof/ctl-landscape.log; `ctl verify` |
 | $KIBBLE: wallet (Phantom), shop x10000 prices, tiers, cosmetics only, ?demo=1 | `src/kibble.js`, `src/kibble-ui.js` | `tests/kibble.test.mjs` | `run kibble` -> proof/kibble-*, proof/ctl-kibble.log |
 | Back to Inu Verse button | `src/kibble-ui.js` (mountHome), `src/main.js` | - | `ctl shot skirmish` |
+| Sound blips (select, order, build, train) | `src/sfx.js`, `src/main.js` | - | `run sfx` -> proof/phase1-sfx.log |
+| Icon resource bar (no clipping at 844px) | `src/main.js` (updateHud), `index.html` | - | `run hud` -> proof/phase2-hud.log |
+| Corner minimap (tap/drag to jump, fog-aware) | `src/minimap.js` | - | `run minimap` -> proof/phase3-minimap.log |
+| Long-press tooltips, collapsible quick bar, compact info (<420px) | `src/touchtips.js`, `src/main.js`, `index.html` | - | `run touchui` -> proof/phase4-touchui.log |
+| Render loop pauses when the tab is hidden | `src/main.js` (frame/loop) | - | `run visibility` -> proof/phase5-visibility.log |
+| Clan card A/B (`?ui=a|b`) | `src/civcards.js`, `index.html` | - | `run uivariants` -> proof/ui-variants.{json,log} |
+| Build id (`<meta name=build-id>`, `window.BUILD_ID`) + shipping | `index.html`, `src/main.js`, `scripts/ctl.mjs` (deploy/ship/build-id) | - | `ctl ship`, `ctl build-id`, `run live-title` -> proof/ship-*.log, proof/live-lag-*; docs/SHIPPING.md |
+| Module preload (load time) | `index.html` `<link rel=modulepreload>` | `tests/preload.test.mjs` | `run load` -> proof/load-{baseline,after}.json |
+| Balance A/B between refs | `sim/compare.mjs` | - | proof/compare-hokkaido.{log,json} |
 | IP guard (no franchise names) | whole repo | `tests/ip.test.mjs` | docs/IP_AUDIT.md |
