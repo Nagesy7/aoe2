@@ -5,7 +5,7 @@ PASS: 750x342 guest: Gutter Gator, "Enter free (guest: results stay on this devi
 PASS: 750x342 guest: no page errors 
 PASS: signed in with a Kennel tier: "Auto-entered (Kibble Kennel)" (POST join -> auto:kennel)
 PASS: leaderboard rows from GET /api/raid (skill only)
-PASS: fight running at 10 Hz (tick 61), touch pads shown
+PASS: fight running at 10 Hz (tick 60), touch pads shown
 PASS: start ticket before the fight; submit sends ticket + recorded inputs only
 PASS: server re-play of the recorded inputs = the score shown (4060, cleared)
 PASS: result card shows the server-checked score + Inu Score

@@ -65,6 +65,12 @@ PASS: in game top: no page errors
 PASS: same 600-tick sim hash in every tier's page (fc9eefcc; the full render-vs-sim proof is tests/kennel.test.mjs)
 PASS: lock flow: connected wallet starts with no tier (from /api/kennel)
 PASS: lock form explains the tier timeline (1M for 60 days)
+PASS: review card shows before Phantom: nothing sent, Sign disabled until the box is ticked
+PASS: review card totals from the built tx + live fee read: 0.16927084 SOL, 1,005,000 $KIBBLE (1,000,000 locked + 0.5%)
+PASS: review card rows: creation fee, 0.5% lock fee, rent x3, network fee, each marked "no" for coming back
+PASS: review card: amount, unlock date, cannot cancel, required warning
+PASS: phone landscape 844x390: review card fits the width and Sign in Phantom scrolls into view
+PASS: ticking the box enables Sign in Phantom (still nothing sent)
 PASS: asks kibble-pay to build the lock (amount + days only)
 PASS: Phantom gets the real self-lock tx: fee payer = player, player signature empty (signed in Phantom), metadata pre-signed
 PASS: server confirms: tier refreshes to Guard Dog

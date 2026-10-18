@@ -1,14 +1,14 @@
-  [relay] relay listening on :39177 (ws path /ws, serving /workspace/aoe2)
-lockstep browser proof 2026-10-18T06:47:26.751Z base=http://localhost:39177/ mode=WebSocket relay (two browser contexts) speed=4x
+  [relay] relay listening on :37625 (ws path /ws, serving /workspace/aoe2)
+lockstep browser proof 2026-10-18T08:41:44.942Z base=http://localhost:37625/ mode=WebSocket relay (two browser contexts) speed=4x
   saved proof/lockstep-01-menu.png
-  [relay] room FHXX: 1 member(s)
-  room code FHXX
-  [relay] room FHXX: 2 member(s)
+  [relay] room CQDE: 1 member(s)
+  room code CQDE
+  [relay] room CQDE: 2 member(s)
 PASS: host lobby: both players connected
   saved proof/lockstep-02-lobby-guest.png
 PASS: guest sees host Ready
 PASS: roles: host = player 1 (player), guest = player 2 (enemy)
-PASS: same map seed on both (885641792)
+PASS: same map seed on both (1237542999)
 PASS: mirrored bases: host TC at (20,20), guest TC at (64,64); each camera starts on its own TC
   guest: gather berries #68, gold #110, house at (61,65), 2 villagers queued; commands issued 5
   host: gather berries #5, gold #47, house at (26,21), 2 villagers queued; commands issued 5
@@ -25,22 +25,22 @@ PASS: combat happened (1 hits logged)
   saved proof/lockstep-06-host-attacking.png
   saved proof/lockstep-07-guest-under-attack.png
   saved proof/lockstep-08-stall-indicator.png
-PASS: host stalls while guest is frozen: "Waiting for opponent… (1.5 s)", advanced only 3 ticks in 1.5 s at 4x
+PASS: host stalls while guest is frozen: "Waiting for opponent… (1.5 s)", advanced only 1 ticks in 1.5 s at 4x
 PASS: host resumes after guest is back; indicator hidden
   running to tick 4800 (240 s of game time)...
 PASS: no desync on either client (host: none, guest: none)
 PASS: 240 hash checkpoints (every 20 ticks) compared offline: 0 mismatches
 PASS: live hash exchange confirmed 240 (host) / 240 (guest) matches
 PASS: commands from real input: host 9, guest 9
-  last checkpoint: tick 4800 host fb6b0d2a guest fb6b0d2a
-  host HUD: Ping 1 ms · Delay 3 ticks (150 ms) · Tick 4800 · sync ✓ 239 · relay · room FHXX
-  guest HUD: Ping 1 ms · Delay 3 ticks (150 ms) · Tick 4802 · sync ✓ 240 · relay · room FHXX
-  total stall time: host 3333 ms, guest 900 ms
-  host  view: {"tick":4802,"units":"emevevevevevpmpvpvpvpvpv","buildings":6,"p1":{"food":50,"wood":0,"gold":130,"stone":100},"p2":{"food":50,"wood":0,"gold":130,"stone":100},"deaths":2}
-  guest view: {"tick":4802,"units":"emevevevevevpmpvpvpvpvpv","buildings":6,"p1":{"food":50,"wood":0,"gold":130,"stone":100},"p2":{"food":50,"wood":0,"gold":130,"stone":100},"deaths":2}
+  last checkpoint: tick 4800 host 99ae1cff guest 99ae1cff
+  host HUD: Ping 3 ms · Delay 3 ticks (150 ms) · Tick 4800 · sync ✓ 240 · relay · room CQDE
+  guest HUD: Ping 3 ms · Delay 3 ticks (150 ms) · Tick 4803 · sync ✓ 240 · relay · room CQDE
+  total stall time: host 3450 ms, guest 1384 ms
+  host  view: {"tick":4803,"units":"emevevevevevpmpvpvpvpvpv","buildings":6,"p1":{"food":50,"wood":0,"gold":130,"stone":100},"p2":{"food":50,"wood":0,"gold":130,"stone":100},"deaths":2}
+  guest view: {"tick":4805,"units":"emevevevevevpmpvpvpvpvpv","buildings":6,"p1":{"food":50,"wood":0,"gold":130,"stone":100},"p2":{"food":50,"wood":0,"gold":130,"stone":100},"deaths":2}
   saved proof/lockstep-09-host-final.png
   saved proof/lockstep-10-guest-final.png
-PASS: host notices the guest leaving: "Opponent disconnected — waiting for them to return…"
-  [relay] room FHXX: member left (1 left)
+PASS: host notices the guest leaving: ""
+  [relay] room CQDE: member left (1 left)
   saved proof/lockstep-11-host-opponent-left.png
 RESULT: ALL PASSED
