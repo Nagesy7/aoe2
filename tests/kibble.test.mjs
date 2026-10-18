@@ -19,4 +19,9 @@ assert(R.map(p => p.name).join('') === 'dcba', 'rank: rating, then wins, then fe
 // payouts by rank, exact
 s.pools.daily = 1001; const pr = K.payout(s, 'daily', [s.me, ...K.RIVALS]); assert(pr.winners.reduce((a, w) => a + w.amountU, 0) === 1001 && s.pools.daily === 0 && pr.winners[0].amountU >= pr.winners[1].amountU, 'daily pool paid 50/30/20 by rank, nothing lost');
 assert(K.joinCup(s, '2026-10').ok && K.joinCup(s, '2026-10').fee === 0, 'Kibble Cup entry free for holders'); const n = K.newState(); assert(!K.joinCup(n, '2026-10').ok, 'Cup needs a tier');
+// real wallet (kibble-pay): owned items only from the wallet's server inventory, tier from on-chain balance, cosmetics only
+{ const r = K.newState(); r.owned = ['skin_kai_brindle']; const t = K.applyWallet(r, { address: 'Akk3DdxeRRLZABfpkFKYoDBk6Zim5wNLRYemNFjv56fn', units: K.toU(150_000), inventory: { 'inu-empires': { 'inu-empires:skin_snow_akita': 1, 'inu-empires:bogus': 1 } } });
+  assert(t.id === 'alpha' && r.owned.join() === 'skin_snow_akita' && r.wallet.simulated === false, 'real wallet: tier from on-chain balance, owned from server inventory only');
+  assert(K.equip(r, 'skin_snow_akita') && !K.equip(r, 'skin_kai_brindle'), 'real wallet: only server-owned skins equip');
+  K.applyWallet(r, {}); assert(!r.wallet && r.kibbleU === 0 && r.owned.length === 0 && r.equipped.skin === null, 'real wallet: disconnect clears wallet-owned items'); assert(K.catalogId('x') === 'inu-empires:x', 'catalog id'); }
 console.log(fail ? `RESULT: ${fail} FAILED` : `RESULT: ALL ${pass} PASSED`); process.exit(fail ? 1 : 0);
