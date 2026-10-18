@@ -1,0 +1,45 @@
+base 6bb60ce (6bb60ce): reused /tmp/bal-wip.json
+head WORKTREE (c8546b7+dirty): reused proof/balance.json
+
+per-clan win rate (16 vs 16 seeds, 30/30 min)   base 6bb60ce  ->  head c8546b7+dirty
+shiba      52.5%  ->  47.5%   -5.0
+akita      54.4%  ->  49.4%   -5.0
+kishu      51.9%  ->  48.7%   -3.2
+shikoku    50.6%  ->  47.5%   -3.1
+hokkaido   40.0%  ->  53.7%   +13.7
+kai        50.6%  ->  53.1%   +2.5
+
+flipped matchups (5):
+  hokkaido v shiba: shiba {"hokkaido":11,"shiba":21} -> hokkaido {"hokkaido":19,"shiba":13}
+  akita v hokkaido: akita {"akita":21,"hokkaido":11} -> hokkaido {"hokkaido":19,"akita":13}
+  hokkaido v kishu: kishu {"kishu":19,"hokkaido":13} -> hokkaido {"kishu":14,"hokkaido":18}
+  hokkaido v shikoku: shikoku {"shikoku":19,"hokkaido":13} -> hokkaido {"shikoku":14,"hokkaido":18}
+  hokkaido v kai: even {"hokkaido":16,"kai":16} -> kai {"hokkaido":12,"kai":20}
+
+all clans within 45-55% (Kishu <= 53%)
+
+npm test @ base 6bb60ce: exit 1
+  RESULT: ALL 223 PASSED
+  RESULT: ALL 94 PASSED
+  RESULT: ALL 53 PASSED
+  RESULT: ALL 35 PASSED
+  RESULT: ALL 18 PASSED
+  RESULT: ALL 21 PASSED
+  RESULT: ALL 107 PASSED
+  RESULT: ALL 27 PASSED
+  FAIL: Hokkaido Wardens: 40.0% (64/160) within 45-55%
+  RESULT: 1 FAILED, 65 PASSED
+
+npm test @ head c8546b7+dirty: exit 0
+  RESULT: ALL 223 PASSED
+  RESULT: ALL 94 PASSED
+  RESULT: ALL 53 PASSED
+  RESULT: ALL 35 PASSED
+  RESULT: ALL 18 PASSED
+  RESULT: ALL 25 PASSED
+  RESULT: ALL 107 PASSED
+  RESULT: ALL 31 PASSED
+  RESULT: ALL 66 PASSED
+
+wrote proof/compare-hokkaido.json
+EXIT 1
