@@ -1,4 +1,4 @@
-full RTS test 2026-10-18T08:46:34.350Z
+full RTS test 2026-10-18T10:45:48.808Z
 --- 1. pathfinding: A*, obstacles, flow field, formations ---
 PASS: A* path (32 steps) never enters a blocked tile
 PASS: A* goes through the only gap in the wall
