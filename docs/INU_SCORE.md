@@ -1,19 +1,20 @@
-# One Inu Score: shared contract (formula v4)
+# One Inu Score: shared contract (formula v5)
 
 Owner: Inu Verse keeper. Host: kibble-pay. The public formula page is https://kibble-pay.vercel.app/inu-score.
-Written 18 Oct 2026 (AEDT). Formula v3: 18 Oct 2026 (AEDT). Formula v4: 18 Oct 2026 (AEDT).
+Written 18 Oct 2026 (AEDT). Formula v3: 18 Oct 2026 (AEDT). Formula v4: 18 Oct 2026 (AEDT). Formula v5: 18 Oct 2026 (AEDT).
 
 ## What it is
 One lifetime score per wallet, shared by every Inu game. **It never resets.** It is built only from lifetime personal bests, and those only go up. It is skill only: purchases, $KIBBLE holdings, Kennel tiers, cosmetics, luck and time played never change it. Any prize tied to it is awarded by rank only under the Prize Rules (free entry, no draws, no raffles).
 
-## Formula v4 (also `GET /api/inu-score?formula=1`)
+## Formula v5 (also `GET /api/inu-score?formula=1`)
 - **Inu Score** = Σ game points + Σ raid points.
 - **Game points**, per game in `config/games.json` `scoreGames` (v2: `serverOnly` games count too; their only write path is their own server hook): `floor(1000 × √(min(lifetime best, cap) ÷ cap))`, where `cap` = that game's `inuCap` if set, else its `max`. `inuCap` is the Inu Score normalisation cap only: it never changes the prize-board `max`/`perSec`/`minMs` checks. v3: Kibble Chomp `inuCap` = 50,000 (its prize-board `max` stays 500,000).
 - **Raid points**, per boss: `floor(1000 × min(best raid score, boss max) ÷ boss max)`, where boss max = `hp + 1000 + 2×900 + 3×200`.
-- Today's maximum is 11 games × 1000 + 4 bosses × 1000 = **15,000**. (v3 was 10 games, 14,000; v2 was 9 games, 13,000; v1 was 8 games, 12,000, before Meme Brawl joined.)
-- **Games (11):** kibble-chomp (cap 50,000), bark-invaders (500,000), bone-breaker (500,000), pup-crossing (200,000), street-sniffer (50,000), paw-fu-tower (100,000), meme-brawl (100,000, serverOnly), inu-empires (100,000, serverOnly), pepeballz (100,000), inu-rescue (2,000,000), inu-quest (50,000).
+- Today's maximum is 12 games × 1000 + 4 bosses × 1000 = **16,000**. (v4 was 11 games, 15,000; v3 was 10 games, 14,000; v2 was 9 games, 13,000; v1 was 8 games, 12,000, before Meme Brawl joined.)
+- **Games (12):** kibble-chomp (cap 50,000), bark-invaders (500,000), bone-breaker (500,000), pup-crossing (200,000), street-sniffer (50,000), paw-fu-tower (100,000), bone-digger (180,000), meme-brawl (100,000, serverOnly), inu-empires (100,000, serverOnly), pepeballz (100,000), inu-rescue (2,000,000), inu-quest (50,000).
 - **v3 changes (18 Oct 2026):** Inu Arcade: Street Sniffer joins (`street-sniffer`, max 50,000, 400/s, min 5 s, game version 2; the arcade sends `kp.submitScore('street-sniffer', score, ms, { v: 2 })`) and counts for the `arcade-run` quest. Kibble Chomp's Inu Score cap drops from 500,000 to a realistic 50,000 via `inuCap`.
 - **v4 changes (18 Oct 2026):** Inu Arcade: Paw-Fu Tower joins (`paw-fu-tower`, max 100,000, 400/s, min 5 s, game version 2; the arcade sends `kp.submitScore('paw-fu-tower', score, ms, { v: 2 })`) and counts for the `arcade-run` quest. Cap rationale (human-sim, 100 seeds): median 2,700 (Classic) / 4,100 (Inu), p90 4,600 / 6,500, best 9,400; the perfect-play bot reaches ~17,000–21,500 in a 6–7 min run and the tower loops, so 100,000 leaves headroom while a median run already earns ~170–200 points.
+- **v5 changes (18 Oct 2026):** Inu Arcade: Bone Digger joins (`bone-digger`, max 180,000, 400/s, min 5 s, game version 2; the arcade sends `kp.submitScore('bone-digger', score, ms, { v: 2 })`) and counts for the `arcade-run` quest. Cap = about 10× the best human-sim run (100 seeds per mode: median 5,950 Classic / 8,140 Inu, p90 7,700 / 11,400, best 18,062); the perfect-play bot reaches ~40,000–68,000 in 5–7 min runs.
 
 ## Where it is stored (the wallet cloud save)
 `save:inu-score:<wallet>` in the kibble-pay Upstash store, the same store and namespace as the per-game cloud saves (`save:<game>:<wallet>`). It holds `{ pb: {gameId: best}, raid: {bossId: best}, score, formula, updatedAt }`. `inu-score` is **not** a `SAVE_GAMES` slot, so `PUT /api/save` refuses it: only the server writes it. The lifetime board is the hash `inuscore:board:v1`.
@@ -31,7 +32,7 @@ There is **no client write endpoint.** The score changes only on server events:
 2. **Boss Raids.** On `POST /api/raid {op:"submit"}`, the server re-simulates the replay (`boss-raid.js`) with a signed, single-use, real-time-checked start ticket. See `boss-raids.md`.
 
 ## What other keepers need to do
-- **Every game that already posts scores** (Inu Arcade, Inu Rescue, Inu Quest, PepeNugs, Inu Empires): nothing to wire. Accepted runs count automatically. Optionally show `inuScore` from the score response, or `GET /api/inu-score?wallet=`, with a link to `/inu-score`.
+- **Every game that already posts scores** (Inu Arcade, Inu Rescue, Inu Quest, PepeNugs): nothing to wire. (Inu Empires no longer posts scores: it is replay-verified, see "Inu Empires: replay-verified" in kibble-pay docs/INU_SCORE.md.) Accepted runs count automatically. Optionally show `inuScore` from the score response, or `GET /api/inu-score?wallet=`, with a link to `/inu-score`.
 - **Meme Brawl (serverOnly): done in v2 (18 Oct 2026).** `api/_lib/pvp.js` `reportResult` calls `recordGameScore({ store, games, wallet, accepted: { ok: true, game: "meme-brawl", score, counted: true } })` from `api/_lib/inuscore.js` only after both clients' reports agree, the match ran in real time, both wallets are distinct SIWS-signed wallets, the pair cap allows it and `submitScore` accepted it. It runs once per room (`pvp:done:<code>`), is wrapped in try/catch so an error never changes the match result, and casual, disputed and CPU matches never reach it (`/api/game` still refuses client meme-brawl scores via `serverOnly`). The `serverOnly` filter in `countedGames` is gone. Points use the lifetime best single verified win score (`matchScore`, 1000–2500).
 - **Inu Empires:** mirror Boss Raids (see `boss-raids.md`). Raid bests feed the score.
 - **Changing the formula:** bump `FORMULA_VERSION` and recompute from the stored bests (they are never deleted). Never lower a stored best.

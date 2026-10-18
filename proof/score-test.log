@@ -1,4 +1,4 @@
-score test 2026-10-18T10:45:23.913Z
+score test 2026-10-18T11:03:21.867Z
 PASS: vs computer, 15 min win = 20,000 + 20,000
 PASS: online 1v1, 45 min win = 30,000 (no speed bonus)
 PASS: online 15 min = 50,000 before the 50 pts / real second cap -> 45,000
@@ -10,7 +10,7 @@ PASS: kibble-pay public/lib/empires/* byte-identical to src/* (the server replay
 PASS: live kibble-pay /api/empires replays sim 051a5632e1c996fb (= this client 051a5632e1c996fb)
 PASS: the sim files never read score / reporting code (reporting is read-only)
 PASS: fixture was recorded with the current rules
-PASS: real online log replays to the same win: player 0 conquers on tick 23762 (19.8 min), hash ebdea6e7 (3699 ms)
+PASS: real online log replays to the same win: player 0 conquers on tick 23762 (19.8 min), hash ebdea6e7 (3504 ms)
 PASS: tampered online result is rejected: claimed hash changed
 PASS: tampered online result is rejected: one command removed
 PASS: tampered online result is rejected: one command changed
