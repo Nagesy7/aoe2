@@ -1,13 +1,13 @@
-PASS: live /api/raid event 2026-10-18T07 fog-badger = shared schedule (2026-10-18T07 fog-badger)
-PASS: 844x390 guest: Fog Badger, "Enter free (guest: results stay on this device)", card fits
+PASS: live /api/raid event 2026-10-18T08 gutter-gator = shared schedule (2026-10-18T08 gutter-gator)
+PASS: 844x390 guest: Gutter Gator, "Enter free (guest: results stay on this device)", card fits
 PASS: 844x390 guest: no page errors 
-PASS: 750x342 guest: Fog Badger, "Enter free (guest: results stay on this device)", card fits
+PASS: 750x342 guest: Gutter Gator, "Enter free (guest: results stay on this device)", card fits
 PASS: 750x342 guest: no page errors 
 PASS: signed in with a Kennel tier: "Auto-entered (Kibble Kennel)" (POST join -> auto:kennel)
 PASS: leaderboard rows from GET /api/raid (skill only)
 PASS: fight running at 10 Hz (tick 60), touch pads shown
 PASS: start ticket before the fight; submit sends ticket + recorded inputs only
-PASS: server re-play of the recorded inputs = the score shown (3792, cleared)
+PASS: server re-play of the recorded inputs = the score shown (4060, cleared)
 PASS: result card shows the server-checked score + Inu Score
-PASS: replay viewer reproduces the board run (3792)
+PASS: replay viewer reproduces the board run (4060)
 PASS: no page errors 

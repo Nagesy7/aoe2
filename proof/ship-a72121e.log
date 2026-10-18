@@ -1,0 +1,49 @@
+
+== verify preview https://aoe2-492o7mqeh-prosper33.vercel.app
+PASS: 844x390: title buttons match index.html (⚔ Skirmish vs Computer | Sandbox (practice camp) | 🐾 Boss Raid | Host 1v1 | Join 1v1 | 🦴 $KIBBLE network)
+PASS: 844x390: skirmish started (3 own units)
+PASS: 844x390: canvas fills viewport
+PASS: 844x390: real tap selects a Worker Pup ({"kind":"unit","id":54})
+PASS: 844x390: Command tap on berries issues an order (move)
+PASS: 844x390: no page errors 
+PASS: 1366x768: title buttons match index.html (⚔ Skirmish vs Computer | Sandbox (practice camp) | 🐾 Boss Raid | Host 1v1 | Join 1v1 | 🦴 $KIBBLE network)
+PASS: 1366x768: skirmish started (3 own units)
+PASS: 1366x768: canvas fills viewport
+PASS: 1366x768: real click selects a Worker Pup ({"kind":"unit","id":54})
+PASS: 1366x768: right-click on berries issues an order (move)
+PASS: 1366x768: no page errors 
+PASS: build id: page a72121e59d89 vs expected a72121e59d89
+VERIFY: ALL PASSED
+deploying a72121e59d89 from clean export /tmp/inu-deploy-a72121e59d89: vercel deploy --prod --yes
+  Inspect         https://vercel.com/prosper33/aoe2/C2v9yymA9njwnNy37uHajJNrn3yZ
+  Production      https://aoe2-q3z832f6z-prosper33.vercel.app
+  Production      https://aoe2-q3z832f6z-prosper33.vercel.app
+▲ Aliased         https://aoe2-ashen.vercel.app
+    "url": "https://aoe2-q3z832f6z-prosper33.vercel.app",
+    "productionUrl": "https://aoe2-ashen.vercel.app",
+    "inspectorUrl": "https://vercel.com/prosper33/aoe2/C2v9yymA9njwnNy37uHajJNrn3yZ",
+    "target": "production",
+    "deploymentApiUrl": "https://api.vercel.com/v13/deployments/dpl_C2v9yymA9njwnNy37uHajJNrn3yZ",
+  "message": "Deployment aoe2-q3z832f6z-prosper33.vercel.app ready. Production URL: https://aoe2-ashen.vercel.app",
+      "command": "vercel curl https://aoe2-ashen.vercel.app",
+      "command": "vercel inspect aoe2-q3z832f6z-prosper33.vercel.app",
+      "when": "Inspect deployment"
+      "when": "Promote to production"
+DEPLOY OK a72121e59d89 https://aoe2-q3z832f6z-prosper33.vercel.app
+
+== verify live https://inu-empires.vercel.app
+PASS: 844x390: title buttons match index.html (⚔ Skirmish vs Computer | Sandbox (practice camp) | 🐾 Boss Raid | Host 1v1 | Join 1v1 | 🦴 $KIBBLE network)
+PASS: 844x390: skirmish started (3 own units)
+PASS: 844x390: canvas fills viewport
+PASS: 844x390: real tap selects a Worker Pup ({"kind":"unit","id":54})
+PASS: 844x390: Command tap on berries issues an order (move)
+PASS: 844x390: no page errors 
+PASS: 1366x768: title buttons match index.html (⚔ Skirmish vs Computer | Sandbox (practice camp) | 🐾 Boss Raid | Host 1v1 | Join 1v1 | 🦴 $KIBBLE network)
+PASS: 1366x768: skirmish started (3 own units)
+PASS: 1366x768: canvas fills viewport
+PASS: 1366x768: real click selects a Worker Pup ({"kind":"unit","id":54})
+PASS: 1366x768: right-click on berries issues an order (move)
+PASS: 1366x768: no page errors 
+PASS: build id: page a72121e59d89 vs expected a72121e59d89
+VERIFY: ALL PASSED
+EXIT 0

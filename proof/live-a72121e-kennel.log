@@ -1,0 +1,77 @@
+PASS: 844x390 none: tier "No tier yet", can't-sell warning shown
+PASS: 844x390 none: locked amount, unlock date, next tier shown
+PASS: 844x390 none: 0 unlocked, 11 locked
+PASS: 844x390 none: copy has no banned words, says no yield/rewards/draws
+PASS: 844x390 none: panel fits the screen (scrolls inside)
+PASS: 844x390 pup: tier "Pup", can't-sell warning shown
+PASS: 844x390 pup: locked amount, unlock date, next tier shown
+PASS: 844x390 pup: 2 unlocked, 9 locked
+PASS: 844x390 pup: copy has no banned words, says no yield/rewards/draws
+PASS: 844x390 pup: panel fits the screen (scrolls inside)
+PASS: 844x390 guard: tier "Guard Dog", can't-sell warning shown
+PASS: 844x390 guard: locked amount, unlock date, next tier shown
+PASS: 844x390 guard: 5 unlocked, 6 locked
+PASS: 844x390 guard: copy has no banned words, says no yield/rewards/draws
+PASS: 844x390 guard: panel fits the screen (scrolls inside)
+PASS: 844x390 alpha: tier "Alpha", can't-sell warning shown
+PASS: 844x390 alpha: locked amount, unlock date, next tier shown
+PASS: 844x390 alpha: 8 unlocked, 3 locked
+PASS: 844x390 alpha: copy has no banned words, says no yield/rewards/draws
+PASS: 844x390 alpha: panel fits the screen (scrolls inside)
+PASS: 844x390 top: tier "Top Dog", can't-sell warning shown
+PASS: 844x390 top: locked amount, unlock date, next tier shown
+PASS: 844x390 top: 11 unlocked, 0 locked
+PASS: 844x390 top: copy has no banned words, says no yield/rewards/draws
+PASS: 844x390 top: panel fits the screen (scrolls inside)
+PASS: 750x342 none: tier "No tier yet", can't-sell warning shown
+PASS: 750x342 none: locked amount, unlock date, next tier shown
+PASS: 750x342 none: 0 unlocked, 11 locked
+PASS: 750x342 none: copy has no banned words, says no yield/rewards/draws
+PASS: 750x342 none: panel fits the screen (scrolls inside)
+PASS: 750x342 pup: tier "Pup", can't-sell warning shown
+PASS: 750x342 pup: locked amount, unlock date, next tier shown
+PASS: 750x342 pup: 2 unlocked, 9 locked
+PASS: 750x342 pup: copy has no banned words, says no yield/rewards/draws
+PASS: 750x342 pup: panel fits the screen (scrolls inside)
+PASS: 750x342 guard: tier "Guard Dog", can't-sell warning shown
+PASS: 750x342 guard: locked amount, unlock date, next tier shown
+PASS: 750x342 guard: 5 unlocked, 6 locked
+PASS: 750x342 guard: copy has no banned words, says no yield/rewards/draws
+PASS: 750x342 guard: panel fits the screen (scrolls inside)
+PASS: 750x342 alpha: tier "Alpha", can't-sell warning shown
+PASS: 750x342 alpha: locked amount, unlock date, next tier shown
+PASS: 750x342 alpha: 8 unlocked, 3 locked
+PASS: 750x342 alpha: copy has no banned words, says no yield/rewards/draws
+PASS: 750x342 alpha: panel fits the screen (scrolls inside)
+PASS: 750x342 top: tier "Top Dog", can't-sell warning shown
+PASS: 750x342 top: locked amount, unlock date, next tier shown
+PASS: 750x342 top: 11 unlocked, 0 locked
+PASS: 750x342 top: copy has no banned words, says no yield/rewards/draws
+PASS: 750x342 top: panel fits the screen (scrolls inside)
+PASS: expired Alpha/Top items greyed with "Relock to keep" (6)
+PASS: unequip collars: saved to the cloud-saved kibble state (localStorage key synced by kibble-pay)
+PASS: after reload collars stay unequipped
+PASS: equip collars: saved
+PASS: in game none: render loadout = 0 cosmetic ids
+PASS: in game none: no page errors 
+PASS: in game pup: render loadout = 2 cosmetic ids
+PASS: in game pup: no page errors 
+PASS: in game guard: render loadout = 4 cosmetic ids
+PASS: in game guard: no page errors 
+PASS: in game alpha: render loadout = 6 cosmetic ids
+PASS: in game alpha: no page errors 
+PASS: in game top: render loadout = 8 cosmetic ids
+PASS: in game top: no page errors 
+PASS: same 600-tick sim hash in every tier's page (fc9eefcc; the full render-vs-sim proof is tests/kennel.test.mjs)
+PASS: lock flow: connected wallet starts with no tier (from /api/kennel)
+PASS: lock form explains the tier timeline (1M for 60 days)
+PASS: asks kibble-pay to build the lock (amount + days only)
+PASS: Phantom gets the real self-lock tx: fee payer = player, player signature empty (signed in Phantom), metadata pre-signed
+PASS: server confirms: tier refreshes to Guard Dog
+PASS: tampered lock responses (other recipient, cancelable, other payer, error) refused before Phantom
+PASS: lock flow: no page errors 
+PASS: MP: host sees the guest's Pup cosmetics (2), guest sees the host's Top Dog cosmetics (8)
+PASS: MP: lobby carries only cosmetic ids + name
+PASS: MP: lockstep in sync with different cosmetics on each side (tick 65)
+PASS: mood line shows in the lobby
+PASS: MP: no page errors 

@@ -17,7 +17,7 @@ export function initRaid(opts) { ctx = { ...ctx, ...opts };
   $('raid').addEventListener('click', e => { const b = e.target.closest('button'); if (!b) return; const a = b.dataset;
     if (a.r) return; // handled on pointerdown (no double press on touch)
     if (a.raid === 'fight') fight(); else if (a.raid === 'back') close(); else if (a.raid === 'card') openCard();
-    else if (a.raid === 'replay-me') { const m = R.localBest(localStorage, S.data.event.eventId); if (m) playReplay(m.boss, m.inputs, 'Your best (this device)'); }
+    else if (a.raid === 'replay-me') { const m = R.localBest(localStorage, S.data.event.eventId); if (m) playReplay(m.boss, m.inputs, 'My best'); }
     else if (a.raid === 'replay') loadReplay(a.ev, a.w); else if (a.raid === 'speed') { S.speed = S.speed === 1 ? 4 : 1; } });
   $('raid').addEventListener('pointerdown', e => { const b = e.target.closest('[data-r]'); if (b && S.fight) { e.preventDefault(); S.fight.press(b.dataset.r); b.dataset.pressed = '1'; } });
   addEventListener('keydown', e => { if (S.mode !== 'fight') return; const k = e.key.toLowerCase(), a = k === 'arrowleft' || k === 'a' ? 'L' : k === 'arrowright' || k === 'd' ? 'R' : k === ' ' || k === 'arrowup' || k === 'w' || k === 'b' ? 'B' : null;
@@ -47,7 +47,7 @@ async function fight() { const ev = BR.eventAt(Date.now()); S.ticket = null; S.n
 async function finishFight() { const res = S.fight.result(), ev = S.ev; S.result = res; S.server = null; S.mode = 'card';
   if (S.ticket) { try { S.server = await R.submit(ctx.kp(), S.ticket, res.inputs); } catch (e) { S.note = 'Server did not accept the run: ' + e.message; } }
   R.saveLocal(localStorage, ev.eventId, res); S.data = await R.getRaid(); S.fight = null; paintCard(); }
-async function loadReplay(eventId, wallet) { try { const r = await R.getReplay(eventId, wallet); playReplay(r.boss, r.inputs, `Replay ${R.short(wallet)} · ${r.score}`); } catch (e) { S.note = 'Replay unavailable: ' + e.message; paintCard(); } }
+async function loadReplay(eventId, wallet) { try { const r = await R.getReplay(eventId, wallet); playReplay(r.boss, r.inputs, `Replay ${R.short(wallet)}`); } catch (e) { S.note = 'Replay unavailable: ' + e.message; paintCard(); } }
 export function playReplay(boss, inputs, label) { S.replay = R.createReplay(boss, inputs); S.fight = null; S.mode = 'replay'; S.label = label; S.acc = 0; S.last = performance.now(); paintCard();
  }
 function loop(now) { requestAnimationFrame(loop); if (S.mode !== 'fight' && S.mode !== 'replay') return; const run = S.fight || S.replay;
@@ -57,8 +57,8 @@ function loop(now) { requestAnimationFrame(loop); if (S.mode !== 'fight' && S.mo
   if (run.s.over && S.mode === 'replay' && !S.replayDone) { S.replayDone = true; setTimeout(() => { S.replayDone = false; if (S.mode === 'replay') openCard(); }, 1800); } }
 // ---- art ----
 function drawBoss(c, b, x, y, r, t, hurt) { c.save(); c.translate(x, y + Math.sin(t * 3) * r * 0.05);
-  c.fillStyle = hurt ? '#fff' : b.color; c.strokeStyle = b.dark; c.lineWidth = r * 0.08;
-  c.beginPath(); c.ellipse(0, 0, r, r * 0.72, 0, 0, 7); c.fill(); c.stroke();
+  c.fillStyle = b.color; c.strokeStyle = b.dark; c.lineWidth = r * 0.08;
+  c.beginPath(); c.ellipse(0, 0, r, r * 0.72, 0, 0, 7); c.fill(); c.stroke(); if (hurt) { c.fillStyle = 'rgba(255,255,255,0.35)'; c.fill(); }
   if (b.id === 'gutter-gator') { c.fillStyle = b.color; c.fillRect(-r * 0.45, r * 0.3, r * 0.9, r * 0.5); c.fillStyle = '#fff'; for (let i = 0; i < 5; i++) c.fillRect(-r * 0.4 + i * r * 0.19, r * 0.72, r * 0.08, r * 0.12); }
   if (b.id === 'storm-crow') { c.fillStyle = b.dark; c.beginPath(); c.moveTo(-r, 0); c.lineTo(-r * 1.7, -r * 0.4 + Math.sin(t * 8) * r * 0.3); c.lineTo(-r * 0.7, r * 0.3); c.moveTo(r, 0); c.lineTo(r * 1.7, -r * 0.4 + Math.sin(t * 8) * r * 0.3); c.lineTo(r * 0.7, r * 0.3); c.fill();
     c.fillStyle = b.accent; c.beginPath(); c.moveTo(-r * 0.15, r * 0.2); c.lineTo(r * 0.15, r * 0.2); c.lineTo(0, r * 0.65); c.fill(); }
