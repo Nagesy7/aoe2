@@ -84,7 +84,7 @@ export async function order(p, target) {
 export async function shot(p, file) { mkdirSync(dirname(file), { recursive: true }); await p.screenshot({ path: file }); return file; }
 export function checker(lines = []) { const c = (ok, m) => { const s = `${ok ? 'PASS' : 'FAIL'}: ${m}`; console.log(s); lines.push(s); if (!ok) c.fails++; return ok; }; c.fails = 0; c.lines = lines; return c; }
 export const SHOTS = '/workspace/inu-empires-shots';
-export function indexButtons(root = ROOT) { const h = readFileSync(join(root, 'index.html'), 'utf8'); return [...h.matchAll(/<button id="(btn-[a-z]+)"[^>]*>([^<]*)</g)].map(m => ({ id: m[1], text: m[2].trim() })).filter(b => !['btn-ready', 'btn-leave'].includes(b.id)); }
+export function indexButtons(root = ROOT, ref = '') { const h = ref ? execSync(`git show ${ref}:index.html`, { cwd: ROOT }).toString() : readFileSync(join(root, 'index.html'), 'utf8'); return [...h.matchAll(/<button id="(btn-[a-z]+)"[^>]*>([^<]*)</g)].map(m => ({ id: m[1], text: m[2].trim() })).filter(b => !['btn-ready', 'btn-leave'].includes(b.id)); }
 
 // ---- scenes for `ctl shot` ----
 export const SCENES = {
@@ -127,7 +127,7 @@ async function cmdBalance(argv) {
 }
 // verify: title buttons on the target equal index.html of the checked-out tree, skirmish starts, no errors, phone + desktop
 export async function verify(argv = []) {
-  const srv = await base(argv); const c = checker(); const want = indexButtons(argOf('root', ROOT, argv)); const tag = argOf('tag', 'verify', argv);
+  const srv = await base(argv); const c = checker(); const remote = !!argOf('url', process.env.URL, argv); const want = indexButtons(ROOT, argOf('ref', remote ? 'origin/main' : '', argv)); const tag = argOf('tag', 'verify', argv); // remote targets compare to origin/main, local to the working tree const tag = argOf('tag', 'verify', argv);
   for (const phone of [true, false]) {
     const p = await newPage({ phone }); const name = phone ? '844x390' : '1366x768';
     await openTitle(p, srv.url); const got = (await titleButtons(p)).filter(b => want.some(w => w.id === b.id) || true).filter(b => !['btn-ready', 'btn-leave'].includes(b.id));
@@ -164,7 +164,7 @@ async function cmdDeploy(argv) {
     console.log(`deploying ${sha.slice(0, 12)} from clean export ${dir}: vercel ${args.join(' ')}`);
     const res = await new Promise(ok => { const c = spawn('vercel', args, { cwd: dir, env: { ...process.env, PATH: `${process.env.HOME}/.local/bin:${process.env.PATH}` } });
       let o = ''; c.stdout.on('data', d => { o += d; }); c.stderr.on('data', d => { o += d; }); c.on('close', code => ok({ code, o })); });
-    const url = (res.o.match(/https:\/\/[a-z0-9-]+\.vercel\.app/g) || []).filter(u => !u.includes('inu-empires.vercel.app')).pop();
+    const url = (res.o.match(/(?:Production|Preview)\s+(https:\/\/[a-z0-9-]+\.vercel\.app)/) || res.o.match(/"url": "(https:[^"]+)"/) || [])[1];
     console.log(res.o.split('\n').filter(l => /https:|Error|Production|Preview|Inspect/i.test(l)).join('\n'));
     console.log(`DEPLOY ${res.code ? 'FAILED' : 'OK'} ${sha.slice(0, 12)} ${url || ''}`); return res.code;
   } finally { execSync(`git worktree remove --force ${dir}`, { cwd: ROOT, stdio: 'ignore' }); }
