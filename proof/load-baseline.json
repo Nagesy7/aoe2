@@ -1,0 +1,1462 @@
+{
+ "url": "https://inu-empires.vercel.app/",
+ "viewport": "844x390",
+ "runs": 10,
+ "when": "2026-10-18T05:37:51.781Z",
+ "summary": {
+  "ttfb": {
+   "median": 70,
+   "p90": 75.9,
+   "min": 51.9,
+   "max": 81.7
+  },
+  "fcp": {
+   "median": 96,
+   "p90": 112,
+   "min": 76,
+   "max": 120
+  },
+  "firstPaint": {
+   "median": 96,
+   "p90": 112,
+   "min": 76,
+   "max": 120
+  },
+  "dcl": {
+   "median": 187.2,
+   "p90": 250.8,
+   "min": 178.4,
+   "max": 274.8
+  },
+  "modulesDone": {
+   "median": 171.2,
+   "p90": 215.4,
+   "min": 161,
+   "max": 231.4
+  },
+  "interactive": {
+   "median": 217,
+   "p90": 274.7,
+   "min": 206.3,
+   "max": 300.7
+  },
+  "waves": {
+   "median": 3,
+   "p90": 3,
+   "min": 3,
+   "max": 3
+  }
+ },
+ "results": [
+  {
+   "ttfb": 75.9,
+   "dcl": 274.8,
+   "load": 274.9,
+   "firstPaint": 108,
+   "fcp": 108,
+   "mods": [
+    {
+     "file": "src/main.js",
+     "start": 93.5,
+     "end": 125.1,
+     "kb": 13.2
+    },
+    {
+     "file": "src/render.js",
+     "start": 127.7,
+     "end": 149,
+     "kb": 6.2
+    },
+    {
+     "file": "src/sim.js",
+     "start": 127.7,
+     "end": 157.7,
+     "kb": 22.4
+    },
+    {
+     "file": "src/inu.js",
+     "start": 127.8,
+     "end": 150.4,
+     "kb": 5.1
+    },
+    {
+     "file": "src/title.js",
+     "start": 127.8,
+     "end": 153.9,
+     "kb": 2.8
+    },
+    {
+     "file": "src/net.js",
+     "start": 127.9,
+     "end": 150.1,
+     "kb": 3.2
+    },
+    {
+     "file": "src/lockstep.js",
+     "start": 127.9,
+     "end": 154.6,
+     "kb": 1.9
+    },
+    {
+     "file": "src/civs.js",
+     "start": 127.9,
+     "end": 157.6,
+     "kb": 2.1
+    },
+    {
+     "file": "src/ai.js",
+     "start": 128,
+     "end": 163,
+     "kb": 7
+    },
+    {
+     "file": "src/civcards.js",
+     "start": 128.1,
+     "end": 150.7,
+     "kb": 3
+    },
+    {
+     "file": "src/kibble-ui.js",
+     "start": 128.1,
+     "end": 157.2,
+     "kb": 5.5
+    },
+    {
+     "file": "src/minimap.js",
+     "start": 128.2,
+     "end": 151.1,
+     "kb": 2
+    },
+    {
+     "file": "src/sfx.js",
+     "start": 128.2,
+     "end": 151.5,
+     "kb": 1.8
+    },
+    {
+     "file": "src/touchtips.js",
+     "start": 128.3,
+     "end": 150.9,
+     "kb": 1.3
+    },
+    {
+     "file": "src/ui-state.js",
+     "start": 128.3,
+     "end": 151.5,
+     "kb": 1.5
+    },
+    {
+     "file": "src/art.js",
+     "start": 150.1,
+     "end": 179.4,
+     "kb": 2.5
+    },
+    {
+     "file": "src/terrain.js",
+     "start": 150.1,
+     "end": 191.2,
+     "kb": 2.6
+    },
+    {
+     "file": "src/anim.js",
+     "start": 150.1,
+     "end": 191.6,
+     "kb": 1.7
+    },
+    {
+     "file": "src/kibble.js",
+     "start": 158.8,
+     "end": 180.1,
+     "kb": 4.5
+    },
+    {
+     "file": "src/techtree.js",
+     "start": 159.5,
+     "end": 181.1,
+     "kb": 3.8
+    },
+    {
+     "file": "src/combat.js",
+     "start": 159.8,
+     "end": 181.5,
+     "kb": 5.1
+    }
+   ],
+   "interactive": 300.7,
+   "modulesDone": 191.6,
+   "firstModule": 93.5,
+   "waves": 3,
+   "errors": 0,
+   "wall": 614
+  },
+  {
+   "ttfb": 61.4,
+   "dcl": 178.4,
+   "load": 178.4,
+   "firstPaint": 88,
+   "fcp": 88,
+   "mods": [
+    {
+     "file": "src/main.js",
+     "start": 78.4,
+     "end": 103.7,
+     "kb": 13.2
+    },
+    {
+     "file": "src/sim.js",
+     "start": 105.5,
+     "end": 129.1,
+     "kb": 22.4
+    },
+    {
+     "file": "src/inu.js",
+     "start": 105.6,
+     "end": 128.8,
+     "kb": 5.1
+    },
+    {
+     "file": "src/render.js",
+     "start": 105.6,
+     "end": 136.7,
+     "kb": 6.2
+    },
+    {
+     "file": "src/title.js",
+     "start": 105.6,
+     "end": 137,
+     "kb": 2.8
+    },
+    {
+     "file": "src/lockstep.js",
+     "start": 105.7,
+     "end": 129,
+     "kb": 1.9
+    },
+    {
+     "file": "src/civs.js",
+     "start": 105.7,
+     "end": 131.4,
+     "kb": 2.1
+    },
+    {
+     "file": "src/net.js",
+     "start": 105.7,
+     "end": 130.8,
+     "kb": 3.2
+    },
+    {
+     "file": "src/sfx.js",
+     "start": 105.8,
+     "end": 130.6,
+     "kb": 1.8
+    },
+    {
+     "file": "src/ai.js",
+     "start": 105.8,
+     "end": 130.4,
+     "kb": 7
+    },
+    {
+     "file": "src/civcards.js",
+     "start": 105.8,
+     "end": 136.1,
+     "kb": 3
+    },
+    {
+     "file": "src/kibble-ui.js",
+     "start": 105.8,
+     "end": 138.4,
+     "kb": 5.5
+    },
+    {
+     "file": "src/ui-state.js",
+     "start": 106,
+     "end": 128.5,
+     "kb": 1.5
+    },
+    {
+     "file": "src/minimap.js",
+     "start": 106,
+     "end": 131.1,
+     "kb": 2
+    },
+    {
+     "file": "src/touchtips.js",
+     "start": 106,
+     "end": 131.3,
+     "kb": 1.3
+    },
+    {
+     "file": "src/combat.js",
+     "start": 131.4,
+     "end": 153.1,
+     "kb": 5.1
+    },
+    {
+     "file": "src/techtree.js",
+     "start": 131.4,
+     "end": 153.3,
+     "kb": 3.8
+    },
+    {
+     "file": "src/art.js",
+     "start": 137.4,
+     "end": 158.7,
+     "kb": 2.5
+    },
+    {
+     "file": "src/anim.js",
+     "start": 137.4,
+     "end": 161,
+     "kb": 1.7
+    },
+    {
+     "file": "src/terrain.js",
+     "start": 137.5,
+     "end": 157.3,
+     "kb": 2.6
+    },
+    {
+     "file": "src/kibble.js",
+     "start": 139.1,
+     "end": 159.6,
+     "kb": 4.5
+    }
+   ],
+   "interactive": 206.3,
+   "modulesDone": 161,
+   "firstModule": 78.4,
+   "waves": 3,
+   "errors": 0,
+   "wall": 516
+  },
+  {
+   "ttfb": 59.1,
+   "dcl": 185.3,
+   "load": 185.4,
+   "firstPaint": 88,
+   "fcp": 88,
+   "mods": [
+    {
+     "file": "src/main.js",
+     "start": 72.3,
+     "end": 104.5,
+     "kb": 13.2
+    },
+    {
+     "file": "src/render.js",
+     "start": 106.7,
+     "end": 128.8,
+     "kb": 6.2
+    },
+    {
+     "file": "src/sim.js",
+     "start": 106.7,
+     "end": 127.6,
+     "kb": 22.4
+    },
+    {
+     "file": "src/lockstep.js",
+     "start": 106.8,
+     "end": 127.9,
+     "kb": 1.9
+    },
+    {
+     "file": "src/inu.js",
+     "start": 106.8,
+     "end": 128.5,
+     "kb": 5.1
+    },
+    {
+     "file": "src/title.js",
+     "start": 106.8,
+     "end": 132.7,
+     "kb": 2.8
+    },
+    {
+     "file": "src/net.js",
+     "start": 106.9,
+     "end": 129,
+     "kb": 3.2
+    },
+    {
+     "file": "src/civs.js",
+     "start": 107.2,
+     "end": 136.2,
+     "kb": 2.1
+    },
+    {
+     "file": "src/civcards.js",
+     "start": 107.3,
+     "end": 131.7,
+     "kb": 3
+    },
+    {
+     "file": "src/kibble-ui.js",
+     "start": 107.3,
+     "end": 131.9,
+     "kb": 5.5
+    },
+    {
+     "file": "src/sfx.js",
+     "start": 107.3,
+     "end": 132.9,
+     "kb": 1.8
+    },
+    {
+     "file": "src/ai.js",
+     "start": 107.3,
+     "end": 139.1,
+     "kb": 7
+    },
+    {
+     "file": "src/ui-state.js",
+     "start": 107.5,
+     "end": 135.3,
+     "kb": 1.5
+    },
+    {
+     "file": "src/touchtips.js",
+     "start": 107.5,
+     "end": 132,
+     "kb": 1.3
+    },
+    {
+     "file": "src/minimap.js",
+     "start": 107.5,
+     "end": 137.2,
+     "kb": 2
+    },
+    {
+     "file": "src/anim.js",
+     "start": 130.8,
+     "end": 161.6,
+     "kb": 1.7
+    },
+    {
+     "file": "src/art.js",
+     "start": 130.9,
+     "end": 159.6,
+     "kb": 2.5
+    },
+    {
+     "file": "src/terrain.js",
+     "start": 130.9,
+     "end": 165.1,
+     "kb": 2.6
+    },
+    {
+     "file": "src/techtree.js",
+     "start": 131,
+     "end": 158.7,
+     "kb": 3.8
+    },
+    {
+     "file": "src/combat.js",
+     "start": 131,
+     "end": 159.1,
+     "kb": 5.1
+    },
+    {
+     "file": "src/kibble.js",
+     "start": 143.3,
+     "end": 162,
+     "kb": 4.5
+    }
+   ],
+   "interactive": 214.5,
+   "modulesDone": 165.1,
+   "firstModule": 72.3,
+   "waves": 3,
+   "errors": 0,
+   "wall": 532
+  },
+  {
+   "ttfb": 81.7,
+   "dcl": 209.9,
+   "load": 210.1,
+   "firstPaint": 112,
+   "fcp": 112,
+   "mods": [
+    {
+     "file": "src/main.js",
+     "start": 100.3,
+     "end": 126.2,
+     "kb": 13.2
+    },
+    {
+     "file": "src/sim.js",
+     "start": 128,
+     "end": 163.5,
+     "kb": 22.4
+    },
+    {
+     "file": "src/render.js",
+     "start": 128.1,
+     "end": 156.7,
+     "kb": 6.2
+    },
+    {
+     "file": "src/lockstep.js",
+     "start": 128.1,
+     "end": 156.9,
+     "kb": 1.9
+    },
+    {
+     "file": "src/inu.js",
+     "start": 128.1,
+     "end": 157.2,
+     "kb": 5.1
+    },
+    {
+     "file": "src/title.js",
+     "start": 128.1,
+     "end": 158.3,
+     "kb": 2.8
+    },
+    {
+     "file": "src/net.js",
+     "start": 128.1,
+     "end": 157.9,
+     "kb": 3.2
+    },
+    {
+     "file": "src/kibble-ui.js",
+     "start": 128.2,
+     "end": 158.2,
+     "kb": 5.5
+    },
+    {
+     "file": "src/ai.js",
+     "start": 128.2,
+     "end": 157.5,
+     "kb": 7
+    },
+    {
+     "file": "src/civs.js",
+     "start": 128.2,
+     "end": 158.7,
+     "kb": 2.1
+    },
+    {
+     "file": "src/civcards.js",
+     "start": 128.3,
+     "end": 162.7,
+     "kb": 3
+    },
+    {
+     "file": "src/minimap.js",
+     "start": 128.4,
+     "end": 158.5,
+     "kb": 2
+    },
+    {
+     "file": "src/sfx.js",
+     "start": 128.4,
+     "end": 157.7,
+     "kb": 1.8
+    },
+    {
+     "file": "src/touchtips.js",
+     "start": 128.5,
+     "end": 158.9,
+     "kb": 1.3
+    },
+    {
+     "file": "src/ui-state.js",
+     "start": 128.5,
+     "end": 162.9,
+     "kb": 1.5
+    },
+    {
+     "file": "src/anim.js",
+     "start": 157.7,
+     "end": 193.6,
+     "kb": 1.7
+    },
+    {
+     "file": "src/terrain.js",
+     "start": 157.8,
+     "end": 185.5,
+     "kb": 2.6
+    },
+    {
+     "file": "src/art.js",
+     "start": 157.8,
+     "end": 189.4,
+     "kb": 2.5
+    },
+    {
+     "file": "src/kibble.js",
+     "start": 160.7,
+     "end": 183.9,
+     "kb": 4.5
+    },
+    {
+     "file": "src/techtree.js",
+     "start": 160.8,
+     "end": 183.6,
+     "kb": 3.8
+    },
+    {
+     "file": "src/combat.js",
+     "start": 165.7,
+     "end": 189.1,
+     "kb": 5.1
+    }
+   ],
+   "interactive": 235.3,
+   "modulesDone": 193.6,
+   "firstModule": 100.3,
+   "waves": 3,
+   "errors": 0,
+   "wall": 549
+  },
+  {
+   "ttfb": 75,
+   "dcl": 185.2,
+   "load": 185.2,
+   "firstPaint": 96,
+   "fcp": 96,
+   "mods": [
+    {
+     "file": "src/main.js",
+     "start": 87,
+     "end": 112.7,
+     "kb": 13.2
+    },
+    {
+     "file": "src/sim.js",
+     "start": 116,
+     "end": 141.7,
+     "kb": 22.4
+    },
+    {
+     "file": "src/render.js",
+     "start": 116.1,
+     "end": 137.2,
+     "kb": 6.2
+    },
+    {
+     "file": "src/title.js",
+     "start": 116.1,
+     "end": 138.2,
+     "kb": 2.8
+    },
+    {
+     "file": "src/inu.js",
+     "start": 116.1,
+     "end": 138.5,
+     "kb": 5.1
+    },
+    {
+     "file": "src/lockstep.js",
+     "start": 116.1,
+     "end": 139.5,
+     "kb": 1.9
+    },
+    {
+     "file": "src/net.js",
+     "start": 116.1,
+     "end": 141,
+     "kb": 3.2
+    },
+    {
+     "file": "src/civs.js",
+     "start": 116.2,
+     "end": 139.4,
+     "kb": 2.1
+    },
+    {
+     "file": "src/ai.js",
+     "start": 116.2,
+     "end": 143.5,
+     "kb": 7
+    },
+    {
+     "file": "src/civcards.js",
+     "start": 116.3,
+     "end": 141.2,
+     "kb": 3
+    },
+    {
+     "file": "src/minimap.js",
+     "start": 116.3,
+     "end": 141.4,
+     "kb": 2
+    },
+    {
+     "file": "src/kibble-ui.js",
+     "start": 116.3,
+     "end": 140.6,
+     "kb": 5.5
+    },
+    {
+     "file": "src/ui-state.js",
+     "start": 116.3,
+     "end": 142.5,
+     "kb": 1.5
+    },
+    {
+     "file": "src/touchtips.js",
+     "start": 116.3,
+     "end": 142.6,
+     "kb": 1.3
+    },
+    {
+     "file": "src/sfx.js",
+     "start": 116.3,
+     "end": 143.1,
+     "kb": 1.8
+    },
+    {
+     "file": "src/art.js",
+     "start": 138.1,
+     "end": 164.3,
+     "kb": 2.5
+    },
+    {
+     "file": "src/anim.js",
+     "start": 138.1,
+     "end": 167.7,
+     "kb": 1.7
+    },
+    {
+     "file": "src/terrain.js",
+     "start": 138.2,
+     "end": 161.3,
+     "kb": 2.6
+    },
+    {
+     "file": "src/combat.js",
+     "start": 142.8,
+     "end": 162.5,
+     "kb": 5.1
+    },
+    {
+     "file": "src/techtree.js",
+     "start": 142.8,
+     "end": 164,
+     "kb": 3.8
+    },
+    {
+     "file": "src/kibble.js",
+     "start": 142.9,
+     "end": 162.9,
+     "kb": 4.5
+    }
+   ],
+   "interactive": 217,
+   "modulesDone": 167.7,
+   "firstModule": 87,
+   "waves": 3,
+   "errors": 0,
+   "wall": 533
+  },
+  {
+   "ttfb": 51.9,
+   "dcl": 186.1,
+   "load": 186.2,
+   "firstPaint": 92,
+   "fcp": 92,
+   "mods": [
+    {
+     "file": "src/main.js",
+     "start": 78.1,
+     "end": 103.5,
+     "kb": 13.2
+    },
+    {
+     "file": "src/render.js",
+     "start": 105.5,
+     "end": 128.3,
+     "kb": 6.2
+    },
+    {
+     "file": "src/sim.js",
+     "start": 105.5,
+     "end": 127.7,
+     "kb": 22.4
+    },
+    {
+     "file": "src/inu.js",
+     "start": 105.5,
+     "end": 131.4,
+     "kb": 5.1
+    },
+    {
+     "file": "src/lockstep.js",
+     "start": 105.6,
+     "end": 129.1,
+     "kb": 1.9
+    },
+    {
+     "file": "src/title.js",
+     "start": 105.6,
+     "end": 130.4,
+     "kb": 2.8
+    },
+    {
+     "file": "src/net.js",
+     "start": 105.6,
+     "end": 131.9,
+     "kb": 3.2
+    },
+    {
+     "file": "src/civs.js",
+     "start": 105.7,
+     "end": 129.9,
+     "kb": 2.1
+    },
+    {
+     "file": "src/ai.js",
+     "start": 105.7,
+     "end": 130.6,
+     "kb": 7
+    },
+    {
+     "file": "src/sfx.js",
+     "start": 105.7,
+     "end": 131.6,
+     "kb": 1.8
+    },
+    {
+     "file": "src/civcards.js",
+     "start": 105.7,
+     "end": 136.2,
+     "kb": 3
+    },
+    {
+     "file": "src/kibble-ui.js",
+     "start": 105.7,
+     "end": 136.3,
+     "kb": 5.5
+    },
+    {
+     "file": "src/minimap.js",
+     "start": 105.8,
+     "end": 131.7,
+     "kb": 2
+    },
+    {
+     "file": "src/touchtips.js",
+     "start": 105.8,
+     "end": 132.2,
+     "kb": 1.3
+    },
+    {
+     "file": "src/ui-state.js",
+     "start": 105.8,
+     "end": 135.8,
+     "kb": 1.5
+    },
+    {
+     "file": "src/anim.js",
+     "start": 129.5,
+     "end": 155.2,
+     "kb": 1.7
+    },
+    {
+     "file": "src/art.js",
+     "start": 129.5,
+     "end": 155.4,
+     "kb": 2.5
+    },
+    {
+     "file": "src/terrain.js",
+     "start": 129.6,
+     "end": 154.8,
+     "kb": 2.6
+    },
+    {
+     "file": "src/techtree.js",
+     "start": 129.9,
+     "end": 156.8,
+     "kb": 3.8
+    },
+    {
+     "file": "src/combat.js",
+     "start": 129.9,
+     "end": 165.9,
+     "kb": 5.1
+    },
+    {
+     "file": "src/kibble.js",
+     "start": 138,
+     "end": 158.6,
+     "kb": 4.5
+    }
+   ],
+   "interactive": 215.8,
+   "modulesDone": 165.9,
+   "firstModule": 78.1,
+   "waves": 3,
+   "errors": 0,
+   "wall": 539
+  },
+  {
+   "ttfb": 72.2,
+   "dcl": 231.7,
+   "load": 231.7,
+   "firstPaint": 96,
+   "fcp": 96,
+   "mods": [
+    {
+     "file": "src/main.js",
+     "start": 84.8,
+     "end": 121.1,
+     "kb": 13.2
+    },
+    {
+     "file": "src/sim.js",
+     "start": 126.4,
+     "end": 152.3,
+     "kb": 22.4
+    },
+    {
+     "file": "src/render.js",
+     "start": 126.5,
+     "end": 148.2,
+     "kb": 6.2
+    },
+    {
+     "file": "src/inu.js",
+     "start": 126.5,
+     "end": 148.9,
+     "kb": 5.1
+    },
+    {
+     "file": "src/lockstep.js",
+     "start": 126.6,
+     "end": 149.1,
+     "kb": 1.9
+    },
+    {
+     "file": "src/title.js",
+     "start": 126.6,
+     "end": 155.8,
+     "kb": 2.8
+    },
+    {
+     "file": "src/net.js",
+     "start": 126.7,
+     "end": 149.5,
+     "kb": 3.2
+    },
+    {
+     "file": "src/ai.js",
+     "start": 126.7,
+     "end": 149.5,
+     "kb": 7
+    },
+    {
+     "file": "src/civs.js",
+     "start": 126.7,
+     "end": 149.7,
+     "kb": 2.1
+    },
+    {
+     "file": "src/kibble-ui.js",
+     "start": 126.7,
+     "end": 158.5,
+     "kb": 5.5
+    },
+    {
+     "file": "src/civcards.js",
+     "start": 126.8,
+     "end": 165.2,
+     "kb": 3
+    },
+    {
+     "file": "src/sfx.js",
+     "start": 126.9,
+     "end": 150,
+     "kb": 1.8
+    },
+    {
+     "file": "src/touchtips.js",
+     "start": 126.9,
+     "end": 151.8,
+     "kb": 1.3
+    },
+    {
+     "file": "src/ui-state.js",
+     "start": 126.9,
+     "end": 152.2,
+     "kb": 1.5
+    },
+    {
+     "file": "src/minimap.js",
+     "start": 126.9,
+     "end": 156.1,
+     "kb": 2
+    },
+    {
+     "file": "src/anim.js",
+     "start": 149.1,
+     "end": 170.4,
+     "kb": 1.7
+    },
+    {
+     "file": "src/terrain.js",
+     "start": 149.1,
+     "end": 170.1,
+     "kb": 2.6
+    },
+    {
+     "file": "src/art.js",
+     "start": 149.1,
+     "end": 215.4,
+     "kb": 2.5
+    },
+    {
+     "file": "src/techtree.js",
+     "start": 150.6,
+     "end": 172.3,
+     "kb": 3.8
+    },
+    {
+     "file": "src/combat.js",
+     "start": 155.3,
+     "end": 175,
+     "kb": 5.1
+    },
+    {
+     "file": "src/kibble.js",
+     "start": 159.8,
+     "end": 181.4,
+     "kb": 4.5
+    }
+   ],
+   "interactive": 254.1,
+   "modulesDone": 215.4,
+   "firstModule": 84.8,
+   "waves": 3,
+   "errors": 0,
+   "wall": 562
+  },
+  {
+   "ttfb": 70,
+   "dcl": 250.8,
+   "load": 250.9,
+   "firstPaint": 104,
+   "fcp": 104,
+   "mods": [
+    {
+     "file": "src/main.js",
+     "start": 92.6,
+     "end": 119,
+     "kb": 13.2
+    },
+    {
+     "file": "src/sim.js",
+     "start": 121.2,
+     "end": 147.5,
+     "kb": 22.4
+    },
+    {
+     "file": "src/render.js",
+     "start": 121.2,
+     "end": 147.5,
+     "kb": 6.2
+    },
+    {
+     "file": "src/title.js",
+     "start": 121.3,
+     "end": 151.6,
+     "kb": 2.8
+    },
+    {
+     "file": "src/inu.js",
+     "start": 121.3,
+     "end": 155.6,
+     "kb": 5.1
+    },
+    {
+     "file": "src/lockstep.js",
+     "start": 121.3,
+     "end": 158.1,
+     "kb": 1.9
+    },
+    {
+     "file": "src/civs.js",
+     "start": 121.4,
+     "end": 147.2,
+     "kb": 2.1
+    },
+    {
+     "file": "src/net.js",
+     "start": 121.4,
+     "end": 152,
+     "kb": 3.2
+    },
+    {
+     "file": "src/sfx.js",
+     "start": 121.5,
+     "end": 146.5,
+     "kb": 1.8
+    },
+    {
+     "file": "src/ai.js",
+     "start": 121.5,
+     "end": 148,
+     "kb": 7
+    },
+    {
+     "file": "src/civcards.js",
+     "start": 121.5,
+     "end": 146.8,
+     "kb": 3
+    },
+    {
+     "file": "src/kibble-ui.js",
+     "start": 121.5,
+     "end": 151.8,
+     "kb": 5.5
+    },
+    {
+     "file": "src/minimap.js",
+     "start": 121.6,
+     "end": 231.4,
+     "kb": 2
+    },
+    {
+     "file": "src/ui-state.js",
+     "start": 121.7,
+     "end": 154.3,
+     "kb": 1.5
+    },
+    {
+     "file": "src/touchtips.js",
+     "start": 121.7,
+     "end": 201.3,
+     "kb": 1.3
+    },
+    {
+     "file": "src/techtree.js",
+     "start": 149.5,
+     "end": 171.6,
+     "kb": 3.8
+    },
+    {
+     "file": "src/combat.js",
+     "start": 149.5,
+     "end": 172.2,
+     "kb": 5.1
+    },
+    {
+     "file": "src/anim.js",
+     "start": 149.9,
+     "end": 172.7,
+     "kb": 1.7
+    },
+    {
+     "file": "src/art.js",
+     "start": 150.6,
+     "end": 174.5,
+     "kb": 2.5
+    },
+    {
+     "file": "src/terrain.js",
+     "start": 150.7,
+     "end": 177.9,
+     "kb": 2.6
+    },
+    {
+     "file": "src/kibble.js",
+     "start": 152.6,
+     "end": 175.3,
+     "kb": 4.5
+    }
+   ],
+   "interactive": 274.7,
+   "modulesDone": 231.4,
+   "firstModule": 92.6,
+   "waves": 3,
+   "errors": 0,
+   "wall": 585
+  },
+  {
+   "ttfb": 57.8,
+   "dcl": 187.2,
+   "load": 187.2,
+   "firstPaint": 76,
+   "fcp": 76,
+   "mods": [
+    {
+     "file": "src/main.js",
+     "start": 69.2,
+     "end": 106.5,
+     "kb": 13.2
+    },
+    {
+     "file": "src/sim.js",
+     "start": 108.7,
+     "end": 132,
+     "kb": 22.4
+    },
+    {
+     "file": "src/render.js",
+     "start": 108.8,
+     "end": 131,
+     "kb": 6.2
+    },
+    {
+     "file": "src/lockstep.js",
+     "start": 108.9,
+     "end": 128.2,
+     "kb": 1.9
+    },
+    {
+     "file": "src/title.js",
+     "start": 108.9,
+     "end": 130.6,
+     "kb": 2.8
+    },
+    {
+     "file": "src/inu.js",
+     "start": 108.9,
+     "end": 131.4,
+     "kb": 5.1
+    },
+    {
+     "file": "src/civs.js",
+     "start": 109,
+     "end": 128.3,
+     "kb": 2.1
+    },
+    {
+     "file": "src/civcards.js",
+     "start": 109,
+     "end": 128.7,
+     "kb": 3
+    },
+    {
+     "file": "src/ai.js",
+     "start": 109,
+     "end": 130.3,
+     "kb": 7
+    },
+    {
+     "file": "src/sfx.js",
+     "start": 109,
+     "end": 129.7,
+     "kb": 1.8
+    },
+    {
+     "file": "src/kibble-ui.js",
+     "start": 109,
+     "end": 147.4,
+     "kb": 5.5
+    },
+    {
+     "file": "src/net.js",
+     "start": 109,
+     "end": 160.9,
+     "kb": 3.2
+    },
+    {
+     "file": "src/touchtips.js",
+     "start": 109.1,
+     "end": 131.8,
+     "kb": 1.3
+    },
+    {
+     "file": "src/minimap.js",
+     "start": 109.1,
+     "end": 133.7,
+     "kb": 2
+    },
+    {
+     "file": "src/ui-state.js",
+     "start": 109.1,
+     "end": 134,
+     "kb": 1.5
+    },
+    {
+     "file": "src/techtree.js",
+     "start": 131.9,
+     "end": 149.5,
+     "kb": 3.8
+    },
+    {
+     "file": "src/anim.js",
+     "start": 132,
+     "end": 150.1,
+     "kb": 1.7
+    },
+    {
+     "file": "src/terrain.js",
+     "start": 132.1,
+     "end": 150,
+     "kb": 2.6
+    },
+    {
+     "file": "src/art.js",
+     "start": 132.1,
+     "end": 155.5,
+     "kb": 2.5
+    },
+    {
+     "file": "src/combat.js",
+     "start": 132.6,
+     "end": 150.4,
+     "kb": 5.1
+    },
+    {
+     "file": "src/kibble.js",
+     "start": 148.3,
+     "end": 171.2,
+     "kb": 4.5
+    }
+   ],
+   "interactive": 209.9,
+   "modulesDone": 171.2,
+   "firstModule": 69.2,
+   "waves": 3,
+   "errors": 0,
+   "wall": 518
+  },
+  {
+   "ttfb": 71.5,
+   "dcl": 213.3,
+   "load": 213.5,
+   "firstPaint": 120,
+   "fcp": 120,
+   "mods": [
+    {
+     "file": "src/main.js",
+     "start": 107.1,
+     "end": 135.7,
+     "kb": 13.2
+    },
+    {
+     "file": "src/sim.js",
+     "start": 137.9,
+     "end": 165.1,
+     "kb": 22.4
+    },
+    {
+     "file": "src/inu.js",
+     "start": 138,
+     "end": 164.7,
+     "kb": 5.1
+    },
+    {
+     "file": "src/title.js",
+     "start": 138,
+     "end": 163.7,
+     "kb": 2.8
+    },
+    {
+     "file": "src/render.js",
+     "start": 138,
+     "end": 163.4,
+     "kb": 6.2
+    },
+    {
+     "file": "src/lockstep.js",
+     "start": 138.1,
+     "end": 165.6,
+     "kb": 1.9
+    },
+    {
+     "file": "src/net.js",
+     "start": 138.1,
+     "end": 165.4,
+     "kb": 3.2
+    },
+    {
+     "file": "src/kibble-ui.js",
+     "start": 138.2,
+     "end": 165.9,
+     "kb": 5.5
+    },
+    {
+     "file": "src/civcards.js",
+     "start": 138.2,
+     "end": 175.1,
+     "kb": 3
+    },
+    {
+     "file": "src/civs.js",
+     "start": 138.2,
+     "end": 175.6,
+     "kb": 2.1
+    },
+    {
+     "file": "src/ai.js",
+     "start": 138.2,
+     "end": 175.9,
+     "kb": 7
+    },
+    {
+     "file": "src/touchtips.js",
+     "start": 138.3,
+     "end": 164.9,
+     "kb": 1.3
+    },
+    {
+     "file": "src/sfx.js",
+     "start": 138.3,
+     "end": 164,
+     "kb": 1.8
+    },
+    {
+     "file": "src/minimap.js",
+     "start": 138.3,
+     "end": 166.1,
+     "kb": 2
+    },
+    {
+     "file": "src/ui-state.js",
+     "start": 138.3,
+     "end": 175.3,
+     "kb": 1.5
+    },
+    {
+     "file": "src/techtree.js",
+     "start": 166.3,
+     "end": 195.3,
+     "kb": 3.8
+    },
+    {
+     "file": "src/combat.js",
+     "start": 166.4,
+     "end": 191.6,
+     "kb": 5.1
+    },
+    {
+     "file": "src/anim.js",
+     "start": 168.5,
+     "end": 192.5,
+     "kb": 1.7
+    },
+    {
+     "file": "src/terrain.js",
+     "start": 168.6,
+     "end": 191.7,
+     "kb": 2.6
+    },
+    {
+     "file": "src/art.js",
+     "start": 168.6,
+     "end": 194.3,
+     "kb": 2.5
+    },
+    {
+     "file": "src/kibble.js",
+     "start": 168.7,
+     "end": 192.4,
+     "kb": 4.5
+    }
+   ],
+   "interactive": 238.9,
+   "modulesDone": 195.3,
+   "firstModule": 107.1,
+   "waves": 3,
+   "errors": 0,
+   "wall": 552
+  }
+ ]
+}

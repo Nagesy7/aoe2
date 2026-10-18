@@ -1,0 +1,56 @@
+run 1: ttfb 75.9 ms, fcp 108, modules 21 done @191.6 (3 waves), interactive 301 ms
+run 2: ttfb 61.4 ms, fcp 88, modules 21 done @161 (3 waves), interactive 206 ms
+run 3: ttfb 59.1 ms, fcp 88, modules 21 done @165.1 (3 waves), interactive 215 ms
+run 4: ttfb 81.7 ms, fcp 112, modules 21 done @193.6 (3 waves), interactive 235 ms
+run 5: ttfb 75 ms, fcp 96, modules 21 done @167.7 (3 waves), interactive 217 ms
+run 6: ttfb 51.9 ms, fcp 92, modules 21 done @165.9 (3 waves), interactive 216 ms
+run 7: ttfb 72.2 ms, fcp 96, modules 21 done @215.4 (3 waves), interactive 254 ms
+run 8: ttfb 70 ms, fcp 104, modules 21 done @231.4 (3 waves), interactive 275 ms
+run 9: ttfb 57.8 ms, fcp 76, modules 21 done @171.2 (3 waves), interactive 210 ms
+run 10: ttfb 71.5 ms, fcp 120, modules 21 done @195.3 (3 waves), interactive 239 ms
+{
+ "ttfb": {
+  "median": 70,
+  "p90": 75.9,
+  "min": 51.9,
+  "max": 81.7
+ },
+ "fcp": {
+  "median": 96,
+  "p90": 112,
+  "min": 76,
+  "max": 120
+ },
+ "firstPaint": {
+  "median": 96,
+  "p90": 112,
+  "min": 76,
+  "max": 120
+ },
+ "dcl": {
+  "median": 187.2,
+  "p90": 250.8,
+  "min": 178.4,
+  "max": 274.8
+ },
+ "modulesDone": {
+  "median": 171.2,
+  "p90": 215.4,
+  "min": 161,
+  "max": 231.4
+ },
+ "interactive": {
+  "median": 217,
+  "p90": 274.7,
+  "min": 206.3,
+  "max": 300.7
+ },
+ "waves": {
+  "median": 3,
+  "p90": 3,
+  "min": 3,
+  "max": 3
+ }
+}
+wrote proof/load-baseline.json
+EXIT 0
