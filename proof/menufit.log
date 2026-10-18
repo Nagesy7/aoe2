@@ -40,22 +40,52 @@ PASS: 1280x800 default: no page errors
 PASS: 1280x800 a: title on screen at load (h1 top 24, tag bottom 108, panel top 8, panel h 962, menu scrollTop 0)
 PASS: 1280x800 a: all 5 menu buttons reachable (menu scrolls)
 PASS: 1280x800 a: no page errors 
-PASS: 844x390 default: title on screen at load (h1 top 20, tag bottom 78, panel top 8, panel h 707, menu scrollTop 0)
+PASS: 844x390 default: title on screen at load (h1 top 20, tag bottom 78, panel top 8, panel h 631, menu scrollTop 0)
+PASS: 844x390 default: Skirmish button above the fold (bottom 307 <= 390, Shikoku selected)
 PASS: 844x390 default: all 5 menu buttons reachable (menu scrolls)
 PASS: 844x390 default: no page errors 
 PASS: 844x390 a: title on screen at load (h1 top 20, tag bottom 78, panel top 8, panel h 641, menu scrollTop 0)
+PASS: 844x390 a: Skirmish button above the fold (bottom 317 <= 390, Shikoku selected)
 PASS: 844x390 a: all 5 menu buttons reachable (menu scrolls)
 PASS: 844x390 a: no page errors 
-PASS: 667x375 default: title on screen at load (h1 top 20, tag bottom 78, panel top 8, panel h 707, menu scrollTop 0)
+PASS: 750x342 default: title on screen at load (h1 top 20, tag bottom 78, panel top 8, panel h 631, menu scrollTop 0)
+PASS: 750x342 default: Skirmish button above the fold (bottom 307 <= 342, Shikoku selected)
+PASS: 750x342 default: all 5 menu buttons reachable (menu scrolls)
+PASS: 750x342 default: no page errors 
+PASS: 750x342 a: title on screen at load (h1 top 20, tag bottom 78, panel top 8, panel h 641, menu scrollTop 0)
+PASS: 750x342 a: Skirmish button above the fold (bottom 317 <= 342, Shikoku selected)
+PASS: 750x342 a: all 5 menu buttons reachable (menu scrolls)
+PASS: 750x342 a: no page errors 
+PASS: 568x320 default: title on screen at load (h1 top 20, tag bottom 78, panel top 8, panel h 642, menu scrollTop 0)
+PASS: 568x320 default: Skirmish button above the fold (bottom 318 <= 320, Shikoku selected)
+PASS: 568x320 default: all 5 menu buttons reachable (menu scrolls)
+PASS: 568x320 default: no page errors 
+PASS: 568x320 a: title on screen at load (h1 top 20, tag bottom 78, panel top 8, panel h 641, menu scrollTop 0)
+PASS: 568x320 a: Skirmish button above the fold (bottom 317 <= 320, Shikoku selected)
+PASS: 568x320 a: all 5 menu buttons reachable (menu scrolls)
+PASS: 568x320 a: no page errors 
+PASS: 863x360 default: title on screen at load (h1 top 20, tag bottom 78, panel top 8, panel h 631, menu scrollTop 0)
+PASS: 863x360 default: Skirmish button above the fold (bottom 307 <= 360, Shikoku selected)
+PASS: 863x360 default: all 5 menu buttons reachable (menu scrolls)
+PASS: 863x360 default: no page errors 
+PASS: 863x360 a: title on screen at load (h1 top 20, tag bottom 78, panel top 8, panel h 641, menu scrollTop 0)
+PASS: 863x360 a: Skirmish button above the fold (bottom 317 <= 360, Shikoku selected)
+PASS: 863x360 a: all 5 menu buttons reachable (menu scrolls)
+PASS: 863x360 a: no page errors 
+PASS: 667x375 default: title on screen at load (h1 top 20, tag bottom 78, panel top 8, panel h 631, menu scrollTop 0)
+PASS: 667x375 default: Skirmish button above the fold (bottom 307 <= 375, Shikoku selected)
 PASS: 667x375 default: all 5 menu buttons reachable (menu scrolls)
 PASS: 667x375 default: no page errors 
 PASS: 667x375 a: title on screen at load (h1 top 20, tag bottom 78, panel top 8, panel h 641, menu scrollTop 0)
+PASS: 667x375 a: Skirmish button above the fold (bottom 317 <= 375, Shikoku selected)
 PASS: 667x375 a: all 5 menu buttons reachable (menu scrolls)
 PASS: 667x375 a: no page errors 
-PASS: 932x430 default: title on screen at load (h1 top 20, tag bottom 78, panel top 8, panel h 707, menu scrollTop 0)
+PASS: 932x430 default: title on screen at load (h1 top 20, tag bottom 78, panel top 8, panel h 631, menu scrollTop 0)
+PASS: 932x430 default: Skirmish button above the fold (bottom 307 <= 430, Shikoku selected)
 PASS: 932x430 default: all 5 menu buttons reachable (menu scrolls)
 PASS: 932x430 default: no page errors 
 PASS: 932x430 a: title on screen at load (h1 top 20, tag bottom 78, panel top 8, panel h 641, menu scrollTop 0)
+PASS: 932x430 a: Skirmish button above the fold (bottom 317 <= 430, Shikoku selected)
 PASS: 932x430 a: all 5 menu buttons reachable (menu scrolls)
 PASS: 932x430 a: no page errors 
 PASS: 390x844 default: title on screen at load (h1 top 24, tag bottom 108, panel top 8, panel h 1003, menu scrollTop 0)

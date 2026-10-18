@@ -49,9 +49,13 @@ body.ingame #minimap{display:block}
 .civ-card canvas{width:100%;max-width:176px;aspect-ratio:176/104;border-radius:3px;display:block}.civ-card b{font-size:12px;margin-top:2px}.civ-card small{opacity:.8}
 .civ-card .rar{font-size:10px;font-style:normal;text-transform:capitalize;opacity:.75}.civ-card.rar-rare{box-shadow:0 0 8px #7ac8ff}.civ-card.rar-legendary{box-shadow:0 0 10px #ffd86b}.civ-card.rar-rare .rar{color:#9fd8ff;opacity:1}.civ-card.rar-legendary .rar{color:#ffd86b;opacity:1}
 #civ-cards[data-ui=b] .civ-card{flex-direction:row;align-items:flex-start;gap:6px;text-align:left;padding:5px 6px!important}#civ-cards[data-ui=b] canvas.shield{width:46px;max-width:46px;aspect-ratio:64/72;flex:none;margin:-3px -3px -3px -4px}
-#civ-cards[data-ui=b] .txt{display:flex;flex-direction:column;gap:1px;min-width:0}#civ-cards[data-ui=b] .txt b{margin:0;font-size:12px}#civ-cards[data-ui=b] .chip{align-self:flex-start;background:#5a3c18;border-radius:8px;padding:0 6px;font-size:10px;opacity:1}
+#civ-cards[data-ui=b] .txt{display:flex;flex-direction:column;gap:1px;min-width:0}#civ-cards[data-ui=b] .hd{display:flex;flex-direction:column;gap:1px}#civ-cards[data-ui=b] .txt b{margin:0;font-size:12px}#civ-cards[data-ui=b] .chip{align-self:flex-start;background:#5a3c18;border-radius:8px;padding:0 6px;font-size:10px;opacity:1}
 #civ-cards[data-ui=b] .tr{display:flex;flex-direction:column;font-size:10.5px;line-height:1.25;color:#ffe9c0}#civ-cards[data-ui=b] .uq{font-size:10px;color:#ffd86b;line-height:1.2}
-@media (max-height:520px){#civ-cards[data-ui=b]{grid-template-columns:repeat(3,minmax(0,1fr));overflow:visible;max-width:calc(100vw - 60px)}#civ-cards[data-ui=b] .tr{font-size:9.5px}#civ-cards[data-ui=b] .uq{display:none}}
+@media (max-height:520px){#civ-cards[data-ui=b]{grid-template-columns:repeat(3,minmax(0,1fr));overflow:visible;max-width:calc(100vw - 60px);gap:4px}#civ-cards[data-ui=b] .tr{font-size:9.5px;line-height:1.2}#civ-cards[data-ui=b] .uq{display:none}
+ /* short phones: name + style chip on one line, common-finish label hidden (owned finishes still labelled), smaller shield, so Skirmish stays above the fold at 750x342 */
+ #civ-cards[data-ui=b] .civ-card{padding:3px 5px!important;gap:4px}#civ-cards[data-ui=b] .hd{flex-direction:row;flex-wrap:wrap;align-items:baseline;column-gap:4px}#civ-cards[data-ui=b] .txt b{font-size:11px}#civ-cards[data-ui=b] .chip{font-size:9px}
+ #civ-cards[data-ui=b] .rar-common .rar{display:none}#civ-cards[data-ui=b] canvas.shield{width:36px;max-width:36px;margin:-3px}}
+@media (max-height:340px){#civ-cards[data-ui=b] .tr span+span{display:none}} /* iPhone SE landscape (568x320): one key trait per card; full list stays in the clan line under the grid */
 .civ-card.sel{border-color:#ffd86b;background:#3a2410}.civ-card.cine{transform:scale(1.04);z-index:2;border-color:#fff}.civ-card{transition:transform .15s}
 #menu-err{color:#ff8a7a;min-height:18px}
 .screen>.panel{margin-block:auto;flex:none}
