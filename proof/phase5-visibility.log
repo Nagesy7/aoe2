@@ -1,0 +1,6 @@
+PASS: visible: loop running (30 frames, 10 ticks in 0.5 s)
+PASS: hidden: no frames, no ticks for 1.5 s (frames 63->63, tick 22->22)
+PASS: hidden: audio suspended too
+PASS: visible again: loop resumed (30 frames in 0.5 s)
+PASS: no catch-up burst on resume (1 ticks in the first 100 ms)
+PASS: no page errors 

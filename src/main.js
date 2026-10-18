@@ -267,8 +267,14 @@ const minimap = createMinimap($('minimap'), { getWorld: () => world, getFog: () 
   getView: () => { const a = toWorld(0, 0), b = toWorld(innerWidth, innerHeight); return { x: a.x, y: a.y, w: b.x - a.x, h: b.y - a.y }; },
   jump: (x, y) => { cam.x = x * TILE - canvas.width / 2; cam.y = y * TILE - canvas.height / 2; clampCamera(cam, canvas.width, canvas.height, world); } });
 const PAN = 600, EDGE = 12; let last = performance.now(), acc = 0, running = false;
+// Phase 5: the render loop stops while the tab is hidden (single player / vs computer) and restarts on return without
+// a catch-up burst. Online games keep ticking (rAF is throttled by the browser anyway) so lockstep peers never stall on us.
+const loop = { frames: 0, paused: false, pauses: 0 };
+document.addEventListener('visibilitychange', () => { if (!document.hidden && loop.paused && world) { loop.paused = false; last = performance.now(); acc = 0; requestAnimationFrame(frame); } });
 function frame(now) {
   if (!world) return;
+  if (document.hidden && !net) { loop.paused = true; loop.pauses++; return; }
+  loop.frames++;
   const real = Math.min(0.25, (now - last) / 1000); last = now; const dt = Math.min(0.1, real);
   let dx = 0, dy = 0;
   if (keys.has('a') || keys.has('arrowleft')) dx--; if (keys.has('d') || keys.has('arrowright')) dx++;
@@ -295,7 +301,7 @@ function frame(now) {
 window.game = { sim: SIM, world: null, cam, ui, selectionInfo, pickAt, toScreen: (x, y) => { const q = worldToScreen(x, y, cam); return { x: q.x * Z, y: q.y * Z }; }, zoom: () => Z, toWorld,
   tick: (s) => { if (net) throw new Error('no fast-forward in multiplayer'); const n = Math.round(s / TICK_DT); for (let i = 0; i < n; i++) stepTick(world); render(ctx, world, cam, ui); updateHud(); },
   stateHash: () => world && stateHash(world),
-  getSelected: () => getSelected(world), sfx: SFX, minimap, touchTips, touch: { ...touchUi }, buildTabOf: t => Object.keys(BUILD_TABS).find(k => BUILD_TABS[k].items.includes(t)) || null };
+  getSelected: () => getSelected(world), sfx: SFX, minimap, touchTips, loop, touch: { ...touchUi }, buildTabOf: t => Object.keys(BUILD_TABS).find(k => BUILD_TABS[k].items.includes(t)) || null };
 
 // ---- main menu / lobby ----
 let session = null;
