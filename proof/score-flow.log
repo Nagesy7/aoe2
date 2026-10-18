@@ -1,0 +1,12 @@
+score flow 2026-10-18T08:41:05.038Z base=local relay sim 051a5632e1c996fb
+PASS: vs computer (seed 11, kai vs hokkaido): 6 commands recorded from real clicks, 4.0 min
+PASS: node replay of the client's submit log = browser hash at tick 4828: 7cd1e8c5 vs 7cd1e8c5 (321 ms)
+PASS: a tampered copy (one order moved 5 tiles) replays to another hash, so it would not be scored
+PASS: no result yet (nothing sent), no page errors
+PASS: peers agree: last common checkpoint tick 2400 hash 243415b1 (seed 1825926846, shiba vs shiba)
+PASS: both peers recorded the identical lockstep log: 10 inputs from both seats before tick 2400
+PASS: node replay of that log = the hash both peers agreed on at tick 2400: 243415b1 (102 ms)
+PASS: dropping one seat's inputs gives another hash (not scored)
+PASS: no page errors
+
+9 passed, 0 failed

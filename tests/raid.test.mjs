@@ -1,7 +1,6 @@
 // Boss Raids + Inu Score reporting. Run: node tests/raid.test.mjs
 import fs from 'fs';
 import * as R from '../src/raid.js';
-import * as SC from '../src/score.js';
 const { BR } = R; const log = []; let pass = 0, fail = 0;
 const out = s => { console.log(s); log.push(s); }; const assert = (c, m) => { if (c) { pass++; out('PASS: ' + m); } else { fail++; out('FAIL: ' + m); } };
 out('raid test ' + new Date().toISOString());
@@ -12,7 +11,8 @@ try { ref = fs.readFileSync('/workspace/kibble-pay/public/lib/boss-raid.js', 'ut
 if (!ref) try { const r = await fetch('https://kibble-pay.vercel.app/lib/boss-raid.js'); if (r.ok) { ref = await r.text(); refFrom = 'kibble-pay.vercel.app'; } } catch { }
 assert(ref === null ? (out('  (no reference reachable: skipped)'), true) : mine === ref, `src/vendor/boss-raid.js byte-identical to ${refFrom || 'reference'} (RAID_VERSION ${BR.RAID_VERSION})`);
 for (const f of ['../docs/BOSS_RAIDS.md', '../docs/INU_SCORE.md']) { const a = fs.readFileSync(new URL(f, import.meta.url), 'utf8'); let b = null; try { b = fs.readFileSync('/workspace/inu-shared/' + (f.includes('BOSS') ? 'boss-raids.md' : 'inu-score.md'), 'utf8'); } catch { }
-  assert(b === null || a === b, `${f.slice(3)} mirrors the Inu Verse keeper's spec exactly`); }
+  const own = f.includes('INU_SCORE') ? '\n## Inu Empires: replay-verified' : null; // this repo's own section, after the keeper's text
+  assert(b === null || (own && a.includes(own) ? a.startsWith(b.trimEnd()) : a === b), `${f.slice(3)} mirrors the Inu Verse keeper's spec exactly${own ? ' (plus our replay-verified section after it)' : ''}`); }
 // ---- a simple skilled bot (also used by the screenshot flow) ----
 export function bot(fight) { const r = fight.raid, s = r.s, tele = r.telegraph(), bl = r.bossLane(), safe = l => !tele.includes(l);
   let goal = bl; if (!safe(goal)) { const c = [0, 1, 2, 3, 4].filter(safe).sort((a, b) => Math.abs(a - s.lane) - Math.abs(b - s.lane)); goal = c[0] ?? s.lane; }
@@ -53,18 +53,7 @@ assert(createdSame(), 'raid fight is a pure function of boss + inputs (same inpu
 function createdSame() { const i = results['gutter-gator'].inputs; return BR.simulate('gutter-gator', i).score === BR.simulate('gutter-gator', i).score; }
 const copy = raidSrc.match(/`[^`]*`|'[^']*'/g).join(' ');
 assert(![/\bbuy\b/i, /\bsell\b/i, /pump it/i, /\bmoon\b/i, /\bdump\b/i, /\bbet\b(?!s, no)/i].slice(0, 5).some(r => r.test(copy)) && /No bets, no raffles/.test(copy), 'raid copy: no banned words; says no bets, no raffles');
-// ---- Inu Score: Empires match score ----
-assert(SC.matchScore({ mode: 'ai', win: true, simSeconds: 15 * 60, realMs: 15 * 60e3 }) === 40000, 'vs computer, 15 min win = 20,000 + 20,000');
-assert(SC.matchScore({ mode: 'mp', win: true, simSeconds: 45 * 60, realMs: 45 * 60e3 }) === 30000, 'online 1v1, 45 min win = 30,000 (no speed bonus)');
-assert(SC.matchScore({ mode: 'ai', win: true, simSeconds: 600, realMs: 70e3 }) === 3500, 'capped at 50 points per real second (server perSec)');
-assert(SC.matchScore({ mode: 'ai', win: false, simSeconds: 600, realMs: 600e3 }) === 0 && SC.matchScore({ mode: 'sp', win: true, simSeconds: 600, realMs: 600e3 }) === 0 && SC.matchScore({ mode: 'ai', win: true, simSeconds: 50, realMs: 50e3 }) === 0 && SC.matchScore({ mode: 'ai', win: true, spectate: true, simSeconds: 600, realMs: 600e3 }) === 0, 'losses, sandbox, spectating, < 60 s score 0');
-assert(SC.matchScore({ mode: 'mp', win: true, simSeconds: 1, realMs: 9e9 }) <= SC.CAP, 'never above the 100,000 cap');
-assert(SC.inuPoints(100000) === 1000 && SC.inuPoints(25000) === 500 && SC.inuPoints(0) === 0, 'public formula: floor(1000 x sqrt(best/cap))');
-const sent = []; const kp2 = { session: 's', async _req(p, b) { sent.push([p, b]); return { ok: true, inuScore: 812 }; } };
-const r1 = await SC.reportMatch(kp2, { mode: 'ai', win: true, simSeconds: 900, realMs: 900e3 });
-assert(r1.sent && r1.inuScore === 812 && sent[0][0] === '/api/game?action=score' && sent[0][1].game === 'inu-empires' && sent[0][1].score === 40000 && sent[0][1].durationMs === 900000, 'won match posted to /api/game?action=score as inu-empires (score + real duration), Inu Score shown');
-assert(!(await SC.reportMatch({ session: null, _req: () => { throw 1; } }, { mode: 'ai', win: true, simSeconds: 900, realMs: 900e3 })).sent, 'not signed in: nothing sent, no sign-in popup');
-assert(!(await SC.reportMatch(kp2, { mode: 'ai', win: false, simSeconds: 900, realMs: 900e3 })).sent && sent.length === 1, 'losses are not sent');
+// (Inu Empires match scoring is replay-verified now: tests/score.test.mjs)
 out(`\n${pass} passed, ${fail} failed`);
 fs.mkdirSync(new URL('../proof/', import.meta.url), { recursive: true }); fs.writeFileSync(new URL('../proof/raid-test.log', import.meta.url), log.join('\n') + '\n');
 process.exit(fail ? 1 : 0);

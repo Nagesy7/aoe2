@@ -1,0 +1,38 @@
+score test 2026-10-18T08:46:09.620Z
+PASS: vs computer, 15 min win = 20,000 + 20,000
+PASS: online 1v1, 45 min win = 30,000 (no speed bonus)
+PASS: online 15 min = 50,000 before the 50 pts / real second cap -> 45,000
+PASS: capped at 50 points per real second
+PASS: losses, sandbox, spectating, < 60 s score 0
+PASS: public formula: floor(1000 x sqrt(best/cap))
+PASS: src/sim-id.js is fresh (051a5632e1c996fb = sha256 of sim.js, ai.js, combat.js, techtree.js, civs.js); after a rule change run node scripts/sim-id.mjs --write
+PASS: kibble-pay public/lib/empires/* byte-identical to src/* (the server replays exactly these rules)
+PASS: live kibble-pay /api/empires replays sim 051a5632e1c996fb (= this client 051a5632e1c996fb)
+PASS: the sim files never read score / reporting code (reporting is read-only)
+PASS: fixture was recorded with the current rules
+PASS: real online log replays to the same win: player 0 conquers on tick 23762 (19.8 min), hash ebdea6e7 (4631 ms)
+PASS: tampered online result is rejected: claimed hash changed
+PASS: tampered online result is rejected: one command removed
+PASS: tampered online result is rejected: one command changed
+PASS: tampered online result is rejected: the winner's commands re-labelled as seat 1
+PASS: tampered online result is rejected: win step claimed 40 ticks later
+PASS: tampered online result is rejected: win step claimed earlier
+PASS: tampered online result is rejected: other seed
+PASS: tampered online result is rejected: other clans
+PASS: vs-computer submit body: 34 recorded commands as [tick, type, args], endTick 6000
+PASS: client-recorded vs-computer log (5.0 min) replays to the client's hash 4c6d39e0
+  (dropped first command -> 49edad64; seed 8 -> e0df168b; client 4c6d39e0)
+PASS: vs computer: a dropped command gives a different hash (not scored)
+PASS: vs computer: another map seed gives a different hash (not scored). (Clans are part of the replay, but the state hash only diverges once a clan bonus matters, so a claimed clan is scored only if the inputs still win under it: see the online other-clans case above.)
+PASS: vs computer: only a win is sent
+PASS: online: both players send (the loser's copy confirms the winner's)
+PASS: desynced, spectated, sandbox or unfinished matches are not sent
+PASS: online log = lockstep inputs before the winning step only
+PASS: start ticket asked from /api/empires with seed, clans and SIM_ID
+PASS: not signed in: no request, no sign-in popup
+PASS: win submitted as inputs + ticket (no client score or duration in the body)
+PASS: result text: verified / waiting for the other copy / not scored
+PASS: no ticket (signed out at start): nothing sent
+PASS: the game never posts a score to /api/game?action=score any more
+
+34 passed, 0 failed
