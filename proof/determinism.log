@@ -1,4 +1,4 @@
-determinism test 2026-10-15T09:43:02.331Z
+determinism test 2026-10-15T11:19:27.559Z
 --- two sims, same command stream, 6000 ticks (5 min game time) ---
   tick 1000: hash edc1c553 units 9 buildings 10 cmds so far 78
   tick 2000: hash dd770a28 units 9 buildings 16 cmds so far 129
@@ -6,7 +6,7 @@ determinism test 2026-10-15T09:43:02.331Z
   tick 4000: hash 9c2f2405 units 14 buildings 24 cmds so far 228
   tick 5000: hash 5c52887a units 17 buildings 28 cmds so far 262
   tick 6000: hash 671eeda1 units 17 buildings 33 cmds so far 315
-  4388 ms
+  5150 ms
 PASS: hashes identical on all 6000 ticks (6000/6000)
 PASS: command stream exercised (315 commands)
 PASS: all command types used: order,build,train,rally,ageup,garrison,cancel,research,stop,ungarrison,stance
@@ -14,7 +14,7 @@ PASS: game actually progressed (units 17, buildings 33, deaths 4)
 PASS: economy ran: 9 buildings completed during the run, 3 techs, ages dark/dark, 17 units alive
 PASS: replay of serialized stream reproduces final hash 671eeda1
 --- single player world (enemy camp + raids) is deterministic too ---
-PASS: skirmish + raids: identical hashes for 4000 ticks (deaths 7, raids 1)
+PASS: skirmish + raids: identical hashes for 4000 ticks (deaths 5, raids 1)
 --- different seeds differ ---
 PASS: seed 1 a3fa4402 != seed 2 da2ffdb3
 PASS: a single extra move command changes the hash

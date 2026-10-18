@@ -110,7 +110,7 @@ log('--- 5. civilizations: traits, unique units, no pay-to-win ---');
   { const w = mkCiv('shikoku'); const st = addBuilding(w, 'stable', 30, 30); assert(unitCost(w, 'scout_cavalry', st).food === 40, 'Shikoku: Paddock units 50% cheaper (80 -> 40 food)');
     w.players.enemy.civ = 'shikoku'; const s = mk(w, 'scout_cavalry', 30.5, 36.5); assert(Math.abs(s.speed - UNITS.scout_cavalry.speed * 1.20) < 1e-9, 'Shikoku: cavalry +20% speed'); }
   { const w = mkCiv('akita'); const tc = w.buildings.find(b => b.owner === 'player'); assert(Math.abs(itemTime('age:feudal', w, tc) - 130 * 0.94) < 1e-9, 'Akita: Pack Age researched 6% faster (130 -> 122.2 s)'); }
-  { const w = mkCiv('hokkaido'); const h = addBuilding(w, 'house', 30, 30); assert(h.maxHp === Math.round(550 * 1.05) && techEffects(w, 'player').buildSpeedPct === 10, 'Hokkaido: buildings +5% HP, build 10% faster'); }
+  { const w = mkCiv('hokkaido'); const h = addBuilding(w, 'house', 30, 30); assert(h.maxHp === Math.round(550 * 1.05) && techEffects(w, 'player').buildSpeedPct === 5, 'Hokkaido: buildings +5% HP, build 5% faster'); }
   { const w = mkCiv('kai'); const br = addBuilding(w, 'barracks', 30, 30); assert(Math.abs(itemTime('militia', w, br) - UNITS.militia.time * 0.70) < 1e-9, 'Kai: Dojo trains 30% faster'); }
   { const w = mkCiv('shiba'); assert(S.gatherRate(w, 'tree') > S.GATHER_RATES.tree, 'Shiba: lumber +8%'); }
   { const w = mkCiv('kai'); w.players.player.age = 'castle'; const c = addBuilding(w, 'castle', 30, 30);
