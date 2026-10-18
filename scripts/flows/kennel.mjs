@@ -1,5 +1,6 @@
-// Kibble Kennel proof (phone landscape 844x390 + 750x342): the tab with no tier / each tier (?kennel= dev override), "Relock to keep"
-// after a tier drop, equip/unequip saved in the cloud-saved kibble state, each tier's cosmetics in game with an identical sim hash,
+// Kibble Kennel proof (phone landscape 844x390 + 750x342), HYBRID: the tab with no tier / a streak in progress / each hold-streak tier /
+// the optional Locked flair (?kennel= / ?kflair= dev override): progress bar, next step, "Selling below X resets your streak", launch note;
+// "Hold to get back" after a streak broke, equip/unequip saved in the cloud-saved kibble state, each tier's cosmetics in game with an identical sim hash,
 // the lock flow end to end against a stubbed kibble-pay (real /api/kennel-lock transaction fixture, fake Phantom: nothing is sent),
 // and multiplayer sync of cosmetic ids (two tabs, BroadcastChannel). Usage: ctl run kennel [--url U] [--shots DIR]
 import { readFileSync, writeFileSync, mkdirSync } from 'node:fs'; import { join } from 'node:path';
@@ -11,20 +12,27 @@ export default async function (argv) {
   const openTab = async p => { await p.S(() => document.getElementById('btn-kibble').click()); await p.waitForTimeout(150); await p.S(() => document.querySelector('#kb [data-tab=kennel]').click()); await p.waitForTimeout(250); };
   const tabInfo = p => p.S(() => { const q = s => [...document.querySelectorAll(s)]; return { tier: document.getElementById('kn-tier')?.textContent, text: document.getElementById('kb-body').innerText,
     on: q('.kn-item.on').map(e => e.dataset.id), avail: q('.kn-item.available').map(e => e.dataset.id), relock: q('.kn-item.relock').map(e => e.dataset.id), locked: q('.kn-item.locked').map(e => e.dataset.id),
-    relockBtn: q('.kn-item.relock button').every(b => b.disabled && b.textContent === 'Relock to keep'), warn: !!document.getElementById('kn-warn'),
+    relockBtn: q('.kn-item.relock button').every(b => b.disabled && b.textContent === 'Hold to get back'), warn: !!document.getElementById('kn-warn'),
+    flair: !!document.getElementById('kn-flair'), bar: document.querySelector('#kn-progress i')?.style.width || null, step: document.getElementById('kn-step')?.textContent || '', reset: document.getElementById('kn-reset')?.textContent || '',
+    streaks: q('.kn-st').length, flairItem: q('.kn-item[data-id=kn_badge_locked]')[0]?.className || '',
     fits: (() => { const r = document.querySelector('#kb .kpanel').getBoundingClientRect(); return r.top >= 0 && r.bottom <= innerHeight + 1 && r.left >= 0 && r.right <= innerWidth + 1; })() }; });
   const copyOk = t => !BANNED.some(r => r.test(t.replace("Locked tokens can't be sold until the unlock date.", '')));
-  // ---- A: the tab, no tier + each tier ----
+  const VARIANTS = [['none', ''], ['progress', ''], ...N.TIER_IDS.map(t => [t, '']), ['guard', 'flair']];
+  // ---- A: the tab: no tier, streak in progress, each tier, the optional Locked flair ----
   for (const [vw, vh] of [[844, 390], [750, 342]]) {
     const p = await newPage({ phone: true, ctxOpts: { viewport: { width: vw, height: vh } } });
-    for (const t of ['none', ...N.TIER_IDS]) {
-      await openTitle(p, srv.url, `?kennel=${t}&mood=chill`); await openTab(p); const i = await tabInfo(p), tier = t === 'none' ? null : t, want = N.unlockedBy(tier);
-      c(i.tier === (tier ? N.tierById(tier).name : 'No tier yet') && i.warn && /Locked tokens can't be sold until the unlock date\./.test(i.text), `${vw}x${vh} ${t}: tier "${i.tier}", can't-sell warning shown`);
-      c(/Locked: /.test(i.text) && /Unlock date: /.test(i.text) && /Next tier: /.test(i.text), `${vw}x${vh} ${t}: locked amount, unlock date, next tier shown`);
-      c(i.on.length + i.avail.length === want.length && i.locked.length === N.IDS.length - want.length && i.relock.length === 0, `${vw}x${vh} ${t}: ${want.length} unlocked, ${i.locked.length} locked`);
-      c(copyOk(i.text) && /no yield, no rewards, no draws/.test(i.text), `${vw}x${vh} ${t}: copy has no banned words, says no yield/rewards/draws`);
-      c(i.fits, `${vw}x${vh} ${t}: panel fits the screen (scrolls inside)`);
-      if (vw === 844) await p.screenshot({ path: join(out, `kennel-tab-${t}.png`) });
+    for (const [t, fl] of VARIANTS) {
+      const name = fl ? 'locked-flair' : t, tier = ['none', 'progress'].includes(t) ? null : t, fx = N.fixture(t, Date.now(), { flair: !!fl });
+      await p.evaluate(() => { try { localStorage.clear(); } catch {} }).catch(() => {}); // each variant from a fresh save (no "Hold to get back" carry-over)
+      await openTitle(p, srv.url, `?kennel=${t}${fl ? '&kflair=1' : ''}&mood=chill`); await openTab(p); const i = await tabInfo(p), want = N.unlockedBy(tier).length + (fl ? 1 : 0);
+      c(i.tier.startsWith(tier ? N.tierById(tier).name : 'No tier yet') && i.flair === !!fl, `${vw}x${vh} ${name}: tier "${i.tier}"${fl ? ' with the Locked flair chip' : ''}`);
+      c(/Holding: /.test(i.text) && /Next step: /.test(i.text) && i.bar !== null && i.streaks === 4 && /long streaks can't exist yet/.test(i.text), `${vw}x${vh} ${name}: amount held, next step, progress bar (${i.bar}), 4 streak rows, launch note`);
+      const g = N.guardedStreak(fx); c(g ? i.reset === `Selling below ${N.fmtAmt(g.amount)} $KIBBLE resets your ${g.name} streak${g.earned ? ' (and the tier)' : ''}.` : !i.reset, `${vw}x${vh} ${name}: ${g ? `"${i.reset}"` : 'nothing held, no reset line'}`);
+      c(t !== 'progress' || (/3 days left|days held/.test(i.step) && /Pup on/.test(i.step)), `${vw}x${vh} ${name}: step "${i.step}"`);
+      c(i.on.length + i.avail.length === want && i.relock.length === 0 && (fl ? /\b(on|available)\b/.test(i.flairItem) : /flair/.test(i.flairItem)), `${vw}x${vh} ${name}: ${want} unlocked; Locked flair item ${fl ? 'usable' : 'needs the optional lock'}`);
+      c(i.warn && /Optional: Locked flair/.test(i.text) && /No tier needs a lock/.test(i.text) && /Locked tokens can't be sold until the unlock date\./.test(i.text) && copyOk(i.text) && /no yield, no rewards, no draws/.test(i.text), `${vw}x${vh} ${name}: lock section optional, required warning, no banned words, no yield/rewards/draws`);
+      c(i.fits, `${vw}x${vh} ${name}: panel fits the screen (scrolls inside)`);
+      await p.screenshot({ path: join(out, vw === 844 ? `kennel-streak-${name}.png` : `kennel-streak-phone-750x342-${name}.png`) });
     }
     await p.context().close();
   }
@@ -32,7 +40,7 @@ export default async function (argv) {
   { const p = await newPage({ phone: true }); await openTitle(p, srv.url, '?kennel=none');
     await p.evaluate(async ([KEY, eq]) => { const K = await import('/src/kibble.js'); const s = { ...K.newState(), ...JSON.parse(localStorage.getItem(KEY) || '{}') }; s.kennel = { everTier: 'top', equipped: eq }; localStorage.setItem(KEY, JSON.stringify(s)); }, [KEY, N.defaultEquip('top')]);
     await openTitle(p, srv.url, '?kennel=guard'); await openTab(p); const i = await tabInfo(p);
-    c(i.relock.length === 6 && i.relockBtn && i.relock.every(id => ['alpha', 'top'].includes(N.COSMETICS[id].tier)), `expired Alpha/Top items greyed with "Relock to keep" (${i.relock.length})`);
+    c(i.relock.length === 6 && i.relockBtn && i.relock.every(id => ['alpha', 'top'].includes(N.COSMETICS[id].tier)), `Alpha/Top items greyed with "Hold to get back" after the streak broke (${i.relock.length})`);
     await p.screenshot({ path: join(out, 'kennel-tab-relock.png') });
     await p.S(() => document.querySelector('[data-kn-off=collar]').click()); await p.waitForTimeout(150);
     const saved = await p.S(KEY => JSON.parse(localStorage.getItem(KEY)).kennel.equipped.collar, KEY);
@@ -43,17 +51,17 @@ export default async function (argv) {
     c(await p.S(KEY => JSON.parse(localStorage.getItem(KEY)).kennel.equipped.collar, KEY) === 'kn_collar', 'equip collars: saved'); await p.context().close(); }
   // ---- D: in game, each tier: cosmetics drawn, sim identical ----
   const hashes = {};
-  for (const t of ['none', ...N.TIER_IDS]) { const p = await newPage({ phone: true }); await openTitle(p, srv.url, `?kennel=${t}`);
-    await p.S(KEY => localStorage.removeItem(KEY), KEY); await openTitle(p, srv.url, `?kennel=${t}`); await startSkirmish(p); await p.waitForTimeout(400);
+  for (const t of ['none', ...N.TIER_IDS, 'guard+flair']) { const [tt, fl] = t.split('+'), q = `?kennel=${tt}${fl ? '&kflair=1' : ''}`; const p = await newPage({ phone: true }); await openTitle(p, srv.url, q);
+    await p.S(KEY => localStorage.removeItem(KEY), KEY); await openTitle(p, srv.url, q); await startSkirmish(p); await p.waitForTimeout(400);
     const r = await p.S(() => { const g = window.game, w = g.world; g.tick(20); const tc = w.buildings.find(b => b.type === 'town_center' && b.owner === 'player'), Z = g.zoom();
       w.units.filter(u => u.owner === 'player').forEach((u, i) => { u.x = tc.x + 3.6 + (i % 3) * 1.3; u.y = tc.y + 1.2 + Math.floor(i / 3) * 1.2; u.path = []; u.state = 'idle'; u.task = null; });
       g.cam.x = (tc.x + 2.4) * 32 - innerWidth / 2 / Z; g.cam.y = (tc.y + 1.8) * 32 - innerHeight / 2 / Z; g.tick(0.05); const L = g.ui.cosmetics?.player;
       return { ids: L ? [...L.ids].sort() : [], tick: w.tick }; });
     // hash on a fresh run without the camera/unit staging: same commands, so the sim must match exactly across tiers
     hashes[t] = await p.S(() => { const g = window.game, S = g.sim, w2 = S.createWorld({ enemy: true }); for (let i = 0; i < 600; i++) S.stepTick(w2); return S.stateHash(w2); });
-    const want = N.activeIds(N.defaultEquip(t === 'none' ? null : t), t === 'none' ? null : t).sort();
+    const tier = tt === 'none' ? null : tt, want = N.activeIds({ ...N.defaultEquip(tier), ...(fl ? { badge: 'kn_badge_locked' } : {}) }, tier, !!fl).sort();
     c(JSON.stringify(r.ids) === JSON.stringify(want), `in game ${t}: render loadout = ${want.length} cosmetic ids`);
-    await p.waitForTimeout(300); await p.screenshot({ path: join(out, `kennel-game-${t}.png`) }); c(!p.errors.length, `in game ${t}: no page errors ${p.errors.join(' | ')}`); await p.context().close(); }
+    await p.waitForTimeout(300); await p.screenshot({ path: join(out, fl ? 'kennel-streak-locked-flair-game.png' : `kennel-game-${t}.png`) }); c(!p.errors.length, `in game ${t}: no page errors ${p.errors.join(' | ')}`); await p.context().close(); }
   c(new Set(Object.values(hashes)).size === 1, `same 600-tick sim hash in every tier's page (${Object.values(hashes)[0]}; the full render-vs-sim proof is tests/kennel.test.mjs)`);
   // ---- E: lock flow against a stubbed kibble-pay (real lock tx fixture), fake Phantom ----
   { const fx = JSON.parse(readFileSync(join(ROOT, 'tests/fixtures/kennel-lock-tx.json'), 'utf8')), W = fx.sender;
@@ -69,11 +77,12 @@ export default async function (argv) {
       export async function initKibble() { return { mode: 'live', kp }; } export function mountFooter() {} export function mountHome() {}
       export function mountWallet(R, o) { setTimeout(() => o.onWallet({ address: '${W}', units: 5000000000000n }), 50); return { connect() {} }; }` }));
     await p.route(/kibble-pay\.vercel\.app\/api\/kennel\?/, r => { kennelCalls++; const after = !!(kennelCalls > 1 && r.request().url().includes('refresh=1'));
-      r.fulfill({ contentType: 'application/json', body: JSON.stringify(after ? { tier: 'guard', lockedAmount: 1000000, unlockDate: fx.unlockDate, tierUntil: '2026-11-17T07:00:00Z', nextTier: { id: 'alpha', need: 9000000 }, locks: [], source: 'chain' } : { tier: null, lockedAmount: 0, nextTier: { id: 'pup', need: 100000 }, locks: [], source: 'chain' }) }); });
+      const before = N.fixture('progress'), aft = { ...before, lockedAmount: 1000000, unlockDate: fx.unlockDate, locked: { flair: true, amount: 1000000, minAmount: 100000, unlockDate: fx.unlockDate }, locks: [{ id: 'S', amount: 1000000, unlockDate: fx.unlockDate, daysLeft: 60 }] };
+      r.fulfill({ contentType: 'application/json', body: JSON.stringify({ ...(after ? aft : before), source: 'chain' }) }); });
     await openTitle(p, srv.url, ''); await p.waitForTimeout(600); await openTab(p);
-    c((await tabInfo(p)).tier === 'No tier yet', 'lock flow: connected wallet starts with no tier (from /api/kennel)');
+    { const i0 = await tabInfo(p); c(i0.tier === 'No tier yet' && /1,200,000 \$KIBBLE/.test(i0.text) && !i0.flair, 'lock flow: connected wallet holding 1.2M for 3 days: no tier yet, streak in progress (from /api/kennel)'); }
     await p.fill('#kn-amt', '1000000'); await p.S(() => document.querySelector('[data-kn-days="60"]').click()); await p.waitForTimeout(100);
-    c(/Guard Dog for 30 days, then Pup for 53 days/.test(await p.S(() => document.querySelector('.kn-plan').textContent)), 'lock form explains the tier timeline (1M for 60 days)');
+    c(/Adds the Locked flair until then\. Locked tokens still count toward your hold streak\./.test(await p.S(() => document.querySelector('.kn-plan').textContent)), 'lock form: 1M for 60 days adds the Locked flair; locked tokens still count toward the streak');
     await p.S(() => document.querySelector('[data-kn-lock]').click());
     // review card first: every fee before Phantom opens
     await p.waitForSelector('#kn-review', { timeout: 15000 }).catch(async () => console.log('lock note:', await p.S(() => document.getElementById('kn-note')?.textContent), p.errors));
@@ -100,7 +109,7 @@ export default async function (argv) {
     c(lk.length === 1 && lk[0][1].amount === 1000000 && lk[0][1].days === 60 && Object.keys(lk[0][1]).length === 2, 'asks kibble-pay to build the lock (amount + days only)');
     c(sent.payer === W && !sent.sig0 && sent.sig1, 'Phantom gets the real self-lock tx: fee payer = player, player signature empty (signed in Phantom), metadata pre-signed');
     await p.waitForFunction(() => /Lock confirmed/.test(document.getElementById('kn-note')?.textContent || ''), null, { timeout: 40000 }).catch(() => {});
-    const done = await tabInfo(p); c(done.tier === 'Guard Dog' && /Lock confirmed: Guard Dog/.test(done.text), 'server confirms: tier refreshes to Guard Dog');
+    const done = await tabInfo(p); c(done.flair && done.tier.startsWith('No tier yet') && /Lock confirmed: Locked flair on/.test(done.text), 'server confirms the lock: Locked flair on, tier unchanged (tiers come from holding)');
     await p.screenshot({ path: join(out, 'kennel-tab-after-lock.png') });
     // a tampered response is refused before Phantom
     const bad = await p.evaluate(async fx => { const KU = await import('/src/kennel-ui.js'), web3 = await import('@solana/web3.js');

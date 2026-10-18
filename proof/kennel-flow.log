@@ -1,54 +1,102 @@
-PASS: 844x390 none: tier "No tier yet", can't-sell warning shown
-PASS: 844x390 none: locked amount, unlock date, next tier shown
-PASS: 844x390 none: 0 unlocked, 11 locked
-PASS: 844x390 none: copy has no banned words, says no yield/rewards/draws
+PASS: 844x390 none: tier "No tier yet"
+PASS: 844x390 none: amount held, next step, progress bar (0%), 4 streak rows, launch note
+PASS: 844x390 none: nothing held, no reset line
+PASS: 844x390 none: step "Hold 100,000 $KIBBLE more to start the Pup streak (100,000 $KIBBLE for 7 days; reached 25 Oct 2026 if you hold it from today)."
+PASS: 844x390 none: 0 unlocked; Locked flair item needs the optional lock
+PASS: 844x390 none: lock section optional, required warning, no banned words, no yield/rewards/draws
 PASS: 844x390 none: panel fits the screen (scrolls inside)
-PASS: 844x390 pup: tier "Pup", can't-sell warning shown
-PASS: 844x390 pup: locked amount, unlock date, next tier shown
-PASS: 844x390 pup: 2 unlocked, 9 locked
-PASS: 844x390 pup: copy has no banned words, says no yield/rewards/draws
+PASS: 844x390 progress: tier "No tier yet"
+PASS: 844x390 progress: amount held, next step, progress bar (43%), 4 streak rows, launch note
+PASS: 844x390 progress: "Selling below 1,000,000 $KIBBLE resets your Guard Dog streak."
+PASS: 844x390 progress: step "3 / 7 days held · Pup on 22 Oct 2026 if you keep holding"
+PASS: 844x390 progress: 0 unlocked; Locked flair item needs the optional lock
+PASS: 844x390 progress: lock section optional, required warning, no banned words, no yield/rewards/draws
+PASS: 844x390 progress: panel fits the screen (scrolls inside)
+PASS: 844x390 pup: tier "Pup"
+PASS: 844x390 pup: amount held, next step, progress bar (0%), 4 streak rows, launch note
+PASS: 844x390 pup: "Selling below 100,000 $KIBBLE resets your Pup streak (and the tier)."
+PASS: 844x390 pup: step "Hold 600,000 $KIBBLE more to start the Guard Dog streak (1,000,000 $KIBBLE for 30 days; reached 17 Nov 2026 if you hold it from today)."
+PASS: 844x390 pup: 2 unlocked; Locked flair item needs the optional lock
+PASS: 844x390 pup: lock section optional, required warning, no banned words, no yield/rewards/draws
 PASS: 844x390 pup: panel fits the screen (scrolls inside)
-PASS: 844x390 guard: tier "Guard Dog", can't-sell warning shown
-PASS: 844x390 guard: locked amount, unlock date, next tier shown
-PASS: 844x390 guard: 5 unlocked, 6 locked
-PASS: 844x390 guard: copy has no banned words, says no yield/rewards/draws
+PASS: 844x390 guard: tier "Guard Dog"
+PASS: 844x390 guard: amount held, next step, progress bar (0%), 4 streak rows, launch note
+PASS: 844x390 guard: "Selling below 1,000,000 $KIBBLE resets your Guard Dog streak (and the tier)."
+PASS: 844x390 guard: step "Hold 7,500,000 $KIBBLE more to start the Alpha streak (10,000,000 $KIBBLE for 90 days; reached 16 Jan 2027 if you hold it from today)."
+PASS: 844x390 guard: 5 unlocked; Locked flair item needs the optional lock
+PASS: 844x390 guard: lock section optional, required warning, no banned words, no yield/rewards/draws
 PASS: 844x390 guard: panel fits the screen (scrolls inside)
-PASS: 844x390 alpha: tier "Alpha", can't-sell warning shown
-PASS: 844x390 alpha: locked amount, unlock date, next tier shown
-PASS: 844x390 alpha: 8 unlocked, 3 locked
-PASS: 844x390 alpha: copy has no banned words, says no yield/rewards/draws
+PASS: 844x390 alpha: tier "Alpha"
+PASS: 844x390 alpha: amount held, next step, progress bar (0%), 4 streak rows, launch note
+PASS: 844x390 alpha: "Selling below 10,000,000 $KIBBLE resets your Alpha streak (and the tier)."
+PASS: 844x390 alpha: step "Hold 32,000,000 $KIBBLE more to start the Top Dog streak (50,000,000 $KIBBLE for 90 days; reached 16 Jan 2027 if you hold it from today)."
+PASS: 844x390 alpha: 8 unlocked; Locked flair item needs the optional lock
+PASS: 844x390 alpha: lock section optional, required warning, no banned words, no yield/rewards/draws
 PASS: 844x390 alpha: panel fits the screen (scrolls inside)
-PASS: 844x390 top: tier "Top Dog", can't-sell warning shown
-PASS: 844x390 top: locked amount, unlock date, next tier shown
-PASS: 844x390 top: 11 unlocked, 0 locked
-PASS: 844x390 top: copy has no banned words, says no yield/rewards/draws
+PASS: 844x390 top: tier "Top Dog"
+PASS: 844x390 top: amount held, next step, progress bar (100%), 4 streak rows, launch note
+PASS: 844x390 top: "Selling below 50,000,000 $KIBBLE resets your Top Dog streak (and the tier)."
+PASS: 844x390 top: step "Top tier reached: keep holding to keep it."
+PASS: 844x390 top: 11 unlocked; Locked flair item needs the optional lock
+PASS: 844x390 top: lock section optional, required warning, no banned words, no yield/rewards/draws
 PASS: 844x390 top: panel fits the screen (scrolls inside)
-PASS: 750x342 none: tier "No tier yet", can't-sell warning shown
-PASS: 750x342 none: locked amount, unlock date, next tier shown
-PASS: 750x342 none: 0 unlocked, 11 locked
-PASS: 750x342 none: copy has no banned words, says no yield/rewards/draws
+PASS: 844x390 locked-flair: tier "Guard Dog 🔒 Locked" with the Locked flair chip
+PASS: 844x390 locked-flair: amount held, next step, progress bar (0%), 4 streak rows, launch note
+PASS: 844x390 locked-flair: "Selling below 1,000,000 $KIBBLE resets your Guard Dog streak (and the tier)."
+PASS: 844x390 locked-flair: step "Hold 7,500,000 $KIBBLE more to start the Alpha streak (10,000,000 $KIBBLE for 90 days; reached 16 Jan 2027 if you hold it from today)."
+PASS: 844x390 locked-flair: 6 unlocked; Locked flair item usable
+PASS: 844x390 locked-flair: lock section optional, required warning, no banned words, no yield/rewards/draws
+PASS: 844x390 locked-flair: panel fits the screen (scrolls inside)
+PASS: 750x342 none: tier "No tier yet"
+PASS: 750x342 none: amount held, next step, progress bar (0%), 4 streak rows, launch note
+PASS: 750x342 none: nothing held, no reset line
+PASS: 750x342 none: step "Hold 100,000 $KIBBLE more to start the Pup streak (100,000 $KIBBLE for 7 days; reached 25 Oct 2026 if you hold it from today)."
+PASS: 750x342 none: 0 unlocked; Locked flair item needs the optional lock
+PASS: 750x342 none: lock section optional, required warning, no banned words, no yield/rewards/draws
 PASS: 750x342 none: panel fits the screen (scrolls inside)
-PASS: 750x342 pup: tier "Pup", can't-sell warning shown
-PASS: 750x342 pup: locked amount, unlock date, next tier shown
-PASS: 750x342 pup: 2 unlocked, 9 locked
-PASS: 750x342 pup: copy has no banned words, says no yield/rewards/draws
+PASS: 750x342 progress: tier "No tier yet"
+PASS: 750x342 progress: amount held, next step, progress bar (43%), 4 streak rows, launch note
+PASS: 750x342 progress: "Selling below 1,000,000 $KIBBLE resets your Guard Dog streak."
+PASS: 750x342 progress: step "3 / 7 days held · Pup on 22 Oct 2026 if you keep holding"
+PASS: 750x342 progress: 0 unlocked; Locked flair item needs the optional lock
+PASS: 750x342 progress: lock section optional, required warning, no banned words, no yield/rewards/draws
+PASS: 750x342 progress: panel fits the screen (scrolls inside)
+PASS: 750x342 pup: tier "Pup"
+PASS: 750x342 pup: amount held, next step, progress bar (0%), 4 streak rows, launch note
+PASS: 750x342 pup: "Selling below 100,000 $KIBBLE resets your Pup streak (and the tier)."
+PASS: 750x342 pup: step "Hold 600,000 $KIBBLE more to start the Guard Dog streak (1,000,000 $KIBBLE for 30 days; reached 17 Nov 2026 if you hold it from today)."
+PASS: 750x342 pup: 2 unlocked; Locked flair item needs the optional lock
+PASS: 750x342 pup: lock section optional, required warning, no banned words, no yield/rewards/draws
 PASS: 750x342 pup: panel fits the screen (scrolls inside)
-PASS: 750x342 guard: tier "Guard Dog", can't-sell warning shown
-PASS: 750x342 guard: locked amount, unlock date, next tier shown
-PASS: 750x342 guard: 5 unlocked, 6 locked
-PASS: 750x342 guard: copy has no banned words, says no yield/rewards/draws
+PASS: 750x342 guard: tier "Guard Dog"
+PASS: 750x342 guard: amount held, next step, progress bar (0%), 4 streak rows, launch note
+PASS: 750x342 guard: "Selling below 1,000,000 $KIBBLE resets your Guard Dog streak (and the tier)."
+PASS: 750x342 guard: step "Hold 7,500,000 $KIBBLE more to start the Alpha streak (10,000,000 $KIBBLE for 90 days; reached 16 Jan 2027 if you hold it from today)."
+PASS: 750x342 guard: 5 unlocked; Locked flair item needs the optional lock
+PASS: 750x342 guard: lock section optional, required warning, no banned words, no yield/rewards/draws
 PASS: 750x342 guard: panel fits the screen (scrolls inside)
-PASS: 750x342 alpha: tier "Alpha", can't-sell warning shown
-PASS: 750x342 alpha: locked amount, unlock date, next tier shown
-PASS: 750x342 alpha: 8 unlocked, 3 locked
-PASS: 750x342 alpha: copy has no banned words, says no yield/rewards/draws
+PASS: 750x342 alpha: tier "Alpha"
+PASS: 750x342 alpha: amount held, next step, progress bar (0%), 4 streak rows, launch note
+PASS: 750x342 alpha: "Selling below 10,000,000 $KIBBLE resets your Alpha streak (and the tier)."
+PASS: 750x342 alpha: step "Hold 32,000,000 $KIBBLE more to start the Top Dog streak (50,000,000 $KIBBLE for 90 days; reached 16 Jan 2027 if you hold it from today)."
+PASS: 750x342 alpha: 8 unlocked; Locked flair item needs the optional lock
+PASS: 750x342 alpha: lock section optional, required warning, no banned words, no yield/rewards/draws
 PASS: 750x342 alpha: panel fits the screen (scrolls inside)
-PASS: 750x342 top: tier "Top Dog", can't-sell warning shown
-PASS: 750x342 top: locked amount, unlock date, next tier shown
-PASS: 750x342 top: 11 unlocked, 0 locked
-PASS: 750x342 top: copy has no banned words, says no yield/rewards/draws
+PASS: 750x342 top: tier "Top Dog"
+PASS: 750x342 top: amount held, next step, progress bar (100%), 4 streak rows, launch note
+PASS: 750x342 top: "Selling below 50,000,000 $KIBBLE resets your Top Dog streak (and the tier)."
+PASS: 750x342 top: step "Top tier reached: keep holding to keep it."
+PASS: 750x342 top: 11 unlocked; Locked flair item needs the optional lock
+PASS: 750x342 top: lock section optional, required warning, no banned words, no yield/rewards/draws
 PASS: 750x342 top: panel fits the screen (scrolls inside)
-PASS: expired Alpha/Top items greyed with "Relock to keep" (6)
+PASS: 750x342 locked-flair: tier "Guard Dog 🔒 Locked" with the Locked flair chip
+PASS: 750x342 locked-flair: amount held, next step, progress bar (0%), 4 streak rows, launch note
+PASS: 750x342 locked-flair: "Selling below 1,000,000 $KIBBLE resets your Guard Dog streak (and the tier)."
+PASS: 750x342 locked-flair: step "Hold 7,500,000 $KIBBLE more to start the Alpha streak (10,000,000 $KIBBLE for 90 days; reached 16 Jan 2027 if you hold it from today)."
+PASS: 750x342 locked-flair: 6 unlocked; Locked flair item usable
+PASS: 750x342 locked-flair: lock section optional, required warning, no banned words, no yield/rewards/draws
+PASS: 750x342 locked-flair: panel fits the screen (scrolls inside)
+PASS: Alpha/Top items greyed with "Hold to get back" after the streak broke (6)
 PASS: unequip collars: saved to the cloud-saved kibble state (localStorage key synced by kibble-pay)
 PASS: after reload collars stay unequipped
 PASS: equip collars: saved
@@ -62,9 +110,11 @@ PASS: in game alpha: render loadout = 6 cosmetic ids
 PASS: in game alpha: no page errors 
 PASS: in game top: render loadout = 8 cosmetic ids
 PASS: in game top: no page errors 
+PASS: in game guard+flair: render loadout = 5 cosmetic ids
+PASS: in game guard+flair: no page errors 
 PASS: same 600-tick sim hash in every tier's page (fc9eefcc; the full render-vs-sim proof is tests/kennel.test.mjs)
-PASS: lock flow: connected wallet starts with no tier (from /api/kennel)
-PASS: lock form explains the tier timeline (1M for 60 days)
+PASS: lock flow: connected wallet holding 1.2M for 3 days: no tier yet, streak in progress (from /api/kennel)
+PASS: lock form: 1M for 60 days adds the Locked flair; locked tokens still count toward the streak
 PASS: review card shows before Phantom: nothing sent, Sign disabled until the box is ticked
 PASS: review card totals from the built tx + live fee read: 0.16927084 SOL, 1,005,000 $KIBBLE (1,000,000 locked + 0.5%)
 PASS: review card rows: creation fee, 0.5% lock fee, rent x3, network fee, each marked "no" for coming back
@@ -73,11 +123,11 @@ PASS: phone landscape 844x390: review card fits the width and Sign in Phantom sc
 PASS: ticking the box enables Sign in Phantom (still nothing sent)
 PASS: asks kibble-pay to build the lock (amount + days only)
 PASS: Phantom gets the real self-lock tx: fee payer = player, player signature empty (signed in Phantom), metadata pre-signed
-PASS: server confirms: tier refreshes to Guard Dog
+PASS: server confirms the lock: Locked flair on, tier unchanged (tiers come from holding)
 PASS: tampered lock responses (other recipient, cancelable, other payer, error) refused before Phantom
 PASS: lock flow: no page errors 
 PASS: MP: host sees the guest's Pup cosmetics (2), guest sees the host's Top Dog cosmetics (8)
 PASS: MP: lobby carries only cosmetic ids + name
-PASS: MP: lockstep in sync with different cosmetics on each side (tick 65)
+PASS: MP: lockstep in sync with different cosmetics on each side (tick 64)
 PASS: mood line shows in the lobby
 PASS: MP: no page errors 
