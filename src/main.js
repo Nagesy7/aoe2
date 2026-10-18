@@ -12,9 +12,11 @@ import { setupComputers } from './ai.js';
 import { initKibble, kibbleState } from './kibble-ui.js';
 import { mountCivCards } from './civcards.js';
 import { CIV_LOOK } from './civs.js';
+import * as SFX from './sfx.js';
 import { createUi, startPlacing, cancelPlacing, updateGhost, pointerDown, pointerMove, pointerUp } from './ui-state.js';
 const canvas = document.getElementById('game'), ctx = canvas.getContext('2d');
 const params = new URLSearchParams(location.search);
+SFX.install();
 window.BUILD_ID = document.querySelector('meta[name=build-id]')?.content || 'dev'; // stamped with the commit at deploy (scripts/ctl.mjs deploy)
 const $ = id => document.getElementById(id);
 let world = null, cam = { x: 0, y: 0 }, ui = createUi(), net = null, fog = null;
@@ -277,13 +279,13 @@ function frame(now) {
     else if (n) net.stallMs = 0;
     fog = computeFog(world, viewer(), fog); window.game.fog = fog;
   }
-  if (ui.placing) refreshGhost(); if (mouse.inside) updateCursor(); ui.lerp = { prev: prevPos, a: Math.max(0, Math.min(1, acc / TICK_DT)) }; render(ctx, world, cam, ui, net || (world.computers && !world.spectate) ? fog : null); updateHud(); requestAnimationFrame(frame);
+  if (ui.placing) refreshGhost(); if (mouse.inside) updateCursor(); ui.lerp = { prev: prevPos, a: Math.max(0, Math.min(1, acc / TICK_DT)) }; render(ctx, world, cam, ui, net || (world.computers && !world.spectate) ? fog : null); updateHud(); SFX.watch(world, viewer()); requestAnimationFrame(frame);
 }
 // Automation hook: read-only state access + time advance in single player (proof scripts must not use it to issue orders).
 window.game = { sim: SIM, world: null, cam, ui, selectionInfo, pickAt, toScreen: (x, y) => { const q = worldToScreen(x, y, cam); return { x: q.x * Z, y: q.y * Z }; }, zoom: () => Z, toWorld,
   tick: (s) => { if (net) throw new Error('no fast-forward in multiplayer'); const n = Math.round(s / TICK_DT); for (let i = 0; i < n; i++) stepTick(world); render(ctx, world, cam, ui); updateHud(); },
   stateHash: () => world && stateHash(world),
-  getSelected: () => getSelected(world), touch: { ...touchUi }, buildTabOf: t => Object.keys(BUILD_TABS).find(k => BUILD_TABS[k].items.includes(t)) || null };
+  getSelected: () => getSelected(world), sfx: SFX, touch: { ...touchUi }, buildTabOf: t => Object.keys(BUILD_TABS).find(k => BUILD_TABS[k].items.includes(t)) || null };
 
 // ---- main menu / lobby ----
 let session = null;

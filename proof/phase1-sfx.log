@@ -1,0 +1,10 @@
+PASS: no AudioContext before the first user gesture
+PASS: first touch creates + resumes one AudioContext (running)
+PASS: tap-select a Worker Pup -> select blip ({"select":1,"order":0,"build":0,"train":0})
+PASS: per-sound cooldown: two select blips in the same frame -> second dropped (true,false)
+PASS: Command tap -> order ack blip (move, order=1)
+PASS: Worker Pup trained -> train blip (train=1)
+PASS: building completed -> build blip (build=1)
+PASS: tab hidden -> AudioContext suspended (suspended)
+PASS: tab visible -> resumed (running)
+PASS: single context, no page errors 
