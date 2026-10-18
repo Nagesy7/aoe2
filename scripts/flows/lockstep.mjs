@@ -65,7 +65,11 @@ const myUnits = p => S(p, () => { const w = window.game.world; return w.units.fi
 const myTc = p => S(p, () => { const w = window.game.world; const b = w.buildings.find(b => b.type === 'town_center' && b.owner === w.viewer); return { id: b.id, x: b.x, y: b.y }; });
 const nearest = (p, kind, from) => S(p, ([kind, from]) => window.game.world.resources.filter(n => n.kind === kind && n.amount > 0).sort((a, b) => Math.hypot(a.x - from.x, a.y - from.y) - Math.hypot(b.x - from.x, b.y - from.y))[0], [kind, from]);
 const waitTicks = async n => { const t0 = await S(host, () => window.game.world.tick); await host.waitForFunction(t => window.game.world.tick >= t, t0 + n, { timeout: 120000 }); };
-const btn = (p, a) => p.locator(`#commands button[data-action="${a}"]`);
+// build buttons live in tabs (Economy / Military / Other): open the right tab with a real click before using the button
+const btn = (p, a) => { const l = p.locator(`#commands button[data-action="${a}"]`);
+  const open = async () => { const k = await p.evaluate(t => window.game.buildTabOf?.(t), a); if (!k) return; const tab = p.locator(`#commands [data-action=btab-${k}]`);
+    await tab.waitFor({ timeout: 3000 }).catch(() => {}); if (await tab.count() && !(await l.isVisible())) await tab.click(); };
+  return new Proxy(l, { get: (o, m) => typeof o[m] === 'function' ? async (...x) => { await open(); return o[m](...x); } : o[m] }); };
 const issued = p => S(p, () => window.game.net.issued);
 
 // ---- fog: each player sees only their own side ----
@@ -127,7 +131,11 @@ const nsel = await S(host, () => window.game.sim.selectedUnits(window.game.world
 check(nsel >= 1, `host selected ${nsel} militia`);
 const gtc = await myTc(guest);
 await click(host, gtc.x + 2, gtc.y + 2, 'right');
-check(await S(host, () => window.game.world.lastOrder?.kind === 'attack'), 'host right-click on the enemy Town Center = attack order (crosshair target)');
+// world.lastOrder is only the instant local marker (set from hover + fog before the lockstep tick applies; it read 'move' in one run),
+// so check what the order did in the sim instead: the selected militia attack that building.
+const selIds = await S(host, () => window.game.sim.selectedUnits(window.game.world).map(u => u.id));
+const attacking = () => host.waitForFunction(([ids, tc]) => window.game.world.units.filter(u => ids.includes(u.id)).some(u => u.attack && u.attack.id === tc), [selIds, gtc.id], { timeout: 15000 }).then(() => true, () => false);
+check(await attacking(), `host right-click on the enemy Den Hall = attack order on it (local marker: ${await S(host, () => window.game.world.lastOrder?.kind)})`);
 // guest also attacks with its militia: right-click a host villager position far away -> move/attack across the map
 const gm = (await myUnits(guest)).filter(u => u.type === 'militia');
 if (gm.length) { await click(guest, gm[0].x, gm[0].y); const htc = await myTc(host); await click(guest, htc.x + 2, htc.y + 2, 'right'); }

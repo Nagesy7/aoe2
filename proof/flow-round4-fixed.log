@@ -1,0 +1,37 @@
+round4 browser proof 2026-10-18T06:46:39.867Z
+PASS: start HUD: Inu Empires 🍖 Food: 200 🪵 Wood: 200 🪙 Gold: 100 🪨 Stone: 100 🐾 Pop 3/5 Puppy Age
+  saved proof/round4-00-start.png
+PASS: 2 villagers queued, food 200 -> 100: Inu Empires 🍖 Food: 100 🪵 Wood: 200 🪙 Gold: 100 🪨 Stone: 100 🐾 Pop 3/5 Puppy Age
+PASS: TC panel: Den Hall | HP: 2400/2400 | Armor 3/5 | Queue: 2/5 | Training Shiba Worker Pup: 25% | S | S
+  saved proof/round4-01-tc-train-queue.png
+PASS: rally point set by right-click
+PASS: 2 trained villagers walked to rally: [["44.5","36.5"],["45.5","36.5"]]
+PASS: HUD Inu Empires 🍖 Food: 100 🪵 Wood: 200 🪙 Gold: 100 🪨 Stone: 100 🐾 Pop 5/5 Puppy Age
+  saved proof/round4-02-rally-trained.png
+PASS: training blocked at cap: "Population cap reached (5/5): build a Kennel Hut"
+  saved proof/round4-03-pop-cap-message.png
+PASS: ghost follows cursor, valid at (38,38)
+  saved proof/round4-04-house-ghost-valid.png
+PASS: ghost red over Den Hall at (33,33)
+  saved proof/round4-05-house-ghost-invalid.png
+PASS: ghost red over berry bushes at (41,31)
+  saved proof/round4-05b-house-ghost-invalid-bushes.png
+PASS: foundation placed at (38,38), wood 200 -> 175
+PASS: drag-selected rally villagers: 2 Worker Pups selected | 2 × Idle | Carrying: 0 total
+PASS: 3 villagers building; panel: Kennel Hut (foundation) | HP: 320/550 | Construction: 58%
+  saved proof/round4-06-house-construction.png
+PASS: 3 builders add >=2.5 build-seconds per 1s advance (4.35; extra from real-time frames)
+PASS: house complete: Inu Empires 🍖 Food: 100 🪵 Wood: 175 🪙 Gold: 100 🪨 Stone: 100 🐾 Pop 5/10 Puppy Age
+PASS: house panel: Kennel Hut | HP: 550/550 | Armor 0/7 | Provides +5 population
+  saved proof/round4-07-house-complete-pop10.png
+  saved proof/round4-08a-drag-box-in-progress.png
+PASS: drag-box: 5 Worker Pups selected | 5 × Idle | Carrying: 0 total
+  saved proof/round4-08b-drag-box-multiselect.png
+PASS: 5 villagers on berries: food 100 -> 140, node decrease 50 == delivered 40 + carried 10
+PASS: gatherers on distinct walkable tiles: 40,32 41,32
+  saved proof/round4-09-multi-gather.png
+PASS: A* path (17 waypoints) to (24,16) avoids all obstacles
+  saved proof/round4-10-path-around-forest.png
+PASS: villager arrived above the forest at (24,16)
+  saved proof/round4-11-path-arrived.png
+RESULT: ALL PASSED

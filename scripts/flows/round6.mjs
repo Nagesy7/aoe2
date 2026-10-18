@@ -21,7 +21,7 @@ const S = fn => page.evaluate(fn);                      // read-only state acces
 const advance = s => page.evaluate(s => window.game.tick(s), s); // time advance hook
 const scr = (x, y) => page.evaluate(([x, y]) => window.game.toScreen(x, y), [x, y]);
 const text = async sel => { await page.waitForTimeout(100); return (await page.locator(sel).innerText()).replace(/\n/g, ' | '); };
-const hud = () => text('#hud');
+const hud = async () => (await text('#hud')).replace(/ \| /g, ' '); // HUD is icon/label/value spans: 'Food: | 200' -> 'Food: 200'
 const W = fn => page.evaluate(fn);
 const at = async (wx, wy, button = 'left') => { const p = await scr(wx, wy); await page.mouse.click(p.x, p.y, { button }); };
 const unit = id => S(`(() => { const w = window.game.world; const u = w.units.find(o => o.id === ${id}) || w.animals.find(o => o.id === ${id}); return u ? { x: u.x, y: u.y, state: u.state, lastDrop: u.lastDrop, type: u.type, owner: u.owner } : null; })()`);
@@ -99,27 +99,36 @@ check(farm && (await S(() => window.game.ui.placing)) === null, `farm placed at 
 check(await until(`(() => { const w = window.game.world, u = w.units.find(u => u.id === ${miner}), n = w.resources.find(n => n.farm === ${farm.id}); return n && u.state === 'gathering' && u.target === n.id; })()`, 90), 'farm built; builder auto-farms (standing on the farm)');
 await at(farm.x + 0.5, farm.y + 0.5); log(`  farm panel: ${await text('#info')}`);
 await shot('round6-11-farming.png');
-check(await until(`!window.game.world.buildings.some(b => b.id === ${farm.id})`, 400, 5), 'depleted farm disappears');
+// 175 food at 0.32 food/s for one farmer = ~550 s of farming (+ drop-offs): allow 700 s (400 was too short since round 6)
+check(await until(`!window.game.world.buildings.some(b => b.id === ${farm.id})`, 700, 5), 'depleted farm disappears');
 await shot('round6-12-farm-depleted-gone.png');
 
-// 6. Sheep: convert by ordering a villager onto it, move it, butcher it
-const sheep = await S(() => { const g = window.game; const a = g.world.animals.find(a => { const p = g.toScreen(a.x, a.y); return !a.owner && p.x > 40 && p.x < 1240 && p.y > 36 && p.y < 560; }); return a && a.id; });
-check(sheep && (await unit(sheep)).owner === null, `picked a neutral on-screen sheep (id ${sheep}) at ${JSON.stringify(await unit(sheep))}`);
-await clickUnit(miner); const sp = await unit(sheep); await at(sp.x, sp.y, 'right');
-check(await until(`window.game.world.animals.find(a => a.id === ${sheep}).owner === 'player'`, 40, 0.5), 'villager reached the sheep and converted it');
-await clickUnit(sheep); check(/Sheep \| Owner: you/.test(await text('#info')), `sheep panel: ${await text('#info')}`);
+// 6. Sheep: convert by ordering a villager onto it, move it, butcher it.
+// The map now starts you with 4 owned sheep by the Den Hall, so the neutral sheep are out in the field (off screen):
+// re-centre with a real minimap click (look) to reach them.
+const look = async (wx, wy) => { const r = await page.locator('#minimap').boundingBox(), W = await S(() => [window.game.world.width, window.game.world.height]);
+  await page.mouse.click(r.x + wx / W[0] * r.width, r.y + wy / W[1] * r.height); await page.waitForTimeout(80); };
+const mpos = await unit(miner);
+const sheep = await page.evaluate(([mx, my]) => { const w = window.game.world; const a = w.animals.filter(a => a.type === 'sheep' && !a.owner).sort((p, q) => Math.hypot(p.x - mx, p.y - my) - Math.hypot(q.x - mx, q.y - my))[0]; return a && a.id; }, [mpos.x, mpos.y]);
+check(sheep && (await unit(sheep)).owner === null, `picked the nearest neutral sheep (id ${sheep}) at ${JSON.stringify(await unit(sheep))}`);
+await look(mpos.x, mpos.y); await clickUnit(miner); const sp = await unit(sheep); await look(sp.x, sp.y); await at(sp.x, sp.y, 'right');
+check(await until(`window.game.world.animals.find(a => a.id === ${sheep}).owner === 'player'`, 90, 0.5), 'villager reached the sheep and converted it');
+let sNow = await unit(sheep); await look(sNow.x, sNow.y); await clickUnit(sheep); check(/Sheep \| Owner: you/.test(await text('#info')), `sheep panel: ${await text('#info')}`);
 await shot('round6-13-sheep-converted.png');
-await at(33.5, 38.5, 'right');
+const dest = await page.evaluate(([x, y]) => { const w = window.game.world; for (const [dx, dy] of [[3, 2], [-3, 2], [3, -2], [-3, -2], [2, 0], [0, 2]]) { const tx = Math.floor(x + dx), ty = Math.floor(y + dy);
+  if (tx > 1 && ty > 1 && tx < w.width - 2 && ty < w.height - 2 && window.game.sim.walkable(w, tx, ty) && !w.buildings.some(b => tx >= b.x && ty >= b.y && tx < b.x + b.size && ty < b.y + b.size) && !w.resources.some(n => Math.floor(n.x) === tx && Math.floor(n.y) === ty)) return [tx, ty]; } return [Math.floor(x), Math.floor(y)]; }, [sNow.x, sNow.y]);
+await at(dest[0] + 0.5, dest[1] + 0.5, 'right');
 await advance(2); await shot('round6-14a-sheep-moving.png');
-check(await until(`(() => { const a = window.game.world.animals.find(a => a.id === ${sheep}); return Math.floor(a.x) === 33 && Math.floor(a.y) === 38; })()`, 30, 0.5), 'owned sheep follows its move order to (33,38)');
+check(await until(`(() => { const a = window.game.world.animals.find(a => a.id === ${sheep}); return Math.floor(a.x) === ${dest[0]} && Math.floor(a.y) === ${dest[1]}; })()`, 30, 0.5), `owned sheep follows its move order to (${dest})`);
 await shot('round6-14b-sheep-arrived.png');
 const food0 = await S(() => window.game.world.stockpile.food);
-await clickUnit(miner); const sp2 = await unit(sheep); await at(sp2.x, sp2.y, 'right');
+const m2 = await unit(miner); await look(m2.x, m2.y); await clickUnit(miner); const sp2 = await unit(sheep); await look(sp2.x, sp2.y); await at(sp2.x, sp2.y, 'right');
 check(await until(`(() => { const w = window.game.world; return !w.animals.some(a => a.id === ${sheep}) && w.resources.some(n => n.kind === 'carcass' && n.amount < 100); })()`, 30, 0.5), 'sheep killed at its location; carcass (100 food) being butchered');
-const cc = await S(() => { const n = window.game.world.resources.find(n => n.kind === 'carcass'); return [Math.floor(n.x), Math.floor(n.y), n.amount]; });
-check(cc[0] === 33 && cc[1] === 38, `carcass at the sheep's tile (${cc[0]},${cc[1]}), ${cc[2]} left`);
+const cc = await S(() => { const n = window.game.world.resources.find(n => n.kind === 'carcass' && n.amount < 100); return [Math.floor(n.x), Math.floor(n.y), n.amount]; });
+check(cc[0] === dest[0] && cc[1] === dest[1], `carcass at the sheep's tile (${cc[0]},${cc[1]}), ${cc[2]} left`);
 await shot('round6-15-butchering.png');
-check(await until(`window.game.world.stockpile.food >= ${food0} + 20`, 60), 'butchered food delivered');
+check(await until(`window.game.world.stockpile.food >= ${food0} + 20`, 120), 'butchered food delivered');
+await look(41, 36); // back home for the barracks steps
 
 // 7. Barracks -> Militia queue, rally, pop cap
 await clickUnit(miner); check(!(await btn('barracks').isDisabled()), 'barracks affordable now'); await btn('barracks').click();

@@ -1,0 +1,16 @@
+PASS: drag pan moved camera (448,728) -> (256,472)
+PASS: tile info: Grass tile | (17, 17)
+PASS: resource info: Tree | wood: 100 remaining
+PASS: TC info: Den Hall | HP: 2400/2400 | Armor 3/5 | Queue: 0/5
+PASS: villager info: Shiba Worker Pup | Task: Idle | Carrying: 0/10 | HP: 25/25 | Attack 3 Armor 0/0
+PASS: villager working: Shiba Worker Pup | Task: Gathering | Carrying: 1 wood/10 | HP: 25/25 | Attack 3 Armor 0/0
+PASS: wood increased 200 -> 210
+PASS: tree amount decreased in panel: Tree | wood: 83 remaining
+PASS: retask with 7 wood: Shiba Worker Pup | Task: Returning to Den Hall | Carrying: 7 wood/10 | HP: 25/25 | Attack 3 Armor 0/0
+PASS: carried wood deposited (210 -> 217), then food (210): Shiba Worker Pup | Task: Gathering | Carrying: 0/10 | HP: 25/25 | Attack 3 Armor 0/0
+PASS: edge top-left: cam=(0,0) edge pixels non-black [[53,90,30,255],[65,109,37,255],[78,130,43,255],[69,119,39,255]]
+PASS: edge top-right: cam=(768,0) edge pixels non-black [[66,113,37,255],[85,132,47,255],[110,155,62,255],[73,125,41,255]]
+PASS: edge bottom-left: cam=(0,1328) edge pixels non-black [[107,150,60,255],[74,123,42,255],[52,92,27,255],[110,154,62,255]]
+PASS: edge bottom-right: cam=(768,1328) edge pixels non-black [[68,114,39,255],[61,105,34,255],[108,154,61,255],[68,116,38,255]]
+PASS: bottom-right clamp exact (768,1328)
+RESULT: ALL PASSED

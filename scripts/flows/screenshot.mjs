@@ -41,9 +41,9 @@ check(i?.kind === 'tile' && i.text.includes(`(${tile.tx}, ${tile.ty})`), `tile i
 await page.mouse.click(tree.x, tree.y); i = await info(); await shot('03-select-resource-tree.png');
 check(i?.kind === 'resource' && /Tree/.test(i.text) && /wood: \d+ remaining/.test(i.text), `resource info: ${i?.text}`);
 await page.mouse.click(tc.x, tc.y); i = await info(); await shot('04-select-town-center.png');
-check(i?.kind === 'building' && /Town Center/.test(i.text) && /HP: 2400\/2400/.test(i.text), `TC info: ${i?.text}`);
+check(i?.kind === 'building' && /Den Hall/.test(i.text) && /HP: 2400\/2400/.test(i.text), `TC info: ${i?.text}`);
 await page.mouse.click(vil.x, vil.y); i = await info(); await shot('05-select-villager.png');
-check(i?.kind === 'unit' && /Villager/.test(i.text) && /Idle/.test(i.text), `villager info: ${i?.text}`);
+check(i?.kind === 'unit' && /Worker Pup/.test(i.text) && /Idle/.test(i.text), `villager info: ${i?.text}`);
 
 // --- 3. Right-click tree, advance time, verify wood increases ---
 const wood0 = await page.evaluate(() => window.game.world.stockpile.wood);
@@ -70,7 +70,7 @@ const pre = await page.evaluate(() => { const u = window.game.world.units[0]; re
 const bush = await page.evaluate(() => { const n = window.game.world.resources.find(r => r.res === 'food'); return window.game.toScreen(n.x, n.y); });
 await page.mouse.click(bush.x, bush.y, { button: 'right' });
 await page.evaluate(() => window.game.tick(2)); i = await info(); await shot('10-retask-dropoff.png');
-check(pre.carry.amount > 0 && /Returning to Town Center/.test(i.text) && i.text.includes(`${pre.carry.amount} wood`), `retask with ${pre.carry.amount} wood: ${i.text}`);
+check(pre.carry.amount > 0 && /Returning to Den Hall/.test(i.text) && i.text.includes(`${pre.carry.amount} wood`), `retask with ${pre.carry.amount} wood: ${i.text}`);
 await page.evaluate(() => window.game.tick(40)); i = await info();
 const post = await page.evaluate(() => ({ ...window.game.world.stockpile }));
 await shot('11-after-retask-gathering-food.png');

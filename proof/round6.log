@@ -1,8 +1,8 @@
-round6 browser proof 2026-10-15T05:59:54.700Z
+round6 browser proof 2026-10-18T06:46:51.051Z
 PASS: drag-box: 3 Worker Pups selected | 3 × Idle | Carrying: 0 total
 PASS: build menu: Kennel Hut 25 wood | Granary 100 wood | Rice Paddy 60 wood | Timber Lodge 100 wood | Dig Site 100 wood | Bazaar 🔒 Pack Age
   saved proof/round6-01-build-menu.png
-PASS: lumber camp foundation at (24,24); Inu Empires | Food: 200 | Wood: 100 | Gold: 100 | Stone: 100 | Pop 3/5 | Puppy Age
+PASS: lumber camp foundation at (24,24); Inu Empires 🍖 Food: 200 🪵 Wood: 100 🪙 Gold: 100 🪨 Stone: 100 🐾 Pop 3/5 Puppy Age
 PASS: greyed: Barracks "Dojo need 75 wood"
   saved proof/round6-02-build-menu-greyed.png
 PASS: lumber camp built by 3 villagers
@@ -10,7 +10,7 @@ PASS: nobody inside
   saved proof/round6-03-lumber-camp-built.png
 PASS: all 3 woodcutters drop at the Lumber Camp (nearest wood drop-off), not the TC
   saved proof/round6-04-villager-uses-lumber-camp.png
-  after 220s of woodcutting: Inu Empires | Food: 200 | Wood: 377 | Gold: 100 | Stone: 100 | Pop 3/5 | Puppy Age
+  after 220s of woodcutting: Inu Empires 🍖 Food: 200 🪵 Wood: 377 🪙 Gold: 100 🪨 Stone: 100 🐾 Pop 3/5 Puppy Age
 PASS: mining camp foundation at (40,41)
 PASS: mining camp built
   saved proof/round6-05-mining-camp-built.png
@@ -29,17 +29,17 @@ PASS: farm placed at (37,27); build mode exited
 PASS: farm built; builder auto-farms (standing on the farm)
   farm panel: Rice Paddy | HP: 480/480 | Armor 0/0 | Food: 175/175
   saved proof/round6-11-farming.png
-FAIL: depleted farm disappears
+PASS: depleted farm disappears
   saved proof/round6-12-farm-depleted-gone.png
-PASS: picked a neutral on-screen sheep (id 165) at {"x":50.5,"y":24.5,"state":"idle","type":"sheep","owner":null}
+PASS: picked the nearest neutral sheep (id 169) at {"x":50.5,"y":24.5,"state":"idle","type":"sheep","owner":null}
 PASS: villager reached the sheep and converted it
 PASS: sheep panel: Sheep | Owner: you | Food: 100 when butchered
   saved proof/round6-13-sheep-converted.png
   saved proof/round6-14a-sheep-moving.png
-PASS: owned sheep follows its move order to (33,38)
+PASS: owned sheep follows its move order to (53,26)
   saved proof/round6-14b-sheep-arrived.png
 PASS: sheep killed at its location; carcass (100 food) being butchered
-PASS: carcass at the sheep's tile (33,38), 99 left
+PASS: carcass at the sheep's tile (53,26), 99 left
   saved proof/round6-15-butchering.png
 PASS: butchered food delivered
 PASS: barracks affordable now
@@ -50,7 +50,7 @@ PASS: 2 militia queued: gold 110 -> 70
 PASS: barracks panel: Dojo | HP: 1200/1200 | Armor 0/7 | Queue: 2/5 | Training Kai Footpaw: 25% | K | K
   saved proof/round6-16-barracks-queue.png
 PASS: 2 militia trained
-PASS: HUD Inu Empires | Food: 230 | Wood: 517 | Gold: 70 | Stone: 100 | Pop 5/5 | Puppy Age
+PASS: HUD Inu Empires 🍖 Food: 285 🪵 Wood: 635 🪙 Gold: 70 🪨 Stone: 100 🐾 Pop 5/5 Puppy Age
 PASS: militia blocked at cap: "Population cap reached (5/5): build a Kennel Hut"
   saved proof/round6-17-militia-trained-pop-cap.png
 PASS: militia selected: 2 units selected | 2 × Idle | Carrying: 0 total
@@ -62,4 +62,4 @@ PASS: drag-box while in build mode never places (still in build mode)
 PASS: Esc exits build mode
 PASS: right-click exits build mode
 PASS: final: no unit inside any non-walkable footprint
-RESULT: 1 FAILED
+RESULT: ALL PASSED

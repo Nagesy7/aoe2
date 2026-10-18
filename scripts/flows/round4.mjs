@@ -21,7 +21,7 @@ const S = fn => page.evaluate(fn);                      // read-only state acces
 const advance = s => page.evaluate(s => window.game.tick(s), s); // time advance hook
 const scr = (x, y) => page.evaluate(([x, y]) => window.game.toScreen(x, y), [x, y]);
 const text = async sel => { await page.waitForTimeout(100); return (await page.locator(sel).innerText()).replace(/\n/g, ' | '); };
-const hud = () => text('#hud');
+const hud = async () => (await text('#hud')).replace(/ \| /g, ' '); // HUD is icon/label/value spans: 'Food: | 200' -> 'Food: 200'
 
 log(`round4 browser proof ${new Date().toISOString()}`);
 check(/Food: 200.*Wood: 200.*Gold: 100.*Stone: 100.*Pop 3\/5/.test(await hud()), `start HUD: ${await hud()}`);
@@ -33,7 +33,7 @@ const trainBtn = page.locator('button[data-action=train]');
 await trainBtn.click(); await trainBtn.click();
 await advance(6);
 check((await S(() => window.game.world.buildings[0].queue.length)) === 2 && /Food: 100/.test(await hud()), `2 villagers queued, food 200 -> 100: ${await hud()}`);
-check(/Queue: 2\/5 .*Training Shiba Villager: 2\d%/.test(await text('#info')) && await page.locator('#info .bar div').count() === 1 && await page.locator('#info .qi').count() === 2, `TC panel: ${await text('#info')}`);
+check(/Queue: 2\/5 .*Training Shiba Worker Pup: 2\d%/.test(await text('#info')) && await page.locator('#info .bar div').count() === 1 && await page.locator('#info .qi').count() === 2, `TC panel: ${await text('#info')}`);
 await shot('round4-01-tc-train-queue.png');
 
 // --- rally point: right-click ground with TC selected ---
@@ -60,7 +60,7 @@ let g = await S(() => window.game.ui.ghost);
 check(g && g.valid && g.tx === 38 && g.ty === 38, `ghost follows cursor, valid at (${g?.tx},${g?.ty})`);
 await shot('round4-04-house-ghost-valid.png');
 await page.mouse.move(tcP.x, tcP.y); g = await S(() => window.game.ui.ghost);
-check(g && !g.valid, `ghost red over Town Center at (${g?.tx},${g?.ty})`);
+check(g && !g.valid, `ghost red over Den Hall at (${g?.tx},${g?.ty})`);
 await shot('round4-05-house-ghost-invalid.png');
 const bush = await scr(41.5, 31.5); await page.mouse.move(bush.x, bush.y); g = await S(() => window.game.ui.ghost);
 check(g && !g.valid, `ghost red over berry bushes at (${g?.tx},${g?.ty})`);
@@ -72,13 +72,13 @@ await advance(4);
 // drag-box select the 2 rally villagers and right-click the foundation to help build
 const bA = await scr(42.5, 34.5), bB = await scr(47, 39);
 await page.mouse.move(bA.x, bA.y); await page.mouse.down(); await page.mouse.move(bB.x, bB.y, { steps: 8 }); await page.mouse.up();
-check(/2 Villagers selected/.test(await text('#info')), `drag-selected rally villagers: ${await text('#info')}`);
+check(/2 Worker Pups selected/.test(await text('#info')), `drag-selected rally villagers: ${await text('#info')}`);
 const fP = await scr(39, 39); await page.mouse.click(fP.x, fP.y, { button: 'right' });
 await advance(5);
 const builders = await S(() => window.game.world.units.filter(u => u.state === 'building').length);
 const p1 = await S(() => window.game.world.buildings.find(b => b.type === 'house').progress);
 await page.mouse.click(fP.x, fP.y);   // select the foundation to show its progress panel
-check(builders === 3 && /House \(foundation\)/.test(await text('#info')), `3 villagers building; panel: ${await text('#info')}`);
+check(builders === 3 && /Kennel Hut \(foundation\)/.test(await text('#info')), `3 villagers building; panel: ${await text('#info')}`);
 await shot('round4-06-house-construction.png');
 await advance(1); const p2 = await S(() => window.game.world.buildings.find(b => b.type === 'house').progress);
 check((p2 - p1) >= 2.5, `3 builders add >=2.5 build-seconds per 1s advance (${(p2 - p1).toFixed(2)}; extra from real-time frames)`);
@@ -92,7 +92,7 @@ const dA = { x: 420, y: 250 }, dB = { x: 1150, y: 600 };
 await page.mouse.move(dA.x, dA.y); await page.mouse.down(); await page.mouse.move(dB.x, dB.y, { steps: 10 });
 await shot('round4-08a-drag-box-in-progress.png');
 await page.mouse.up();
-check(/5 Villagers selected/.test(await text('#info')), `drag-box: ${await text('#info')}`);
+check(/5 Worker Pups selected/.test(await text('#info')), `drag-box: ${await text('#info')}`);
 await shot('round4-08b-drag-box-multiselect.png');
 
 // --- multi gather (right-click berry bush) ---

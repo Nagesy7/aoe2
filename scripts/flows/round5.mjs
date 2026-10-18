@@ -21,7 +21,7 @@ const S = fn => page.evaluate(fn);                      // read-only state acces
 const advance = s => page.evaluate(s => window.game.tick(s), s); // time advance hook
 const scr = (x, y) => page.evaluate(([x, y]) => window.game.toScreen(x, y), [x, y]);
 const text = async sel => { await page.waitForTimeout(100); return (await page.locator(sel).innerText()).replace(/\n/g, ' | '); };
-const hud = () => text('#hud');
+const hud = async () => (await text('#hud')).replace(/ \| /g, ' '); // HUD is icon/label/value spans: 'Food: | 200' -> 'Food: 200'
 
 const inside = () => S(() => { const w = window.game.world; return w.units.filter(u => { const x = Math.floor(u.x), y = Math.floor(u.y);
   return w.buildings.some(b => x >= b.x && y >= b.y && x < b.x + b.size && y < b.y + b.size); }).length; });
@@ -38,6 +38,7 @@ await shot('round5-01-ghost-over-villagers.png');
 
 // 2. place -> both villagers evicted, builder builds from adjacent tile
 await page.mouse.click(gp.x, gp.y);
+await page.waitForFunction(() => window.game.world.lastEviction, null, { timeout: 3000 }).catch(() => {}); // under CPU load the placement lands a frame later
 const ev = await S(() => window.game.world.lastEviction);
 check(ev && ev.evicted.length === 2 && (await inside()) === 0, `foundation placed; evicted ${ev?.evicted.length} villagers; units inside footprints: ${await inside()}`);
 await advance(1.5);
