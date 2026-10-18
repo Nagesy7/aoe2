@@ -6,7 +6,7 @@
   "private": true,
   "scripts": {
     "start": "npx serve .",
-    "test": "node tests/gather.test.mjs && node tests/ages.test.mjs && node tests/combat.test.mjs && node tests/determinism.test.mjs && node tests/efficiency.test.mjs && node tests/kibble.test.mjs && node tests/kennel.test.mjs && node tests/mood.test.mjs && node tests/anim.test.mjs && node tests/ip.test.mjs && node tests/preload.test.mjs && node tests/full.test.mjs",
+    "test": "node tests/gather.test.mjs && node tests/ages.test.mjs && node tests/combat.test.mjs && node tests/determinism.test.mjs && node tests/efficiency.test.mjs && node tests/kibble.test.mjs && node tests/kennel.test.mjs && node tests/mood.test.mjs && node tests/raid.test.mjs && node tests/anim.test.mjs && node tests/ip.test.mjs && node tests/preload.test.mjs && node tests/full.test.mjs",
     "relay": "node server/relay.mjs --static .",
     "ctl": "node scripts/ctl.mjs",
     "balance": "node scripts/ctl.mjs balance --seeds 16 --minutes 30",

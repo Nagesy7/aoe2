@@ -10,7 +10,9 @@ import { Lockstep } from './lockstep.js';
 import { NetSession, TabsBus, RelayBus, HttpBus, httpRelayBase, defaultRelayUrl, newRoomCode } from './net.js';
 import { CIVS, CIV_IDS } from './civs.js';
 import { setupComputers } from './ai.js';
-import { initKibble, kibbleState, myLoadout, loadoutWire, loadoutFromWire } from './kibble-ui.js';
+import { initKibble, kibbleState, kibblePay, tierNow, myLoadout, loadoutWire, loadoutFromWire } from './kibble-ui.js';
+import { initRaid, openRaid } from './raid-ui.js';
+import { reportMatch } from './score.js';
 import { mountCivCards } from './civcards.js';
 import { CIV_LOOK } from './civs.js';
 import * as SFX from './sfx.js';
@@ -266,17 +268,23 @@ function startGame({ mp = false, seed = 1, me = 0, cfg = {}, session = null, ai 
   Object.assign(window.game, { world, cam, ui, mode: mp ? 'mp' : ai ? 'ai' : 'sp' });
   document.body.classList.add('ingame');
   for (const id of ['menu', 'lobby', 'title-bg']) $(id).style.display = 'none';
-  last = performance.now(); requestAnimationFrame(frame);
+  last = performance.now(); matchRep = { t0: performance.now(), done: false, mode: mp ? 'mp' : ai && !ai.spectate ? 'ai' : 'sp' }; requestAnimationFrame(frame);
 }
 const minimap = createMinimap($('minimap'), { getWorld: () => world, getFog: () => (net || (world && world.computers && !world.spectate) ? fog : null),
   getView: () => { const a = toWorld(0, 0), b = toWorld(innerWidth, innerHeight); return { x: a.x, y: a.y, w: b.x - a.x, h: b.y - a.y }; },
   jump: (x, y) => { cam.x = x * TILE - canvas.width / 2; cam.y = y * TILE - canvas.height / 2; clampCamera(cam, canvas.width, canvas.height, world); } });
+// One Inu Score: report a won match once (render side; reads only the result). See src/score.js.
+let matchRep = null;
+function maybeReport() { if (!world || !world.winner || !matchRep || matchRep.done) return; matchRep.done = true;
+  const m = { mode: matchRep.mode, win: world.winner === viewer(), simSeconds: world.winTime || world.time, realMs: performance.now() - matchRep.t0, spectate: !!world.spectate };
+  reportMatch(kibblePay(), m).then(r => { window.game.lastScore = r; if (r.sent) world.message = { text: `Match score ${r.score} sent${r.inuScore != null ? ` · Inu Score ${r.inuScore}` : ''}`, until: world.time + 8 }; }); }
 const PAN = 600, EDGE = 12; let last = performance.now(), acc = 0, running = false;
 // Phase 5: the render loop stops while the tab is hidden (single player / vs computer) and restarts on return without
 // a catch-up burst. Online games keep ticking (rAF is throttled by the browser anyway) so lockstep peers never stall on us.
 const loop = { frames: 0, paused: false, pauses: 0 };
 document.addEventListener('visibilitychange', () => { if (!document.hidden && loop.paused && world) { loop.paused = false; last = performance.now(); acc = 0; requestAnimationFrame(frame); } });
 function frame(now) {
+  maybeReport();
   if (!world) return;
   if (document.hidden && !net) { loop.paused = true; loop.pauses++; return; }
   loop.frames++;
@@ -368,5 +376,8 @@ else { $('menu').style.display = 'flex'; $('title-bg').style.display = 'block'; 
 
 
 initKibble();
+initRaid({ kp: () => kibblePay(), kennelTier: () => tierNow(), hasCosmetic: () => (kibbleState().owned || []).length > 0, onClose: () => { $('menu').style.display = 'flex'; } });
+$('btn-raid').onclick = () => { $('menu').style.display = 'none'; openRaid(); };
+if (params.get('raid')) { $('menu').style.display = 'none'; openRaid(); }
 // 🏠 Back to Inu Verse hooks (kibble-pay mountHome): confirm mid-match, save first.
 globalThis.__inuHome = { busy: () => world && !world.winner ? 'Leave this match and go back to Inu Verse? The match is abandoned.' : false };

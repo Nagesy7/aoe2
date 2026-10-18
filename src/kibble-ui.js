@@ -2,7 +2,8 @@
 // cloud save to the wallet. Demo (?demo=1): the original simulated wallet. Cosmetics only.
 import * as K from './kibble.js';
 import { TEAM } from './inu.js';
-import { initKennel, kennelBody, kennelClick, kennelInput, refreshKennel, myLoadout } from './kennel-ui.js';
+import { initKennel, kennelBody, kennelClick, kennelInput, refreshKennel, myLoadout, tierNow } from './kennel-ui.js';
+export { tierNow } from './kennel-ui.js';
 export { myLoadout, loadoutWire, loadoutFromWire } from './kennel-ui.js';
 const REAL = !K.SIMULATED, API = 'https://kibble-pay.vercel.app', GAME = 'inu-empires';
 const KEY = REAL ? 'inu-empires-kibble' : 'inu-empires-kibble-sim';
@@ -12,6 +13,7 @@ const save = () => localStorage.setItem(KEY, JSON.stringify(REAL ? { ...s, walle
 if (REAL) { s.wallet = null; s.kibbleU = 0; s.owned = []; }
 const $ = id => document.getElementById(id);
 export const kibbleState = () => s;
+export const kibblePay = () => KP; // kibble-pay client (session + Phantom adapter) for the raid / score calls
 function apply() { const c = K.COSMETICS[s.equipped.colour]; if (c && c.value) TEAM.player = c.value; // visual team colour only
   const t = s.equipped.title ? K.COSMETICS[s.equipped.title].name : null; const el = $('kid');
   el.innerHTML = `<b>[${s.me.pack}]</b> ${s.me.name}${t ? ` <i>· ${t}</i>` : ''} · ${s.me.rating} Elo · 🦴 ${s.bones}`; }
