@@ -1,0 +1,787 @@
+
+> inu-empires@0.1.0 test
+> node tests/gather.test.mjs && node tests/ages.test.mjs && node tests/combat.test.mjs && node tests/determinism.test.mjs && node tests/efficiency.test.mjs && node tests/kibble.test.mjs && node tests/anim.test.mjs && node tests/ip.test.mjs && node tests/preload.test.mjs && node tests/full.test.mjs
+
+gather test 2026-10-18T06:45:33.466Z
+--- gathering ---
+[food] node berries 125 -> 91; stockpile food=30; carried=4; state=gathering
+PASS: food stockpile increased in trips of 10 (30)
+PASS: food node amount decreased
+PASS: food conservation: removed 34 == delivered 30 + carried 4
+PASS: only food collected
+[wood] node tree 100 -> 64; stockpile wood=30; carried=6; state=gathering
+PASS: wood stockpile increased in trips of 10 (30)
+PASS: wood node amount decreased
+PASS: wood conservation: removed 36 == delivered 30 + carried 6
+PASS: only wood collected
+[gold] node gold_mine 800 -> 761; stockpile gold=30; carried=9; state=gathering
+PASS: gold stockpile increased in trips of 10 (30)
+PASS: gold node amount decreased
+PASS: gold conservation: removed 39 == delivered 30 + carried 9
+PASS: only gold collected
+[stone] node stone_mine 350 -> 314; stockpile stone=30; carried=6; state=gathering
+PASS: stone stockpile increased in trips of 10 (30)
+PASS: stone node amount decreased
+PASS: stone conservation: removed 36 == delivered 30 + carried 6
+PASS: only stone collected
+--- Puppy Age gather/deposit math ---
+PASS: berries rate 0.31 == 0.31/s
+PASS: carcass rate 0.33 == 0.33/s
+PASS: tree rate 0.39 == 0.39/s
+PASS: gold_mine rate 0.38 == 0.38/s
+PASS: stone_mine rate 0.36 == 0.36/s
+PASS: food: 10 carried in 32.30s (ideal 32.26s)
+PASS: food: deposit adds exactly 10 to stockpile (10)
+PASS: food: villager returned to gather after deposit
+PASS: wood: 10 carried in 25.65s (ideal 25.64s)
+PASS: wood: deposit adds exactly 10 to stockpile (10)
+PASS: wood: villager returned to gather after deposit
+PASS: gold: 10 carried in 26.35s (ideal 26.32s)
+PASS: gold: deposit adds exactly 10 to stockpile (10)
+PASS: gold: villager returned to gather after deposit
+PASS: stone: 10 carried in 27.80s (ideal 27.78s)
+PASS: stone: deposit adds exactly 10 to stockpile (10)
+PASS: stone: villager returned to gather after deposit
+--- selection hit-testing ---
+PASS: villager picked at its position
+PASS: town center picked inside footprint
+PASS: tree picked at its position
+PASS: tile (0,0) coordinates correct
+PASS: off-map picks nothing
+PASS: priority villager > building
+PASS: priority building > resource
+PASS: resource info shows type + amount
+PASS: resource info updates live
+PASS: TC info shows HP 2400/2400
+PASS: villager selected via selectAt
+PASS: tile info shows (x, y) and deselects villager
+--- camera clamp ---
+PASS: clamp top-left
+PASS: clamp bottom-right
+PASS: in-range unchanged
+PASS: viewport larger than map centers it
+--- retask (round 3): never lose carried resources ---
+[food->wood] carried 5 food at retask; final stockpile food=5 wood=20; carry=7 wood; removed=32 held=32
+PASS: food->wood: retask sends villager to drop off with carry intact
+PASS: food->wood: carried food deposited (5)
+PASS: food->wood: then gathers wood
+PASS: food->wood: total node decrease 32 == delivered + carried 32
+[food->gold] carried 5 food at retask; final stockpile food=5 gold=20; carry=8 gold; removed=33 held=33
+PASS: food->gold: retask sends villager to drop off with carry intact
+PASS: food->gold: carried food deposited (5)
+PASS: food->gold: then gathers gold
+PASS: food->gold: total node decrease 33 == delivered + carried 33
+[food->stone] carried 5 food at retask; final stockpile food=5 stone=20; carry=6 stone; removed=31 held=31
+PASS: food->stone: retask sends villager to drop off with carry intact
+PASS: food->stone: carried food deposited (5)
+PASS: food->stone: then gathers stone
+PASS: food->stone: total node decrease 31 == delivered + carried 31
+[wood->food] carried 5 wood at retask; final stockpile wood=5 food=20; carry=3 food; removed=28 held=28
+PASS: wood->food: retask sends villager to drop off with carry intact
+PASS: wood->food: carried wood deposited (5)
+PASS: wood->food: then gathers food
+PASS: wood->food: total node decrease 28 == delivered + carried 28
+[wood->gold] carried 5 wood at retask; final stockpile wood=5 gold=20; carry=7 gold; removed=32 held=32
+PASS: wood->gold: retask sends villager to drop off with carry intact
+PASS: wood->gold: carried wood deposited (5)
+PASS: wood->gold: then gathers gold
+PASS: wood->gold: total node decrease 32 == delivered + carried 32
+[wood->stone] carried 5 wood at retask; final stockpile wood=5 stone=20; carry=5 stone; removed=30 held=30
+PASS: wood->stone: retask sends villager to drop off with carry intact
+PASS: wood->stone: carried wood deposited (5)
+PASS: wood->stone: then gathers stone
+PASS: wood->stone: total node decrease 30 == delivered + carried 30
+[gold->food] carried 5 gold at retask; final stockpile gold=5 food=20; carry=5 food; removed=30 held=30
+PASS: gold->food: retask sends villager to drop off with carry intact
+PASS: gold->food: carried gold deposited (5)
+PASS: gold->food: then gathers food
+PASS: gold->food: total node decrease 30 == delivered + carried 30
+[gold->wood] carried 5 gold at retask; final stockpile gold=5 wood=20; carry=5 wood; removed=30 held=30
+PASS: gold->wood: retask sends villager to drop off with carry intact
+PASS: gold->wood: carried gold deposited (5)
+PASS: gold->wood: then gathers wood
+PASS: gold->wood: total node decrease 30 == delivered + carried 30
+[gold->stone] carried 5 gold at retask; final stockpile gold=5 stone=20; carry=6 stone; removed=31 held=31
+PASS: gold->stone: retask sends villager to drop off with carry intact
+PASS: gold->stone: carried gold deposited (5)
+PASS: gold->stone: then gathers stone
+PASS: gold->stone: total node decrease 31 == delivered + carried 31
+[stone->food] carried 5 stone at retask; final stockpile stone=5 food=20; carry=4 food; removed=29 held=29
+PASS: stone->food: retask sends villager to drop off with carry intact
+PASS: stone->food: carried stone deposited (5)
+PASS: stone->food: then gathers food
+PASS: stone->food: total node decrease 29 == delivered + carried 29
+[stone->wood] carried 5 stone at retask; final stockpile stone=5 wood=20; carry=4 wood; removed=29 held=29
+PASS: stone->wood: retask sends villager to drop off with carry intact
+PASS: stone->wood: carried stone deposited (5)
+PASS: stone->wood: then gathers wood
+PASS: stone->wood: total node decrease 29 == delivered + carried 29
+[stone->gold] carried 5 stone at retask; final stockpile stone=5 gold=20; carry=8 gold; removed=33 held=33
+PASS: stone->gold: retask sends villager to drop off with carry intact
+PASS: stone->gold: carried stone deposited (5)
+PASS: stone->gold: then gathers gold
+PASS: stone->gold: total node decrease 33 == delivered + carried 33
+PASS: same-type retask keeps carry (4 wood) and continues to new tree
+PASS: same-type retask: new tree gathered (84 left), conservation 20 == 20
+--- screen<->world uses rounded camera (round 3) ---
+PASS: camPixel rounds like the renderer
+PASS: pixel 21 (first pixel of rendered tile 1) -> tile 1 (unrounded math would give 0)
+PASS: pixel 20 (last pixel of rendered tile 0) -> tile 0
+PASS: sub-pixel either side of border
+PASS: y border: pixel 12 -> tile 1, 11 -> tile 0
+PASS: click on top-left border pixel of tile (2,1) selects it
+PASS: one pixel left selects left neighbour
+PASS: one pixel up selects upper neighbour
+PASS: screenToWorld/worldToScreen round-trip
+--- round 4: start state, training, pop cap, houses ---
+PASS: default start: 3 villagers, 200/200/100/100
+PASS: pop 3/5 from Town Center
+PASS: train villager costs 50 food and queues
+PASS: not spawned before 25s (progress 24.0)
+PASS: villager spawned after 25s
+PASS: spawned on a walkable tile beside the TC
+PASS: right-click with TC selected sets rally
+PASS: queue 5th villager
+PASS: new villager walked to rally (at 45.5,36.5)
+PASS: pop now 5/5
+PASS: training blocked at cap with message: "Population cap reached (5/5): build a Kennel Hut"
+PASS: house invalid on TC / off-map edge / forest
+PASS: house valid on open grass
+PASS: house foundation placed, 25 wood spent
+PASS: cannot overlap foundation
+PASS: foundation gives no pop yet
+PASS: house complete -> pop cap 10
+PASS: training allowed again after house
+PASS: 3 builders faster (9.8s) than 1 (25.6s)
+--- round 4: A* pathfinding ---
+PASS: path found around forest (14 steps)
+PASS: path never enters a blocked tile
+PASS: path is longer than the straight line (detour)
+PASS: villager walked around forest and arrived (24.5,16.5), never on a blocked tile
+PASS: enclosed tile is unreachable (null path)
+PASS: move to enclosed tile goes to nearest reachable walkable tile instead
+PASS: unreachable gather target handled gracefully (state idle, note unreachable)
+PASS: stays idle, no crash
+--- round 4: drag-box multi-select + parallel gather ---
+PASS: box selects 3 villagers (3 Worker Pups selected)
+PASS: all selected villagers ordered to gather
+parallel: removed=74 delivered=60 carried=14 gatheringTiles=39,31 39,30 39,29
+PASS: 3 villagers: node decrease 74 == delivered 60 + carried 14
+PASS: no villager ever stood on a blocked (node/building) tile
+PASS: gatherers spread across distinct adjacent tiles
+PASS: group move spreads across tiles near target (44,35 45,35 44,36)
+--- round 5: placement ignores units (eviction) ---
+PASS: ghost valid over 2 villagers (units ignored)
+PASS: still invalid over TC / bushes
+PASS: no unit inside any footprint right after placement (evicted 2)
+PASS: both builders standing in footprint were evicted
+PASS: nobody inside during construction; 3 builders worked from adjacent tiles
+PASS: nobody inside after completion
+PASS: gatherer gathering at (39,31)
+PASS: gatherer evicted from house at (38,31)
+PASS: gatherer resumes (gathering), bush 122->118
+PASS: mover's planned path crosses tile (48,36) before placement
+PASS: mover whose path crossed the foundation repathed immediately around it
+PASS: destination inside footprint reassigned to (49,39)
+PASS: mover arrived at (52,36) without entering any footprint
+PASS: safety eviction at construction start
+PASS: safety eviction at completion
+--- round 6: drop-off camps, farms, sheep, barracks ---
+PASS: lumber + mining camp placed (100 wood each)
+PASS: camps built by builders, nobody inside
+PASS: wood drop-offs: lumber camp + TC
+PASS: gold/stone drop-offs: mining camp + TC
+PASS: camps reject food
+PASS: woodcutter used nearest lumber camp (drop at lumber_camp)
+PASS: gold miner used mining camp (drop at mining_camp)
+PASS: forager without a mill uses the TC
+PASS: after a mill is built the forager drops at the mill
+PASS: walled-off (unreachable) camp is skipped; TC used by path distance
+PASS: farm far from Mill/TC invalid with message
+PASS: farm adjacent to TC valid
+PASS: farm overlapping TC invalid
+PASS: farm costs 60 wood
+PASS: farm built
+PASS: builder auto-farms (to_resource)
+PASS: completed farm is walkable (straight path across it)
+PASS: cannot build on top of a farm
+PASS: farmer stands on the farm
+PASS: depleted farm removed after 547s
+PASS: all 175 farm food delivered (175)
+PASS: rates: forage 0.31 < farm 0.32 < butcher 0.33
+PASS: farm adjacent to a Mill (even a foundation) valid
+PASS: 7 neutral sheep, not counted in pop
+PASS: right-click neutral sheep -> villager goes to it
+PASS: villager reached sheep and converted it
+PASS: touching a neutral sheep converts it
+PASS: owned sheep selectable
+PASS: owned sheep moves on command
+PASS: drag-box prefers villagers over sheep
+PASS: right-click own sheep -> butcher order
+PASS: sheep killed where it stood -> carcass at (26,26)
+PASS: carcass holds 100 food
+PASS: butcher yield 100 delivered (+100, carrying 2)
+PASS: butcher() yields a 100-food carcass
+PASS: barracks costs 175 wood
+PASS: barracks built
+PASS: militia costs 60 food 20 gold
+PASS: barracks cannot train villagers, TC cannot train militia
+PASS: barracks rally point
+PASS: no militia before 21s
+PASS: militia spawned after 21s, counts as pop
+PASS: militia walked to rally
+PASS: militia selectable + movable
+PASS: 5th pop slot queued at barracks
+PASS: shared cap: TC blocked while barracks queue fills last slot (4 pop + 1 queued = 5)
+PASS: pop 5/5: militia blocked too
+PASS: per-building queue cap 5
+PASS: missing-resource text "need 40 wood"
+PASS: 6 villagers
+mixed: removed=332 delivered=290 carried=42 created=275 tasks=gathering:tree gathering:gold_mine gathering:farm gathering:stone_mine gathering:berries gathering:carcass
+PASS: farm + carcass created during run
+PASS: all six task kinds active
+PASS: mixed 6-villager balance: node decrease 332 == delivered 290 + carried 42
+--- round 6: build mode (pure ui-state) ---
+PASS: successful placement exits build mode
+PASS: refused placement (over TC) exits build mode with message
+PASS: unaffordable placement refused, exits build mode
+PASS: drag-box in build mode never places (stays in build mode)
+PASS: small jitter (<=5px) still counts as a click and places
+PASS: cancel (Esc/right-click) exits build mode
+PASS: farm ghost far from Mill/TC invalid
+PASS: farm ghost adjacent to TC valid at (36,30)
+--- water & fishing ---
+PASS: sandbox map has a pond with 4 fish on water tiles
+PASS: water tiles are impassable
+PASS: cannot build on water
+PASS: every fish is reachable from a shore tile
+PASS: villager fishes from the shore and deposits food (+20)
+PASS: 1v1 map: 10 fish, point-mirrored for both players
+RESULT: ALL 223 PASSED
+ages test 2026-10-18T06:45:34.400Z
+--- age costs, timing, prerequisites ---
+PASS: start in Dark Age
+PASS: Feudal: 500 food, 130s
+PASS: Castle: 800 food + 200 gold, 160s
+PASS: Imperial: 1000 food + 800 gold, 190s
+PASS: Feudal blocked with 0 buildings: "needs 2 of: Kennel Hut, Granary, Timber Lodge, Dig Site, Dojo (have 0)"
+PASS: two Houses count as ONE distinct building type
+PASS: unfinished Mill foundation does not count
+PASS: House + Mill allow Feudal
+PASS: Feudal research started, 500 food spent
+PASS: age research cannot be double-queued (no extra cost)
+PASS: still Dark at 129.5s
+PASS: Feudal at 130s with banner "You have advanced to the Pack Age!"
+PASS: Castle blocked: "needs 2 of: Bow Yard, Paddock, Forge, Bazaar (have 0)"
+PASS: Blacksmith + Market allow Castle
+PASS: Castle costs 800 food + 200 gold
+PASS: still Feudal at 159.5s
+PASS: Castle Age at 160s
+PASS: Imperial blocked: "needs 2 of: Shrine, Academy, Fortress (or a Fortress) (have 0)"
+PASS: one Monastery alone is not enough
+PASS: a Castle alone allows Imperial
+PASS: Monastery + University allow Imperial
+PASS: Imperial costs 1000 food + 800 gold
+PASS: still Castle at 189.5s
+PASS: Imperial Age at 190s
+PASS: no age after Imperial
+PASS: villager queued behind age research is not trained during research
+PASS: villager trains after age research completes
+PASS: TC panel line format
+--- locked content refused before its age, allowed after ---
+PASS: Bow Yard refused in Dark: "Bow Yard: Requires Pack Age"
+PASS: Paddock refused in Dark: "Paddock: Requires Pack Age"
+PASS: Forge refused in Dark: "Forge: Requires Pack Age"
+PASS: Bazaar refused in Dark: "Bazaar: Requires Pack Age"
+PASS: Lookout Tower refused in Dark: "Lookout Tower: Requires Pack Age"
+PASS: Fortress refused before Castle
+PASS: Shrine refused before Castle
+PASS: Academy refused before Castle
+PASS: Wonder refused before Imperial
+PASS: Spearman refused in Dark
+PASS: Double-Bit Axe refused in Dark
+PASS: Dark Age TC techs Loom + Wheelbarrow allowed
+PASS: tech cannot be double-queued
+PASS: Hand Cart refused in Dark
+PASS: reached Feudal
+PASS: researched tech cannot be repeated
+PASS: Bow Yard allowed in Feudal
+PASS: Paddock allowed in Feudal
+PASS: Forge allowed in Feudal
+PASS: Bazaar allowed in Feudal
+PASS: Lookout Tower allowed in Feudal
+PASS: Watch Tower costs 25 wood + 125 stone
+PASS: Archer: 25 wood 45 gold
+PASS: Scout Cavalry: 80 food
+PASS: Spearman: 35 food 25 wood
+PASS: Knight refused in Feudal
+PASS: Crossbowman upgrade refused in Feudal
+PASS: Feudal units trained: spearman, scout_cavalry, archer
+PASS: Scout Cavalry moves
+PASS: unit stats shown: Task: Idle | HP 45/45  Attack 3  Armor 0/2  Speed 3.6 | Melee  Reload 2s
+PASS: Forging: +1 attack displayed for cavalry
+PASS: reached Castle
+PASS: Crossbowman upgrade allowed in Castle
+PASS: existing Archers upgraded to Crossbowmen
+PASS: Archer button now trains Crossbowmen
+PASS: Castle buildings + Monk + Knight allowed
+PASS: Trebuchet refused before Imperial
+PASS: Hand Cart allowed in Castle (Wheelbarrow done)
+PASS: reached Imperial (Hand Cart finished first: one item at a time)
+PASS: Wonder allowed in Imperial
+PASS: Trebuchet allowed in Imperial
+--- tech prerequisites ---
+PASS: Bow Saw requires Double-Bit Axe
+PASS: cannot queue Bow Saw while Double-Bit Axe still researching
+PASS: Bow Saw allowed once Double-Bit Axe completes
+PASS: tech only at its building
+--- eco tech numeric effects (live) ---
+PASS: Double-Bit Axe: wood rate 0.39 -> x1.2 (+20%)
+PASS: measured wood in 20s (capped by carry 10) at a tree: base 7, DBA 9, +Bow Saw 10, +Two-Man Saw 10
+PASS: wood bonuses stack additively: +20 +20 +10 = 1.5x
+PASS: Gold Mining: gold rate +15%
+PASS: Gold Shaft Mining: +15% more (1.3x)
+PASS: gold techs do not affect stone
+PASS: base carry 10
+PASS: Wheelbarrow researched while gathering: carry 10 -> 13
+PASS: Wheelbarrow: villager speed 2.5 -> 2.75
+PASS: villager now carries up to 13
+PASS: Hand Cart: carry 15 (+25% of base again)
+PASS: farm food 175
+PASS: Horse Collar: farms 250 food
+PASS: new farm holds 250 food
+PASS: Horse Collar + Heavy Plow + Crop Rotation: 550
+PASS: villager HP 25
+PASS: Loom: existing villagers 40 HP
+PASS: Loom: new villagers 40 HP
+PASS: HP shown in villager panel
+--- resource balance with techs ---
+PASS: farm built with Horse Collar food (250)
+PASS: balance with techs: node decrease 241 == delivered 210 + carried 31
+RESULT: ALL 94 PASSED
+combat test 2026-10-18T06:45:35.009Z
+--- stats & damage formula ---
+PASS: Militia: 40 HP, 4 atk, 0/1 armor, 2.0s reload
+PASS: Archer: 30 HP, 4 pierce atk, range 4, 2.0s reload
+PASS: Spearman: 45 HP, 3 atk, +15 vs cavalry, 3.0s reload
+PASS: militia vs militia: 4 melee - 0 melee armor = 4
+PASS: archer vs militia: 4 pierce - 1 pierce armor = 3
+PASS: spearman vs scout: 3 + 15 bonus - 0 = 18
+PASS: spearman vs knight: 3 + 15 - 2 = 16
+PASS: militia vs knight: 4 - 2 = 2
+PASS: minimum damage is 1 (archer / villager vs Town Center 3/5 armor)
+PASS: house: militia 4 (0 melee armor), archer 1 (7 pierce armor)
+--- melee duel: damage per reload, death at 0 HP removes unit ---
+PASS: first hit immediately: enemy HP 40 -> 36
+PASS: no second hit before 2.0s reload
+PASS: second hit after reload (HP 32)
+PASS: victim retaliates against attacker
+PASS: one militia dies
+PASS: death recorded (militia id 169)
+PASS: no units at <= 0 HP remain in world.units
+PASS: survivor goes idle when no enemies remain
+--- ranged vs melee ---
+PASS: right-click on enemy unit = attack (attack)
+PASS: archer fires from range (4.34 tiles, not melee distance)
+PASS: arrow lands as projectile for 3 dmg (4 pierce - 1)
+PASS: militia that closes the gap beats a lone archer (militia HP left 16)
+PASS: three archers kill a militia before it reaches them
+--- pathing around obstacles to target, chase + re-path ---
+PASS: path (16 steps) avoids the wall
+PASS: path detours around an end of the wall
+PASS: attacker reaches target around the wall and hits it, never entering buildings
+PASS: attacker re-paths after moving target (goal 13.5,30.5 -> 13.5,35.5)
+PASS: faster-chasing attacker catches and hits the moving target
+PASS: blocked waypoint detected, re-pathed (1) and arrived
+--- group move: formation, no stacking ---
+PASS: group right-click ground = move
+PASS: 9 distinct formation goal tiles
+PASS: 9 units on 9 distinct tiles after the move (31,46 31,45 31,44 30,46 30,47 32,44 29,46 28,45 32,45)
+PASS: formation is a compact block around the click
+PASS: 4 units spawned on one tile separate to 4 tiles (20,20 21,20 19,20 20,21)
+PASS: 4 attackers surround target on distinct tiles (16,10 16,9 16,11 17,11)
+--- buildings can be attacked and destroyed ---
+PASS: right-click enemy building = attack
+PASS: house taking damage (514/550)
+PASS: house destroyed at t=91.7s and removed
+PASS: destroyed building footprint is walkable again
+PASS: attackers go idle afterwards
+PASS: enemy building info: Dojo (Enemy) | HP: 1200/1200 | Armor 0/7
+PASS: cannot train from an enemy Barracks
+PASS: enemy houses do not raise player pop cap
+--- aggro: idle units auto-acquire; villagers do not; leash ---
+PASS: idle player militia auto-acquires enemy within 6 tiles
+PASS: idle enemy militia auto-acquires too
+PASS: enemy beyond line of sight stays idle
+PASS: villagers do not auto-attack but enemy military targets them
+PASS: undefended villager killed
+PASS: unit under a move order does not divert to aggro
+PASS: createWorld({enemy:true}) adds a 3-building enemy camp with 4 guards
+PASS: enemy units do not count toward player population
+PASS: camp guards stay home while the player is out of sight
+PASS: AI raid: 3 units sent to attack the player
+RESULT: ALL 53 PASSED
+determinism test 2026-10-18T06:45:35.336Z
+--- two sims, same command stream, 6000 ticks (5 min game time) ---
+  tick 1000: hash edc1c553 units 9 buildings 10 cmds so far 78
+  tick 2000: hash dd770a28 units 9 buildings 16 cmds so far 129
+  tick 3000: hash 4cb5d220 units 10 buildings 20 cmds so far 184
+  tick 4000: hash 9c2f2405 units 14 buildings 24 cmds so far 228
+  tick 5000: hash 5c52887a units 17 buildings 28 cmds so far 262
+  tick 6000: hash 671eeda1 units 17 buildings 33 cmds so far 315
+  4078 ms
+PASS: hashes identical on all 6000 ticks (6000/6000)
+PASS: command stream exercised (315 commands)
+PASS: all command types used: order,build,train,rally,ageup,garrison,cancel,research,stop,ungarrison,stance
+PASS: game actually progressed (units 17, buildings 33, deaths 4)
+PASS: economy ran: 9 buildings completed during the run, 3 techs, ages dark/dark, 17 units alive
+PASS: replay of serialized stream reproduces final hash 671eeda1
+--- single player world (enemy camp + raids) is deterministic too ---
+PASS: skirmish + raids: identical hashes for 4000 ticks (deaths 5, raids 1)
+--- different seeds differ ---
+PASS: seed 1 a3fa4402 != seed 2 da2ffdb3
+PASS: a single extra move command changes the hash
+--- mirrored 1v1 start ---
+PASS: two Town Centers, one per player
+PASS: TCs point-mirrored (20,20) / (64,64)
+PASS: 3 villagers each
+PASS: all 364 resources have a mirrored twin
+PASS: separate stockpiles, 200 food each
+PASS: player 2 training pays from player 2 stockpile
+PASS: player 1 cannot use player 2 Town Center
+PASS: player 1 cannot order player 2 units
+PASS: state intact after foreign order attempts
+PASS: player 2 foundation is owned by player 2 and its villager goes to build
+PASS: queued units count only against their own player's population
+--- command serialization roundtrip ---
+PASS: 8 commands survive encode/decode exactly
+PASS: coordinates quantized to 1/64 tile
+PASS: malformed commands rejected (bad player / type / tick / args)
+--- lockstep scheduler ---
+PASS: player 1 runs the 3 pre-filled delay ticks and then waits (ran 3)
+PASS: tick 3 blocked: waiting for player 2 input
+PASS: tick 3 proceeds once both sets (incl. an empty one) arrived
+PASS: both execute the same commands on the same ticks: 6:1:order 7:0:train
+PASS: without peer input a client stops at most "delay" ticks past the peer (peer 44, self 47, ran 4)
+PASS: messages in flight
+PASS: stalled client recovers dropped inputs via resend request
+PASS: matching hashes counted on both
+PASS: hash mismatch reported as desync at tick 20
+--- full lockstep loop: two clients with independent worlds and jittery delivery ---
+PASS: both clients advanced 3000 ticks (3000/3000, 936 stall-steps waiting for input)
+PASS: no desync, 149 hash checks matched
+PASS: scheduler actually waited on late input
+RESULT: ALL 35 PASSED
+PASS: ground -> move (move)
+PASS: formation: 7 distinct destination tiles
+PASS: formation: compact grid around target
+PASS: formation: group moves at slowest speed 2.2
+PASS: formation: everyone arrived, none stacked
+PASS: formation: no two units share a tile on arrival
+PASS: resource -> gather
+PASS: villager gathering food
+PASS: friendly drop-off building -> drop off (dropoff)
+PASS: drop-off delivered carried food
+PASS: enemy -> attack
+PASS: exhausted bush -> villager moved on to bush #5
+PASS: dropped off, then went back to gathering
+PASS: attack-move issued
+PASS: attack-move: units engage enemies on the way
+PASS: shift-queue adds a waypoint
+PASS: waypoints followed in order (ended at 26.5,34.5)
+PASS: deterministic hash fc956559
+PASS: attack-move on own Den Hall -> amove, not garrison (amove)
+PASS: Shift-queue after attack-move adds a waypoint
+PASS: attack-move on a resource does not start gathering
+PASS: plain order on own Den Hall still garrisons
+RESULT: ALL 22 PASSED
+PASS: 250 KIBBLE: 2% fee = 1% owner + 0.25/0.5/0.25% pools
+PASS: exact split, no dust lost (price 1u)
+PASS: exact split, no dust lost (price 7u)
+PASS: exact split, no dust lost (price 33u)
+PASS: exact split, no dust lost (price 99999u)
+PASS: exact split, no dust lost (price 123457u)
+PASS: exact split, no dust lost (price 1000000003u)
+PASS: treasury address
+PASS: cannot buy without (simulated) wallet
+PASS: 25k demo balance = Hound
+PASS: tier thresholds
+PASS: buy deducts price + 2%
+PASS: fee settled to treasury + pools
+PASS: equip respects ownership + tier
+PASS: cosmetics only
+PASS: Elo equal ratings win +16
+PASS: beat hard AI: +26, bones + pack points
+PASS: rank: rating, then wins, then fewer minutes per win
+PASS: daily pool paid 50/30/20 by rank, nothing lost
+PASS: Kibble Cup entry free for holders
+PASS: Cup needs a tier
+PASS: real wallet: tier from on-chain balance, owned from server inventory only
+PASS: real wallet: only server-owned skins equip
+PASS: real wallet: disconnect clears wallet-owned items
+PASS: catalog id
+RESULT: ALL 25 PASSED
+PASS: tree: villager reaches node and gathers
+PASS: tree: chop uses axe (swing), expected axe
+PASS: tree: returning villager carries wood visibly (no tool)
+PASS: gold_mine: villager reaches node and gathers
+PASS: gold_mine: mine uses pick (swing), expected pick
+PASS: gold_mine: returning villager carries gold visibly (no tool)
+PASS: stone_mine: villager reaches node and gathers
+PASS: stone_mine: mine uses pick (swing), expected pick
+PASS: stone_mine: returning villager carries stone visibly (no tool)
+PASS: berries: villager reaches node and gathers
+PASS: berries: forage uses basket (pick), expected basket
+PASS: berries: returning villager carries food visibly (no tool)
+PASS: farm placed
+PASS: farm: villager builds then farms
+PASS: farm: farm with hoe
+PASS: build: build with hammer (swing)
+PASS: repair: repair with hammer
+PASS: hunt: approaching sheep with spear
+PASS: hunt: kill blow is a spear stab (stab)
+PASS: sheep butchered into a carcass and gathered
+PASS: butcher t=0.0: knife (grab)
+PASS: butcher t=0.1: knife (grab)
+PASS: butcher t=0.2: knife (grab)
+PASS: butcher t=0.3: knife (grab)
+PASS: butcher t=0.4: knife (grab)
+PASS: butcher t=0.5: knife (stab)
+PASS: butcher t=0.6: knife (stab)
+PASS: butcher t=0.7: knife (stab)
+PASS: butcher t=0.8: knife (stab)
+PASS: butcher t=0.9: knife (stab)
+PASS: butcher t=1.0: knife (grab)
+PASS: butcher t=1.1: knife (grab)
+PASS: butcher cycle = knife stab then grab meat
+PASS: returning with meat (carry, meat visible)
+PASS: villager: attack knife (stab)
+PASS: villager: move = walk
+PASS: villager: idle
+PASS: villager: death
+PASS: militia: attack sword (slash)
+PASS: militia: move = walk
+PASS: militia: idle
+PASS: militia: death
+PASS: spearman: attack spear (thrust)
+PASS: spearman: move = walk
+PASS: spearman: idle
+PASS: spearman: death
+PASS: archer: attack bow (draw)
+PASS: archer: move = walk
+PASS: archer: idle
+PASS: archer: death
+PASS: crossbowman: attack crossbow (draw)
+PASS: crossbowman: move = walk
+PASS: crossbowman: idle
+PASS: crossbowman: death
+PASS: scout_cavalry: attack lance (thrust)
+PASS: scout_cavalry: move = walk
+PASS: scout_cavalry: idle
+PASS: scout_cavalry: death
+PASS: knight: attack sword (slash)
+PASS: knight: move = walk
+PASS: knight: idle
+PASS: knight: death
+PASS: blade_paw: attack sword (slash)
+PASS: blade_paw: move = walk
+PASS: blade_paw: idle
+PASS: blade_paw: death
+PASS: halberd_pup: attack spear (thrust)
+PASS: halberd_pup: move = walk
+PASS: halberd_pup: idle
+PASS: halberd_pup: death
+PASS: swift_rider: attack lance (thrust)
+PASS: swift_rider: move = walk
+PASS: swift_rider: idle
+PASS: swift_rider: death
+PASS: red_fang: attack sword (slash)
+PASS: red_fang: move = walk
+PASS: red_fang: idle
+PASS: red_fang: death
+PASS: akita_guardian: attack sword (slash)
+PASS: akita_guardian: move = walk
+PASS: akita_guardian: idle
+PASS: akita_guardian: death
+PASS: kishu_longbow: attack crossbow (draw)
+PASS: kishu_longbow: move = walk
+PASS: kishu_longbow: idle
+PASS: kishu_longbow: death
+PASS: boar_rider: attack sword (slash)
+PASS: boar_rider: move = walk
+PASS: boar_rider: idle
+PASS: boar_rider: death
+PASS: frost_guard: attack spear (thrust)
+PASS: frost_guard: move = walk
+PASS: frost_guard: idle
+PASS: frost_guard: death
+PASS: brindle_striker: attack sword (slash)
+PASS: brindle_striker: move = walk
+PASS: brindle_striker: idle
+PASS: brindle_striker: death
+PASS: monk: attack staff (chant)
+PASS: monk: move = walk
+PASS: monk: idle
+PASS: monk: death
+PASS: trebuchet: attack sling (fling)
+PASS: trebuchet: move = walk
+PASS: trebuchet: idle
+PASS: trebuchet: death
+PASS: no gather type maps to the hammer
+RESULT: ALL 107 PASSED
+PASS: display names (160) free of banned terms
+PASS: src/ai.js: no banned terms
+PASS: src/anim.js: no banned terms
+PASS: src/art.js: no banned terms
+PASS: src/civcards.js: no banned terms
+PASS: src/civs.js: no banned terms
+PASS: src/combat.js: no banned terms
+PASS: src/inu.js: no banned terms
+PASS: src/kibble-ui.js: no banned terms
+PASS: src/kibble.js: no banned terms
+PASS: src/lockstep.js: no banned terms
+PASS: src/main.js: no banned terms
+PASS: src/minimap.js: no banned terms
+PASS: src/net.js: no banned terms
+PASS: src/render.js: no banned terms
+PASS: src/sfx.js: no banned terms
+PASS: src/sim.js: no banned terms
+PASS: src/techtree.js: no banned terms
+PASS: src/terrain.js: no banned terms
+PASS: src/title.js: no banned terms
+PASS: src/touchtips.js: no banned terms
+PASS: src/ui-state.js: no banned terms
+PASS: api/relay.js: no banned terms
+PASS: server/relay.mjs: no banned terms
+PASS: docs/BUGS.md: no banned terms
+PASS: docs/FEATURES.md: no banned terms
+PASS: docs/PLAN.md: no banned terms
+PASS: docs/POLISH_NOTES.md: no banned terms
+PASS: docs/SHIPPING.md: no banned terms
+PASS: index.html: no banned terms
+PASS: README.md: no banned terms
+PASS: package.json: no banned terms
+PASS: art/manifest.json: no banned terms
+PASS: sim/balance.mjs: no banned terms
+RESULT: ALL 34 PASSED
+PASS: modulepreload for src/ai.js
+PASS: modulepreload for src/anim.js
+PASS: modulepreload for src/art.js
+PASS: modulepreload for src/civcards.js
+PASS: modulepreload for src/civs.js
+PASS: modulepreload for src/combat.js
+PASS: modulepreload for src/inu.js
+PASS: modulepreload for src/kibble-ui.js
+PASS: modulepreload for src/kibble.js
+PASS: modulepreload for src/lockstep.js
+PASS: modulepreload for src/main.js
+PASS: modulepreload for src/minimap.js
+PASS: modulepreload for src/net.js
+PASS: modulepreload for src/render.js
+PASS: modulepreload for src/sfx.js
+PASS: modulepreload for src/sim.js
+PASS: modulepreload for src/techtree.js
+PASS: modulepreload for src/terrain.js
+PASS: modulepreload for src/title.js
+PASS: modulepreload for src/touchtips.js
+PASS: modulepreload for src/ui-state.js
+PASS: preloaded src/ai.js is actually imported (no wasted preload)
+PASS: preloaded src/anim.js is actually imported (no wasted preload)
+PASS: preloaded src/art.js is actually imported (no wasted preload)
+PASS: preloaded src/civcards.js is actually imported (no wasted preload)
+PASS: preloaded src/civs.js is actually imported (no wasted preload)
+PASS: preloaded src/combat.js is actually imported (no wasted preload)
+PASS: preloaded src/inu.js is actually imported (no wasted preload)
+PASS: preloaded src/kibble-ui.js is actually imported (no wasted preload)
+PASS: preloaded src/kibble.js is actually imported (no wasted preload)
+PASS: preloaded src/lockstep.js is actually imported (no wasted preload)
+PASS: preloaded src/main.js is actually imported (no wasted preload)
+PASS: preloaded src/minimap.js is actually imported (no wasted preload)
+PASS: preloaded src/net.js is actually imported (no wasted preload)
+PASS: preloaded src/render.js is actually imported (no wasted preload)
+PASS: preloaded src/sfx.js is actually imported (no wasted preload)
+PASS: preloaded src/sim.js is actually imported (no wasted preload)
+PASS: preloaded src/techtree.js is actually imported (no wasted preload)
+PASS: preloaded src/terrain.js is actually imported (no wasted preload)
+PASS: preloaded src/title.js is actually imported (no wasted preload)
+PASS: preloaded src/touchtips.js is actually imported (no wasted preload)
+PASS: preloaded src/ui-state.js is actually imported (no wasted preload)
+PASS: preload links come before the stylesheet in <head>
+RESULT: ALL 43 PASSED
+full RTS test 2026-10-18T06:45:44.149Z
+--- 1. pathfinding: A*, obstacles, flow field, formations ---
+PASS: A* path (32 steps) never enters a blocked tile
+PASS: A* goes through the only gap in the wall
+PASS: no diagonal corner cutting past obstacles
+PASS: flow-field path is walkable and as short as A* (32 vs 32)
+PASS: flow-field distance equals A* path length
+PASS: enclosed tile is unreachable for A* and flow field
+PASS: 12-unit order uses the shared flow field (12 moving)
+PASS: every unit has its own formation slot
+PASS: no unit ever stood inside a blocked tile during the move
+PASS: all 12 arrived on the far side (12/12)
+PASS: separation: 12 units on 12 distinct tiles after arrival
+PASS: formation (flow) moves at the slowest member speed
+--- 2. unit AI: stances, retaliation, auto-gather ---
+PASS: No-Attack stance: does not auto-acquire an enemy in sight
+PASS: Stand Ground: never walks to an enemy out of reach
+PASS: Aggressive: acquires the enemy in sight
+PASS: auto-retaliate: a unit that is shot fights back
+PASS: villager auto-retargets after a tree is exhausted (state to_resource)
+--- 3. construction: multi-builder speed, repair, garrison, arrows ---
+PASS: 3 builders finish a Dojo much faster than 1 (17.7 s vs 51.0 s)
+PASS: right-click damaged Den Hall = repair (HP 1400 -> 1713, wood -17)
+PASS: repair stops without resources (no free HP)
+PASS: 4 Worker Pups garrisoned in the Den Hall (4)
+PASS: Den Hall fires 1 + 4 garrison = 5 arrows per volley
+PASS: garrisoned units cannot be clicked, box-selected or targeted
+PASS: ungarrison releases all 4 next to the building
+PASS: released units stand on walkable tiles
+--- 4. ages + tech tree ---
+PASS: four ages with age-up costs
+PASS: Forge: infantry +1 attack, +1/+1 armor ({"melee":1,"pierce":2})
+PASS: Forge: archers +1 attack +1 range +1/+1 armor (range 5)
+PASS: armor techs reduce incoming damage
+PASS: unit-line upgrade: Footpaw -> Blade Paw (existing units upgraded)
+PASS: Dojo now trains Blade Paws
+PASS: Scout Rider line upgrades to Swift Rider
+PASS: economy techs stack (wood rate x1.40)
+PASS: tech tree has 27 techs with original names
+--- 5. civilizations: traits, unique units, no pay-to-win ---
+PASS: 6 clans, each with its own unique unit
+PASS: Kishu: archers +1 range
+PASS: Shikoku: Paddock units 50% cheaper (80 -> 40 food)
+PASS: Shikoku: cavalry +20% speed
+PASS: Akita: Pack Age researched 6% faster (130 -> 122.2 s)
+PASS: Hokkaido: buildings +5% HP, build 8% faster
+PASS: Kai: Dojo trains 30% faster
+PASS: Shiba: lumber +8%
+PASS: Fortress trains only the own clan unique unit
+PASS: another clan cannot train a unique unit it does not own
+PASS: Kibble unlocks are cosmetic only (banners/coats, no effects)
+PASS: every clan is free to play (no price / lock on a clan)
+--- 6. computer opponent (AI-vs-AI, real commands) ---
+PASS: AI builds an economy: 19 / 19 Worker Pups at 8:00
+PASS: AI builds houses, farms and drop sites (town_center, house, lumber_camp, mill, barracks, farm)
+PASS: AI ages up (22:00: feudal / feudal)
+PASS: AI trains an army (1 / 5, deaths 77)
+PASS: AI attacks: 128 units and 6 buildings destroyed by 32:00
+PASS: score 3094 vs 6921
+--- 7. lockstep determinism: two AI-vs-AI clients, 10 min, hash every tick ---
+PASS: identical hashes on 12000/12000 ticks
+PASS: simulation progressed (40 units)
+PASS: new command types round-trip through encode/decode
+--- 7b. computer economy ---
+PASS: AI keeps the hall busy: 30 / 22 Worker Pups at 15 min
+PASS: AI reaches the Pack Age on time (10.4 min)
+PASS: AI transitions to farms
+PASS: AI fishes
+--- 8. balance report (sim/balance.mjs) ---
+PASS: 480 AI-vs-AI games across 6 clans (0 conquests)
+PASS: Shiba Clan: 47.5% (76/160) within 45-55%
+PASS: Akita Dominion: 49.4% (79/160) within 45-55%
+PASS: Kishu Archers: 48.7% (78/160) within 45-55%
+PASS: Shikoku Riders: 47.5% (76/160) within 45-55%
+PASS: Hokkaido Wardens: 53.7% (86/160) within 45-55%
+PASS: Kai Brindles: 53.1% (85/160) within 45-55%
+RESULT: ALL 66 PASSED

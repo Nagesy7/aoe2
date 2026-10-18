@@ -1,0 +1,19 @@
+PASS: double-click militia selects all 3 on screen (3)
+PASS: clicked away: deselected
+PASS: Ctrl+1 saved, 1 recalls group (3)
+PASS: Army button selects all 7 military
+PASS: Q toggles attack-move
+PASS: attack-move order issued by click
+PASS: Shift+right-click queues a waypoint
+PASS: Idle villager button (Idle 🐕 3) selects + centres a villager
+PASS: right-click resource = gather
+PASS: touch: 3 militia visible
+PASS: double-tap militia selects all of that type on screen (3/3)
+PASS: long-press group slot 2 saves selection
+PASS: Clear deselects
+PASS: tap group slot 2 recalls it
+PASS: A-move button arms attack-move
+PASS: tap after A-move issues attack-move order (mode resets)
+PASS: touch Army button
+PASS: touch Idle villager button
+RESULT: ALL PASSED

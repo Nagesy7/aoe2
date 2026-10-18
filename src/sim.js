@@ -427,7 +427,8 @@ export function orderHunt(world, u, sheep) {
   u.attack = null; u.target = null; u.build = null; u.note = null; u.hunt = sheep.id; u.huntMode = sheep.owner === u.owner ? 'butcher' : 'convert'; u.state = 'to_hunt';
   if (!planTo(world, u, ringTiles(Math.floor(sheep.x), Math.floor(sheep.y), 1))) idle(u, 'unreachable');
 }
-export function commandAt(world, x, y) {
+// opts.amove: attack-move = attack an enemy under the point, otherwise a plain move to the ground point (never gather/garrison/build/drop on own stuff).
+export function commandAt(world, x, y, opts = {}) {
   const b = selectedBuilding(world);
   if (b && !mine(world, b)) return null;
   if (b) { if (b.trains.length && b.complete) { b.rally = { x, y }; return 'rally'; } return null; }
@@ -435,6 +436,7 @@ export function commandAt(world, x, y) {
   const me = curOf(world), foe = world.units.find(o => o.owner && o.owner !== me && hyp(o.x - x, o.y - y) < 0.7) || (() => { const eb = buildingAt(world, x, y); return eb && eb.owner && eb.owner !== me ? eb : null; })();
   if (foe) { const n = orderAttackGroup(world, us, foe); if (isViewer(world)) world.lastOrder = { kind: 'attack', x, y, t: world.time, target: foe.id }; return n ? 'attack' : null; }
   if (isViewer(world)) world.lastOrder = { kind: 'move', x, y, t: world.time };
+  if (opts.amove) { if (us.length === 1) orderMove(world, us[0], x, y); else orderMoveGroup(world, us, x, y); return 'move'; }
   const vills = us.filter(u => u.type === 'villager'), others = us.filter(u => u.type !== 'villager');
   const moveOthers = () => { if (others.length === 1) orderMove(world, others[0], x, y); else if (others.length) orderMoveGroup(world, others, x, y); };
   const sh = sheepAt(world, x, y);
@@ -863,7 +865,7 @@ export function applyCommand(world, cmd) {
         const sel = world.selection, sid = world.selected; world.selection = { kind: 'units', ids };
         if (a.queue) { const us = ownUnits(world, ids).filter(u => u.state === 'moving' && u.path.length); // shift-queue waypoint behind a current move
           if (us.length === ids.length) { for (const u of us) (u.waypoints ||= []).push({ x: a.x, y: a.y, amove: !!a.amove }); return 'queue'; } }
-        let r; try { r = commandAt(world, a.x, a.y); } finally { world.selection = sel; world.selected = sid; }
+        let r; try { r = commandAt(world, a.x, a.y, { amove: !!a.amove }); } finally { world.selection = sel; world.selected = sid; }
         for (const u of ownUnits(world, ids)) { u.waypoints = []; if (a.amove && r === 'move' && u.state === 'moving' && u.type !== 'villager') u.amove = true; }
         return a.amove && r === 'move' ? 'amove' : r; }
       case 'rally': { const b = ownBuilding(world, a.id); if (!b || !b.trains.length || !b.complete || !finite(a.x, a.y)) return null; b.rally = { x: a.x, y: a.y }; return 'rally'; }

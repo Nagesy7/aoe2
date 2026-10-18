@@ -1,0 +1,11 @@
+PASS: desktop: attack-move armed
+PASS: desktop: attack-move on own Den Hall = attack-move to that point (moving+a,moving+a,moving+a,moving+a,moving+a,moving+a,moving+a)
+PASS: desktop: attack-move never garrisons
+PASS: desktop: Shift+right-click queues a waypoint behind the attack-move (1,1,1,1,1,1,1)
+PASS: desktop: plain right-click on own Den Hall still garrisons
+PASS: desktop: no page errors
+PASS: phone: attack-move armed
+PASS: phone: attack-move on own Den Hall = attack-move to that point (moving+a,moving+a,moving+a,moving+a,moving+a,moving+a,moving+a)
+PASS: phone: attack-move never garrisons
+PASS: phone: no page errors
+RESULT: ALL PASSED

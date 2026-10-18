@@ -1,0 +1,16 @@
+base HEAD (615f2ea): simulating 4 seeds x 30 min ...
+head WORKTREE (615f2ea+dirty): simulating 4 seeds x 30 min ...
+
+per-clan win rate (4 vs 4 seeds, 30/30 min)   base 615f2ea  ->  head 615f2ea+dirty
+shiba      37.5%  ->  37.5%   +0.0   <-- OUTSIDE 45-55%
+akita      50.0%  ->  50.0%   +0.0
+kishu      52.5%  ->  52.5%   +0.0
+shikoku    42.5%  ->  42.5%   +0.0   <-- OUTSIDE 45-55%
+hokkaido   57.5%  ->  57.5%   +0.0   <-- OUTSIDE 45-55%
+kai        60.0%  ->  60.0%   +0.0   <-- OUTSIDE 45-55%
+
+flipped matchups (0):
+
+FLAGGED (outside 45-55%): shiba, shikoku, hokkaido, kai
+
+wrote proof/compare-amove-fix.json

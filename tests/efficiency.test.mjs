@@ -44,4 +44,13 @@ const vil = w => w.units.filter(u => u.owner === 'player' && u.type === 'village
     cmd(w, 'order', { ids: m, x: foe.x, y: foe.y + 3, amove: true }); steps(w, 50); cmd(w, 'order', { ids: m.slice(0, 2), x: 30.5, y: 30.5, queue: true }); steps(w, 600); return stateHash(w); };
   const a = run(), b = run(); assert(a === b, `deterministic hash ${a}`);
 }
+{ // attack-move onto own building / resource = attack-move to the point (bug amove-own-building, docs/BUGS.md)
+  const w = createWorld({ scenario: 'skirmish', enemy: true }); const m = mil(w).map(u => u.id), tc = w.buildings.find(b => b.owner === 'player' && b.garrisonCap);
+  const r = cmd(w, 'order', { ids: m, x: tc.x + 1.5, y: tc.y + 1.5, amove: true });
+  assert(r === 'amove' && mil(w).every(u => u.amove && u.state === 'moving'), `attack-move on own Den Hall -> amove, not garrison (${r})`);
+  assert(cmd(w, 'order', { ids: m, x: tc.x - 4, y: tc.y + 2, queue: true }) === 'queue' && mil(w).every(u => u.waypoints.length === 1), 'Shift-queue after attack-move adds a waypoint');
+  const v = vil(w)[0], bush = w.resources.find(n => n.kind === 'berries');
+  assert(cmd(w, 'order', { ids: [v.id], x: bush.x, y: bush.y, amove: true }) === 'amove' || v.state === 'moving', 'attack-move on a resource does not start gathering');
+  assert(cmd(w, 'order', { ids: m, x: tc.x + 1.5, y: tc.y + 1.5 }) === 'garrison', 'plain order on own Den Hall still garrisons');
+}
 console.log(fail ? `RESULT: ${fail} FAILED` : `RESULT: ALL ${pass} PASSED`); process.exit(fail ? 1 : 0);
