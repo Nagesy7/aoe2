@@ -1,0 +1,8 @@
+PASS: title button #btn-ai: live "⚔ Skirmish vs Computer" vs origin/main "⚔ Skirmish vs Computer"
+PASS: title button #btn-sp: live "Sandbox (practice camp)" vs origin/main "Sandbox (practice camp)"
+PASS: title button #btn-host: live "Host 1v1" vs origin/main "Host 1v1"
+PASS: title button #btn-join: live "Join 1v1" vs origin/main "Join 1v1"
+PASS: title button #btn-kibble: live "🦴 $KIBBLE network" vs origin/main "🦴 $KIBBLE network"
+PASS: live serves origin/main's files byte-for-byte (22 checked)
+LIVE-TITLE: live matches the repo
+EXIT 0

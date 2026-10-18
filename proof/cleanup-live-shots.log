@@ -1,0 +1,7 @@
+PASS: live 844x390 (viewport 844x390) title h1 top 20, tag bottom 78, Skirmish bottom 295; no ?ui -> data-ui=b, 6 cards, 6 shield canvases, 6/6 fully on screen, build 1af9ac070383; card 1: "Shiba Clan Economy • Berry foraging +15%, lumber +10%"
+shot /workspace/inu-empires-shots/oct18-cleanup-live-844x390.png
+PASS: live 1366x768 (viewport 1366x768) title h1 top 24, tag bottom 108, Skirmish bottom 520; no ?ui -> data-ui=b, 6 cards, 6 shield canvases, 6/6 fully on screen, build 1af9ac070383; card 1: "Shiba Clan Economy • Berry foraging +15%, lumber +10% Unique: Red Fang (fast, cheap raider infantry) Common Shield"
+shot /workspace/inu-empires-shots/oct18-cleanup-live-1366x768.png
+PASS: live ?ui=a still renders layout a (data-ui=a)
+RESULT: ALL PASSED
+EXIT 0

@@ -71,3 +71,11 @@ FAIL: retask with 7 wood: Shiba Worker Pup | Task: Returning to Den Hall | Carry
 ## npm test
 npm test exit 0
 RESULT: ALL 66 PASSED
+
+## after ctl ship 1af9ac0 (live https://inu-empires.vercel.app, build 1af9ac070383)
+ctl ship: preview verify PASS -> prod -> live verify PASS (proof/ship-cleanup-1af9ac0.log)
+PASS: build id: live 1af9ac070383 vs expected 1af9ac070383
+live-title: 6 pass 0 fail (proof/live-title-cleanup.log)
+menufit vs live: 102 pass 0 fail (proof/menufit-live.log)
+lobby vs live: 19 pass 0 fail (proof/full-lobby-live.log)
+live menu shots: 3 pass (proof/cleanup-live-shots.log)
