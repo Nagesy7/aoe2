@@ -1,4 +1,4 @@
-full RTS test 2026-10-15T11:19:38.277Z
+full RTS test 2026-10-18T05:23:44.021Z
 --- 1. pathfinding: A*, obstacles, flow field, formations ---
 PASS: A* path (32 steps) never enters a blocked tile
 PASS: A* goes through the only gap in the wall
@@ -43,7 +43,7 @@ PASS: Kishu: archers +1 range
 PASS: Shikoku: Paddock units 50% cheaper (80 -> 40 food)
 PASS: Shikoku: cavalry +20% speed
 PASS: Akita: Pack Age researched 6% faster (130 -> 122.2 s)
-PASS: Hokkaido: buildings +5% HP, build 5% faster
+PASS: Hokkaido: buildings +5% HP, build 8% faster
 PASS: Kai: Dojo trains 30% faster
 PASS: Shiba: lumber +8%
 PASS: Fortress trains only the own clan unique unit
@@ -68,10 +68,10 @@ PASS: AI transitions to farms
 PASS: AI fishes
 --- 8. balance report (sim/balance.mjs) ---
 PASS: 480 AI-vs-AI games across 6 clans (0 conquests)
-PASS: Shiba Clan: 49.4% (79/160) within 45-55%
-PASS: Akita Dominion: 51.2% (82/160) within 45-55%
-PASS: Kishu Archers: 47.5% (76/160) within 45-55%
-PASS: Shikoku Riders: 45.6% (73/160) within 45-55%
-FAIL: Hokkaido Wardens: 56.3% (90/160) within 45-55%
-PASS: Kai Brindles: 50.0% (80/160) within 45-55%
-RESULT: 1 FAILED, 65 PASSED
+PASS: Shiba Clan: 47.5% (76/160) within 45-55%
+PASS: Akita Dominion: 49.4% (79/160) within 45-55%
+PASS: Kishu Archers: 48.7% (78/160) within 45-55%
+PASS: Shikoku Riders: 47.5% (76/160) within 45-55%
+PASS: Hokkaido Wardens: 53.7% (86/160) within 45-55%
+PASS: Kai Brindles: 53.1% (85/160) within 45-55%
+RESULT: ALL 66 PASSED
