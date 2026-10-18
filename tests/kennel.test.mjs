@@ -13,7 +13,12 @@ out('kennel test ' + new Date().toISOString());
 assert(JSON.stringify(N.unlockedBy('pup')) === '["kn_tag","kn_banner_bronze"]', 'Pup unlocks name tag + bronze banner');
 assert(['kn_collar', 'kn_flag', 'kn_banner_silver'].every(id => N.unlockedBy('guard').includes(id)) && N.unlockedBy('guard').length === 5, 'Guard Dog adds collars, flag recolour, silver banner');
 assert(['kn_aura_paw', 'kn_banner_anim', 'kn_title_alpha'].every(id => N.unlockedBy('alpha').includes(id)), 'Alpha adds paw aura, animated Den Hall banner, Alpha title');
-assert(['kn_aura_gold', 'kn_bskin_gold', 'kn_name_gold'].every(id => N.unlockedBy('top').includes(id)) && N.unlockedBy('top').length === N.IDS.length, 'Top Dog unlocks everything incl. gold aura, building skins, golden name');
+assert(['kn_aura_gold', 'kn_bskin_gold', 'kn_name_gold'].every(id => N.unlockedBy('top').includes(id)) && N.unlockedBy('top').length === N.IDS.length - 1 && !N.unlockedBy('top').includes('kn_badge_locked'), 'Top Dog unlocks every tier item incl. gold aura, building skins, golden name (the Locked flair is separate)');
+// ---- hybrid: tiers from hold streaks; the Locked flair only from an optional lock ----
+assert(JSON.stringify(N.TIERS.map(t => [t.id, t.amount, t.days])) === JSON.stringify([['pup', 100000, 7], ['guard', 1000000, 30], ['alpha', 10000000, 90], ['top', 50000000, 90]]) && N.TIERS.every(t => t.minDays === t.days), 'tier table = kibble-pay hold streaks: Pup 100K/7d, Guard Dog 1M/30d, Alpha 10M/90d, Top Dog 50M/90d');
+assert(N.isFlair('kn_badge_locked') && N.COSMETICS.kn_badge_locked.slot === 'badge' && N.COSMETICS.kn_badge_locked.tier === null, 'Locked flair: its own slot, no tier');
+assert(N.itemState('kn_badge_locked', { tier: 'top', equipped: {}, flair: false }) === 'flair' && N.itemState('kn_badge_locked', { tier: null, equipped: {}, flair: true }) === 'available', 'flair item: needs the lock, not a tier (no tier + lock = available; Top Dog without lock = not)');
+{ const e = {}; assert(!N.equip(e, 'kn_badge_locked', 'top', false) && N.equip(e, 'kn_badge_locked', null, true) && N.activeIds(e, null, true).includes('kn_badge_locked') && !N.activeIds(e, 'top', false).length, 'equip / show the flair only while the lock is live'); }
 assert(N.unlockedBy(null).length === 0, 'no tier: nothing unlocked');
 const eq = N.defaultEquip('top');
 assert(eq.banner === 'kn_banner_anim' && eq.aura === 'kn_aura_gold', 'default loadout picks the best item per slot');
@@ -26,23 +31,32 @@ assert(JSON.stringify(N.sanitizeIds(['kn_tag', 'kn_tag', 'evil<script>', 'kn_aur
 assert(N.sanitizeIds('kn_tag').length === 0 && N.sanitizeIds(null).length === 0, 'peer ids: non-arrays ignored');
 assert(N.sanitizeName('<img src=x onerror=1>Rex') === 'img srcx onerror1Rex'.slice(0, 14) && !/[<>]/.test(N.sanitizeName('<b>')), 'peer name stripped of markup and capped');
 // ---- dev override ----
-assert(N.overrideTier('?kennel=alpha') === 'alpha' && N.overrideTier('?kennel=none') === 'none' && N.overrideTier('?kennel=whale') === null && N.overrideTier('') === null, '?kennel= override parsing');
-for (const t of N.TIER_IDS) { const f = N.fixture(t); assert(f.tier === t && f.lockedAmount >= N.tierById(t).amount && f.unlockDate && (t === 'top' ? !f.nextTier : f.nextTier?.id === N.TIERS[N.rankOf(t) + 1].id), `fixture ${t}: tier, locked, unlock date, next tier`); }
-assert(N.fixture('none').tier === null && N.fixture('none').nextTier.id === 'pup', 'fixture none: no tier, next = Pup');
+assert(N.overrideTier('?kennel=alpha') === 'alpha' && N.overrideTier('?kennel=none') === 'none' && N.overrideTier('?kennel=progress') === 'progress' && N.overrideTier('?kennel=whale') === null && N.overrideTier('') === null && N.overrideFlair('?kflair=1') && !N.overrideFlair(''), '?kennel= / ?kflair= override parsing');
+for (const t of N.TIER_IDS) { const f = N.fixture(t), i = N.rankOf(t);
+  assert(f.tier === t && f.held >= N.tierById(t).amount && f.streaks[i].earned && (t === 'top' ? !f.nextStep : f.nextStep?.id === N.TIERS[i + 1].id) && !f.locked.flair, `fixture ${t}: tier from the streak, held, next step, no flair without a lock`); }
+{ const f = N.fixture('none'), g = N.fixture('progress'), h = N.fixture('guard', Date.now(), { flair: true });
+  assert(f.tier === null && f.nextStep.id === 'pup' && !f.nextStep.holding && N.resetLine(f) === '', 'fixture none: no tier, next = Pup, nothing to reset');
+  assert(g.tier === null && g.nextStep.id === 'pup' && g.nextStep.holding && g.nextStep.needDays === 4 && g.streaks[1].holding && g.streaks[1].daysHeld === 3, 'fixture progress: 1.2M for 3 days -> Pup in 4 days, Guard Dog streak 3/30');
+  assert(N.resetLine(g) === 'Selling below 1,000,000 $KIBBLE resets your Guard Dog streak.' && N.resetLine(h) === 'Selling below 1,000,000 $KIBBLE resets your Guard Dog streak (and the tier).', 'reset copy names the amount and the streak it protects');
+  assert(h.tier === 'guard' && h.locked.flair && h.lockedAmount >= N.FLAIR_MIN, 'fixture with ?kflair=1: Locked flair on top of the streak tier'); }
+assert(/launched on 15 Oct 2026, so long streaks can't exist yet/.test(N.LAUNCH_NOTE), 'copy says long streaks cannot exist yet (launch 15 Oct 2026)');
 // ---- server response normalising ----
-const junk = N.normalize({ tier: 'whale', lockedAmount: 'lots', nextTier: { id: 'x' } });
-assert(junk.tier === null && junk.lockedAmount === 0 && junk.nextTier === null, 'unknown tier / junk values normalised to no tier');
-assert(N.normalize(null).source === 'holder-only' && N.normalize(null).stale, 'missing response = holder-only, stale');
+const junk = N.normalize({ tier: 'whale', lockedAmount: 'lots', nextTier: { id: 'x' }, held: -5, streaks: [{ id: 'pup', holding: true }, { id: 'evil' }] });
+assert(junk.tier === null && junk.lockedAmount === 0 && junk.nextTier === null && junk.held === 0 && junk.streaks.length === 4 && !junk.streaks[0].holding, 'unknown tier / junk values normalised (a streak without a start is not held)');
+assert(N.normalize(null).source === 'holder-only' && N.normalize(null).stale && !N.normalize(null).locked.flair, 'missing response = holder-only, stale, no flair');
+{ const v1 = N.normalize({ tier: 'guard', lockedAmount: 2e6, unlockDate: '2027-01-01T00:00:00Z', tierUntil: '2026-12-01T00:00:00Z', nextTier: { id: 'alpha', need: 8e6 } });
+  assert(v1.tier === 'guard' && v1.nextStep.id === 'alpha' && v1.nextTier.need === 1e7 && v1.tierUntil === null, 'a v1 (lock-era) response still renders: tier, next step from nextTier'); }
 const ff = async () => { throw new Error('down'); }; const off = await N.fetchKennel('W', { f: ff });
 assert(off.tier === null && off.reason === 'offline', 'kennel API down: degrades to no tier (no crash)');
 let seen = ''; await N.fetchKennel('Wal let', { refresh: true, f: async u => { seen = u; return { ok: true, json: async () => ({ tier: 'guard', lockedAmount: 2e6 }) }; } });
 assert(seen.endsWith('/api/kennel?wallet=Wal%20let&refresh=1'), 'fetch uses /api/kennel?wallet=&refresh=1');
-// ---- lock form ----
+// ---- optional lock form (Locked flair) ----
 const p = N.lockPlan(1_000_000, 60, 5_000_000);
-assert(p.ok && p.raw === 1_000_000_000_000n && p.timeline[0].id === 'guard' && p.timeline[0].days === 30 && p.timeline[1].id === 'pup' && p.timeline[1].days === 53, '1M for 60 days: Guard Dog 30 days, then Pup 53 days; raw 6-decimals');
+assert(p.ok && p.raw === 1_000_000_000_000n && p.flair && !('tier' in p) && !('timeline' in p), '1M for 60 days: adds the Locked flair, no tier from a lock; raw 6-decimals');
 assert(p.unlockAt > Date.now() / 1000 + 60 * 86400, 'unlock time = now + duration (+10 min margin)');
 assert(!N.lockPlan(0, 30).ok && !N.lockPlan(100, 31).ok && !N.lockPlan(2e6, 30, 1e6).ok, 'rejects zero amount, odd duration, more than the balance');
-assert(N.lockPlan(50, 14).timeline.length === 0, 'small lock: no tier on its own');
+assert(!N.lockPlan(99_999, 14).flair && N.lockPlan(100_000, 14).flair, 'flair from 100,000 $KIBBLE');
+assert(/No tier needs a lock/.test(N.planText(null, N.fmtDate)) && /still count toward your hold streak/.test(N.planText(p, N.fmtDate)), 'lock copy: optional, no tier needs it, locked tokens still count toward the streak');
 // ---- copy: required warning, no banned words ----
 const copy = [N.WARNING, ...Object.values(N.COSMETICS).flatMap(c => [c.name, c.desc]), ...Object.values(N.SLOT_NAMES), ...N.TIERS.map(t => t.name)].join(' | ');
 const src = fs.readFileSync(new URL('../src/kennel-ui.js', import.meta.url), 'utf8');
@@ -50,6 +64,8 @@ const uiStrings = (src.match(/`[^`]*`|'[^']*'/g) || []).join(' ');
 assert(N.WARNING === "Locked tokens can't be sold until the unlock date.", 'exact can\'t-sell warning');
 const banned = [/\bbuy\b/i, /\bsell\b/i, /pump it/i, /\bmoon\b/i, /\bdump\b/i, /\byield\b(?!, no)/i];
 assert(!banned.slice(0, 5).some(r => r.test(copy) || r.test(uiStrings)), 'no buy / sell / pump it / moon / dump in Kennel copy');
+const kSrc = fs.readFileSync(new URL('../src/kennel.js', import.meta.url), 'utf8');
+assert(!/\bsell(ing)?\b/i.test((uiStrings + ' ' + (kSrc.match(/`[^`]*`|'[^']*'|"[^"]*"/g) || []).join(' ')).replace(/Locked tokens can't be sold until the unlock date\./g, '').replace(/Selling below \$\{fmtAmt\(g\.amount\)\} \$KIBBLE resets your/g, '')), "the only 'sell' words: the required warning and the requested 'Selling below X resets your streak'");
 assert(/no yield, no rewards, no draws/.test(src), 'lock form states: no yield, no rewards, no draws');
 
 // ---- cosmetics never touch the simulation ----

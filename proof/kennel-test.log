@@ -1,8 +1,12 @@
-kennel test 2026-10-18T08:46:08.662Z
+kennel test 2026-10-18T10:45:22.984Z
 PASS: Pup unlocks name tag + bronze banner
 PASS: Guard Dog adds collars, flag recolour, silver banner
 PASS: Alpha adds paw aura, animated Den Hall banner, Alpha title
-PASS: Top Dog unlocks everything incl. gold aura, building skins, golden name
+PASS: Top Dog unlocks every tier item incl. gold aura, building skins, golden name (the Locked flair is separate)
+PASS: tier table = kibble-pay hold streaks: Pup 100K/7d, Guard Dog 1M/30d, Alpha 10M/90d, Top Dog 50M/90d
+PASS: Locked flair: its own slot, no tier
+PASS: flair item: needs the lock, not a tier (no tier + lock = available; Top Dog without lock = not)
+PASS: equip / show the flair only while the lock is live
 PASS: no tier: nothing unlocked
 PASS: default loadout picks the best item per slot
 PASS: after a tier drop only still-allowed items show
@@ -13,22 +17,29 @@ PASS: equip refuses above-tier items; unequip clears the slot
 PASS: peer ids: unknown dropped, one per slot
 PASS: peer ids: non-arrays ignored
 PASS: peer name stripped of markup and capped
-PASS: ?kennel= override parsing
-PASS: fixture pup: tier, locked, unlock date, next tier
-PASS: fixture guard: tier, locked, unlock date, next tier
-PASS: fixture alpha: tier, locked, unlock date, next tier
-PASS: fixture top: tier, locked, unlock date, next tier
-PASS: fixture none: no tier, next = Pup
-PASS: unknown tier / junk values normalised to no tier
-PASS: missing response = holder-only, stale
+PASS: ?kennel= / ?kflair= override parsing
+PASS: fixture pup: tier from the streak, held, next step, no flair without a lock
+PASS: fixture guard: tier from the streak, held, next step, no flair without a lock
+PASS: fixture alpha: tier from the streak, held, next step, no flair without a lock
+PASS: fixture top: tier from the streak, held, next step, no flair without a lock
+PASS: fixture none: no tier, next = Pup, nothing to reset
+PASS: fixture progress: 1.2M for 3 days -> Pup in 4 days, Guard Dog streak 3/30
+PASS: reset copy names the amount and the streak it protects
+PASS: fixture with ?kflair=1: Locked flair on top of the streak tier
+PASS: copy says long streaks cannot exist yet (launch 15 Oct 2026)
+PASS: unknown tier / junk values normalised (a streak without a start is not held)
+PASS: missing response = holder-only, stale, no flair
+PASS: a v1 (lock-era) response still renders: tier, next step from nextTier
 PASS: kennel API down: degrades to no tier (no crash)
 PASS: fetch uses /api/kennel?wallet=&refresh=1
-PASS: 1M for 60 days: Guard Dog 30 days, then Pup 53 days; raw 6-decimals
+PASS: 1M for 60 days: adds the Locked flair, no tier from a lock; raw 6-decimals
 PASS: unlock time = now + duration (+10 min margin)
 PASS: rejects zero amount, odd duration, more than the balance
-PASS: small lock: no tier on its own
+PASS: flair from 100,000 $KIBBLE
+PASS: lock copy: optional, no tier needs it, locked tokens still count toward the streak
 PASS: exact can't-sell warning
 PASS: no buy / sell / pump it / moon / dump in Kennel copy
+PASS: the only 'sell' words: the required warning and the requested 'Selling below X resets your streak'
 PASS: lock form states: no yield, no rewards, no draws
 PASS: render with every Kennel cosmetic leaves the sim hash unchanged on every frame
 PASS: 2400 ticks AI vs AI: identical state hashes with and without cosmetics (60 checkpoints, final 6f5c3ca5)
@@ -55,4 +66,4 @@ PASS: fee card: no made-up numbers when costs are {}
 PASS: kennel-ui: the build shows the review card; signAndSend only runs from the card's Sign button
 PASS: fee card copy: no banned words
 
-55 passed, 0 failed
+66 passed, 0 failed

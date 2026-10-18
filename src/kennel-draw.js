@@ -21,7 +21,14 @@ export function unitOver(ctx, u, px, py, t, L, owner) {
     const txt = (L.name || 'Kennel') + (has(L, 'kn_title_alpha') ? ' · Alpha' : '');
     ctx.font = 'bold 8px sans-serif'; ctx.textAlign = 'center'; const w = Math.min(70, ctx.measureText(txt).width + 6), y = py - 41;
     const [b, hi] = has(L, 'kn_name_gold') ? GOLD : BRONZE; ctx.fillStyle = '#1a0f08d0'; ctx.fillRect(px - w / 2, y - 7, w, 10); ctx.strokeStyle = b; ctx.lineWidth = 1; ctx.strokeRect(px - w / 2 + 0.5, y - 6.5, w - 1, 9);
-    ctx.fillStyle = has(L, 'kn_name_gold') ? hi : '#f4e2b8'; ctx.fillText(txt, px, y + 1, w - 4); }
+    ctx.fillStyle = has(L, 'kn_name_gold') ? hi : '#f4e2b8'; ctx.fillText(txt, px, y + 1, w - 4);
+    if (has(L, 'kn_badge_locked')) lockBadge(ctx, px - w / 2 - 5, y - 2); }
+  else if (has(L, 'kn_badge_locked')) lockBadge(ctx, px, py - 40);
+}
+// the optional Locked flair: a small gold padlock (shackle + body + keyhole)
+export function lockBadge(ctx, x, y) {
+  ctx.strokeStyle = '#ffe9a8'; ctx.lineWidth = 1.5; ctx.beginPath(); ctx.arc(x, y - 2, 2.6, Math.PI, 0); ctx.stroke(); ctx.lineWidth = 1;
+  ctx.fillStyle = '#c9a24a'; ctx.fillRect(x - 4, y - 2, 8, 6); ctx.strokeStyle = '#5a3c10'; ctx.strokeRect(x - 3.5, y - 1.5, 7, 5); ctx.fillStyle = '#3a2410'; ctx.fillRect(x - 0.5, y, 1.2, 2.2);
 }
 // buildings (complete only): Den Hall banner, flag recolour, Top Dog skin set
 export function buildingOver(ctx, b, px, py, s, t, L) {
