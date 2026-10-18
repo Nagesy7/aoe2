@@ -5,6 +5,8 @@
 //   node scripts/ctl.mjs run <flow> [args]               flows: scripts/flows/<flow>.mjs (list with `ctl run`)
 //   node scripts/ctl.mjs balance [--seeds 16 --minutes 30] sim/balance.mjs in the background-friendly form (log to proof/balance.txt)
 //   node scripts/ctl.mjs verify [--url U]                smoke: title buttons match index.html, skirmish starts, no page errors (phone + desktop)
+//   node scripts/ctl.mjs deploy [--prod] [--ref main]    clean export of the commit (git worktree), stamp <meta name=build-id>, vercel deploy
+//   node scripts/ctl.mjs build-id [--url U]              live build id vs origin/main (exit 1 if live lags main)
 // Shared helpers are exported so flows import them instead of copying a static server / launch / tap boilerplate.
 // Video: pass --video <dir> (or RECORD=dir) and every context records .webm into it (Playwright recordVideo).
 import { chromium, devices } from 'playwright';
@@ -149,7 +151,26 @@ export async function buildCheck(url, expect = '') {
   const ok = m[1] && expect.startsWith(m[1].slice(0, 7)) && m[1].length >= 7; return { ok, msg: `build id: live ${m[1] || '(dev)'} vs expected ${expect.slice(0, 12)}` };
 }
 
-const CMDS = { shot: cmdShot, start: cmdStart, run: cmdRun, balance: cmdBalance, verify };
+// deploy: never from the working tree. Export the commit with git worktree, stamp the build id, deploy that directory.
+async function cmdDeploy(argv) {
+  const ref = argOf('ref', 'HEAD', argv), sha = execSync(`git rev-parse ${ref}`, { cwd: ROOT }).toString().trim(), dir = `/tmp/inu-deploy-${sha.slice(0, 12)}`;
+  if (existsSync(dir)) execSync(`git worktree remove --force ${dir}`, { cwd: ROOT, stdio: 'ignore' });
+  execSync(`git worktree add --detach ${dir} ${sha}`, { cwd: ROOT, stdio: 'ignore' });
+  try {
+    mkdirSync(join(dir, '.vercel'), { recursive: true }); writeFileSync(join(dir, '.vercel/project.json'), readFileSync(join(ROOT, '.vercel/project.json')));
+    const f = join(dir, 'index.html'); const h = readFileSync(f, 'utf8'); if (!h.includes('<meta name="build-id" content="dev">')) throw new Error('index.html has no build-id meta');
+    writeFileSync(f, h.replace('<meta name="build-id" content="dev">', `<meta name="build-id" content="${sha.slice(0, 12)}">`));
+    const args = ['deploy', ...(flag('prod', argv) ? ['--prod'] : []), '--yes'];
+    console.log(`deploying ${sha.slice(0, 12)} from clean export ${dir}: vercel ${args.join(' ')}`);
+    const res = await new Promise(ok => { const c = spawn('vercel', args, { cwd: dir, env: { ...process.env, PATH: `${process.env.HOME}/.local/bin:${process.env.PATH}` } });
+      let o = ''; c.stdout.on('data', d => { o += d; }); c.stderr.on('data', d => { o += d; }); c.on('close', code => ok({ code, o })); });
+    const url = (res.o.match(/https:\/\/[a-z0-9-]+\.vercel\.app/g) || []).filter(u => !u.includes('inu-empires.vercel.app')).pop();
+    console.log(res.o.split('\n').filter(l => /https:|Error|Production|Preview|Inspect/i.test(l)).join('\n'));
+    console.log(`DEPLOY ${res.code ? 'FAILED' : 'OK'} ${sha.slice(0, 12)} ${url || ''}`); return res.code;
+  } finally { execSync(`git worktree remove --force ${dir}`, { cwd: ROOT, stdio: 'ignore' }); }
+}
+async function cmdBuildId(argv) { const url = argOf('url', 'https://inu-empires.vercel.app/', argv); const r = await buildCheck(url, argOf('expect', '', argv)); console.log(`${r.ok ? 'PASS' : 'FAIL'}: ${r.msg}`); return r.ok ? 0 : 1; }
+const CMDS = { deploy: cmdDeploy, 'build-id': cmdBuildId, shot: cmdShot, start: cmdStart, run: cmdRun, balance: cmdBalance, verify };
 if (process.argv[1] && resolve(process.argv[1]) === fileURLToPath(import.meta.url)) {
   const [cmd, ...rest] = process.argv.slice(2);
   if (!CMDS[cmd]) { console.log(readFileSync(fileURLToPath(import.meta.url), 'utf8').split('\n').slice(1, 8).join('\n')); process.exit(cmd ? 1 : 0); }

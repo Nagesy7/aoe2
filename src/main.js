@@ -15,6 +15,7 @@ import { CIV_LOOK } from './civs.js';
 import { createUi, startPlacing, cancelPlacing, updateGhost, pointerDown, pointerMove, pointerUp } from './ui-state.js';
 const canvas = document.getElementById('game'), ctx = canvas.getContext('2d');
 const params = new URLSearchParams(location.search);
+window.BUILD_ID = document.querySelector('meta[name=build-id]')?.content || 'dev'; // stamped with the commit at deploy (scripts/ctl.mjs deploy)
 const $ = id => document.getElementById(id);
 let world = null, cam = { x: 0, y: 0 }, ui = createUi(), net = null, fog = null;
 const keys = new Set(); addEventListener('blur', () => keys.clear());
