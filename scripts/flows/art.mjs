@@ -1,8 +1,8 @@
 // Art proof: base (single player, villagers working + buildings) and battle (skirmish, real mouse box-select + right-click attack).
-import { chromium } from 'playwright'; import http from 'node:http'; import { readFile } from 'node:fs/promises'; import { join, extname } from 'node:path'; import { fileURLToPath } from 'node:url';
-const root = fileURLToPath(new URL('..', import.meta.url)); const M = { '.html': 'text/html', '.js': 'text/javascript', '.png': 'image/png', '.json': 'application/json' };
-const s = http.createServer(async (q, r) => { try { const f = join(root, q.url.split('?')[0] === '/' ? 'index.html' : q.url.split('?')[0]); r.writeHead(200, { 'content-type': M[extname(f)] || 'application/octet-stream' }); r.end(await readFile(f)); } catch { r.writeHead(404); r.end(); } });
-await new Promise(r => s.listen(0, r)); const BASE = process.env.URL || `http://localhost:${s.address().port}/`;
+import { startServer } from '../ctl.mjs';
+import { chromium } from 'playwright'; import { readFile } from 'node:fs/promises'; import { join, extname } from 'node:path'; import { fileURLToPath } from 'node:url';
+const root = fileURLToPath(new URL('../..', import.meta.url)); const M = { '.html': 'text/html', '.js': 'text/javascript', '.png': 'image/png', '.json': 'application/json' };
+const s = (await startServer({ root })).server; const BASE = process.env.URL || `http://localhost:${s.address().port}/`;
 const b = await chromium.launch(); let fails = 0; const check = (c, m) => { console.log(`${c ? 'PASS' : 'FAIL'}: ${m}`); if (!c) fails++; };
 const p = await b.newPage({ viewport: { width: 1280, height: 720 } }); p.on('pageerror', e => { console.log('ERR', e); fails++; });
 const scr = (x, y) => p.evaluate(([x, y]) => window.game.toScreen(x, y), [x, y]);

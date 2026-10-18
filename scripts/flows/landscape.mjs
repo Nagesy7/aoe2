@@ -1,12 +1,11 @@
 // Landscape touch proof: iPhone 13 + Pixel 7 landscape with real CDP touch input.
 // Tap-select a villager, long-press / Command-tap gather orders, drag-pan, pinch zoom, Box select, build menu; layout + rotation.
+import { startServer } from '../ctl.mjs';
 import { chromium, devices } from 'playwright';
-import http from 'node:http'; import { readFile, mkdir } from 'node:fs/promises'; import { join, extname, normalize } from 'node:path'; import { fileURLToPath } from 'node:url';
-const root = fileURLToPath(new URL('..', import.meta.url)); const MIME = { '.html': 'text/html', '.js': 'text/javascript', '.css': 'text/css' };
+import { readFile, mkdir } from 'node:fs/promises'; import { join, extname, normalize } from 'node:path'; import { fileURLToPath } from 'node:url';
+const root = fileURLToPath(new URL('../..', import.meta.url)); const MIME = { '.html': 'text/html', '.js': 'text/javascript', '.css': 'text/css' };
 let BASE = process.env.URL, server;
-if (!BASE) { server = http.createServer(async (req, res) => { const p = normalize(decodeURIComponent(req.url.split('?')[0])).replace(/^(\.\.[/\\])+/, '');
-  try { const f = join(root, p === '/' ? 'index.html' : p); res.writeHead(200, { 'content-type': MIME[extname(f)] || 'application/octet-stream' }); res.end(await readFile(f)); } catch { res.writeHead(404); res.end(); } });
-  await new Promise(r => server.listen(0, r)); BASE = `http://localhost:${server.address().port}/`; }
+if (!BASE) {server = (await startServer({ root })).server; BASE = `http://localhost:${server.address().port}/`; }
 await mkdir(join(root, 'proof'), { recursive: true });
 let fails = 0; const check = (c, m) => { console.log(`${c ? 'PASS' : 'FAIL'}: ${m}`); if (!c) fails++; };
 const over = (a, b) => a && b && a.x < b.x + b.width - 1 && b.x < a.x + a.width - 1 && a.y < b.y + b.height - 1 && b.y < a.y + a.height - 1;

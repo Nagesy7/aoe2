@@ -1,0 +1,12 @@
+PASS: panel labelled SIMULATED
+PASS: demo wallet connected -> Hound tier
+PASS: shop (x10000 reprice, 25k demo wallet cannot afford a 2.5M skin): Need 2,550,000 KIBBLE (incl. 2% fee)
+PASS: President's treasury address shown
+PASS: treasury unchanged when the buy is refused: President's treasury (President Inu) BzLYTFAfUsjzQ5x8bx5BbPK4DFtaHrLCuferkvkxTNG
+PASS: ladder row: 4 [SHIB] You 1245 2-0 20.0
+PASS: weekly pool panel: Daily 0 · Weekly 0 · Monthly 0 $KIBBLE
+PASS: pack points from wins
+PASS: Kibble Cup free entry
+PASS: cosmetics/tier do not touch resources, stats or build times (same as a fresh no-wallet game)
+PASS: pack tag on name: [SHIB] You · 1245 Elo · 🦴 50
+RESULT: ALL PASSED

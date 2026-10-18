@@ -1,18 +1,13 @@
 // Round 6 browser proof (camps, farms, sheep, barracks, build menu). All selections/orders/UI actions are issued with REAL mouse/keyboard input
 // through Playwright. page.evaluate is used only to READ state and to advance simulated time (window.game.tick).
+import { startServer } from '../ctl.mjs';
 import { chromium } from 'playwright';
-import http from 'node:http';
 import { readFile, writeFile, mkdir } from 'node:fs/promises';
 import { extname, join, normalize } from 'node:path';
 import { fileURLToPath } from 'node:url';
-const root = fileURLToPath(new URL('..', import.meta.url));
+const root = fileURLToPath(new URL('../..', import.meta.url));
 const MIME = { '.html': 'text/html', '.js': 'text/javascript', '.mjs': 'text/javascript', '.css': 'text/css', '.png': 'image/png' };
-const server = http.createServer(async (req, res) => {
-  const p = normalize(decodeURIComponent(req.url.split('?')[0])).replace(/^(\.\.[/\\])+/, '');
-  try { const f = join(root, p === '/' ? 'index.html' : p); res.writeHead(200, { 'content-type': MIME[extname(f)] || 'application/octet-stream' }); res.end(await readFile(f)); }
-  catch { res.writeHead(404); res.end('nf'); }
-});
-await new Promise(r => server.listen(0, r));
+const server = (await startServer({ root })).server;
 await mkdir(join(root, 'proof'), { recursive: true });
 const logLines = []; const log = s => { console.log(s); logLines.push(s); };
 let fails = 0; const check = (c, m) => { log(`${c ? 'PASS' : 'FAIL'}: ${m}`); if (!c) fails++; };

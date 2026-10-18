@@ -7,8 +7,8 @@ import { chromium } from 'playwright';
 import { writeFile, mkdir } from 'node:fs/promises';
 import { join } from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { startRelay } from '../server/relay.mjs';
-const root = fileURLToPath(new URL('..', import.meta.url));
+import { startRelay } from '../../server/relay.mjs';
+const root = fileURLToPath(new URL('../..', import.meta.url));
 const TABS = process.argv.includes('--tabs');
 const GAME_TICKS = +(process.env.TICKS || (TABS ? 2400 : 4800));   // 2400 ticks = 2 min, 4800 = 4 min of game time
 const SPEED = 4;

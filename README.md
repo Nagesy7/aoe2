@@ -164,7 +164,7 @@ Every clan is free. Traits change how a clan plays, not raw power; $KIBBLE only 
 ### Online over Vercel (HTTP relay)
 Vercel functions cannot hold WebSockets, so `api/relay.js` is an HTTP polling relay (POST batches, GET `?room=&after=`) backed by **Upstash Redis REST** (`UPSTASH_REDIS_REST_URL` / `UPSTASH_REDIS_REST_TOKEN`, or Vercel KV's `KV_REST_API_URL/TOKEN`). Pick *Online via → Vercel relay (HTTP polling)*. Without those env vars the endpoint answers 503 and the lobby shows "HTTP relay unavailable" — **the live deployment currently has no Upstash store configured**, so on the live site use *Same browser (two tabs)* or a WebSocket relay. `server/relay.mjs` serves the same `/api/relay` protocol from memory for local tests. Limits: polling adds ~100-300 ms, so HTTP games use an input delay of 8 ticks (400 ms); rooms expire 2 h after the last message; no NAT traversal/WebRTC; no reconnection of a closed tab into a running game.
 
-Tests: `node tests/full.test.mjs` (pathfinding, AI, construction, tech tree, clans, AI-vs-AI lockstep determinism, balance report) and `node scripts/full.mjs` (Playwright, real mouse/keyboard + iPhone landscape touch → `proof/full-*.png`).
+Tests: `node tests/full.test.mjs` (pathfinding, AI, construction, tech tree, clans, AI-vs-AI lockstep determinism, balance report) and `node scripts/ctl.mjs run full` (Playwright, real mouse/keyboard + iPhone landscape touch → `proof/full-*.png`).
 
 ## Layout
 - `src/techtree.js`: tech tree data tables (ages, age-up requirements, buildings, units, technologies)
@@ -182,15 +182,15 @@ node tests/gather.test.mjs      # headless: gathering + conservation, retask, hi
                                 #   Footpaws/pop, build-mode exit, mixed-task resource balance
                                 #   -> proof/gather-test.log
 npm install && npx playwright install chromium
-node scripts/screenshot.mjs     # rounds 1-3 browser proof -> proof/01..11-*.png, proof/screenshot.log
-node scripts/round4.mjs         # round 4 browser proof (real mouse/keyboard only) -> proof/round4-*.png, proof/round4.log
-node scripts/round5.mjs         # round 5 eviction proof (real mouse/keyboard only) -> proof/round5-*.png, proof/round5.log
-node scripts/gather-verify.mjs  # all gather paths via real clicks (4 types, mill/camps, farm, carcass) -> proof/gather-verify-*.png, proof/gather-verify.log
+node scripts/ctl.mjs run screenshot  # rounds 1-3 browser proof -> proof/01..11-*.png, proof/screenshot.log
+node scripts/ctl.mjs run round4  # round 4 browser proof (real mouse/keyboard only) -> proof/round4-*.png, proof/round4.log
+node scripts/ctl.mjs run round5  # round 5 eviction proof (real mouse/keyboard only) -> proof/round5-*.png, proof/round5.log
+node scripts/ctl.mjs run gather-verify  # all gather paths via real clicks (4 types, mill/camps, farm, carcass) -> proof/gather-verify-*.png, proof/gather-verify.log
 node tests/ages.test.mjs         # ages/tech tree headless tests -> proof/ages-test.log
-node scripts/ages.mjs           # ages browser proof (real clicks, fast-forward) -> proof/ages-*.png, proof/ages.log
-node scripts/round6.mjs         # round 6: camps, farms, sheep, barracks, build menu -> proof/round6-*.png, proof/round6.log
+node scripts/ctl.mjs run ages  # ages browser proof (real clicks, fast-forward) -> proof/ages-*.png, proof/ages.log
+node scripts/ctl.mjs run round6  # round 6: camps, farms, sheep, barracks, build menu -> proof/round6-*.png, proof/round6.log
 node tests/determinism.test.mjs # determinism + lockstep scheduler -> proof/determinism.log
-node scripts/lockstep.mjs       # 1v1 over the local relay, two browser contexts, real input -> proof/lockstep-*.png, proof/lockstep.log
-node scripts/lockstep.mjs --tabs [URL]  # BroadcastChannel two-tab mode against the live site -> proof/lockstep-tabs-*.png/.log
+node scripts/ctl.mjs run lockstep  # 1v1 over the local relay, two browser contexts, real input -> proof/lockstep-*.png, proof/lockstep.log
+node scripts/ctl.mjs run lockstep  --tabs [URL]  # BroadcastChannel two-tab mode against the live site -> proof/lockstep-tabs-*.png/.log
 ```
 Legacy (round 1-3) headless tests use a fixture with a zeroed stockpile and one worker pup so their absolute stockpile assertions stay meaningful; round-4 tests use the real default start.

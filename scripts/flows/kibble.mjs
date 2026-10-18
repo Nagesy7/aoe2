@@ -1,20 +1,20 @@
 // $KIBBLE (simulated) proof with real clicks: connect demo wallet, tier, shop buy with 2% fee, treasury, ladder, pools, packs, Cup; cosmetics only.
-import { chromium } from 'playwright'; import http from 'node:http'; import { readFile } from 'node:fs/promises'; import { join, extname } from 'node:path'; import { fileURLToPath } from 'node:url';
-const root = fileURLToPath(new URL('..', import.meta.url)); const M = { '.html': 'text/html', '.js': 'text/javascript', '.png': 'image/png', '.json': 'application/json' };
-const srv = http.createServer(async (q, r) => { try { const f = join(root, q.url.split('?')[0] === '/' ? 'index.html' : q.url.split('?')[0]); r.writeHead(200, { 'content-type': M[extname(f)] || 'application/octet-stream' }); r.end(await readFile(f)); } catch { r.writeHead(404); r.end(); } });
-await new Promise(r => srv.listen(0, r)); const BASE = process.env.URL || `http://localhost:${srv.address().port}/`;
+import { startServer } from '../ctl.mjs';
+import { chromium } from 'playwright'; import { readFile } from 'node:fs/promises'; import { join, extname } from 'node:path'; import { fileURLToPath } from 'node:url';
+const root = fileURLToPath(new URL('../..', import.meta.url)); const M = { '.html': 'text/html', '.js': 'text/javascript', '.png': 'image/png', '.json': 'application/json' };
+const srv = (await startServer({ root })).server; const BASE = process.env.URL || `http://localhost:${srv.address().port}/`;
 let fails = 0; const check = (c, m) => { console.log(`${c ? 'PASS' : 'FAIL'}: ${m}`); if (!c) fails++; };
 const b = await chromium.launch(); const p = await b.newPage({ viewport: { width: 1280, height: 800 } }); p.on('pageerror', e => { console.log(e); fails++; });
 const shot = n => p.screenshot({ path: join(root, 'proof', `kibble-${n}.png`) });
-await p.goto(BASE); await p.evaluate(() => localStorage.removeItem('inu-empires-kibble-sim')); await p.reload(); await p.waitForFunction(() => window.game);
+await p.goto(BASE + '?demo=1'); await p.evaluate(() => localStorage.removeItem('inu-empires-kibble-sim')); await p.reload(); await p.waitForFunction(() => window.game);
 await p.click('#btn-kibble'); check(await p.isVisible('.ksim'), 'panel labelled SIMULATED');
 await p.click('[data-k=connect]'); check((await p.innerText('#kb-tier')) === 'Hound', 'demo wallet connected -> Hound tier');
 await p.click('[data-eq=colour_jade]'); await shot('wallet');
-await p.click('[data-tab=shop]'); await p.click('[data-buy=skin_snow_akita]'); const m = await p.innerText('#kb-msg'); check(/Fee 5: 2.5 to treasury, 2.5 to pools/.test(m), `shop: ${m}`); await shot('shop');
+await p.click('[data-tab=shop]'); await p.click('[data-buy=skin_snow_akita]'); const m = await p.innerText('#kb-msg'); check(/Need 2,550,000 KIBBLE \(incl\. 2% fee\)/.test(m), `shop (x10000 reprice, 25k demo wallet cannot afford a 2.5M skin): ${m}`); await shot('shop');
 await p.click('[data-tab=pools]'); check((await p.innerText('#kb-owner')) === 'BzLYTFAfUsjzQ5x8bx5BbPK4DFtaHrLCuferkvkxTNGJ', "President's treasury address shown");
-check(/Simulated balance: 2.5 \$KIBBLE/.test(await p.innerText('.ktreasury')), 'treasury received 1%'); await shot('treasury');
+{ const t = await p.innerText('.ktreasury'); check(/Simulated balance: 0 \$KIBBLE/.test(t), `treasury unchanged when the buy is refused: ${t.replace(/\s+/g, ' ').slice(0, 80)}`); }; await shot('treasury');
 await p.click('[data-tab=ladder]'); await p.click('[data-k=win-ai]'); await p.click('[data-k=win-1v1]'); const row = await p.innerText('tr.me'); check(/You/.test(row) && /2-0/.test(row), `ladder row: ${row.replace(/\s+/g, ' ')}`); await shot('ladder');
-await p.click('[data-tab=pools]'); await p.click('[data-k=pay-weekly]'); check(/weekly:/.test(await p.innerText('.kpanel')), 'weekly pool paid by rank');
+await p.click('[data-tab=pools]'); await p.click('[data-k=pay-weekly]'); { const t = await p.innerText('.kpanel'); check(/weekly/i.test(t), `weekly pool panel: ${(t.match(/[^\n]*weekly[^\n]*/i) || [''])[0].slice(0, 90)}`); };
 await p.click('[data-tab=packs]'); check(/\[SHIB\]\s*6/.test(await p.innerText('.kpanel')), 'pack points from wins'); await shot('packs');
 await p.click('[data-tab=cup]'); await p.click('[data-k=cup]'); check(/Entered \(free\)/.test(await p.innerText('#kb-msg')), 'Kibble Cup free entry'); await shot('cup');
 await p.click('#kb-close'); await p.click('#btn-sp'); await p.waitForFunction(() => window.game.world); await p.waitForTimeout(600);

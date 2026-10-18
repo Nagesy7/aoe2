@@ -1,14 +1,12 @@
 // Inu reskin proof: title screen, labelled breed lineup, per-unit close-ups (blue + red, animated poses), and in-play shots.
+import { startServer } from '../ctl.mjs';
 import { chromium } from 'playwright';
-import http from 'node:http';
 import { readFile, writeFile, mkdir } from 'node:fs/promises';
 import { extname, join, normalize } from 'node:path';
 import { fileURLToPath } from 'node:url';
-const root = fileURLToPath(new URL('..', import.meta.url));
+const root = fileURLToPath(new URL('../..', import.meta.url));
 const MIME = { '.html': 'text/html', '.js': 'text/javascript', '.mjs': 'text/javascript', '.png': 'image/png' };
-const server = http.createServer(async (req, res) => { const p = normalize(decodeURIComponent(req.url.split('?')[0])).replace(/^(\.\.[/\\])+/, '');
-  try { const f = join(root, p === '/' ? 'index.html' : p); res.writeHead(200, { 'content-type': MIME[extname(f)] || 'application/octet-stream' }); res.end(await readFile(f)); } catch { res.writeHead(404); res.end('nf'); } });
-await new Promise(r => server.listen(0, r)); await mkdir(join(root, 'proof'), { recursive: true });
+const server = (await startServer({ root })).server; await mkdir(join(root, 'proof'), { recursive: true });
 const BASE = process.env.INU_URL || `http://localhost:${server.address().port}/`;
 const out = []; const log = s => { console.log(s); out.push(s); }; let fails = 0; const check = (c, m) => { log(`${c ? 'PASS' : 'FAIL'}: ${m}`); if (!c) fails++; };
 const browser = await chromium.launch(); const page = await browser.newPage({ viewport: { width: 1280, height: 720 } });

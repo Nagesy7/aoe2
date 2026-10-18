@@ -1,7 +1,7 @@
 // AI economy probe: AI-vs-AI mirror games, reports villager counts and age-up times per player (used to tune src/ai.js).
 // Usage: node scripts/ai-eco.mjs [seeds=3] [minutes=25]
-import { createMpWorld, stepTick } from '../src/sim.js';
-import { setupComputers } from '../src/ai.js';
+import { createMpWorld, stepTick } from '../../src/sim.js';
+import { setupComputers } from '../../src/ai.js';
 const seeds = +(process.argv[2] || 3), minutes = +(process.argv[3] || 25);
 const agg = {};
 for (let s = 1; s <= seeds; s++) {

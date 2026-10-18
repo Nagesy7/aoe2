@@ -1,16 +1,11 @@
+import { startServer } from '../ctl.mjs';
 import { chromium } from 'playwright';
-import http from 'node:http';
 import { readFile, mkdir } from 'node:fs/promises';
 import { extname, join, normalize } from 'node:path';
 import { fileURLToPath } from 'node:url';
-const root = fileURLToPath(new URL('..', import.meta.url));
+const root = fileURLToPath(new URL('../..', import.meta.url));
 const MIME = { '.html': 'text/html', '.js': 'text/javascript', '.mjs': 'text/javascript', '.css': 'text/css', '.png': 'image/png' };
-const server = http.createServer(async (req, res) => {
-  const p = normalize(decodeURIComponent(req.url.split('?')[0])).replace(/^(\.\.[/\\])+/, '');
-  try { const f = join(root, p === '/' ? 'index.html' : p); res.writeHead(200, { 'content-type': MIME[extname(f)] || 'application/octet-stream' }); res.end(await readFile(f)); }
-  catch { res.writeHead(404); res.end('nf'); }
-});
-await new Promise(r => server.listen(0, r));
+const server = (await startServer({ root })).server;
 const url = `http://localhost:${server.address().port}/`;
 await mkdir(join(root, 'proof'), { recursive: true });
 const shot = name => page.screenshot({ path: join(root, 'proof', name) });

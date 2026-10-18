@@ -7,19 +7,11 @@
   "scripts": {
     "start": "npx serve .",
     "test": "node tests/gather.test.mjs && node tests/ages.test.mjs && node tests/combat.test.mjs && node tests/determinism.test.mjs && node tests/efficiency.test.mjs && node tests/kibble.test.mjs && node tests/anim.test.mjs && node tests/ip.test.mjs && node tests/full.test.mjs",
-    "balance": "node sim/balance.mjs --seeds 8 --minutes 30",
-    "full": "node scripts/full.mjs",
     "relay": "node server/relay.mjs --static .",
-    "lockstep": "node scripts/lockstep.mjs",
-    "combat": "node scripts/combat.mjs",
-    "screenshot": "node scripts/screenshot.mjs",
-    "round4": "node scripts/round4.mjs",
-    "round5": "node scripts/round5.mjs",
-    "round6": "node scripts/round6.mjs",
-    "gather-verify": "node scripts/gather-verify.mjs",
-    "ages": "node scripts/ages.mjs",
-    "inu": "node scripts/inu.mjs",
-    "camera": "node scripts/camera.mjs"
+    "ctl": "node scripts/ctl.mjs",
+    "balance": "node scripts/ctl.mjs balance --seeds 16 --minutes 30",
+    "verify": "node scripts/ctl.mjs verify",
+    "compare": "node sim/compare.mjs"
   },
   "devDependencies": {
     "playwright": "^1.64.0",

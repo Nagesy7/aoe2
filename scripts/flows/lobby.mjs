@@ -2,8 +2,8 @@
 // iPhone 13 landscape: tap = hover preview. -> proof/full-lobby-*.png, proof/full-lobby.log
 import { chromium, devices } from 'playwright';
 import { writeFileSync } from 'node:fs'; import { join } from 'node:path'; import { fileURLToPath } from 'node:url';
-import { startRelay } from '../server/relay.mjs';
-const root = fileURLToPath(new URL('..', import.meta.url));
+import { startRelay } from '../../server/relay.mjs';
+const root = fileURLToPath(new URL('../..', import.meta.url));
 const { server } = await startRelay({ port: 0, staticDir: root, log: () => {} }); const BASE = process.env.URL || `http://localhost:${server.address().port}/`;
 const lines = []; let fails = 0; const check = (c, m) => { const s = `${c ? 'PASS' : 'FAIL'}: ${m}`; console.log(s); lines.push(s); if (!c) fails++; };
 const shot = (p, n) => p.screenshot({ path: join(root, 'proof', `full-lobby-${n}.png`) });

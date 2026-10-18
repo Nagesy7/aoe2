@@ -1,9 +1,9 @@
 // Unit-handling proof with real input: desktop mouse/keyboard and iPhone 13 landscape CDP touch.
+import { startServer } from '../ctl.mjs';
 import { chromium, devices } from 'playwright';
-import http from 'node:http'; import { readFile } from 'node:fs/promises'; import { join, extname } from 'node:path'; import { fileURLToPath } from 'node:url';
-const root = fileURLToPath(new URL('..', import.meta.url)); const M = { '.html': 'text/html', '.js': 'text/javascript', '.png': 'image/png', '.json': 'application/json' };
-const srv = http.createServer(async (q, r) => { try { const f = join(root, q.url.split('?')[0] === '/' ? 'index.html' : q.url.split('?')[0]); r.writeHead(200, { 'content-type': M[extname(f)] || 'application/octet-stream' }); r.end(await readFile(f)); } catch { r.writeHead(404); r.end(); } });
-await new Promise(r => srv.listen(0, r)); const BASE = process.env.URL || `http://localhost:${srv.address().port}/`;
+import { readFile } from 'node:fs/promises'; import { join, extname } from 'node:path'; import { fileURLToPath } from 'node:url';
+const root = fileURLToPath(new URL('../..', import.meta.url)); const M = { '.html': 'text/html', '.js': 'text/javascript', '.png': 'image/png', '.json': 'application/json' };
+const srv = (await startServer({ root })).server; const BASE = process.env.URL || `http://localhost:${srv.address().port}/`;
 let fails = 0; const check = (c, m) => { console.log(`${c ? 'PASS' : 'FAIL'}: ${m}`); if (!c) fails++; };
 const browser = await chromium.launch();
 const sel = p => p.evaluate(() => { const s = window.game.world.selection; return s ? (s.kind === 'units' ? s.ids : s.kind === 'unit' ? [s.id] : []) : []; });

@@ -1,10 +1,9 @@
 // Camera panning proof with real input: middle-drag, WASD, arrows, edge-scroll in single player, skirmish and 1v1 (tabs).
+import { startServer } from '../ctl.mjs';
 import { chromium } from 'playwright';
-import http from 'node:http'; import { readFile, mkdir } from 'node:fs/promises'; import { join, extname, normalize } from 'node:path'; import { fileURLToPath } from 'node:url';
-const root = fileURLToPath(new URL('..', import.meta.url)); const MIME = { '.html': 'text/html', '.js': 'text/javascript', '.css': 'text/css' };
-const server = http.createServer(async (req, res) => { const p = normalize(decodeURIComponent(req.url.split('?')[0])).replace(/^(\.\.[/\\])+/, '');
-  try { const f = join(root, p === '/' ? 'index.html' : p); res.writeHead(200, { 'content-type': MIME[extname(f)] || 'application/octet-stream' }); res.end(await readFile(f)); } catch { res.writeHead(404); res.end(); } });
-await new Promise(r => server.listen(0, r)); const BASE = `http://localhost:${server.address().port}/`;
+import { readFile, mkdir } from 'node:fs/promises'; import { join, extname, normalize } from 'node:path'; import { fileURLToPath } from 'node:url';
+const root = fileURLToPath(new URL('../..', import.meta.url)); const MIME = { '.html': 'text/html', '.js': 'text/javascript', '.css': 'text/css' };
+const server = (await startServer({ root })).server; const BASE = `http://localhost:${server.address().port}/`;
 await mkdir(join(root, 'proof'), { recursive: true });
 let fails = 0; const check = (c, m) => { console.log(`${c ? 'PASS' : 'FAIL'}: ${m}`); if (!c) fails++; };
 const browser = await chromium.launch(); const ctx = await browser.newContext({ viewport: { width: 1280, height: 720 } });

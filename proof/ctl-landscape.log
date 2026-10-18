@@ -1,0 +1,98 @@
+PASS: iPhone 13 landscape: viewport meta has viewport-fit=cover
+PASS: iPhone 13 landscape: Sandbox button reachable on screen (menu scrolls) in landscape
+PASS: iPhone 13 landscape: canvas fills 750x342
+PASS: iPhone 13 landscape: no rotate hint in landscape
+PASS: iPhone 13 landscape: a villager is on screen
+PASS: iPhone 13 landscape: tap selects villager #161 ({"kind":"unit","id":161})
+PASS: iPhone 13 landscape: build menu collapsed to a tab, map uncovered
+PASS: iPhone 13 landscape: tab expands build menu
+PASS: iPhone 13 landscape: hud and info do not overlap
+PASS: iPhone 13 landscape: hud and commands do not overlap
+PASS: iPhone 13 landscape: hud and touchbar do not overlap
+PASS: iPhone 13 landscape: hud and quickbar do not overlap
+PASS: iPhone 13 landscape: hud and cmdtab do not overlap
+PASS: iPhone 13 landscape: info and commands do not overlap
+PASS: iPhone 13 landscape: info and touchbar do not overlap
+PASS: iPhone 13 landscape: info and quickbar do not overlap
+PASS: iPhone 13 landscape: info and cmdtab do not overlap
+PASS: iPhone 13 landscape: commands and touchbar do not overlap
+PASS: iPhone 13 landscape: commands and quickbar do not overlap
+PASS: iPhone 13 landscape: commands and cmdtab do not overlap
+PASS: iPhone 13 landscape: touchbar and quickbar do not overlap
+PASS: iPhone 13 landscape: touchbar and cmdtab do not overlap
+PASS: iPhone 13 landscape: quickbar and cmdtab do not overlap
+PASS: iPhone 13 landscape: hud inside viewport
+PASS: iPhone 13 landscape: info inside viewport
+PASS: iPhone 13 landscape: commands inside viewport
+PASS: iPhone 13 landscape: touchbar inside viewport
+PASS: iPhone 13 landscape: quickbar inside viewport
+PASS: iPhone 13 landscape: cmdtab inside viewport
+PASS: iPhone 13 landscape: tab collapses build menu
+PASS: iPhone 13 landscape: villager still selected after touch pan
+PASS: iPhone 13 landscape: a resource is on screen
+PASS: iPhone 13 landscape: long-press orders gather on food (state gathering, carry 4 food)
+PASS: iPhone 13 landscape: Command toggle on
+PASS: iPhone 13 landscape: Command tap issues order (move) and keeps selection {"kind":"unit","id":161}
+PASS: iPhone 13 landscape: menu auto-collapses while placing
+PASS: iPhone 13 landscape: build menu tap -> placing house
+PASS: iPhone 13 landscape: Clear cancels placement
+PASS: iPhone 13 landscape: drag pans camera (959,837) -> (1119,897)
+PASS: iPhone 13 landscape: pan did not select anything
+PASS: iPhone 13 landscape: pinch zooms in (zoom 2.00)
+PASS: iPhone 13 landscape: pinch zooms out (zoom 0.67)
+PASS: iPhone 13 landscape: tap-select still accurate at zoom 0.67
+PASS: iPhone 13 landscape: Box select toggle on
+PASS: iPhone 13 landscape: box-drag selects 3 units
+PASS: iPhone 13 landscape: no page scroll/zoom
+PASS: iPhone 13 landscape: portrait shows non-blocking "Rotate for best play", canvas refits 342x750
+PASS: iPhone 13 landscape: rotated back, canvas refits 750x342
+PASS: Pixel 7 landscape: viewport meta has viewport-fit=cover
+PASS: Pixel 7 landscape: Sandbox button reachable on screen (menu scrolls) in landscape
+PASS: Pixel 7 landscape: canvas fills 863x360
+PASS: Pixel 7 landscape: no rotate hint in landscape
+PASS: Pixel 7 landscape: a villager is on screen
+PASS: Pixel 7 landscape: tap selects villager #161 ({"kind":"unit","id":161})
+PASS: Pixel 7 landscape: build menu collapsed to a tab, map uncovered
+PASS: Pixel 7 landscape: tab expands build menu
+PASS: Pixel 7 landscape: hud and info do not overlap
+PASS: Pixel 7 landscape: hud and commands do not overlap
+PASS: Pixel 7 landscape: hud and touchbar do not overlap
+PASS: Pixel 7 landscape: hud and quickbar do not overlap
+PASS: Pixel 7 landscape: hud and cmdtab do not overlap
+PASS: Pixel 7 landscape: info and commands do not overlap
+PASS: Pixel 7 landscape: info and touchbar do not overlap
+PASS: Pixel 7 landscape: info and quickbar do not overlap
+PASS: Pixel 7 landscape: info and cmdtab do not overlap
+PASS: Pixel 7 landscape: commands and touchbar do not overlap
+PASS: Pixel 7 landscape: commands and quickbar do not overlap
+PASS: Pixel 7 landscape: commands and cmdtab do not overlap
+PASS: Pixel 7 landscape: touchbar and quickbar do not overlap
+PASS: Pixel 7 landscape: touchbar and cmdtab do not overlap
+PASS: Pixel 7 landscape: quickbar and cmdtab do not overlap
+PASS: Pixel 7 landscape: hud inside viewport
+PASS: Pixel 7 landscape: info inside viewport
+PASS: Pixel 7 landscape: commands inside viewport
+PASS: Pixel 7 landscape: touchbar inside viewport
+PASS: Pixel 7 landscape: quickbar inside viewport
+PASS: Pixel 7 landscape: cmdtab inside viewport
+PASS: Pixel 7 landscape: tab collapses build menu
+PASS: Pixel 7 landscape: villager still selected after touch pan
+PASS: Pixel 7 landscape: a resource is on screen
+PASS: Pixel 7 landscape: long-press orders gather on food (state gathering, carry 4 food)
+PASS: Pixel 7 landscape: Command toggle on
+PASS: Pixel 7 landscape: Command tap issues order (move) and keeps selection {"kind":"unit","id":161}
+PASS: Pixel 7 landscape: menu auto-collapses while placing
+PASS: Pixel 7 landscape: build menu tap -> placing house
+PASS: Pixel 7 landscape: Clear cancels placement
+PASS: Pixel 7 landscape: drag pans camera (907,828) -> (1067,888)
+PASS: Pixel 7 landscape: pan did not select anything
+PASS: Pixel 7 landscape: pinch zooms in (zoom 2.00)
+PASS: Pixel 7 landscape: pinch zooms out (zoom 0.67)
+PASS: Pixel 7 landscape: tap-select still accurate at zoom 0.67
+PASS: Pixel 7 landscape: Box select toggle on
+PASS: Pixel 7 landscape: box-drag selects 3 units
+PASS: Pixel 7 landscape: no page scroll/zoom
+PASS: Pixel 7 landscape: portrait shows non-blocking "Rotate for best play", canvas refits 360x863
+PASS: Pixel 7 landscape: rotated back, canvas refits 863x360
+RESULT: ALL PASSED
+EXIT 0

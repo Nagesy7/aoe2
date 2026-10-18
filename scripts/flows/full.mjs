@@ -5,8 +5,8 @@
 // spectator camera; every order is real input.   node scripts/full.mjs   -> proof/full-*.png, proof/full.log
 import { chromium, devices } from 'playwright';
 import { writeFileSync, mkdirSync } from 'node:fs'; import { join } from 'node:path'; import { fileURLToPath } from 'node:url';
-import { startRelay } from '../server/relay.mjs';
-const root = fileURLToPath(new URL('..', import.meta.url)); mkdirSync(join(root, 'proof'), { recursive: true });
+import { startRelay } from '../../server/relay.mjs';
+const root = fileURLToPath(new URL('../..', import.meta.url)); mkdirSync(join(root, 'proof'), { recursive: true });
 const { server } = await startRelay({ port: 0, staticDir: root, log: () => {} }); const BASE = process.env.URL || `http://localhost:${server.address().port}/`;
 const lines = []; let fails = 0; const log = s => { console.log(s); lines.push(s); };
 const check = (c, m) => { log(`${c ? 'PASS' : 'FAIL'}: ${m}`); if (!c) fails++; };
