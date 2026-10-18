@@ -1,0 +1,8 @@
+PASS: title button #btn-ai: live "⚔ Skirmish vs Computer" vs repo "⚔ Skirmish vs Computer"
+PASS: title button #btn-sp: live "Sandbox (practice camp)" vs repo "Sandbox (practice camp)"
+PASS: title button #btn-host: live "Host 1v1" vs repo "Host 1v1"
+PASS: title button #btn-join: live "Join 1v1" vs repo "Join 1v1"
+PASS: title button #btn-kibble: live "🦴 $KIBBLE network" vs repo "🦴 $KIBBLE network"
+FAIL: live serves the repo's files byte-for-byte (19 checked; differ: src/ai.js, src/art.js, src/civs.js, src/render.js, src/sim.js, src/terrain.js)
+video proof/live-lag-before.webm
+LIVE-TITLE: 1 FAILED (live lags the repo)
