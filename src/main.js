@@ -18,6 +18,7 @@ import { installTouchTips } from './touchtips.js';
 import { createUi, startPlacing, cancelPlacing, updateGhost, pointerDown, pointerMove, pointerUp } from './ui-state.js';
 const canvas = document.getElementById('game'), ctx = canvas.getContext('2d');
 const params = new URLSearchParams(location.search);
+const UI_VARIANT = params.get('ui') === 'b' ? 'b' : 'a'; // ?ui=a|b clan-card A/B (default a = unchanged)
 SFX.install();
 window.BUILD_ID = document.querySelector('meta[name=build-id]')?.content || 'dev'; // stamped with the commit at deploy (scripts/ctl.mjs deploy)
 const $ = id => document.getElementById(id);
@@ -333,8 +334,8 @@ $('civ').innerHTML = CIV_IDS.map(id => `<option value="${id}">${CIVS[id].name} â
 $('ai-civ').innerHTML = CIV_IDS.map(id => `<option value="${id}">${CIVS[id].name}</option>`).join('');
 $('civ').value = params.get('civ') && CIVS[params.get('civ')] ? params.get('civ') : 'shiba'; $('ai-civ').value = params.get('aiciv') && CIVS[params.get('aiciv')] ? params.get('aiciv') : 'akita';
 const showCiv = () => { $('civ-info').textContent = CIVS[$('civ').value].traits.join(' Â· '); }; $('civ').onchange = showCiv; showCiv();
-window.game.civCards = mountCivCards($('civ-cards'), { owned: kibbleState().owned || [], selected: $('civ').value, onPick: id => { $('civ').value = id; showCiv(); } });
-addEventListener('empires:wallet', () => { $('civ-cards').innerHTML = ''; window.game.civCards = mountCivCards($('civ-cards'), { owned: kibbleState().owned || [], selected: $('civ').value, onPick: id => { $('civ').value = id; showCiv(); } }); });
+window.game.civCards = mountCivCards($('civ-cards'), { owned: kibbleState().owned || [], selected: $('civ').value, variant: UI_VARIANT, onPick: id => { $('civ').value = id; showCiv(); } });
+addEventListener('empires:wallet', () => { $('civ-cards').innerHTML = ''; window.game.civCards = mountCivCards($('civ-cards'), { owned: kibbleState().owned || [], selected: $('civ').value, variant: UI_VARIANT, onPick: id => { $('civ').value = id; showCiv(); } }); });
 $('btn-ai').onclick = () => startGame({ ai: { civ: $('civ').value, enemy: $('ai-civ').value }, seed: +(params.get('seed') || 7) });
 $('btn-host').onclick = () => openSession('host', newRoomCode());
 $('btn-join').onclick = () => { const code = $('join-code').value.trim().toUpperCase(); if (!/^[A-Z0-9]{3,8}$/.test(code)) { $('menu-err').textContent = 'Enter the room code shown to the host'; return; } openSession('guest', code); };

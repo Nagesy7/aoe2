@@ -47,6 +47,10 @@ body.ingame #minimap{display:block}
 .civ-card{position:relative;display:flex;flex-direction:column;align-items:center;padding:4px;background:#1a0e06;border:2px solid #5a3c18;color:#f4e2b8;border-radius:5px;cursor:pointer;min-width:0;font:12px sans-serif}
 .civ-card canvas{width:100%;max-width:176px;aspect-ratio:176/104;border-radius:3px;display:block}.civ-card b{font-size:12px;margin-top:2px}.civ-card small{opacity:.8}
 .civ-card .rar{font-size:10px;font-style:normal;text-transform:capitalize;opacity:.75}.civ-card.rar-rare{box-shadow:0 0 8px #7ac8ff}.civ-card.rar-legendary{box-shadow:0 0 10px #ffd86b}
+#civ-cards[data-ui=b] .civ-card{flex-direction:row;align-items:flex-start;gap:6px;text-align:left;padding:5px 6px!important}#civ-cards[data-ui=b] canvas.shield{width:40px;max-width:40px;aspect-ratio:52/60;flex:none}
+#civ-cards[data-ui=b] .txt{display:flex;flex-direction:column;gap:1px;min-width:0}#civ-cards[data-ui=b] .txt b{margin:0;font-size:12px}#civ-cards[data-ui=b] .chip{align-self:flex-start;background:#5a3c18;border-radius:8px;padding:0 6px;font-size:10px;opacity:1}
+#civ-cards[data-ui=b] .tr{display:flex;flex-direction:column;font-size:10.5px;line-height:1.25;color:#ffe9c0}#civ-cards[data-ui=b] .uq{font-size:10px;color:#ffd86b;line-height:1.2}
+@media (max-height:520px){#civ-cards[data-ui=b]{grid-template-columns:repeat(3,minmax(0,1fr));overflow:visible;max-width:calc(100vw - 60px)}#civ-cards[data-ui=b] .tr{font-size:9.5px}#civ-cards[data-ui=b] .uq{display:none}}
 .civ-card.sel{border-color:#ffd86b;background:#3a2410}.civ-card.cine{transform:scale(1.04);z-index:2;border-color:#fff}.civ-card{transition:transform .15s}
 #menu-err{color:#ff8a7a;min-height:18px}
 #menu{align-items:flex-start;padding-left:5vw;box-sizing:border-box}#menu .panel{max-width:600px}#menu .hint{max-width:440px}

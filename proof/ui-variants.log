@@ -1,0 +1,16 @@
+PASS: 844x390 ui=a: 6 clan cards rendered (variant a)
+PASS: 844x390 ui=a: tap picks Kai
+PASS: 844x390 ui=a: no page errors 
+PASS: 844x390 ui=b: 6 clan cards rendered (variant b)
+PASS: 844x390 ui=b: tap picks Kai
+PASS: 844x390 ui=b: no page errors 
+PASS: 1366x768 ui=a: 6 clan cards rendered (variant a)
+PASS: 1366x768 ui=a: click picks Kai
+PASS: 1366x768 ui=a: no page errors 
+PASS: 1366x768 ui=b: 6 clan cards rendered (variant b)
+PASS: 1366x768 ui=b: click picks Kai
+PASS: 1366x768 ui=b: no page errors 
+PASS: 844x390 ui=a: grid 654x117, 6/6 fully on screen, h-scroll false, min font 9.16667px, card text: "Shiba Clan Economy Common Shield"
+PASS: 844x390 ui=b: grid 600x183, 6/6 fully on screen, h-scroll false, min font 9.5px, card text: "Shiba Clan Economy • Berry foraging +15%, lumber +10% Common Shield"
+PASS: 1366x768 ui=a: grid 560x304, 3/6 fully on screen, h-scroll false, min font 9.16667px, card text: "Shiba Clan Economy Common Shield"
+PASS: 1366x768 ui=b: grid 560x266, 6/6 fully on screen, h-scroll false, min font 10px, card text: "Shiba Clan Economy • Berry foraging +15%, lumber +10% Unique: Red Fang (fast, cheap raider infantry) Common Sh"
