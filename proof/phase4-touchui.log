@@ -1,0 +1,10 @@
+PASS: long-press "Box select" shows its tooltip ("Box select: drag to select multiple units")
+PASS: the long-press does not toggle Box select (peek only)
+PASS: a normal tap still toggles Box select
+PASS: long-press on group 1 still saves the group, no tooltip
+PASS: quick bar collapses to toggle + Idle (402px -> 89px; visible: qb-toggle,idle)
+PASS: collapsed state remembered after reload
+PASS: tap again expands
+PASS: info panel compact at 390px tall (font 11px, 160x88)
+PASS: taller phone (932x430) keeps the regular landscape info (font 12px)
+PASS: no page errors 

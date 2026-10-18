@@ -14,6 +14,7 @@ import { mountCivCards } from './civcards.js';
 import { CIV_LOOK } from './civs.js';
 import * as SFX from './sfx.js';
 import { createMinimap } from './minimap.js';
+import { installTouchTips } from './touchtips.js';
 import { createUi, startPlacing, cancelPlacing, updateGhost, pointerDown, pointerMove, pointerUp } from './ui-state.js';
 const canvas = document.getElementById('game'), ctx = canvas.getContext('2d');
 const params = new URLSearchParams(location.search);
@@ -162,6 +163,10 @@ let qbDown = null; qbEl.addEventListener('pointerdown', e => { qbDown = e.target
 qbEl.addEventListener('click', e => { const b = e.target.closest('[data-q]'); if (!b || !world || b !== qbDown) return; qbDown = null; /* ignore ghost clicks not started on this button */ const q = b.dataset.q;
   if (q === 'idle') idleVillager(); else if (q === 'army') selectArmy(); else if (q === 'amove') { qb.amove = !qb.amove; } syncQb(); });
 setInterval(syncQb, 250);
+// collapsible quick bar (remembered): collapsed keeps only the toggle and the Idle button
+const qbToggle = $('qb-toggle'); const setQbCollapsed = c => { qbEl.classList.toggle('collapsed', c); qbToggle.textContent = c ? '›' : '‹'; qbToggle.setAttribute('aria-expanded', String(!c)); try { localStorage.setItem('inu-qb-collapsed', c ? '1' : '0'); } catch {} };
+qbToggle.addEventListener('click', () => setQbCollapsed(!qbEl.classList.contains('collapsed'))); try { setQbCollapsed(localStorage.getItem('inu-qb-collapsed') === '1'); } catch {}
+const touchTips = installTouchTips();
 // ---- HUD / panels ----
 const bannerEl = $('banner'), hud = $('hud'), infoEl = $('info'), cmdEl = $('commands'), msgEl = $('msg'), netEl = $('net'), stallEl = $('stall'), desyncEl = $('desync');
 let lastCmd = '';
@@ -290,7 +295,7 @@ function frame(now) {
 window.game = { sim: SIM, world: null, cam, ui, selectionInfo, pickAt, toScreen: (x, y) => { const q = worldToScreen(x, y, cam); return { x: q.x * Z, y: q.y * Z }; }, zoom: () => Z, toWorld,
   tick: (s) => { if (net) throw new Error('no fast-forward in multiplayer'); const n = Math.round(s / TICK_DT); for (let i = 0; i < n; i++) stepTick(world); render(ctx, world, cam, ui); updateHud(); },
   stateHash: () => world && stateHash(world),
-  getSelected: () => getSelected(world), sfx: SFX, minimap, touch: { ...touchUi }, buildTabOf: t => Object.keys(BUILD_TABS).find(k => BUILD_TABS[k].items.includes(t)) || null };
+  getSelected: () => getSelected(world), sfx: SFX, minimap, touchTips, touch: { ...touchUi }, buildTabOf: t => Object.keys(BUILD_TABS).find(k => BUILD_TABS[k].items.includes(t)) || null };
 
 // ---- main menu / lobby ----
 let session = null;
