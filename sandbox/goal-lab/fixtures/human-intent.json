@@ -1,0 +1,6 @@
+{
+  "statedIntent": "balanced eco",
+  "notes": "Human wants a classic dark-age balanced gather mix; military only after stable eco.",
+  "acceptableGoals": ["balanced eco"],
+  "revisionPolicy": "proposals only; never auto-adopt"
+}

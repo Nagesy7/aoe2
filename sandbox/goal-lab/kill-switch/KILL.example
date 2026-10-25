@@ -1,0 +1,3 @@
+# Copy/rename to ../KILL (repo root of goal-lab) to stop the runner.
+# Example:
+operator stop — human review required

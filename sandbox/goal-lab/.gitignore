@@ -1,0 +1,18 @@
+# Disposable / local-only runtime state — wipe anytime
+envs/*
+!envs/.gitkeep
+snapshots/*
+!snapshots/.gitkeep
+data/memory/*.jsonl
+data/memory/index.json
+data/alignment-reports/*
+!data/alignment-reports/.gitkeep
+proposals/pending/*
+!proposals/pending/.gitkeep
+proposals/approved/*
+!proposals/approved/.gitkeep
+proposals/rejected/*
+!proposals/rejected/.gitkeep
+
+# Kill sentinel must never be committed as active
+/KILL
