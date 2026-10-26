@@ -16,3 +16,6 @@ proposals/rejected/*
 
 # Kill sentinel must never be committed as active
 /KILL
+
+# Decision log (runtime)
+data/memory/decisions.jsonl
