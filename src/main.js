@@ -280,7 +280,8 @@ const minimap = createMinimap($('minimap'), { getWorld: () => world, getFog: () 
   jump: (x, y) => { cam.x = x * TILE - canvas.width / 2; cam.y = y * TILE - canvas.height / 2; clampCamera(cam, canvas.width, canvas.height, world); } });
 // One Inu Score: capture the winning step (tick + state hash, read-only), then send the inputs once. See src/score.js.
 let matchRep = null;
-const noteWin = () => { if (world.winner && matchRep && !matchRep.win) matchRep.win = { tick: world.tick, hash: stateHash(world), winner: world.winner, winTime: world.winTime }; };
+const inuPrompted = new WeakSet(); // guest end-of-match prompt (kibble-pay /inu-profile.js), once per match
+const noteWin = () => { if (world.winner && !inuPrompted.has(world)) { inuPrompted.add(world); try { globalThis.InuProfile?.gameOver?.(); } catch {} } if (world.winner && matchRep && !matchRep.win) matchRep.win = { tick: world.tick, hash: stateHash(world), winner: world.winner, winTime: world.winTime }; };
 function maybeReport() { if (!world || !matchRep?.win || matchRep.done) return; matchRep.done = true;
   const rep = { ...matchRep, commands: world.commandLog || [], desync: !!net?.ls?.desync };
   submitMatch(kibblePay(), rep).then(r => { window.game.lastScore = r; const t = resultText(r); if (t && world) world.message = { text: t, until: world.time + 10 }; }); }
