@@ -112,6 +112,7 @@ body.ingame #quickbar{display:flex}
 @media (max-height:520px){#quickbar{top:calc(26px + env(safe-area-inset-top));left:max(8px,env(safe-area-inset-left));transform:none}#quickbar button{min-height:32px;font-size:11px;padding:2px 6px}#msg{top:64px}}
 #cmdtab{display:none}
 @media (max-height:520px){
+ body.ingame.has-cmd #inu-profile-badge{visibility:hidden!important} /* the guest badge (kibble-pay script) sat on top of the Build tab */
  body.has-cmd #cmdtab{display:block;position:fixed;right:max(8px,env(safe-area-inset-right));bottom:max(8px,env(safe-area-inset-bottom));z-index:6;font:bold 13px sans-serif;min-height:38px;padding:4px 12px;background:#5a3c18e0;color:#f4e2b8;border:2px solid #d4a640;border-radius:6px;touch-action:manipulation}
  body:not(.cmd-open) #commands{display:none!important}
  body.cmd-open #commands{bottom:calc(54px + env(safe-area-inset-bottom));max-height:calc(100vh - 236px)}
