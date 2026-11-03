@@ -104,3 +104,6 @@ async function bootReal() {
       onWallet: w => syncWallet(w).catch(() => {}) });
   } catch (e) { console.warn('kibble-pay unavailable', e); }
 }
+// Title Store / Settings hooks (src/menu.js): same equip rule as the panel's Equip button (K.canUse), no buying here.
+export function equipCosmetic(id) { const ok = K.equip(s, id); if (ok) { save(); apply(); if ($('kb')?.style.display === 'flex') render(); } return ok; }
+export function openKibblePanel(tab = 'wallet') { const kb = $('kb'); if (!kb) return; kb.dataset.tab = tab; kb.style.display = 'flex'; render(); requestAnimationFrame(() => kb.querySelector(`[data-tab="${tab}"]`)?.focus?.()); }

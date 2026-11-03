@@ -25,7 +25,7 @@ export function loadSettings(params) {
 }
 // api (from main.js): inGame(), move(x,y), primaryDown(x,y), primaryUp(x,y), secondary(x,y), smartCommand(x,y) -> bool,
 // cancel() -> bool, idle(), nextUnit(), army(), amove(), pan(dx,dy), focusables() -> [button], el(id), onFocusChange()
-export function createGamepad(api, { params } = {}) {
+export function createGamepad(api, opts = {}) { const { params } = opts;
   const S = loadSettings(params);
   const st = { index: null, id: '', kind: 'generic', prev: [], cursor: { x: innerWidth / 2, y: innerHeight / 2 }, active: false, aDown: null, focus: -1, menu: false, menuIdx: 0,
     stats: { polls: 0, presses: {}, commands: 0, selects: 0, toasts: 0 } };
@@ -79,8 +79,13 @@ export function createGamepad(api, { params } = {}) {
       if ((down(B.left) || down(B.right)) && items[st.menuIdx].adj) items[st.menuIdx].adj(down(B.left) ? -1 : 1);
       if (down(B.a)) { const m = items[st.menuIdx]; m.go ? m.go() : m.adj?.(1); }
       if (down(B.b) || down(B.start)) openMenu(false); if (st.menu) drawMenu(); return; }
+    // title / menus (src/menu.js): D-pad or left stick move focus, A confirms, B goes back, Start opens Settings
+    if (!api.inGame()) { const m = api.menu && api.menu(); if (!m || !m.visible()) { st.prev = now; return; } showCursor(false);
+      let dir = down(B.up) ? 'up' : down(B.down) ? 'down' : down(B.left) ? 'left' : down(B.right) ? 'right' : null;
+      const sd = Math.abs(L.x) > Math.abs(L.y) ? (L.x > 0.5 ? 'right' : L.x < -0.5 ? 'left' : null) : (L.y > 0.5 ? 'down' : L.y < -0.5 ? 'up' : null);
+      if (sd) { if (sd !== st.navDir) { st.navDir = sd; st.navT = 0.38; dir = dir || sd; } else if ((st.navT -= dt) <= 0) { st.navT = 0.16; dir = dir || sd; } } else st.navDir = null;
+      if (dir) m.nav(dir); if (down(B.a)) m.ok(); if (down(B.b)) m.back(); if (down(B.start)) m.show('settings'); return; }
     if (down(B.start)) { openMenu(true); return; }
-    if (!api.inGame()) return;
     const W = innerWidth, H = innerHeight, c = st.cursor;
     // left stick: cursor; pushing it into a screen edge pans the camera. Right stick + D-pad: camera pan.
     let px = 0, py = 0;
@@ -107,7 +112,10 @@ export function createGamepad(api, { params } = {}) {
   }
   addEventListener('gamepaddisconnected', e => { if (e.gamepad && e.gamepad.index === st.index) { st.index = null; st.prev = []; showCursor(false); setFocus(-1); openMenu(false); showToast(false); } });
   function connected(gp) { if (gp) { st.index = gp.index; st.id = gp.id; st.kind = padKind(gp.id); } else pick(); showToast(true); }
-  return { poll, connected, settings: S, set(o) { if ('deadzone' in o) S.deadzone = Math.max(0.05, Math.min(0.45, +o.deadzone)); try { localStorage.setItem('inu-pad', JSON.stringify(S)); } catch {} return { ...S }; },
+  // own frame loop (title and in-game alike); input only, the sim never sees it
+  let lastT = 0; const loop = t => { const dt = lastT ? Math.min(0.1, (t - lastT) / 1000) : 0.016; lastT = t; try { poll(dt); } catch (e) { console.warn('controller poll', e); } requestAnimationFrame(loop); };
+  if (typeof requestAnimationFrame === 'function' && !opts.manual) requestAnimationFrame(loop);
+  return { poll, connected, showHints: () => showToast(true), settings: S, set(o) { if ('deadzone' in o) S.deadzone = Math.max(0.05, Math.min(0.45, +o.deadzone)); try { localStorage.setItem('inu-pad', JSON.stringify(S)); } catch {} return { ...S }; },
     stats: () => ({ ...st.stats, kind: st.kind, id: st.id, active: st.active, cursor: { x: Math.round(st.cursor.x), y: Math.round(st.cursor.y) }, focus: st.focus, menu: st.menu, deadzone: S.deadzone, toast: toast.style.opacity === '1' ? toast.textContent : '' }),
     cursor: st.cursor };
 }

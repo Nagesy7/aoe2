@@ -10,7 +10,8 @@ import { Lockstep } from './lockstep.js';
 import { NetSession, TabsBus, RelayBus, HttpBus, httpRelayBase, defaultRelayUrl, newRoomCode } from './net.js';
 import { CIVS, CIV_IDS } from './civs.js';
 import { setupComputers } from './ai.js';
-import { initKibble, kibbleState, kibblePay, tierNow, myLoadout, loadoutWire, loadoutFromWire } from './kibble-ui.js';
+import { initMenu } from './menu.js';
+import { initKibble, equipCosmetic, openKibblePanel, kibbleState, kibblePay, tierNow, myLoadout, loadoutWire, loadoutFromWire } from './kibble-ui.js';
 import { initRaid, openRaid } from './raid-ui.js';
 import { startTicket, submitMatch, resultText } from './score.js';
 import { mountCivCards } from './civcards.js';
@@ -47,7 +48,7 @@ function padApi() {
     pan: (dx, dy) => { cam.x += dx / Z; cam.y += dy / Z; clampCamera(cam, canvas.width, canvas.height, world); },
     openCommands: () => { if (getComputedStyle(cmdTab).display !== 'none' && !document.body.classList.contains('cmd-open')) cmdTab.click(); },
     focusables: () => [...document.querySelectorAll('#commands button')].filter(b => !b.disabled && b.offsetParent),
-    el: id => $(id), homeEl: () => document.querySelector('#inu-home, [data-inu-home], .inu-home') };
+    menu: () => window.game.menu, el: id => $(id), homeEl: () => document.querySelector('#inu-home, [data-inu-home], .inu-home') };
 }
 
 const loadAlive = () => aliveP ||= import('./alive.js').then(m => { alive = m.createAlive({ params, sfx: SFX, onChange: syncAlivePanel }); syncAlivePanel(); return alive; }).catch(e => { console.warn('alive layer unavailable', e); });
@@ -211,8 +212,8 @@ const fxBtn = $('fx-open'), fxPanel = $('alive-panel');
 const aliveSettings = () => alive ? alive.settings : (() => { try { const o = JSON.parse(localStorage.getItem('inu-alive') || '{}'); return { fx: o.fx !== false, weather: o.weather !== false, sound: o.sound !== false }; } catch { return { fx: true, weather: true, sound: true }; } })();
 function syncAlivePanel() { const o = aliveSettings(); $('opt-sound').checked = o.sound; $('opt-fx').checked = o.fx; $('opt-weather').checked = o.weather; }
 fxBtn.addEventListener('click', () => { const open = fxPanel.hidden; fxPanel.hidden = !open; fxBtn.setAttribute('aria-expanded', String(open)); fxBtn.classList.toggle('active', open); syncAlivePanel(); });
-for (const k of ['sound', 'fx', 'weather']) $('opt-' + k).addEventListener('change', e => { const v = e.target.checked;
-  if (alive) alive.set({ [k]: v }); else { const o = { ...aliveSettings(), [k]: v }; try { localStorage.setItem('inu-alive', JSON.stringify(o)); } catch {} if (k === 'sound') SFX.setMuted(!v); } });
+function setAliveOpt(k, v) { if (alive) alive.set({ [k]: v }); else { const o = { ...aliveSettings(), [k]: v }; try { localStorage.setItem('inu-alive', JSON.stringify(o)); } catch {} if (k === 'sound') SFX.setMuted(!v); } }
+for (const k of ['sound', 'fx', 'weather']) $('opt-' + k).addEventListener('change', e => setAliveOpt(k, e.target.checked));
 canvas.addEventListener('pointerdown', () => { if (!fxPanel.hidden) { fxPanel.hidden = true; fxBtn.setAttribute('aria-expanded', 'false'); fxBtn.classList.remove('active'); } });
 // ---- HUD / panels ----
 const bannerEl = $('banner'), hud = $('hud'), infoEl = $('info'), cmdEl = $('commands'), msgEl = $('msg'), netEl = $('net'), stallEl = $('stall'), desyncEl = $('desync');
@@ -287,8 +288,10 @@ function updateHud() {
 }
 
 // ---- game start ----
-function startGame({ mp = false, seed = 1, me = 0, cfg = {}, session = null, ai = null } = {}) {
-  world = mp || ai ? createWorld({ mp: true, seed }) : createWorld({ enemy: params.get('enemy') !== '0', raids: params.get('raids') === '1', scenario: params.get('scenario') });
+function startGame({ mp = false, seed = 1, me = 0, cfg = {}, session = null, ai = null, sp = null } = {}) {
+  // sp: a Campaign scenario picked on the title menu ({ raids, scenario, civ }); without it the URL params decide (legacy ?enemy= / ?raids= / ?scenario=)
+  world = mp || ai ? createWorld({ mp: true, seed }) : sp ? createWorld({ enemy: true, raids: !!sp.raids, scenario: sp.scenario || null }) : createWorld({ enemy: params.get('enemy') !== '0', raids: params.get('raids') === '1', scenario: params.get('scenario') });
+  if (sp && CIVS[sp.civ]) world.players.player.civ = sp.civ;
   if (mp && cfg.civs) OWNERS.forEach((o, i) => { if (CIVS[cfg.civs[i]]) world.players[o].civ = cfg.civs[i]; });
   if (mp) world.victory = true; // online 1v1 ends by conquest too (Den Halls + Fortresses destroyed), same rule as vs computer; kibble-pay's replay sets it the same way
   if (ai) { setupComputers(world, ai.spectate ? { player: ai.civ, enemy: ai.enemy } : { enemy: ai.enemy }); world.players.player.civ = ai.civ; world.viewer = 'player'; window.game.aiMode = true;
@@ -360,7 +363,7 @@ function frame(now) {
     else if (n) net.stallMs = 0;
     fog = computeFog(world, viewer(), fog); window.game.fog = fog;
   }
-  if (ui.placing) refreshGhost(); if (mouse.inside) updateCursor(); ui.lerp = { prev: prevPos, a: Math.max(0, Math.min(1, acc / TICK_DT)) }; if (pad) pad.poll(real); const vfog = net || (world.computers && !world.spectate) ? fog : null; if (alive) { ui.alive = alive; alive.update(world, cam, canvas, vfog, real); } render(ctx, world, cam, ui, vfog); updateHud(); SFX.watch(world, viewer()); minimap.draw(now); requestAnimationFrame(frame);
+  if (ui.placing) refreshGhost(); if (mouse.inside) updateCursor(); ui.lerp = { prev: prevPos, a: Math.max(0, Math.min(1, acc / TICK_DT)) }; const vfog = net || (world.computers && !world.spectate) ? fog : null; if (alive) { ui.alive = alive; alive.update(world, cam, canvas, vfog, real); } render(ctx, world, cam, ui, vfog); updateHud(); SFX.watch(world, viewer()); minimap.draw(now); requestAnimationFrame(frame);
 }
 // Automation hook: read-only state access + time advance in single player (proof scripts must not use it to issue orders).
 window.game = { sim: SIM, world: null, cam, ui, selectionInfo, pickAt, toScreen: (x, y) => { const q = worldToScreen(x, y, cam); return { x: q.x * Z, y: q.y * Z }; }, zoom: () => Z, toWorld,
@@ -393,7 +396,10 @@ function openSession(role, code) {
   session.startCfg = { speed: +(params.get('speed') || 1), delay: +(params.get('delay') || (transport === 'http' ? 8 : 3)) };
   window.game.session = session; showLobby();
 }
-$('btn-sp').onclick = () => startGame();
+// Campaign ▸ scenarios (existing single-player modes; the story campaign itself is 'Coming soon' on the menu)
+$('btn-sp').onclick = () => startGame({ sp: { civ: $('civ').value } });
+$('btn-raids').onclick = () => startGame({ sp: { civ: $('civ').value, raids: true } });
+$('btn-headstart').onclick = () => startGame({ sp: { civ: $('civ').value, scenario: 'skirmish' } });
 // Clan picker (free for everyone; Kibble only buys cosmetics) + skirmish vs the computer.
 $('civ').innerHTML = CIV_IDS.map(id => `<option value="${id}">${CIVS[id].name} — ${CIVS[id].style}</option>`).join('');
 $('ai-civ').innerHTML = CIV_IDS.map(id => `<option value="${id}">${CIVS[id].name}</option>`).join('');
@@ -422,6 +428,10 @@ const moodClient = startMood({ inMatch, onMood: m => { if (inMatch()) return; mo
 setInterval(() => { const scr = moodScreen(); if (scr !== moodState.screen) { if (!inMatch() && moodState.screen === null) moodClient.resume(); paintMood(); } }, 500);
 loadShared().then(fn => { if (fn) { moodClient.useShared(fn); moodState.shared = true; } });
 window.game.mood = { get: () => moodState.mood, state: moodState, client: moodClient, screen: moodScreen };
+// Title menu: Campaign · Skirmish · Multiplayer · Store · Settings (src/menu.js; UI only)
+const padStore = () => { try { const o = JSON.parse(localStorage.getItem('inu-pad') || '{}'); return { deadzone: Number.isFinite(+o.deadzone) && o.deadzone != null ? +o.deadzone : 0.18 }; } catch { return { deadzone: 0.18 }; } };
+window.game.menu = initMenu({ kibble: () => kibbleState(), equip: id => equipCosmetic(id), tier: () => tierNow(), openKibble: tab => openKibblePanel(tab), alive: () => aliveSettings(), setAlive: setAliveOpt,
+  pad: () => pad, padSettings: () => pad ? pad.settings : padStore(), setDeadzone: v => { if (pad) pad.set({ deadzone: v }); else try { localStorage.setItem('inu-pad', JSON.stringify({ ...padStore(), deadzone: v })); } catch {} } });
 // Legacy / direct single-player URLs (?enemy=, ?scenario=, ?raids=, ?play=sp) skip the menu.
 if (params.get('play') === 'ai' || params.get('play') === 'watch') startGame({ ai: { civ: $('civ').value, enemy: $('ai-civ').value, spectate: params.get('play') === 'watch' }, seed: +(params.get('seed') || 7) });
 else if (['enemy', 'scenario', 'raids'].some(k => params.has(k)) || params.get('play') === 'sp') startGame();
