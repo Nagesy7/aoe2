@@ -40,7 +40,7 @@ export function initMenu(api) {
   for (const b of document.querySelectorAll('#menu .mback')) b.addEventListener('click', () => back());
   // ---- focus / spatial navigation (keyboard + controller) ----
   const focusables = () => { const root = kbOpen() ? $('kb') : lobbyOpen() ? $('lobby') : $('pg-' + st.page);
-    return [...root.querySelectorAll('button, select, input, [tabindex="0"]')].filter(e => !e.disabled && e.offsetParent !== null && !e.closest('[hidden]')); };
+    return [...root.querySelectorAll('button, select, input, a[href], [tabindex="0"]')].filter(e => !e.disabled && e.offsetParent !== null && !e.closest('[hidden]')); };
   // first focus on a page: the first main entry on home, the picked clan card on the clan select, else the first control
   const prefer = f => (kbOpen() || lobbyOpen() ? null : st.page === 'home' ? f.find(e => e.classList.contains('mnav')) : st.page === 'setup' ? f.find(e => e.classList.contains('civ-card') && e.classList.contains('sel')) : null) || f[0];
   function focusFirst() { if (!visible() || !(st.kbd || st.pad)) return; const pick = prefer(focusables()); if (pick && document.activeElement !== pick) { pick.focus({ preventScroll: false }); navMode(true); } }

@@ -6,7 +6,7 @@ PASS: 6 clan cards + existing scenarios btn-sp, btn-raids, btn-headstart
 PASS: tap Kai Brindles card picks it, blurb shows its traits
 PASS: Back -> main menu
 PASS: tap Skirmish -> clan select with opponent picker + Start
-PASS: Start Skirmish on screen at 844x390 (bottom 178)
+PASS: Start Skirmish on screen at 844x390 (bottom 166)
 PASS: Start -> skirmish vs computer as the picked clan ({"civ":"hokkaido","ai":true,"menu":"none"})
 PASS: UI only: menu-started skirmish hash at tick 400 == the same match by URL (203702eb vs 203702eb)
 PASS: Campaign ▸ btn-sp starts as Akita (raids false, head-start Dojo (barracks) false); browser hash == Node createWorld at tick 300 (20cb0572)

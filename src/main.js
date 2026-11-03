@@ -1,3 +1,4 @@
+import { mountPaidLinks } from './paidlinks.js';
 import { screenToWorld, worldToScreen, createWorld, TILE, pickAt, selectionInfo, clampCamera, getSelected,
   selectedUnits, selectedBuilding, popCount, popCap, RES_TYPES, BUILD_MENU, BUILDING_DEFS, UNIT_DEFS, missingFor, canAgeUp, canResearch, ageStatus, techsAt, TECHS, AGE_UPS, AGE_NAMES, isLocked, requiresText,
   stepTick, applyCommand, makeCommand, stateHash, TICK_DT, OWNERS, hyp } from './sim.js';
@@ -217,6 +218,7 @@ function setAliveOpt(k, v) { if (alive) alive.set({ [k]: v }); else { const o = 
 for (const k of ['sound', 'fx', 'weather']) $('opt-' + k).addEventListener('change', e => setAliveOpt(k, e.target.checked));
 canvas.addEventListener('pointerdown', () => { if (!fxPanel.hidden) { fxPanel.hidden = true; fxBtn.setAttribute('aria-expanded', 'false'); fxBtn.classList.remove('active'); } });
 // ---- HUD / panels ----
+const shopNudge = mountPaidLinks();
 const bannerEl = $('banner'), hud = $('hud'), infoEl = $('info'), cmdEl = $('commands'), msgEl = $('msg'), netEl = $('net'), stallEl = $('stall'), desyncEl = $('desync');
 let lastCmd = '';
 const cmdTab = $('cmdtab'); cmdTab.addEventListener('click', () => { const o = document.body.classList.toggle('cmd-open'); cmdTab.setAttribute('aria-expanded', o); });
@@ -237,6 +239,7 @@ function updateHud() {
   hud.innerHTML = '<span id="brand">Inu Empires</span>' + RES_TYPES.map(r => `<span id="res-${r}" class="res" title="${r[0].toUpperCase() + r.slice(1)}"><i aria-hidden="true">${RES_ICON[r]}</i><span class="lbl">${r[0].toUpperCase() + r.slice(1)}: </span>${world.stockpile[r]}</span>`).join('') +
     `<span id="pop" class="res ${pop >= cap ? 'capped' : ''}" title="Population"><i aria-hidden="true">🐾</i><span class="lbl">Pop </span>${pop}/${cap}</span>` + (net ? `<span id="side" class="${net.me ? 'p2' : 'p1'}">Player ${net.me + 1} (${net.me ? 'Red' : 'Blue'})</span>` : '') + `<span id="age">${AGE_NAMES[world.age]}</span>` + (world.players?.[viewer()]?.civ ? `<span id="civ">${CIVS[world.players[viewer()].civ].name}</span>` : '');
   bannerEl.textContent = world.banner ? world.banner.text : ''; bannerEl.style.display = world.banner ? 'block' : 'none';
+  shopNudge.tick(world, { lobby: ($('lobby').style.display !== 'none' && $('lobby').style.display !== '') || $('menu').style.display === 'flex' });
   msgEl.textContent = world.message ? breedText(world.message.text) : ''; msgEl.style.display = world.message ? 'block' : 'none';
   const info = selectionInfo(world);
   infoEl.style.display = info ? 'block' : 'none';
@@ -438,7 +441,7 @@ if (params.get('play') === 'ai' || params.get('play') === 'watch') startGame({ a
 else if (['enemy', 'scenario', 'raids'].some(k => params.has(k)) || params.get('play') === 'sp') startGame();
 else { $('menu').style.display = 'flex'; $('title-bg').style.display = 'block';
   if (ART_ON) { document.body.classList.add('menu-art'); $('title-art').style.display = 'block'; window.game.titleArt = mountTitleArt($('title-art')); }
-  startTitle($('title-bg'), () => moodState.mood, () => ART_ON); }
+  startTitle($('title-bg'), () => moodState.mood, () => ART_ON && (window.game.titleArt || true)); }
 
 
 initKibble();
