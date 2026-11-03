@@ -21,12 +21,19 @@ PASS: Host 1v1 opens the existing net.js lobby with a room code
 PASS: Leave -> back on the Multiplayer clan select ({"page":"setup","mode":"multiplayer","shown":"flex","focus":""})
 PASS: tap Store -> Store
 PASS: Free & tier tab lists the 12 tier cosmetics from src/kibble.js
-PASS: Skins & shield finishes: 15 priced items, all "Coming soon", no buttons
-PASS: Store page has no buy / price / wager text
+PASS: Free & tier tab: no buy / wager text (equip only)
 PASS: Kennel rewards tab lists 12 kn_* cosmetics from src/kennel.js
 PASS: Store ▸ Open my Kibble Kennel opens the Kennel tab
 PASS: after the demo wallet connects (Hound tier), tier cosmetics show Equip (colour_jade, colour_sakura, banner_bone, title_pup, title_hound, skin_golden_shiba)
 PASS: Equip -> Jade team colour equipped ({"sst":"Equipped","eq":"colour_jade"})
+PASS: Kibble shop tab lists the 15 K.SHOP items in order, each with Buy
+PASS: prices unchanged: price + 2% fee = total, same as the old panel
+PASS: risk notes on screen next to the Buy buttons: SIMULATED · demo only · no real wallet or transactions 2% fee on every purchase: 1% to the President's Vault (BzLY…TNGJ 
+PASS: shop notes: no wagers / odds
+PASS: Buy runs the existing flow (25k demo wallet cannot afford 2.55M): Need 2,550,000 KIBBLE (incl. 2% fee)
+PASS: refused buy moves nothing (President's Vault unchanged)
+PASS: $KIBBLE panel: shop tab gone, "Kibble shop ▸ Store" link, other tabs kept (wallet, kennel, ladder, pools, packs, cup)
+PASS: panel link opens Store ▸ Kibble shop
 PASS: cosmetics are render-only: skirmish hash with Jade equipped == default (203702eb vs 203702eb)
 PASS: tap Settings -> Settings
 PASS: sections: ✨ Sound & effects | 🎮 Controller | 🦴 Wallet & $KIBBLE
@@ -43,6 +50,7 @@ PASS: 750x342 campaign: fits without scrolling, 4 buttons on screen (overflow 0p
 PASS: 750x342 skirmish: fits without scrolling, 2 buttons on screen (overflow 0px, off-screen 0)
 PASS: 750x342 multiplayer: fits without scrolling, 3 buttons on screen (overflow 0px, off-screen 0)
 PASS: 750x342 store: fits without scrolling, 1 buttons on screen (overflow 0px, off-screen 0)
+PASS: 750x342 Kibble shop: fits, first Buy and the risk notes on screen together ({"scroll":0,"note":true,"buy":true})
 PASS: 750x342 settings: fits without scrolling, 3 buttons on screen (overflow 0px, off-screen 0)
 PASS: keyboard: first arrow focuses Campaign (m-campaign)
 PASS: ArrowDown x3 -> Store (m-store)
@@ -69,3 +77,10 @@ PASS: D-pad + A picks a clan (shikoku)
 PASS: D-pad reaches Start Skirmish (shikoku > hokkaido > civ > ai-civ > btn-ai)
 PASS: A starts the skirmish as shikoku
 PASS: pad: no page errors 
+PASS: keyboard: reach the Kibble shop tab (mback > stab:tier > stab:shop)
+PASS: keyboard: Buy on buy:skin_kai_brindle runs the existing flow (Connect the (simulated) wallet first) and focus stays on it (buy:skin_kai_brindle)
+PASS: keyboard shop: no page errors 
+PASS: pad: reach the Kibble shop tab (mback > stab:tier > stab:shop)
+PASS: pad: Buy on buy:skin_kai_brindle runs the existing flow (Connect the (simulated) wallet first) and focus stays on it (buy:skin_kai_brindle)
+PASS: pad: B leaves the Store
+PASS: pad shop: no page errors 

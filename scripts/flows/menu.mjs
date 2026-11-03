@@ -9,7 +9,7 @@ import * as S from '../../src/sim.js';
 import * as K from '../../src/kibble.js';
 const B = { a: 0, b: 1, x: 2, y: 3, start: 9, up: 12, down: 13, left: 14, right: 15 };
 const XB_ID = 'Xbox Wireless Controller (STANDARD GAMEPAD Vendor: 045e Product: 0b13)';
-const page = p => p.S(() => ({ page: window.game.menu.page, mode: window.game.menu.state.mode, shown: document.getElementById('menu').style.display, focus: document.activeElement && (document.activeElement.id || document.activeElement.dataset.civ || document.activeElement.className) }));
+const page = p => p.S(() => ({ page: window.game.menu.page, mode: window.game.menu.state.mode, shown: document.getElementById('menu').style.display, focus: document.activeElement && (document.activeElement.id || document.activeElement.dataset.civ || (document.activeElement.dataset.stab && 'stab:' + document.activeElement.dataset.stab) || (document.activeElement.dataset.buy && 'buy:' + document.activeElement.dataset.buy) || document.activeElement.className) }));
 const hashAt = (p, T) => p.S(T => { const g = window.game; g.paused = true; g.loop?.pause?.(); if (g.world.tick > T) return null; while (g.world.tick < T) g.sim.stepTick(g.world); return g.stateHash(); }, T);
 export default async function (argv) {
   const srv = await base(argv); const url = srv.url, q = url.includes('?') ? '&' : '?'; const c = checker(); const shots = flag('shots', argv) || !argOf('url', '', argv);
@@ -65,10 +65,8 @@ export default async function (argv) {
   let st = await p.S(() => ({ items: [...document.querySelectorAll('#store-items .sitem')].map(e => e.dataset.item), txt: document.getElementById('pg-store').innerText }));
   c(st.items.length === free && st.items.every(id => id in { ...Object.fromEntries(Object.keys(K.COSMETICS).map(k => [k, 1])) }), `Free & tier tab lists the ${free} tier cosmetics from src/kibble.js`);
   if (shots) await shot(p, S_('store-844x390'));
-  const noMoney = t => !/\bbuy\b|checkout|wager|\bbet\b|\d[\d,]* \$KIBBLE|\$\d/i.test(t);
-  await p.press('[data-stab=skins]'); st = await p.S(() => ({ items: [...document.querySelectorAll('#store-items .sitem')].map(e => [e.dataset.item, e.querySelector('.sst').textContent, !!e.querySelector('button')]), txt: document.getElementById('pg-store').innerText }));
-  c(st.items.length === K.SHOP.length && st.items.every(([, s, b]) => /Coming soon/.test(s) && !b), `Skins & shield finishes: ${st.items.length} priced items, all "Coming soon", no buttons`);
-  c(noMoney(st.txt), 'Store page has no buy / price / wager text');
+  const noBuy = t => !/\bbuy\b|checkout|wager|\bbet\b/i.test(t);
+  c(noBuy(st.txt), 'Free & tier tab: no buy / wager text (equip only)');
   await p.press('[data-stab=kennel]'); st = await p.S(() => [...document.querySelectorAll('#store-items .sitem')].map(e => e.dataset.item)); c(st.length > 0 && st.every(id => id.startsWith('kn_')), `Kennel rewards tab lists ${st.length} kn_* cosmetics from src/kennel.js`);
   await p.press('#store-kennel'); c(await p.S(() => document.getElementById('kb').style.display === 'flex' && document.getElementById('kb').dataset.tab === 'kennel'), 'Store ▸ Open my Kibble Kennel opens the Kennel tab');
   await p.press('#kb [data-k=connect]').catch(() => {}); await p.waitForTimeout(150); await p.press('#kb-close');
@@ -76,6 +74,24 @@ export default async function (argv) {
   c(eq.includes('colour_jade'), `after the demo wallet connects (Hound tier), tier cosmetics show Equip (${eq.join(', ')})`);
   await p.press('[data-equip=colour_jade]'); const after = await p.S(() => ({ sst: document.querySelector('[data-item=colour_jade] .sst').textContent, eq: JSON.parse(localStorage.getItem('inu-empires-kibble-sim')).equipped.colour }));
   c(after.sst === 'Equipped' && after.eq === 'colour_jade', `Equip -> Jade team colour equipped (${JSON.stringify(after)})`);
+  // the $KIBBLE panel's shop, moved into the Store: same items, prices, risk notes and buy flow (simulated here: ?demo=1)
+  await p.press('[data-stab=shop]'); st = await p.S(() => { const it = document.getElementById('store-items'), n = document.querySelector('#store-foot .kshop-note'), r = n?.getBoundingClientRect();
+    return { items: [...it.querySelectorAll('.kitem')].map(e => [e.querySelector('[data-buy],[data-eq]')?.dataset.buy || e.querySelector('[data-eq]')?.dataset.eq, e.querySelector('small').textContent]), note: n?.innerText || '', noteOn: !!r && r.top >= 0 && r.bottom <= innerHeight && r.width > 0 }; });
+  c(st.items.length === K.SHOP.length && st.items.every(([id], i) => id === K.SHOP[i]), `Kibble shop tab lists the ${K.SHOP.length} K.SHOP items in order, each with Buy`);
+  c(st.items.every(([id, t]) => { const x = K.COSMETICS[id], q = K.feeSplit(K.toU(x.price)); return t.startsWith(`${x.price} + ${K.fmtK(q.fee)} fee = ${K.fmtK(q.total)} $KIBBLE`); }), 'prices unchanged: price + 2% fee = total, same as the old panel');
+  c(st.noteOn && /SIMULATED · demo only · no real wallet or transactions/.test(st.note) && /2% fee on every purchase: 1% to the President's Vault/.test(st.note) && /prize pools/.test(st.note), `risk notes on screen next to the Buy buttons: ${st.note.replace(/\s+/g, ' ').slice(0, 120)}`);
+  c(!/wager|\bbet\b|odds/i.test(st.note), 'shop notes: no wagers / odds');
+  if (shots) await shot(p, S_('store-shop-844x390'));
+  const tre0 = await p.S(() => JSON.parse(localStorage.getItem('inu-empires-kibble-sim')).treasuryU || 0);
+  await p.press('[data-buy=skin_snow_akita]'); const bm = await p.locator('#kb-shop-msg').innerText();
+  c(/Need 2,550,000 KIBBLE \(incl\. 2% fee\)/.test(bm), `Buy runs the existing flow (25k demo wallet cannot afford 2.55M): ${bm}`);
+  c(await p.S(() => JSON.parse(localStorage.getItem('inu-empires-kibble-sim')).treasuryU || 0) === tre0, 'refused buy moves nothing (President\'s Vault unchanged)');
+  await p.press('#pg-store .mback'); await p.press('#btn-kibble');
+  { const k = await p.S(() => ({ shopTab: !!document.querySelector('#kb [data-tab=shop]'), link: !!document.querySelector('#kb [data-k=to-store]'), tabs: [...document.querySelectorAll('#kb [data-tab]')].map(b => b.dataset.tab) }));
+    c(!k.shopTab && k.link && ['wallet', 'kennel', 'ladder', 'pools', 'packs', 'cup'].every(t => k.tabs.includes(t)), `$KIBBLE panel: shop tab gone, "Kibble shop ▸ Store" link, other tabs kept (${k.tabs.join(', ')})`); }
+  await p.press('#kb [data-k=to-store]'); await p.waitForTimeout(150); pg = await page(p);
+  c(pg.page === 'store' && !(await p.isVisible('#kb')) && await p.S(() => document.querySelectorAll('#store-items [data-buy]').length) === K.SHOP.length, 'panel link opens Store ▸ Kibble shop');
+  await p.press('[data-stab=tier]');
   // cosmetics never touch the sim: a match with Jade equipped hashes the same as one without
   await p.press('#pg-store .mback'); await p.press('#m-skirmish'); await p.press('#btn-ai'); await p.waitForFunction(() => window.game.world); const hJade = await hashAt(p, T);
   { const r = await newPage({ phone: true }); await r.goto(url + q + 'play=ai&civ=shiba&aiciv=akita&seed=7'); await r.waitForFunction(() => window.game.world); const h0 = await hashAt(r, T);
@@ -103,7 +119,11 @@ export default async function (argv) {
     const fit = await p.S(() => { const m = document.getElementById('menu'), vis = [...m.querySelectorAll('button[id], .mback, .mnav')].filter(b => b.offsetParent && !b.closest('[hidden]'));
       const r = vis.map(b => b.getBoundingClientRect()); return { scroll: m.scrollHeight - m.clientHeight, off: r.filter(q => q.right > innerWidth + 1 || q.bottom > innerHeight + 1 || q.left < -1 || q.top < -1).length, n: vis.length }; });
     c(fit.scroll <= 0 && fit.off === 0, `750x342 ${pgn}: fits without scrolling, ${fit.n} buttons on screen (overflow ${fit.scroll}px, off-screen ${fit.off})`);
-    if (shots) await shot(p, S_(`${pgn}-750x342`)); }
+    if (shots) await shot(p, S_(`${pgn}-750x342`));
+    if (pgn === 'store') { await p.press('[data-stab=shop]'); await p.waitForTimeout(150);
+      const f2 = await p.S(() => { const m = document.getElementById('menu'), n = document.querySelector('.kshop-note').getBoundingClientRect(), b = document.querySelector('#store-items [data-buy]').getBoundingClientRect();
+        return { scroll: m.scrollHeight - m.clientHeight, note: n.top >= 0 && n.bottom <= innerHeight, buy: b.top >= 0 && b.bottom <= innerHeight }; });
+      c(f2.scroll <= 0 && f2.note && f2.buy, `750x342 Kibble shop: fits, first Buy and the risk notes on screen together (${JSON.stringify(f2)})`); if (shots) await shot(p, S_('store-shop-750x342')); } }
   await p.context().close();
   // ===== 3. desktop 1366x768: mouse + keyboard =====
   p = await newPage({}); await openTitle(p, url); if (shots) { await p.waitForTimeout(400); await shot(p, S_('main-1366x768')); }
@@ -144,6 +164,24 @@ export default async function (argv) {
   pg = await page(p); c(pg.focus === 'btn-ai', `D-pad reaches Start Skirmish (${path.join(' > ')} > ${pg.focus})`); await tap(B.a); await p.waitForFunction(() => window.game.world);
   c(await p.S(() => window.game.world.players.player.civ) === picked, `A starts the skirmish as ${picked}`);
   c(!p.errors.length, `pad: no page errors ${p.errors.join(' | ')}`); await p.context().close();
+  // ===== 5. Kibble shop in the Store with keyboard (desktop) and controller (phone), ?demo=1 so Buy stays simulated =====
+  const toShop = async (p, step, ok, label) => { const path = []; for (let i = 0; i < 8; i++) { const f = (await page(p)).focus; path.push(f); if (f === 'stab:shop') break; await step(f); }
+    await ok(); await p.waitForTimeout(150); const pg = await page(p); c(pg.page === 'store' && await p.S(() => document.querySelectorAll('#store-items [data-buy]').length) > 0, `${label}: reach the Kibble shop tab (${path.join(' > ')})`); };
+  const buyKeepsFocus = async (p, move, ok, label) => { await move(); let pg = await page(p); const f0 = pg.focus; await ok(); await p.waitForTimeout(200); pg = await page(p); const m = await p.locator('#kb-shop-msg').innerText();
+    c(/^buy:/.test(f0) && pg.focus === f0 && /Connect the \(simulated\) wallet first/.test(m), `${label}: Buy on ${f0} runs the existing flow (${m}) and focus stays on it (${pg.focus})`); };
+  p = await newPage({}); await openTitle(p, url, q + 'demo=1'); await p.S(() => localStorage.removeItem('inu-empires-kibble-sim')); await p.reload(); await p.waitForFunction(() => window.game && window.game.menu);
+  for (let i = 0; i < 4; i++) await p.keyboard.press('ArrowDown'); await p.keyboard.press('Enter'); await p.waitForTimeout(150);
+  await toShop(p, async f => p.keyboard.press(/^stab:/.test(f) ? 'ArrowRight' : 'ArrowDown'), () => p.keyboard.press('Enter'), 'keyboard');
+  await buyKeepsFocus(p, () => p.keyboard.press('ArrowDown'), () => p.keyboard.press('Enter'), 'keyboard');
+  c(!p.errors.length, `keyboard shop: no page errors ${p.errors.join(' | ')}`); await p.context().close();
+  p = await newPage({ phone: true }); await p.addInitScript(MOCK); await openTitle(p, url, q + 'demo=1'); await p.S(() => localStorage.removeItem('inu-empires-kibble-sim')); await p.reload(); await p.waitForFunction(() => window.game && window.game.menu);
+  await p.S(id => window.__pad.connect(id), XB_ID); await p.waitForFunction(() => window.game.pad); await p.waitForTimeout(150);
+  { const tp = i => p.S(i => window.__pad.tap(i), i);
+    for (let i = 0; i < 5 && (await page(p)).focus !== 'm-store'; i++) await tp(B.down); await tp(B.a); await p.waitForTimeout(150);
+    await toShop(p, async f => tp(/^stab:/.test(f) ? B.right : B.down), () => tp(B.a), 'pad');
+    await buyKeepsFocus(p, () => tp(B.down), () => tp(B.a), 'pad');
+    await tp(B.b); c((await page(p)).page === 'home', 'pad: B leaves the Store'); }
+  c(!p.errors.length, `pad shop: no page errors ${p.errors.join(' | ')}`); await p.context().close();
   await closeAll(); srv.close(); console.log(c.fails ? `MENU: ${c.fails} FAILED` : 'MENU: ALL PASSED');
   writeFileSync(join(ROOT, `proof/menu${tag ? '-' + tag : ''}.log`), c.lines.join('\n') + '\n'); return c.fails ? 1 : 0;
 }
