@@ -19,7 +19,7 @@ const moving = async (p, id) => { const h = new Set(); for (let i = 0; i < 6; i+
 for (const ui of ['b', 'a']) { // b = default layout (no ?ui), a = ?ui=a comparison layout
   const ctx = await browser.newContext({ viewport: { width: 1280, height: 720 } }); const p = await ctx.newPage(); const tag = ui === 'b' ? 'default (b)' : '?ui=a';
   p.on('pageerror', e => { check(false, 'pageerror ' + e.message); });
-  await seedPage(p, ui === 'b' ? '?demo=1' : '?demo=1&ui=a'); await p.waitForFunction(() => document.querySelectorAll('.civ-card').length === 6); await p.waitForTimeout(400);
+  await seedPage(p, ui === 'b' ? '?demo=1' : '?demo=1&ui=a'); await p.waitForFunction(() => document.querySelectorAll('.civ-card').length === 6); await p.click('#m-skirmish'); await p.waitForTimeout(400);
   check(await p.evaluate(() => document.getElementById('civ-cards').dataset.ui) === ui, `${tag}: renders layout ${ui}`);
   check(await p.locator('.civ-card.rar-common').count() === 4 && await p.locator('.civ-card[data-civ=akita].rar-rare').count() === 1 && await p.locator('.civ-card[data-civ=kishu].rar-legendary').count() === 1, `${tag}: shield finish follows owned cosmetics (Akita rare, Kishu legendary, rest common)`);
   const vis = await p.evaluate(() => Object.fromEntries(['shiba', 'akita', 'kishu'].map(id => { const e = document.querySelector(`.civ-card[data-civ=${id}]`); return [id, { shadow: getComputedStyle(e).boxShadow, label: getComputedStyle(e.querySelector('.rar')).color, text: e.querySelector('.rar').textContent }]; })));
@@ -57,6 +57,7 @@ for (const ui of ['b', 'a']) { // b = default layout (no ?ui), a = ?ui=a compari
   p.on('pageerror', e => { check(false, 'pageerror ' + e.message); });
   const touch = (type, pts) => cdp.send('Input.dispatchTouchEvent', { type, touchPoints: pts.map((q, i) => ({ x: q.x, y: q.y, id: i })) });
   await seedPage(p); await p.waitForFunction(() => document.querySelectorAll('.civ-card').length === 6);
+  { const m = await p.locator('#m-skirmish').boundingBox(); await touch('touchStart', [{ x: m.x + m.width / 2, y: m.y + m.height / 2 }]); await p.waitForTimeout(60); await touch('touchEnd', []); await p.waitForTimeout(300); }
   await p.locator('.civ-card[data-civ=hokkaido]').scrollIntoViewIfNeeded();
   const b = await p.locator('.civ-card[data-civ=hokkaido]').boundingBox(), vp = p.viewportSize();
   console.log('hit', await p.evaluate(([x, y]) => document.elementFromPoint(x, y)?.outerHTML.slice(0, 80), [b.x + b.width / 2, b.y + b.height / 2])); check(b && b.x >= 0 && b.x + b.width <= vp.width && b.y + b.height <= vp.height, 'iPhone: card on screen in landscape');

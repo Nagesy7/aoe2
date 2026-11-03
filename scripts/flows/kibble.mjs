@@ -17,7 +17,7 @@ await p.click('[data-tab=ladder]'); await p.click('[data-k=win-ai]'); await p.cl
 await p.click('[data-tab=pools]'); await p.click('[data-k=pay-weekly]'); { const t = await p.innerText('.kpanel'); check(/weekly/i.test(t), `weekly pool panel: ${(t.match(/[^\n]*weekly[^\n]*/i) || [''])[0].slice(0, 90)}`); };
 await p.click('[data-tab=packs]'); check(/\[SHIB\]\s*6/.test(await p.innerText('.kpanel')), 'pack points from wins'); await shot('packs');
 await p.click('[data-tab=cup]'); await p.click('[data-k=cup]'); check(/Entered \(free\)/.test(await p.innerText('#kb-msg')), 'Kibble Cup free entry'); await shot('cup');
-await p.click('#kb-close'); await p.click('#btn-sp'); await p.waitForFunction(() => window.game.world); await p.waitForTimeout(600);
+await p.click('#kb-close'); await p.click('#m-campaign'); await p.click('#btn-sp'); await p.waitForFunction(() => window.game.world); await p.waitForTimeout(600);
 const snapW = q => q.evaluate(() => JSON.stringify({ stock: window.game.world.stockpile, u: window.game.world.units.map(u => [u.type, u.speed, u.hp, u.maxHp]), b: window.game.world.buildings.map(b => [b.type, b.hp, b.buildTime]) }));
 const st = await snapW(p); const c2 = await b.newContext({ viewport: { width: 1280, height: 800 } }); const p2 = await c2.newPage(); await p2.goto(BASE + '?play=sp'); await p2.waitForFunction(() => window.game.world);
 check(st === await snapW(p2), 'cosmetics/tier do not touch resources, stats or build times (same as a fresh no-wallet game)'); await c2.close();

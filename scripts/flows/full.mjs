@@ -21,7 +21,7 @@ if (!ONLY || ONLY === 'desktop') {
   const ctx = await browser.newContext({ viewport: { width: 1280, height: 720 } }); const p = await ctx.newPage();
   p.on('pageerror', e => { log('pageerror ' + e.message); fails++; }); const { S, scr } = helpers(p);
   await p.goto(BASE); await p.waitForFunction(() => window.game);
-  await p.selectOption('#civ', 'kishu'); await p.selectOption('#ai-civ', 'shikoku');
+  await p.click('#m-skirmish'); await p.selectOption('#civ', 'kishu'); await p.selectOption('#ai-civ', 'shikoku');
   check(/Archers \+1 range/.test(await p.locator('#civ-info').innerText()), 'menu shows the Kishu clan traits');
   await shot(p, 'desktop-01-menu');
   await p.click('#btn-ai'); await p.waitForFunction(() => window.game.world);
@@ -109,6 +109,7 @@ if (!ONLY || ONLY === 'desktop') {
   await shot(p3, 'desktop-07-ai-battle'); await p3.close();
   const host = await ctx.newPage(), guest = await ctx.newPage();
   for (const t of [host, guest]) { t.on('pageerror', e => { log('pageerror ' + e.message); fails++; }); await t.goto(BASE + '?net=http'); await t.waitForFunction(() => window.game); }
+  for (const t of [host, guest]) await t.click('#m-multiplayer');
   await host.selectOption('#civ', 'akita'); await guest.selectOption('#civ', 'kai');
   await host.click('#btn-host'); await host.waitForFunction(() => /^[A-Z]{4}$/.test(document.getElementById('lobby-code').textContent));
   await guest.fill('#join-code', await host.locator('#lobby-code').innerText()); await guest.click('#btn-join');
@@ -136,7 +137,7 @@ if (!ONLY || ONLY === 'iphone') {
   const touch = (type, pts) => cdp.send('Input.dispatchTouchEvent', { type, touchPoints: pts.map((q, i) => ({ x: q.x, y: q.y, id: i })) });
   const tap = async (q, ms = 60) => { await touch('touchStart', [q]); await p.waitForTimeout(ms); await touch('touchEnd', []); await p.waitForTimeout(120); };
   await p.goto(BASE); await p.waitForFunction(() => window.game);
-  await p.selectOption('#civ', 'shikoku');
+  await tap(await mid('#m-skirmish')); await p.waitForTimeout(150); await p.selectOption('#civ', 'shikoku');
   const b = await p.locator('#btn-ai').boundingBox(); check(b && b.y + b.height <= vp.height, 'iPhone: Skirmish button on screen in landscape menu');
   await shot(p, 'iphone-01-menu');
   await tap(await mid('#btn-ai')); await p.waitForFunction(() => window.game.world);

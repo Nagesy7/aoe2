@@ -64,12 +64,16 @@ export async function newPage({ phone = false, video = process.env.RECORD, ctxOp
   return p;
 }
 export async function openTitle(p, url, query = '') { await p.goto(url + query); await p.waitForFunction(() => window.game && document.querySelector('#menu')); await p.waitForTimeout(300); return p; }
-export async function titleButtons(p) { return p.$$eval('#menu button[id^=btn-]', bs => bs.map(b => ({ id: b.id, text: b.textContent.trim() }))); }
+// title buttons in document order: the five main entries (m-*) and the start / feature buttons (btn-*); label = its <b> if any
+export async function titleButtons(p) { return p.$$eval('#menu button[id^=btn-], #menu button[id^=m-]', bs => bs.map(b => ({ id: b.id, text: (b.querySelector('b') || b).textContent.trim() }))); }
+// menu: open a title page with real input (tap on phones, click on desktop): page 'home' | 'store' | 'settings' | 'campaign' | 'skirmish' | 'multiplayer'
+export async function menuTo(p, page) { const cur = await p.S(() => window.game.menu.page); if (cur !== 'home') await p.S(() => window.game.menu.show('home'));
+  if (page === 'home') return p; await p.press('#m-' + page); await p.waitForTimeout(150); return p; }
 export async function startSkirmish(p, { civ, aiCiv } = {}) {
-  if (civ) await p.selectOption('#civ', civ); if (aiCiv) await p.selectOption('#ai-civ', aiCiv);
+  await menuTo(p, 'skirmish'); if (civ) await p.selectOption('#civ', civ); if (aiCiv) await p.selectOption('#ai-civ', aiCiv);
   await p.locator('#btn-ai').scrollIntoViewIfNeeded(); await p.press('#btn-ai'); await p.waitForFunction(() => window.game.world); await p.waitForTimeout(500); return p;
 }
-export async function startSandbox(p) { await p.locator('#btn-sp').scrollIntoViewIfNeeded(); await p.press('#btn-sp'); await p.waitForFunction(() => window.game.world); await p.waitForTimeout(500); return p; }
+export async function startSandbox(p) { await menuTo(p, 'campaign'); await p.locator('#btn-sp').scrollIntoViewIfNeeded(); await p.press('#btn-sp'); await p.waitForFunction(() => window.game.world); await p.waitForTimeout(500); return p; }
 // select: real tap/click on the first own unit of `type` that is on screen (pans camera there first if needed)
 export async function select(p, type = 'villager') {
   const vp = p.viewportSize();
@@ -88,7 +92,10 @@ export async function order(p, target) {
 export async function shot(p, file) { mkdirSync(dirname(file), { recursive: true }); await p.screenshot({ path: file }); return file; }
 export function checker(lines = []) { const c = (ok, m) => { const s = `${ok ? 'PASS' : 'FAIL'}: ${m}`; console.log(s); lines.push(s); if (!ok) c.fails++; return ok; }; c.fails = 0; c.lines = lines; return c; }
 export const SHOTS = '/workspace/inu-empires-shots';
-export function indexButtons(root = ROOT, ref = '') { const h = ref ? execSync(`git show ${ref}:index.html`, { cwd: ROOT }).toString() : readFileSync(join(root, 'index.html'), 'utf8'); return [...h.matchAll(/<button id="(btn-[a-z]+)"[^>]*>([^<]*)</g)].map(m => ({ id: m[1], text: m[2].trim() })).filter(b => !['btn-ready', 'btn-leave'].includes(b.id)); }
+export function indexButtons(root = ROOT, ref = '') { return indexButtonsFrom(ref ? execSync(`git show ${ref}:index.html`, { cwd: ROOT }).toString() : readFileSync(join(root, 'index.html'), 'utf8')); }
+// title buttons declared in index.html (main entries m-* and btn-*), label = its <b> if any, as titleButtons() reads them in the page
+export function indexButtonsFrom(h) { const ent = t => t.replace(/&amp;/g, '&').replace(/&lt;/g, '<').replace(/&gt;/g, '>');
+  return [...h.matchAll(/<button id="((?:btn|m)-[a-z]+)"[^>]*>(.*?)<\/button>/g)].map(m => ({ id: m[1], text: ent((m[2].match(/<b>([^<]*)<\/b>/) || [, m[2].replace(/<[^>]*>/g, '')])[1]).trim() })).filter(b => !['btn-ready', 'btn-leave'].includes(b.id)); }
 
 // ---- scenes for `ctl shot` ----
 export const SCENES = {

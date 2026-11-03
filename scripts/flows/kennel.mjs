@@ -121,6 +121,7 @@ export default async function (argv) {
   { const ctx = await (await import('playwright')).chromium.launch().then(b => b.newContext({ viewport: { width: 1280, height: 720 } }));
     const host = await ctx.newPage(), guest = await ctx.newPage(); const errs = []; for (const x of [host, guest]) x.on('pageerror', e => errs.push(e.message));
     await host.goto(srv.url + '?net=tabs&kennel=top'); await guest.goto(srv.url + '?net=tabs&kennel=pup'); await host.waitForTimeout(700);
+    for (const t of [host, guest]) await t.click('#m-multiplayer');
     await host.click('#btn-host'); await host.waitForFunction(() => /^[A-Z]{4}$/.test(document.getElementById('lobby-code').textContent)); const code = await host.locator('#lobby-code').innerText();
     await guest.fill('#join-code', code); await guest.click('#btn-join');
     await host.waitForFunction(() => !document.getElementById('btn-ready').disabled, null, { timeout: 15000 }); await guest.waitForFunction(() => !document.getElementById('btn-ready').disabled, null, { timeout: 15000 });

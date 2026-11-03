@@ -1,11 +1,11 @@
 // Item 7: clan-select card A/B (default = b trait-first card since Oct 18; ?ui=a art card, ?ui=b explicit) at 844x390 and 1366x768.
 // Screenshots the menu + the card grid, measures what a player can read without hovering, and that picking still works.
 import { join } from 'node:path'; import { writeFileSync } from 'node:fs';
-import { ROOT, base, newPage, openTitle, checker, shot, closeAll, SHOTS } from '../ctl.mjs';
+import { ROOT, base, newPage, openTitle, menuTo, checker, shot, closeAll, SHOTS } from '../ctl.mjs';
 export default async function (argv) {
   const srv = await base(argv); const c = checker(); const out = [];
   for (const [phone, name] of [[true, '844x390'], [false, '1366x768']]) for (const [v, q] of [['a', '?ui=a'], ['b', '?ui=b'], ['b', '']]) {
-    const p = await newPage({ phone }); await openTitle(p, srv.url, q); const tag = q ? v : 'default'; await p.waitForTimeout(500);
+    const p = await newPage({ phone }); await openTitle(p, srv.url, q); await menuTo(p, 'skirmish'); const tag = q ? v : 'default'; await p.waitForTimeout(500);
     const m = await p.S(() => { const g = document.getElementById('civ-cards'), r = g.getBoundingClientRect(); const cards = [...g.querySelectorAll('.civ-card')];
       const vis = cards.filter(e => { const b = e.getBoundingClientRect(); return b.right <= Math.min(innerWidth, r.right) + 1 && b.left >= r.left - 1 && b.bottom <= innerHeight + 1 && b.top >= 0; }).length;
       return { ui: g.dataset.ui, cards: cards.length, fullyVisible: vis, gridW: Math.round(r.width), gridH: Math.round(r.height), hScroll: g.scrollWidth > g.clientWidth + 1,

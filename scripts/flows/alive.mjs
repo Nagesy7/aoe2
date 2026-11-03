@@ -64,7 +64,7 @@ export default async function (argv) {
     await d.S(() => window.game.alive.debug({ say: 'Fresh kibble at the market!' })); await d.waitForTimeout(200); await shot(d, join(SHOTS, 'alive-chatter-1366x768.png'));
     // smoke + fire: a damaged Den Hut in a separate sandbox page (watch-mode AIs repair at once; never the hash pages above)
     { const f = await newPage({}); f.errors = f.errors || []; await f.goto(url); await f.waitForFunction(() => window.game && document.querySelector('#menu'));
-      await f.locator('#btn-sp').scrollIntoViewIfNeeded(); await f.click('#btn-sp'); await f.waitForFunction(() => window.game.world && window.game.alive, null, { timeout: 30000 });
+      await f.click('#m-campaign'); await f.locator('#btn-sp').scrollIntoViewIfNeeded(); await f.click('#btn-sp'); await f.waitForFunction(() => window.game.world && window.game.alive, null, { timeout: 30000 });
       const at = await f.S(() => { const g = window.game, w = g.world, tc = w.buildings.find(b => b.owner === 'player' && b.type === 'town_center'); const S = g.sim;
         const a = S.addBuilding(w, 'house', tc.x + 5, tc.y, true, 'player'), b = S.addBuilding(w, 'blacksmith', tc.x - 4, tc.y + 5, true, 'player'), h = S.addBuilding(w, 'house', tc.x + 5, tc.y + 3, true, 'player');
         for (const o of w.buildings) if (o.type === 'house' && o.x === tc.x + 5 && o.y === tc.y) o.hp = Math.round(o.maxHp * 0.25); return { x: tc.x + 3, y: tc.y + 3 }; });

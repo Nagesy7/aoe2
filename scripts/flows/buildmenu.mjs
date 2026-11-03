@@ -27,7 +27,7 @@ async function audit(p, name, click) {
 }
 { // desktop
   const ctx = await browser.newContext({ viewport: { width: 1280, height: 720 }, deviceScaleFactor: 3 }); const p = await ctx.newPage(); p.on('pageerror', e => check(false, 'pageerror ' + e.message));
-  await p.goto(BASE); await p.click('#btn-sp'); await p.waitForFunction(() => window.game.world);
+  await p.goto(BASE); await p.click('#m-campaign'); await p.click('#btn-sp'); await p.waitForFunction(() => window.game.world);
   const v = await vilScreen(p); await p.mouse.click(v.x, v.y);
   await audit(p, 'desktop', l => l.click());
   // animation audit: drive real sim states, crop around the villager
@@ -55,7 +55,7 @@ async function audit(p, name, click) {
   const touch = (type, pts) => cdp.send('Input.dispatchTouchEvent', { type, touchPoints: pts.map((q, i) => ({ x: q.x, y: q.y, id: i })) });
   const tap = async q => { await touch('touchStart', [q]); await p.waitForTimeout(60); await touch('touchEnd', []); await p.waitForTimeout(120); };
   const tapL = async l => { const b = await l.boundingBox(); await tap({ x: b.x + b.width / 2, y: b.y + b.height / 2 }); };
-  await p.goto(BASE); await p.locator('#btn-sp').scrollIntoViewIfNeeded(); await tapL(p.locator('#btn-sp')); await p.waitForFunction(() => window.game.world);
+  await p.goto(BASE); await p.waitForFunction(() => window.game && window.game.menu); await tapL(p.locator('#m-campaign')); await p.waitForTimeout(150); await p.locator('#btn-sp').scrollIntoViewIfNeeded(); await tapL(p.locator('#btn-sp')); await p.waitForFunction(() => window.game.world);
   await tap(await vilScreen(p)); await p.waitForTimeout(200);
   check(await p.evaluate(() => window.game.getSelected()?.type === 'villager'), 'iPhone: tap selects a villager');
   await p.screenshot({ path: join(root, 'proof', 'full-buildmenu-iphone-00-collapsed.png') });

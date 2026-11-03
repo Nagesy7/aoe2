@@ -3,7 +3,7 @@
 // 2) every src/*.js + index.html served by live is byte-identical to the ref (default origin/main; build-id meta ignored)
 // Usage: node scripts/ctl.mjs run live-title [--url https://inu-empires.vercel.app] [--ref origin/main|WORKTREE] [--save proof/x.webm]
 import { readdirSync, readFileSync } from 'node:fs'; import { join } from 'node:path'; import { execSync } from 'node:child_process';
-import { ROOT, argOf, newPage, openTitle, titleButtons, startSkirmish, checker, closeAll } from '../ctl.mjs';
+import { ROOT, argOf, newPage, openTitle, titleButtons, indexButtonsFrom, startSkirmish, checker, closeAll } from '../ctl.mjs';
 export default async function (argv) {
   const url = argOf('url', 'https://inu-empires.vercel.app/', argv).replace(/\/?$/, '/'); const c = checker(); const save = argOf('save', '', argv);
   const p = await newPage({ phone: true, video: save ? '/tmp/ctl-video' : undefined });
@@ -11,7 +11,7 @@ export default async function (argv) {
   const ref = argOf('ref', 'origin/main', argv); try { execSync('git fetch -q origin', { cwd: ROOT, stdio: 'ignore', timeout: 30000 }); } catch {}
   const repo = f => ref === 'WORKTREE' ? readFileSync(join(ROOT, f), 'utf8') : execSync(`git show ${ref}:${f}`, { cwd: ROOT, maxBuffer: 1 << 26 }).toString();
   const norm = t => t && t.replace(/<meta name="build-id" content="[^"]*">/, '<meta name="build-id" content="">');
-  const html = repo('index.html'); const want = [...html.matchAll(/<button id="(btn-[a-z]+)"[^>]*>([^<]*)</g)].map(m => ({ id: m[1], text: m[2].trim() })).filter(b => !['btn-ready', 'btn-leave'].includes(b.id)), got = (await titleButtons(p)).filter(b => !['btn-ready', 'btn-leave'].includes(b.id));
+  const html = repo('index.html'); const want = indexButtonsFrom(html), got = (await titleButtons(p)).filter(b => !['btn-ready', 'btn-leave'].includes(b.id));
   for (const w of want) { const g = got.find(b => b.id === w.id); c(g && g.text === w.text, `title button #${w.id}: live "${g ? g.text : '(missing)'}" vs ${ref} "${w.text}"`); }
   for (const g of got) if (!want.some(w => w.id === g.id)) c(false, `title button #${g.id} "${g.text}" is on live but not in index.html`);
   const files = ['index.html', ...(ref === 'WORKTREE' ? readdirSync(join(ROOT, 'src')).map(f => 'src/' + f) : execSync(`git ls-tree --name-only ${ref} src/`, { cwd: ROOT }).toString().trim().split('\n')).filter(f => f.endsWith('.js') || f === 'index.html')]; const lag = [];

@@ -33,6 +33,7 @@ const shot = async (p, name) => { await p.waitForTimeout(150); await p.screensho
 await shot(host, `${tag}-01-menu.png`);
 
 // ---- lobby: host creates a room, guest joins by code (typed), both click Ready ----
+for (const t of [host, guest]) await t.click('#m-multiplayer');
 await host.click('#btn-host');
 await host.waitForFunction(() => /^[A-Z]{4}$/.test(document.getElementById('lobby-code').textContent));
 const code = await host.locator('#lobby-code').innerText(); log(`  room code ${code}`);

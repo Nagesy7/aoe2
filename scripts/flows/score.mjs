@@ -52,7 +52,7 @@ const b = await browser();
 // ---- vs computer ----
 { const ctx = await b.newContext({ viewport: { width: VW, height: VH } }), p = await ctx.newPage(), errs = []; p.on('pageerror', e => errs.push(String(e)));
   await p.goto(BASE + '?seed=11'); await p.waitForFunction(() => window.game && document.querySelector('#menu'));
-  await p.selectOption('#civ', 'kai'); await p.selectOption('#ai-civ', 'hokkaido'); await p.click('#btn-ai'); await p.waitForFunction(() => window.game.world && window.game.matchRep());
+  await p.click('#m-skirmish'); await p.selectOption('#civ', 'kai'); await p.selectOption('#ai-civ', 'hokkaido'); await p.click('#btn-ai'); await p.waitForFunction(() => window.game.world && window.game.matchRep());
   await econ(p); await R(p, () => window.game.tick(90));
   const u = (await myUnits(p)).filter(x => x.type === 'villager'); const wood = await nearest(p, 'tree', u[3] || u[0]);
   await click(p, u[u.length - 1].x, u[u.length - 1].y); await click(p, wood.x, wood.y, 'right'); await R(p, () => window.game.tick(150));
@@ -69,6 +69,7 @@ const b = await browser();
 { const TABS = LIVE, ctxA = await b.newContext({ viewport: { width: VW, height: VH } }), ctxB = TABS ? ctxA : await b.newContext({ viewport: { width: VW, height: VH } });
   const host = await ctxA.newPage(), guest = await ctxB.newPage(), errs = []; for (const p of [host, guest]) p.on('pageerror', e => errs.push(String(e)));
   const q = `?speed=4${TABS ? '&net=tabs' : ''}`; await host.goto(BASE + q); await guest.goto(BASE + q);
+  for (const t of [host, guest]) await t.click('#m-multiplayer');
   await host.click('#btn-host'); await host.waitForFunction(() => /^[A-Z]{4}$/.test(document.getElementById('lobby-code').textContent));
   const code = await host.locator('#lobby-code').innerText(); await guest.click('#join-code'); await guest.keyboard.type(code); await guest.click('#btn-join');
   for (const p of [host, guest]) await p.waitForFunction(() => !document.getElementById('btn-ready').disabled, null, { timeout: 15000 });

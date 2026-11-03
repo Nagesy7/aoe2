@@ -10,7 +10,7 @@ export default async function (argv) {
   for (let i = 0; i < runs; i++) {
     const p = await newPage({ phone: true }); const t0 = Date.now();
     await p.goto(srv.url + (srv.url.includes('?') ? '&' : '?') + 'cold=' + t0 + '-' + i, { waitUntil: 'commit' });
-    await p.waitForFunction(() => { const b = document.getElementById('btn-ai'); return window.game && b && b.offsetParent && !b.disabled; }, null, { timeout: 30000, polling: 16 });
+    await p.waitForFunction(() => { const b = document.getElementById('m-skirmish'); return window.game && b && b.offsetParent && !b.disabled; }, null, { timeout: 30000, polling: 16 });
     const interactive = await p.evaluate(() => performance.now());
     await p.waitForTimeout(300);
     const m = await p.evaluate(() => { const n = performance.getEntriesByType('navigation')[0]; const paint = Object.fromEntries(performance.getEntriesByType('paint').map(e => [e.name, e.startTime]));

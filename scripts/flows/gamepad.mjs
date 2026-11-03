@@ -8,7 +8,7 @@ import * as S from '../../src/sim.js';
 const PS_ID = 'DualSense Wireless Controller (STANDARD GAMEPAD Vendor: 054c Product: 0ce6)';
 const XB_ID = 'Xbox Wireless Controller (STANDARD GAMEPAD Vendor: 045e Product: 0b13)';
 // mock: one standard-mapping pad whose buttons/axes the test sets; getGamepads returns it once "connected"
-const MOCK = () => {
+export const MOCK = () => {
   const pad = { id: '', index: 0, connected: false, mapping: 'standard', timestamp: 0, axes: [0, 0, 0, 0], buttons: Array.from({ length: 17 }, () => ({ pressed: false, touched: false, value: 0 })) };
   const P = window.__pad = { pad,
     connect(id) { pad.id = id; pad.connected = true; const e = new Event('gamepadconnected'); e.gamepad = pad; dispatchEvent(e); },
@@ -23,7 +23,7 @@ const MOCK = () => {
       const m = Math.min(1, 0.2 + d / 250); P.axes([dx / d * m, dy / d * m, 0, 0]); await P.frames(1); } P.axes([0, 0, 0, 0]); await P.frames(2); return { ...window.game.pad.cursor }; } };
   navigator.getGamepads = () => [pad.connected ? pad : null, null, null, null];
 };
-const replay = log => { const w = S.createWorld({ enemy: true, raids: false, scenario: null }); let i = 0; const end = log.end;
+const replay = log => { const w = S.createWorld({ enemy: true, raids: false, scenario: null }); if (log.civ) w.players.player.civ = log.civ; let i = 0; // the menu's clan pick (Campaign ▸ Practice Camp) const end = log.end;
   for (;;) { while (i < log.cmds.length && log.cmds[i].tick === w.tick) S.applyCommand(w, log.cmds[i++]); if (w.tick >= end) break; S.stepTick(w); } return S.stateHash(w); };
 const B = { a: 0, b: 1, x: 2, y: 3, lb: 4, rb: 5, lt: 6, rt: 7, back: 8, start: 9, up: 12, down: 13, left: 14, right: 15 };
 export default async function (argv) {
@@ -115,7 +115,7 @@ export default async function (argv) {
   c(s.kind === 'xbox' && /Xbox controller connected/.test(s.toast) && /LB\/RB/.test(s.toast) && /A.*select/.test(s.toast) && /Menu/.test(s.toast), `Xbox toast: "${s.toast.slice(0, 120)}…"`);
   if (shots) await shot(p, join(SHOTS, 'gamepad-toast-xbox-844x390.png'));
   // ---- determinism: everything the pad did is in commandLog; the Node replay of that log reaches the browser hash ----
-  const run = await p.S(() => { const w = window.game.world; window.game.paused = true; return { cmds: (w.commandLog || []).map(c => ({ ...c })), end: w.tick, hash: window.game.stateHash() }; });
+  const run = await p.S(() => { const w = window.game.world; window.game.paused = true; return { cmds: (w.commandLog || []).map(c => ({ ...c })), end: w.tick, hash: window.game.stateHash(), civ: w.players.player.civ }; });
   const rh = replay(run); c(rh === run.hash, `browser hash at tick ${run.end} == Node replay of its ${run.cmds.length} commands (${run.hash})`);
   c(p.errors.length === 0 && cons.length === 0, `no page/console errors (${[...p.errors, ...cons].slice(0, 3).join(' | ')})`);
   // ---- desktop mouse untouched: real right-click order still recorded the same way ----

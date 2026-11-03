@@ -23,11 +23,12 @@ async function pans(p, name) {
 }
 // single player from the title menu (real click)
 let p = await ctx.newPage(); p.on('pageerror', e => { console.error(e); fails++; });
-await p.goto(BASE); await p.waitForFunction(() => window.game); await p.click('#btn-sp'); await p.waitForFunction(() => window.game.world); await pans(p, 'single-player'); await p.close();
+await p.goto(BASE); await p.waitForFunction(() => window.game); await p.click('#m-campaign'); await p.click('#btn-sp'); await p.waitForFunction(() => window.game.world); await pans(p, 'single-player'); await p.close();
 p = await ctx.newPage(); await p.goto(BASE + '?scenario=skirmish'); await p.waitForFunction(() => window.game && window.game.world); await pans(p, 'skirmish'); await p.close();
 // 1v1 over BroadcastChannel tabs
 const host = await ctx.newPage(), guest = await ctx.newPage();
 for (const t of [host, guest]) { t.on('pageerror', e => { console.error(e); fails++; }); await t.goto(BASE + '?net=tabs'); await t.waitForFunction(() => window.game); }
+for (const t of [host, guest]) await t.click('#m-multiplayer');
 await host.click('#btn-host'); await host.waitForFunction(() => /^[A-Z]{4}$/.test(document.getElementById('lobby-code').textContent));
 await guest.fill('#join-code', await host.locator('#lobby-code').innerText()); await guest.click('#btn-join');
 for (const t of [host, guest]) await t.waitForFunction(() => !document.getElementById('btn-ready').disabled, null, { timeout: 15000 });
