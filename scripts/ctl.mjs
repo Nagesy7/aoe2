@@ -33,7 +33,8 @@ export async function startServer({ root = ROOT, relay = false } = {}) {
     return { url: `http://localhost:${server.address().port}/`, close: () => server.close(), server }; }
   const server = http.createServer(async (q, r) => {
     const p = decodeURIComponent(q.url.split('?')[0]).replace(/\.\.+[/\\]/g, ''); const f = join(root, p === '/' ? 'index.html' : p);
-    try { const ext = f.slice(f.lastIndexOf('.')); r.writeHead(200, { 'content-type': MIME[ext] || 'application/octet-stream' }); r.end(await readFile(f)); } catch { r.writeHead(404); r.end('not found'); } });
+    let body; try { body = await readFile(f); } catch { r.writeHead(404); r.end('not found'); return; } // read first: a missing file (e.g. /_vercel/* analytics, only on Vercel) must 404, not crash the server
+    const ext = f.slice(f.lastIndexOf('.')); r.writeHead(200, { 'content-type': MIME[ext] || 'application/octet-stream' }); r.end(body); });
   await new Promise(ok => server.listen(0, ok));
   return { url: `http://localhost:${server.address().port}/`, close: () => server.close(), server };
 }
