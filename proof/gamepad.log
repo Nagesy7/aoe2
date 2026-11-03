@@ -1,0 +1,36 @@
+PASS: no controller: gamepad module not loaded (lazy, zero cost for mouse/touch players)
+PASS: PS toast: "🎮 PlayStation controller connected✕select / command□command○cancelL1/R1idle pup / next unitL2/R2build & train△attack-mo…"
+PASS: toast fits 844x390 (422x75)
+PASS: stick drift inside deadzone 0.18 ignored (cursor 422,195 -> 422,195)
+PASS: left stick moves the cursor (422 -> 530)
+PASS: ✕ on a villager selects it ({"kind":"unit","id":161})
+PASS: ✕ on berries with a villager selected -> one lockstep command (order {"ids":[161],"x":40.59375,"y":31.515625})
+PASS: selection kept after the command (A commands, it did not reselect)
+PASS: □ issues the right-click command (order)
+PASS: △ + ✕ = attack-move command (order {"ids":[161],"x":42.296875,"y":32.390625,"amove":true})
+PASS: ○ cancels / deselects
+PASS: L1 selects an idle villager (villager)
+PASS: ✕ selects the town_center
+PASS: R2 opens the command buttons and highlights one ("Train Shiba Worker Pup50 food, 25s")
+PASS: ✕ on the highlighted "Train Shiba Worker Pup50 food, 25s" button -> train command
+PASS: ○ drops the button highlight first
+PASS: D-pad → scrolls the camera (666 -> 891)
+PASS: right stick pans the camera (y 600 -> 840)
+PASS: left stick at the screen edge pans (cursor x=0, cam 600 -> 330)
+PASS: Options opens the game menu
+PASS: menu fits 844x390 (240x167)
+PASS: deadzone ▶ 0.18 -> 0.2, remembered ({"deadzone":0.2})
+PASS: menu does not pause the sim (lockstep keeps running)
+PASS: ○ closes the menu
+PASS: menu "✨ Sound & effects" opens the same panel as the quick-bar ✨
+PASS: R1: no military in sandbox (nothing to cycle)
+PASS: touch tap still selects a villager with a controller connected
+PASS: touch input hides the controller cursor
+PASS: disconnect toast; cursor hidden
+PASS: Xbox toast: "🎮 Xbox controller connectedAselect / commandXcommandBcancelLB/RBidle pup / next unitLT/RTbuild & trainYattack-moveMenum…"
+PASS: browser hash at tick 201 == Node replay of its 4 commands (cf144d84)
+PASS: no page/console errors ()
+PASS: desktop mouse: click select + right-click move still work (order)
+PASS: desktop without a controller never loads gamepad.js
+PASS: 750x342: toast 375x75 and menu 240x140 fit
+ALL PASS
