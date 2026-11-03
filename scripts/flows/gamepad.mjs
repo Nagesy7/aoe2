@@ -23,7 +23,7 @@ export const MOCK = () => {
       const m = Math.min(1, 0.2 + d / 250); P.axes([dx / d * m, dy / d * m, 0, 0]); await P.frames(1); } P.axes([0, 0, 0, 0]); await P.frames(2); return { ...window.game.pad.cursor }; } };
   navigator.getGamepads = () => [pad.connected ? pad : null, null, null, null];
 };
-const replay = log => { const w = S.createWorld({ enemy: true, raids: false, scenario: null }); if (log.civ) w.players.player.civ = log.civ; let i = 0; // the menu's clan pick (Campaign ▸ Practice Camp) const end = log.end;
+const replay = log => { const w = S.createWorld({ enemy: true, raids: false, scenario: null }); if (log.civ) w.players.player.civ = log.civ; let i = 0; const end = log.end; // log.civ = the menu's clan pick (Campaign ▸ Practice Camp)
   for (;;) { while (i < log.cmds.length && log.cmds[i].tick === w.tick) S.applyCommand(w, log.cmds[i++]); if (w.tick >= end) break; S.stepTick(w); } return S.stateHash(w); };
 const B = { a: 0, b: 1, x: 2, y: 3, lb: 4, rb: 5, lt: 6, rt: 7, back: 8, start: 9, up: 12, down: 13, left: 14, right: 15 };
 export default async function (argv) {

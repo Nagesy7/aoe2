@@ -28,7 +28,7 @@ PASS: touch tap still selects a villager with a controller connected
 PASS: touch input hides the controller cursor
 PASS: disconnect toast; cursor hidden
 PASS: Xbox toast: "🎮 Xbox controller connectedAselect / commandXcommandBcancelLB/RBidle pup / next unitLT/RTbuild & trainYattack-moveMenum…"
-PASS: browser hash at tick 208 == Node replay of its 4 commands (2f9279dc)
+PASS: browser hash at tick 211 == Node replay of its 4 commands (3ce0d0f2)
 PASS: no page/console errors ()
 PASS: desktop mouse: click select + right-click move still work (order)
 PASS: desktop without a controller never loads gamepad.js

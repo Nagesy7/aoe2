@@ -67,8 +67,8 @@ export async function openTitle(p, url, query = '') { await p.goto(url + query);
 // title buttons in document order: the five main entries (m-*) and the start / feature buttons (btn-*); label = its <b> if any
 export async function titleButtons(p) { return p.$$eval('#menu button[id^=btn-], #menu button[id^=m-]', bs => bs.map(b => ({ id: b.id, text: (b.querySelector('b') || b).textContent.trim() }))); }
 // menu: open a title page with real input (tap on phones, click on desktop): page 'home' | 'store' | 'settings' | 'campaign' | 'skirmish' | 'multiplayer'
-export async function menuTo(p, page) { const cur = await p.S(() => window.game.menu.page); if (cur !== 'home') await p.S(() => window.game.menu.show('home'));
-  if (page === 'home') return p; await p.press('#m-' + page); await p.waitForTimeout(150); return p; }
+export async function menuTo(p, page) { const cur = await p.S(() => window.game.menu ? window.game.menu.page : null); if (cur === null) return p; // builds before the five-entry menu: everything was on one title page
+  if (cur !== 'home') await p.S(() => window.game.menu.show('home')); if (page === 'home') return p; await p.press('#m-' + page); await p.waitForTimeout(150); return p; }
 export async function startSkirmish(p, { civ, aiCiv } = {}) {
   await menuTo(p, 'skirmish'); if (civ) await p.selectOption('#civ', civ); if (aiCiv) await p.selectOption('#ai-civ', aiCiv);
   await p.locator('#btn-ai').scrollIntoViewIfNeeded(); await p.press('#btn-ai'); await p.waitForFunction(() => window.game.world); await p.waitForTimeout(500); return p;
