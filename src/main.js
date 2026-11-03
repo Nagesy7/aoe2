@@ -26,6 +26,30 @@ SFX.install();
 try { SFX.setMuted(JSON.parse(localStorage.getItem('inu-alive') || '{}').sound === false); } catch {} // remembered mute (✨ panel)
 // Alive layer (src/alive.js, docs/ALIVE.md): lazy-loaded when a match starts so the title stays light. Presentation only.
 let alive = null, aliveP = null;
+// Controller (src/gamepad.js): lazy-loaded on the first gamepadconnected; input only, same command path as the mouse.
+let pad = null, padP = null;
+const loadPad = gp => (padP ||= import('./gamepad.js').then(m => { pad = m.createGamepad(padApi(), { params }); window.game.pad = pad; return pad; })).then(p => { p.connected(gp); return p; });
+addEventListener('gamepadconnected', e => { loadPad(e.gamepad).catch(err => console.warn('controller support unavailable', err)); });
+function padApi() {
+  const own = o => o && o.owner === viewer();
+  return { inGame: () => !!world && !document.body.classList.contains('raid-open'),
+    move: (x, y) => { mouse = { x, y, inside: false }; pointerMove(ui, x, y); refreshGhost(); updateCursor(); },
+    primaryDown, primaryUp: (x, y) => primaryUp(x, y, null), secondary,
+    // A = select or command: with own units (or an own trainer) selected, a target that is not one of ours gets the context command
+    smartCommand: (x, y) => { if (ui.placing || qb.amove) return false; const p = toWorld(x, y), us = selectedUnits(world), b = selectedBuilding(world);
+      const u = world.units.find(o => o.state !== 'garrisoned' && hyp(o.x - p.x, o.y - p.y) < 0.6 && seen(o)), hb = SIM.buildingAt(world, p.x, p.y);
+      if (us.length) return !(u && own(u)) && !(hb && own(hb) && !us.some(q => q.type === 'villager'));
+      if (b && own(b) && b.trains && b.trains.length && b.complete) return !u && !hb; return false; },
+    cancel: () => { if (ui.placing) { cancelPlacing(ui); return; } if (qb.amove) { qb.amove = false; syncQb(); return; } world.selection = null; world.selected = null; },
+    idle: () => idleVillager(), army: () => selectArmy(), amove: () => { qb.amove = !qb.amove; syncQb(); },
+    nextUnit: () => { const us = mineU().filter(u => u.type !== 'villager' && u.type !== 'sheep' && u.state !== 'garrisoned'); if (!us.length) return; const cu = selectedUnits(world);
+      const i = cu.length === 1 ? us.findIndex(u => u.id === cu[0].id) : -1; const u = us[(i + 1) % us.length]; SIM.selectUnits(world, [u]); centerOn(u); },
+    pan: (dx, dy) => { cam.x += dx / Z; cam.y += dy / Z; clampCamera(cam, canvas.width, canvas.height, world); },
+    openCommands: () => { if (getComputedStyle(cmdTab).display !== 'none' && !document.body.classList.contains('cmd-open')) cmdTab.click(); },
+    focusables: () => [...document.querySelectorAll('#commands button')].filter(b => !b.disabled && b.offsetParent),
+    el: id => $(id), homeEl: () => document.querySelector('#inu-home, [data-inu-home], .inu-home') };
+}
+
 const loadAlive = () => aliveP ||= import('./alive.js').then(m => { alive = m.createAlive({ params, sfx: SFX, onChange: syncAlivePanel }); syncAlivePanel(); return alive; }).catch(e => { console.warn('alive layer unavailable', e); });
 window.BUILD_ID = document.querySelector('meta[name=build-id]')?.content || 'dev'; // stamped with the commit at deploy (scripts/ctl.mjs deploy)
 const $ = id => document.getElementById(id);
@@ -78,10 +102,19 @@ canvas.addEventListener('mouseleave', () => { mouse.inside = false; drag = null;
 canvas.addEventListener('mousedown', e => {
   if (!world) return; const p = toWorld(e.clientX, e.clientY);
   if (e.button === 1) { drag = { x: e.clientX, y: e.clientY, cx: cam.x, cy: cam.y }; e.preventDefault(); return; }
-  if (e.button === 0 && qb.amove && !ui.placing) { rightClick(p.x, p.y, { queue: e.shiftKey }); qb.skipUp = true; return; }
-  if (e.button === 0) { pointerDown(ui, e.clientX, e.clientY); return; }
-  if (e.button === 2) { if (ui.placing) { cancelPlacing(ui); return; } rightClick(p.x, p.y, { queue: e.shiftKey }); }
+  if (e.button === 0) { primaryDown(e.clientX, e.clientY, { queue: e.shiftKey }); return; }
+  if (e.button === 2) secondary(e.clientX, e.clientY, { queue: e.shiftKey });
 });
+// primary / secondary press, shared by the mouse and the controller (src/gamepad.js) so both emit the same commands
+function primaryDown(sx, sy, mods = {}) { const p = toWorld(sx, sy);
+  if (qb.amove && !ui.placing) { rightClick(p.x, p.y, mods); qb.skipUp = true; return; }
+  pointerDown(ui, sx, sy); }
+function secondary(sx, sy, mods = {}) { const p = toWorld(sx, sy); if (ui.placing) { cancelPlacing(ui); return; } rightClick(p.x, p.y, mods); }
+function primaryUp(sx, sy, dbl = null) {
+  if (qb.skipUp) { qb.skipUp = false; return; }
+  const r = pointerUp(ui, world, toWorld, issue); if (r && r.kind === 'select') dblSelect(sx, sy, dbl);
+  const s = world.selection; // fog: cannot select what you cannot see
+  if (r && r.kind === 'select' && s && (s.kind === 'unit' || s.kind === 'building')) { const o = s.kind === 'unit' ? SIM.mobile(world, s.id) : world.buildings.find(q => q.id === s.id); if (o && !seen(o)) { world.selection = null; world.selected = null; } } }
 function rightClick(x, y, mods = {}) {
   const amove = qb.amove || !!mods.amove, queue = !!mods.queue; if (qb.amove) { qb.amove = false; syncQb(); }
   const b = selectedBuilding(world);
@@ -93,9 +126,7 @@ function rightClick(x, y, mods = {}) {
 addEventListener('mouseup', e => {
   if (e.button === 1) drag = null;
   if (e.button === 0 && qb.skipUp) { qb.skipUp = false; return; }
-  if (e.button === 0 && world) { const r = pointerUp(ui, world, toWorld, issue); if (r && r.kind === 'select') dblSelect(e.clientX, e.clientY, e.detail >= 2);
-    const s = world.selection; // fog: cannot select what you cannot see
-    if (r && r.kind === 'select' && s && (s.kind === 'unit' || s.kind === 'building')) { const o = s.kind === 'unit' ? SIM.mobile(world, s.id) : world.buildings.find(q => q.id === s.id); if (o && !seen(o)) { world.selection = null; world.selected = null; } } }
+  if (e.button === 0 && world) primaryUp(e.clientX, e.clientY, e.detail >= 2);
 });
 // ---- touch: tap select, drag pan, pinch zoom, long-press / Command tap = order, Box toggle = drag-select ----
 const touchUi = { box: false, command: false }; let tp = null; // touch gesture state
@@ -329,7 +360,7 @@ function frame(now) {
     else if (n) net.stallMs = 0;
     fog = computeFog(world, viewer(), fog); window.game.fog = fog;
   }
-  if (ui.placing) refreshGhost(); if (mouse.inside) updateCursor(); ui.lerp = { prev: prevPos, a: Math.max(0, Math.min(1, acc / TICK_DT)) }; const vfog = net || (world.computers && !world.spectate) ? fog : null; if (alive) { ui.alive = alive; alive.update(world, cam, canvas, vfog, real); } render(ctx, world, cam, ui, vfog); updateHud(); SFX.watch(world, viewer()); minimap.draw(now); requestAnimationFrame(frame);
+  if (ui.placing) refreshGhost(); if (mouse.inside) updateCursor(); ui.lerp = { prev: prevPos, a: Math.max(0, Math.min(1, acc / TICK_DT)) }; if (pad) pad.poll(real); const vfog = net || (world.computers && !world.spectate) ? fog : null; if (alive) { ui.alive = alive; alive.update(world, cam, canvas, vfog, real); } render(ctx, world, cam, ui, vfog); updateHud(); SFX.watch(world, viewer()); minimap.draw(now); requestAnimationFrame(frame);
 }
 // Automation hook: read-only state access + time advance in single player (proof scripts must not use it to issue orders).
 window.game = { sim: SIM, world: null, cam, ui, selectionInfo, pickAt, toScreen: (x, y) => { const q = worldToScreen(x, y, cam); return { x: q.x * Z, y: q.y * Z }; }, zoom: () => Z, toWorld,
