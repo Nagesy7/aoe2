@@ -19,7 +19,7 @@ const moving = async (p, id) => { const h = new Set(); for (let i = 0; i < 6; i+
 for (const ui of ['b', 'a']) { // b = default layout (no ?ui), a = ?ui=a comparison layout
   const ctx = await browser.newContext({ viewport: { width: 1280, height: 720 } }); const p = await ctx.newPage(); const tag = ui === 'b' ? 'default (b)' : '?ui=a';
   p.on('pageerror', e => { check(false, 'pageerror ' + e.message); });
-  await seedPage(p, ui === 'b' ? '?demo=1' : '?demo=1&ui=a'); await p.waitForFunction(() => document.querySelectorAll('.civ-card').length === 6); await p.click('#m-skirmish'); await p.waitForTimeout(400);
+  await seedPage(p, ui === 'b' ? '?demo=1' : '?demo=1&ui=a'); await p.waitForFunction(() => document.querySelectorAll('.civ-card').length === 6); await p.$eval('#m-skirmish', b => b.click()); await p.waitForTimeout(400); // not a mouse click: the left menu column sits where the clan cards open, and the parked pointer would hover-start a card cinematic
   check(await p.evaluate(() => document.getElementById('civ-cards').dataset.ui) === ui, `${tag}: renders layout ${ui}`);
   check(await p.locator('.civ-card.rar-common').count() === 4 && await p.locator('.civ-card[data-civ=akita].rar-rare').count() === 1 && await p.locator('.civ-card[data-civ=kishu].rar-legendary').count() === 1, `${tag}: shield finish follows owned cosmetics (Akita rare, Kishu legendary, rest common)`);
   const vis = await p.evaluate(() => Object.fromEntries(['shiba', 'akita', 'kishu'].map(id => { const e = document.querySelector(`.civ-card[data-civ=${id}]`); return [id, { shadow: getComputedStyle(e).boxShadow, label: getComputedStyle(e.querySelector('.rar')).color, text: e.querySelector('.rar').textContent }]; })));

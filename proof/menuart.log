@@ -1,0 +1,37 @@
+PASS: 844x390: first screen loads the flattened title only (title-bg-844x390.webp), no layers / portraits / crests / panels before load
+PASS: 844x390: phones get the 844x390 flattened picture first
+PASS: 844x390: 5 parallax layers loaded after idle (sky, clouds, far, mid, front)
+PASS: 844x390: layers move (parallax) and the clouds drift in 4 px steps (0 -> 12)
+PASS: 844x390: logo + 5 buttons + chips on screen, clear of the footer / wallet / mood banner
+PASS: 844x390: logo logo-450x150.webp, 9-slice buttons, 5 menu icons, all pixelated
+PASS: 844x390: focused button uses the hover/focus 9-slice
+PASS: 844x390: 6 clan cards with portraits + card frames (selected frame on the pick)
+PASS: 844x390: picked clan's crest beside its traits
+PASS: 844x390: Store = parchment 9-slice (centre repeats), risk note on screen (rgb(200, 180, 138))
+PASS: 844x390: Settings = wood 9-slice (centre repeats), 3 section icons
+PASS: 844x390: no page errors 
+PASS: 750x342: first screen loads the flattened title only (title-bg-844x390.webp), no layers / portraits / crests / panels before load
+PASS: 750x342: phones get the 844x390 flattened picture first
+PASS: 750x342: 5 parallax layers loaded after idle (sky, clouds, far, mid, front)
+PASS: 750x342: layers move (parallax) and the clouds drift in 4 px steps (0 -> 12)
+PASS: 750x342: logo + 5 buttons + chips on screen, clear of the footer / wallet / mood banner
+PASS: 750x342: logo logo-450x150.webp, 9-slice buttons, 5 menu icons, all pixelated
+PASS: 750x342: focused button uses the hover/focus 9-slice
+PASS: 750x342: 6 clan cards with portraits + card frames (selected frame on the pick)
+PASS: 750x342: picked clan's crest beside its traits
+PASS: 750x342: Store = parchment 9-slice (centre repeats), risk note on screen (rgb(200, 180, 138))
+PASS: 750x342: Settings = wood 9-slice (centre repeats), 3 section icons
+PASS: 750x342: no page errors 
+PASS: 1366x768: first screen loads the flattened title only (title-bg-1688x780.webp), no layers / portraits / crests / panels before load
+PASS: 1366x768: 5 parallax layers loaded after idle (sky, clouds, far, mid, front)
+PASS: 1366x768: layers move (parallax) and the clouds drift in 4 px steps (0 -> 16)
+PASS: 1366x768: logo + 5 buttons + chips on screen, clear of the footer / wallet / mood banner
+PASS: 1366x768: logo logo-450x150.webp, 9-slice buttons, 5 menu icons, all pixelated
+PASS: 1366x768: focused button uses the hover/focus 9-slice
+PASS: 1366x768: 6 clan cards with portraits + card frames (selected frame on the pick)
+PASS: 1366x768: picked clan's crest beside its traits
+PASS: 1366x768: Store = parchment 9-slice (centre repeats), risk note on screen (rgb(200, 180, 138))
+PASS: 1366x768: Settings = wood 9-slice (centre repeats), 3 section icons
+PASS: 1366x768: no page errors 
+PASS: reduced motion: static flattened picture, no parallax layers fetched (title-bg-844x390.webp)
+PASS: ?art=0: old procedural title + text heading

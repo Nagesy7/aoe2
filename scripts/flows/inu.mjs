@@ -16,8 +16,12 @@ const shot = async n => { await page.waitForTimeout(150); await page.screenshot(
 // 1. title screen
 await page.goto(BASE); await page.waitForTimeout(1500);
 check((await page.title()) === 'Inu Empires', `page title: ${await page.title()}`);
-check(/Inu Empires/.test(await page.locator('#menu h1').innerText()), 'menu shows Inu Empires logo');
-check(await page.evaluate(() => { const c = document.getElementById('title-bg'), d = c.getContext('2d').getImageData(0, 0, c.width, c.height).data; const s = new Set(); for (let i = 0; i < d.length; i += 4000) s.add(d[i] >> 4 << 8 | d[i + 1] >> 4 << 4 | d[i + 2] >> 4); return s.size > 60; }), 'title backdrop is painted (rich colour variety)');
+check(/Inu Empires/.test(await page.locator('#menu h1').innerText()) || (await page.locator('#menu h1 img.logo').isVisible() && await page.locator('#menu h1 img.logo').getAttribute('alt') === 'Inu Empires'), 'menu shows Inu Empires logo');
+check(await page.evaluate(async () => { const vary = c => { const d = c.getContext('2d').getImageData(0, 0, c.width, c.height).data; const s = new Set(); for (let i = 0; i < d.length; i += 4000) s.add(d[i] >> 4 << 8 | d[i + 1] >> 4 << 4 | d[i + 2] >> 4); return s.size; };
+  if (!document.body.classList.contains('menu-art')) return vary(document.getElementById('title-bg')) > 60;
+  // pixel-art title (src/menuart.js): the backdrop is the flattened WebP / layers under a transparent mood overlay canvas
+  const u = getComputedStyle(document.querySelector('#title-art .flat')).backgroundImage.slice(5, -2), im = new Image(); im.src = u; await im.decode();
+  const c = document.createElement('canvas'); c.width = im.width; c.height = im.height; c.getContext('2d').drawImage(im, 0, 0); return vary(c) > 60 && getComputedStyle(document.getElementById('title-art')).display === 'block'; }), 'title backdrop is painted (rich colour variety)');
 await shot('inu-title-screen.png');
 
 // 2. lineup + close-ups drawn with the game's own renderer module on a scratch canvas

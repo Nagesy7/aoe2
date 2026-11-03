@@ -49,7 +49,10 @@ function moodSky(ctx, W, H, t, mood, sc) {
       ctx.fillStyle = ['#ffd84a', '#f6e6c8', '#ff8ab0', '#8ad8ff'][i % 4]; ctx.fillRect(-6, -1.5, 12, 3); ctx.beginPath(); ctx.arc(-6, -2, 2.2, 0, 7); ctx.arc(-6, 2, 2.2, 0, 7); ctx.arc(6, -2, 2.2, 0, 7); ctx.arc(6, 2, 2.2, 0, 7); ctx.fill(); ctx.restore(); }
     for (let i = 0; i < 8; i++) { const k = (t * 2 + i / 8) % 1, x = W * 0.76 + Math.cos(i * 1.3) * H * 0.12, y = H * 0.5 + Math.sin(i * 2.1) * H * 0.1; ctx.fillStyle = `rgba(255,230,120,${1 - k})`; ctx.fillRect(x - 1, y - 6 * k - 1, 3, 3); } }
 }
-export function paintTitle(ctx, W, H, t, mood = 'chill') {
+// art = true: the pixel-art title layers (src/menuart.js) are the backdrop, so the canvas is cleared to transparent and only the
+// live bits are painted on top: the Kibble Mood army (in the open grass at bottom centre) and the mood weather/tint.
+export function paintTitle(ctx, W, H, t, mood = 'chill', art = false) {
+  if (art) return paintOverlay(ctx, W, H, t, mood);
   const sky = ctx.createLinearGradient(0, 0, 0, H); sky.addColorStop(0, '#1d1840'); sky.addColorStop(0.35, '#7a3466'); sky.addColorStop(0.6, '#f07a3e'); sky.addColorStop(0.75, '#ffc66a');
   ctx.fillStyle = sky; ctx.fillRect(0, 0, W, H);
   const r = rng(7); ctx.fillStyle = '#ffffffb0'; for (let i = 0; i < 90; i++) { const x = r() * W, y = r() * H * 0.3; ctx.globalAlpha = 0.3 + 0.5 * Math.abs(Math.sin(t + i)); ctx.fillRect(x, y, 1.6, 1.6); } ctx.globalAlpha = 1;
@@ -70,13 +73,28 @@ export function paintTitle(ctx, W, H, t, mood = 'chill') {
   for (let i = 0; i < 14; i++) tree(ctx, (i * 97 + par) % W, H * 0.8 + (i % 3) * 8, 1 + (i % 2) * 0.4, '#1a1222');
   const fg = ctx.createLinearGradient(0, H * 0.78, 0, H); fg.addColorStop(0, '#3a2a1a'); fg.addColorStop(1, '#140c06'); ctx.fillStyle = fg;
   ctx.beginPath(); ctx.moveTo(0, H * 0.82); ctx.quadraticCurveTo(W * 0.5, H * 0.76, W, H * 0.84); ctx.lineTo(W, H); ctx.lineTo(0, H); ctx.fill();
+  army(ctx, W, H, t, mood, { x0: W * 0.04, dx: W * 0.075, y: H * 0.9, sc: H / 260 });
+  moodSky(ctx, W, H, t, mood, H / 260);
+  // embers
+  for (let i = 0; i < 40; i++) { const x = (i * 131 + t * 20 * (1 + i % 3)) % W, y = H - ((i * 71 + t * 30 * (1 + i % 4)) % (H * 0.6)); ctx.fillStyle = `rgba(255,${160 + (i % 5) * 15},80,${0.35 + 0.3 * Math.sin(t * 3 + i)})`; ctx.fillRect(x, y, 2, 2); }
+  const vg = ctx.createRadialGradient(W / 2, H / 2, H * 0.3, W / 2, H / 2, H); vg.addColorStop(0, '#0000'); vg.addColorStop(1, '#000a'); ctx.fillStyle = vg; ctx.fillRect(0, 0, W, H);
+}
+function paintOverlay(ctx, W, H, t, mood) {
+  ctx.clearRect(0, 0, W, H);
+  // the art's Inu groups stand at the outer edges and the menu column is on the left: the army marches in the open centre grass
+  const sc = H / 340, n = 12, x0 = W * 0.42, span = Math.min(W * 0.34, H * 1.1);
+  army(ctx, W, H, t, mood, { x0, dx: span / n, y: H * 0.93, sc, pit: { x: x0 + span * 0.5, y: H * 0.9 } });
+  moodSky(ctx, W, H, t, mood, sc);
+  const vg = ctx.createLinearGradient(0, 0, W * 0.5, 0); vg.addColorStop(0, '#0007'); vg.addColorStop(1, '#0000'); ctx.fillStyle = vg; ctx.fillRect(0, 0, W * 0.5, H); // keeps the left menu column readable
+}
+function army(ctx, W, H, t, mood, o) {
   // marching Inu army, rim-lit. Kibble Mood (title/lobby/between matches only) changes their idles: zoomies bounce,
   // happy wag + march, chill nap, grumpy umbrellas, doghouse huddle by the fire pit.
   const army = ['knight', 'militia', 'spearman', 'archer', 'villager', 'monk', 'crossbowman', 'scout_cavalry', 'spearman', 'militia', 'knight', 'trebuchet'];
-  const sc = H / 260, M = MOOD_LOOK[mood] || MOOD_LOOK.chill, pit = { x: W * 0.89, y: H * 0.88 };
+  const sc = o.sc, M = MOOD_LOOK[mood] || MOOD_LOOK.chill, pit = o.pit || { x: W * 0.89, y: H * 0.88 }, R = o.pit ? o.dx * 4 : Math.min(W * 0.09, 90);
   if (mood === 'doghouse') fire(ctx, pit.x, pit.y, sc, t);
-  army.forEach((type, i) => { let x = W * 0.04 + i * (W * 0.075) + (type === 'trebuchet' ? 20 : 0), y = H * 0.9 + (i % 2) * H * 0.03;
-    if (mood === 'doghouse' && type !== 'trebuchet') { const a = (i / 11) * Math.PI * 2; x = pit.x + Math.cos(a) * Math.min(W * 0.09, 90); y = pit.y + Math.sin(a) * H * 0.05; }
+  army.forEach((type, i) => { let x = o.x0 + i * o.dx + (type === 'trebuchet' ? 20 * sc / (H / 260) : 0), y = o.y + (i % 2) * H * 0.03;
+    if (mood === 'doghouse' && type !== 'trebuchet') { const a = (i / 11) * Math.PI * 2; x = pit.x + Math.cos(a) * R; y = pit.y + Math.sin(a) * H * 0.05; }
     if (M.bounce) y -= Math.abs(Math.sin(t * M.bounce + i)) * H * M.hop;
     const nap = mood === 'chill' && i % 4 === 1, moving = M.march && !nap;
     drawInu(ctx, { id: i, type, owner: 'player', state: moving ? 'moving' : 'idle', path: moving ? [1] : [], face: [mood === 'doghouse' && x > pit.x ? -1 : 1, 0] }, x, y + (nap ? H * 0.01 : 0), t * M.speed + i * 0.3, { scale: sc, res: 'wood' });
@@ -84,15 +102,11 @@ export function paintTitle(ctx, W, H, t, mood = 'chill') {
     if (mood === 'grumpy' && i % 2 === 0 && type !== 'trebuchet') umbrella(ctx, x, y - 40 * sc, sc, i);
     if (mood === 'happy' || mood === 'zoomies') { ctx.strokeStyle = '#f6e6c8'; ctx.lineWidth = 2 * sc; ctx.beginPath(); const w = Math.sin(t * (mood === 'zoomies' ? 22 : 12) + i) * 6 * sc; ctx.moveTo(x - 9 * sc, y - 12 * sc); ctx.quadraticCurveTo(x - 15 * sc, y - 20 * sc, x - 13 * sc + w, y - 26 * sc); ctx.stroke(); }
   });
-  moodSky(ctx, W, H, t, mood, sc);
-  // embers
-  for (let i = 0; i < 40; i++) { const x = (i * 131 + t * 20 * (1 + i % 3)) % W, y = H - ((i * 71 + t * 30 * (1 + i % 4)) % (H * 0.6)); ctx.fillStyle = `rgba(255,${160 + (i % 5) * 15},80,${0.35 + 0.3 * Math.sin(t * 3 + i)})`; ctx.fillRect(x, y, 2, 2); }
-  const vg = ctx.createRadialGradient(W / 2, H / 2, H * 0.3, W / 2, H / 2, H); vg.addColorStop(0, '#0000'); vg.addColorStop(1, '#000a'); ctx.fillStyle = vg; ctx.fillRect(0, 0, W, H);
 }
-export function startTitle(canvas, getMood = () => 'chill') {
+export function startTitle(canvas, getMood = () => 'chill', art = () => false) {
   const ctx = canvas.getContext('2d'), t0 = performance.now();
   const loop = () => { const W = canvas.clientWidth, H = canvas.clientHeight; if (canvas.width !== W || canvas.height !== H) { canvas.width = W; canvas.height = H; }
-    if (canvas.style.display !== 'none') paintTitle(ctx, W, H, (performance.now() - t0) / 1000, getMood());
+    if (canvas.style.display !== 'none') paintTitle(ctx, W, H, (performance.now() - t0) / 1000, getMood(), art());
     raf = requestAnimationFrame(loop); };
   cancelAnimationFrame(raf); loop();
 }

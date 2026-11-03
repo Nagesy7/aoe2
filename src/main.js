@@ -4,6 +4,7 @@ import { screenToWorld, worldToScreen, createWorld, TILE, pickAt, selectionInfo,
 import { render, computeFog } from './render.js';
 import { BREEDS, unitLabel, breedText, queueIcon } from './inu.js';
 import { startTitle } from './title.js';
+import { ART_ON, mountTitleArt } from './menuart.js';
 import { startMood, lineFor, MOODS, loadShared } from './mood.js';
 import * as SIM from './sim.js';
 import { Lockstep } from './lockstep.js';
@@ -314,7 +315,7 @@ function startGame({ mp = false, seed = 1, me = 0, cfg = {}, session = null, ai 
   cam.x = c.x * TILE - canvas.width / 2; cam.y = c.y * TILE - canvas.height / 2; clampCamera(cam, canvas.width, canvas.height, world);
   Object.assign(window.game, { world, cam, ui, mode: mp ? 'mp' : ai ? 'ai' : 'sp' });
   document.body.classList.add('ingame');
-  for (const id of ['menu', 'lobby', 'title-bg']) $(id).style.display = 'none';
+  for (const id of ['menu', 'lobby', 'title-bg', 'title-art']) $(id).style.display = 'none';
   last = performance.now(); matchRep = { t0: performance.now(), done: false, mode: mp ? 'mp' : ai && !ai.spectate ? 'ai' : 'sp', win: null, lockstep: mp ? [] : null, spectate: !!world.spectate };
   // One Inu Score: a signed start ticket now (signed-in players only), the recorded inputs at the end; kibble-pay replays them.
   if (matchRep.mode === 'ai') matchRep.ticketP = startTicket(kibblePay(), { mode: 'ai', seed, civ: ai.civ, enemy: ai.enemy });
@@ -404,7 +405,7 @@ $('btn-headstart').onclick = () => startGame({ sp: { civ: $('civ').value, scenar
 $('civ').innerHTML = CIV_IDS.map(id => `<option value="${id}">${CIVS[id].name} — ${CIVS[id].style}</option>`).join('');
 $('ai-civ').innerHTML = CIV_IDS.map(id => `<option value="${id}">${CIVS[id].name}</option>`).join('');
 $('civ').value = params.get('civ') && CIVS[params.get('civ')] ? params.get('civ') : 'shiba'; $('ai-civ').value = params.get('aiciv') && CIVS[params.get('aiciv')] ? params.get('aiciv') : 'akita';
-const showCiv = () => { $('civ-info').textContent = CIVS[$('civ').value].traits.join(' · '); }; $('civ').onchange = showCiv; showCiv();
+const showCiv = () => { $('civ-info').textContent = CIVS[$('civ').value].traits.join(' · '); $('civ-info').dataset.civ = $('civ').value; }; $('civ').onchange = showCiv; showCiv();
 window.game.civCards = mountCivCards($('civ-cards'), { owned: kibbleState().owned || [], selected: $('civ').value, variant: UI_VARIANT, onPick: id => { $('civ').value = id; showCiv(); } });
 addEventListener('empires:kennel', () => { if (ui && ui.cosmetics && world && !world.spectate) { const o = net ? world.viewer : 'player'; ui.cosmetics[o] = myLoadout(); } });
 addEventListener('empires:wallet', () => { $('civ-cards').innerHTML = ''; window.game.civCards = mountCivCards($('civ-cards'), { owned: kibbleState().owned || [], selected: $('civ').value, variant: UI_VARIANT, onPick: id => { $('civ').value = id; showCiv(); } }); });
@@ -435,7 +436,9 @@ window.game.menu = initMenu({ kibble: () => kibbleState(), equip: id => equipCos
 // Legacy / direct single-player URLs (?enemy=, ?scenario=, ?raids=, ?play=sp) skip the menu.
 if (params.get('play') === 'ai' || params.get('play') === 'watch') startGame({ ai: { civ: $('civ').value, enemy: $('ai-civ').value, spectate: params.get('play') === 'watch' }, seed: +(params.get('seed') || 7) });
 else if (['enemy', 'scenario', 'raids'].some(k => params.has(k)) || params.get('play') === 'sp') startGame();
-else { $('menu').style.display = 'flex'; $('title-bg').style.display = 'block'; startTitle($('title-bg'), () => moodState.mood); }
+else { $('menu').style.display = 'flex'; $('title-bg').style.display = 'block';
+  if (ART_ON) { document.body.classList.add('menu-art'); $('title-art').style.display = 'block'; window.game.titleArt = mountTitleArt($('title-art')); }
+  startTitle($('title-bg'), () => moodState.mood, () => ART_ON); }
 
 
 initKibble();

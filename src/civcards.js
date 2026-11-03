@@ -1,6 +1,7 @@
 // Match-select clan cards: animated preview, cosmetic rarity glow on the shield, short cinematic on hover / tap.
 // Presentation only (DOM + canvas). Selecting a card sets the #civ select used by the game start.
 import { CIVS, CIV_IDS, CIV_LOOK, civRarity } from './civs.js';
+import { ART_ON, artUrl } from './menuart.js';
 import { drawInu, BREEDS } from './inu.js';
 const CINE_MS = 4000;
 export function drawShield(ctx, x, y, s, id, t = 0, rarity = 'common') {
@@ -56,7 +57,7 @@ export function mountCivCards(root, { owned = [], selected = 'shiba', onPick = (
     const r = rar(id), el = document.createElement('button'); el.type = 'button'; el.className = `civ-card rar-${r}${id === selected ? ' sel' : ''}`; el.dataset.civ = id;
     const rarTag = `<i class="rar" title="Cosmetic shield finish from Kibble cosmetics. No gameplay effect.">${r} shield</i>`;
     el.innerHTML = variant === 'b'
-      ? `<canvas width="64" height="72" class="shield"></canvas><span class="txt"><span class="hd"><b>${CIVS[id].name}</b><small class="chip">${CIVS[id].style}</small></span><span class="tr">${CIVS[id].traits.filter(t => !t.startsWith('Unique')).slice(0, 2).map(t => `<span>• ${t}</span>`).join('')}</span><span class="uq">${CIVS[id].traits.find(t => t.startsWith('Unique')) || ''}</span>${rarTag}</span>`
+      ? `${ART_ON ? `<span class="pt"><img src="${artUrl(`portrait-${id}-256.webp`)}" width="64" height="64" alt="" loading="lazy" decoding="async">` : ''}<canvas width="64" height="72" class="shield"></canvas>${ART_ON ? '</span>' : ''}<span class="txt"><span class="hd"><b>${CIVS[id].name}</b><small class="chip">${CIVS[id].style}</small></span><span class="tr">${CIVS[id].traits.filter(t => !t.startsWith('Unique')).slice(0, 2).map(t => `<span>• ${t}</span>`).join('')}</span><span class="uq">${CIVS[id].traits.find(t => t.startsWith('Unique')) || ''}</span>${rarTag}</span>`
       : `<canvas width="176" height="104"></canvas><b>${CIVS[id].name}</b><small>${CIVS[id].style}</small>${rarTag}`;
     const card = { id, el, cv: el.querySelector('canvas'), cineAt: 0, rarity: r }; cards.push(card);
     const start = () => { card.cineAt = performance.now(); el.classList.add('cine'); };

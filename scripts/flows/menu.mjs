@@ -131,8 +131,9 @@ export default async function (argv) {
   await p.keyboard.press('ArrowDown'); await p.keyboard.press('ArrowDown'); await p.keyboard.press('ArrowDown'); pg = await page(p); c(pg.focus === 'm-store', `ArrowDown x3 -> Store (${pg.focus})`);
   await p.keyboard.press('Enter'); await p.waitForTimeout(150); pg = await page(p); c(pg.page === 'store', 'Enter opens Store');
   await p.keyboard.press('Escape'); await p.waitForTimeout(150); pg = await page(p); c(pg.page === 'home', 'Escape -> back to main menu');
-  await p.keyboard.press('ArrowUp'); pg = await page(p); await p.keyboard.press('ArrowUp'); await p.keyboard.press('ArrowUp'); pg = await page(p);
-  c(pg.focus === 'm-skirmish', `ArrowUp moves back up (${pg.focus})`); await p.keyboard.press('Enter'); await p.waitForTimeout(200); pg = await page(p);
+  for (let i = 0; i < 6 && (await page(p)).focus !== 'm-settings'; i++) await p.keyboard.press('ArrowDown');
+  await p.keyboard.press('ArrowUp'); await p.keyboard.press('ArrowUp'); await p.keyboard.press('ArrowUp'); pg = await page(p);
+  c(pg.focus === 'm-skirmish', `ArrowUp moves back up: Settings x3 -> ${pg.focus}`); await p.keyboard.press('Enter'); await p.waitForTimeout(200); pg = await page(p);
   c(pg.page === 'setup' && pg.mode === 'skirmish' && pg.focus === 'shiba', `Enter on Skirmish -> clan select, focus on the picked clan card (${pg.focus})`);
   await p.keyboard.press('ArrowRight'); pg = await page(p); await p.keyboard.press('Enter'); c(await p.inputValue('#menu #civ') === pg.focus, `ArrowRight + Enter picks ${pg.focus}`);
   if (shots) await shot(p, S_('civselect-1366x768'));

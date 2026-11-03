@@ -1,12 +1,12 @@
 PASS: main menu has exactly five entries in order: Campaign · Skirmish · Multiplayer · Store · Settings
 PASS: secondary row keeps Boss Raid + $KIBBLE network (btn-raid:🐾 Boss Raid, btn-kibble:🦴 $KIBBLE network)
-PASS: tap Campaign -> clan select (campaign) {"page":"setup","mode":"campaign","shown":"flex","focus":""}
+PASS: tap Campaign -> clan select (campaign) {"page":"setup","mode":"campaign","shown":"flex","focus":"menu-art"}
 PASS: story campaign marked "Coming soon", no fake missions ("📖 Story campaignComing soon. No story missions yet.")
 PASS: 6 clan cards + existing scenarios btn-sp, btn-raids, btn-headstart
 PASS: tap Kai Brindles card picks it, blurb shows its traits
 PASS: Back -> main menu
 PASS: tap Skirmish -> clan select with opponent picker + Start
-PASS: Start Skirmish on screen at 844x390 (bottom 184)
+PASS: Start Skirmish on screen at 844x390 (bottom 178)
 PASS: Start -> skirmish vs computer as the picked clan ({"civ":"hokkaido","ai":true,"menu":"none"})
 PASS: UI only: menu-started skirmish hash at tick 400 == the same match by URL (203702eb vs 203702eb)
 PASS: Campaign ▸ btn-sp starts as Akita (raids false, head-start Dojo (barracks) false); browser hash == Node createWorld at tick 300 (20cb0572)
@@ -18,7 +18,7 @@ PASS: btn-headstart: no page errors
 PASS: tap Multiplayer -> clan select + transport / Host / Join
 PASS: Join without a code shows the existing hint
 PASS: Host 1v1 opens the existing net.js lobby with a room code
-PASS: Leave -> back on the Multiplayer clan select ({"page":"setup","mode":"multiplayer","shown":"flex","focus":""})
+PASS: Leave -> back on the Multiplayer clan select ({"page":"setup","mode":"multiplayer","shown":"flex","focus":"menu-art"})
 PASS: tap Store -> Store
 PASS: Free & tier tab lists the 12 tier cosmetics from src/kibble.js
 PASS: Free & tier tab: no buy / wager text (equip only)
@@ -56,7 +56,7 @@ PASS: keyboard: first arrow focuses Campaign (m-campaign)
 PASS: ArrowDown x3 -> Store (m-store)
 PASS: Enter opens Store
 PASS: Escape -> back to main menu
-PASS: ArrowUp moves back up (m-skirmish)
+PASS: ArrowUp moves back up: Settings x3 -> m-skirmish
 PASS: Enter on Skirmish -> clan select, focus on the picked clan card (shiba)
 PASS: ArrowRight + Enter picks akita
 PASS: arrows reach Start Skirmish (btn-ai)

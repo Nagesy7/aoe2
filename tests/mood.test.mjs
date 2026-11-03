@@ -56,6 +56,8 @@ assert(allLines.length === 15 && !allLines.some(l => M.BANNED.some(b => b.test(l
 const noop = () => {}, grad = { addColorStop: noop }; const ctx = new Proxy({ measureText: s => ({ width: String(s).length * 6 }), createRadialGradient: () => grad, createLinearGradient: () => grad }, { get: (o, k) => k in o ? o[k] : noop, set: () => true });
 let painted = 0; for (const m of M.MOOD_IDS) { try { paintTitle(ctx, 844, 390, 3.3, m); painted++; } catch (e) { out('paint ' + m + ' threw ' + e.message); } }
 assert(painted === 5, 'title backdrop paints all 5 moods');
+let over = 0; for (const m of M.MOOD_IDS) { try { paintTitle(ctx, 844, 390, 3.3, m, true); over++; } catch (e) { out('art overlay ' + m + ' threw ' + e.message); } }
+assert(over === 5, 'pixel-art title mode: the transparent mood overlay paints all 5 moods');
 // main.js wiring: the poller is told about matches, the line is hidden while one runs
 const main = fs.readFileSync(new URL('../src/main.js', import.meta.url), 'utf8');
 assert(/const inMatch = \(\) => !!world && !world\.winner/.test(main) && /startMood\(\{ inMatch/.test(main) && /if \(inMatch\(\)\) return; moodState\.mood/.test(main), 'main.js: inMatch gate on the poller and on every mood update');

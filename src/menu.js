@@ -11,6 +11,7 @@ const $ = id => document.getElementById(id);
 const PAGES = ['home', 'setup', 'store', 'settings'];
 const MODES = { campaign: { title: '📜 Campaign', step: 'Choose your clan, then a scenario' }, skirmish: { title: '⚔ Skirmish', step: 'Choose your clan and your opponent' },
   multiplayer: { title: '🌐 Multiplayer', step: 'Choose your clan, then host or join a 1v1' } };
+const STAB_ICON = { tier: 'wallet', shop: 'cosmetics', kennel: 'effects' }; // pixel-art tab icons (art/menu, shown with body.menu-art)
 const STORE_TABS = { tier: 'Free & tier unlocks', shop: '🦴 Kibble shop', kennel: 'Kennel rewards' }; // shop = the $KIBBLE panel's shop, moved here unchanged (src/kibble-ui.js renderShop)
 // api: kibble() -> state, equip(id) -> bool, tier() -> kennel tier id|null, openKibble(tab), alive() -> {sound,fx,weather}, setAlive(k,v),
 //      pad() -> gamepad instance|null, padSettings() -> {deadzone}, setDeadzone(v), onPage(page)
@@ -78,7 +79,7 @@ export function initMenu(api) {
       return { id, name: c.name, kind: KN.SLOT_NAMES[c.slot] || c.slot, desc: c.desc, status: un ? 'Unlocked' : c.flair ? 'Optional lock flair' : `${KN.tierById(c.tier)?.name || c.tier} hold streak`, action: null, on: false }; }); }
     return K.SHOP.map(id => { const c = K.COSMETICS[id], own = s.owned.includes(id), on = c.kind !== 'civ' && s.equipped[c.kind] === id;
       return { id, name: c.name, kind: c.kind === 'civ' ? 'clan shield finish' : c.kind, status: on ? 'Equipped' : own ? 'Owned' : 'Coming soon to the Store', action: own && c.kind !== 'civ' && !on && K.canUse(s, id) ? 'equip' : null, on, soon: !own }; }); }
-  function renderStore() { const tabs = Object.entries(STORE_TABS).map(([k, l]) => `<button type="button" class="stab${k === st.storeTab ? ' on' : ''}" data-stab="${k}">${l}</button>`).join('');
+  function renderStore() { const tabs = Object.entries(STORE_TABS).map(([k, l]) => `<button type="button" class="stab${k === st.storeTab ? ' on' : ''}" data-stab="${k}"><img class="ti" src="art/menu/icon-${STAB_ICON[k]}-64.webp" width="32" height="32" alt="" loading="lazy">${l}</button>`).join('');
     const items = storeItems(st.storeTab).map(i => `<div class="sitem${i.on ? ' on' : ''}${i.soon ? ' soon' : ''}" data-item="${i.id}"><b>${i.name}</b><small>${i.kind}${i.desc ? ' · ' + i.desc : ''}</small><span class="sst">${i.status}</span>${i.action ? `<button type="button" data-equip="${i.id}">Equip</button>` : ''}</div>`).join('');
     const foot = st.storeTab === 'kennel' ? `<button type="button" id="store-kennel">🐾 Open my Kibble Kennel</button>` : st.storeTab === 'tier' ? `<span class="hint">Tiers come from holding $KIBBLE in a connected wallet (Settings ▸ Wallet).</span>` : `<span class="hint">Buying skins in this Store: coming soon.</span>`;
     const grid = $('store-items'); $('store-tabs').innerHTML = tabs; grid.dataset.shop = st.storeTab === 'shop' ? '1' : '';
