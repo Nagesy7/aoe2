@@ -1,0 +1,26 @@
+PASS: 844x390: Shop + For devs links (copy, URLs, new tab, noopener)
+PASS: 844x390: links on screen, one row under Settings, clear of the footer, no scroll (shop 28,341,90,361, devs 96,341,175,361, settings bottom 336, footer 4,372,192,388)
+PASS: 844x390: clicks open a new tab and send paid_link_click {product, from, site} only ([{"product":"shop","from":"inu-empires-menu","site":"inu-empires"},{"product":"for-devs","from":"inu-empires-menu","site":"inu-empires"}])
+PASS: 844x390: va missing -> click still works, no errors
+PASS: 844x390: no nudge on the title
+PASS: 844x390: no nudge mid-match
+PASS: 844x390: victory overlay shows the nudge (results URL, no dev products, session flag set)
+PASS: 844x390: Not now closes it
+PASS: 844x390: once per session (second result screen: no nudge)
+PASS: 844x390: no page errors 
+PASS: 844x390 art=0: Shop + For devs links (copy, URLs, new tab, noopener)
+PASS: 844x390 art=0: links on screen, one row under Settings, clear of the footer, no scroll (shop 348,298,411,317, devs 417,298,499,317, settings bottom 293, footer null)
+PASS: 750x342: Shop + For devs links (copy, URLs, new tab, noopener)
+PASS: 750x342: links on screen, one row under Settings, clear of the footer, no scroll (shop 28,291,89,311, devs 95,291,172,311, settings bottom 288, footer 4,324,192,340)
+PASS: 750x342 art=0: Shop + For devs links (copy, URLs, new tab, noopener)
+PASS: 750x342 art=0: links on screen, one row under Settings, clear of the footer, no scroll (shop 343,267,405,285, devs 411,267,491,285, settings bottom 262, footer null)
+PASS: 1366x768: Shop + For devs links (copy, URLs, new tab, noopener)
+PASS: 1366x768: links on screen, one row under Settings, clear of the footer, no scroll (shop 48,602,119,626, devs 127,602,219,626, settings bottom 592, footer 4,750,192,766)
+PASS: 1366x768: no nudge on the title
+PASS: 1366x768: no nudge mid-match
+PASS: 1366x768: victory overlay shows the nudge (results URL, no dev products, session flag set)
+PASS: 1366x768: Not now closes it
+PASS: 1366x768: once per session (second result screen: no nudge)
+PASS: 1366x768: no page errors 
+PASS: 1366x768 art=0: Shop + For devs links (copy, URLs, new tab, noopener)
+PASS: 1366x768 art=0: links on screen, one row under Settings, clear of the footer, no scroll (shop 431,521,504,547, devs 512,521,606,547, settings bottom 513, footer null)
