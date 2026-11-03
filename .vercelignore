@@ -4,3 +4,5 @@ tests
 scripts
 server
 sim
+sandbox
+.dbg
