@@ -33,6 +33,7 @@ const GRASS = ['#4a7a2c', '#4f8030', '#457228', '#538634'];
 function bar(ctx, x, y, w, frac, col = '#4fd34f') { ctx.fillStyle = '#000a'; ctx.fillRect(x, y, w, 6); ctx.fillStyle = col; ctx.fillRect(x + 1, y + 1, (w - 2) * Math.max(0, Math.min(1, frac)), 4); }
 export function render(ctx, world, cam, ui = {}, fog = null) {
   const me = world.viewer || 'player', foe = o => !!o.owner && o.owner !== me, red = o => o.owner === 'enemy';
+  const A = ui.alive && ui.alive.on ? ui.alive : null; // alive layer (src/alive.js): presentation only, never writes the world
   const COS = ui.cosmetics || null, tnow = world.time || 0; // { player: { ids:Set, name }, enemy: {...} } - presentation only
   const W = ctx.canvas.width, H = ctx.canvas.height;
   ctx.fillStyle = '#111'; ctx.fillRect(0, 0, W, H);
@@ -101,7 +102,7 @@ export function render(ctx, world, cam, ui = {}, fog = null) {
     if (n.amount <= 0) return;
     const px = n.x * TILE, py = n.y * TILE;
     if (sel && sel.kind === 'resource' && sel.id === n.id) { ctx.strokeStyle = '#fff'; ctx.lineWidth = 2; ctx.beginPath(); ctx.ellipse(px, py + 8, 15, 7, 0, 0, 7); ctx.stroke(); ctx.lineWidth = 1; }
-    if (n.res === 'wood') { ctx.fillStyle = '#5a3a1a'; ctx.fillRect(px - 3, py, 6, 12); ctx.fillStyle = '#1f5a1f'; ctx.beginPath(); ctx.arc(px, py - 4, 12, 0, 7); ctx.fill(); }
+    if (n.res === 'wood') { const sw = A ? A.sway(n) : 0; ctx.fillStyle = '#5a3a1a'; ctx.fillRect(px - 3, py, 6, 12); ctx.fillStyle = '#1f5a1f'; ctx.beginPath(); ctx.arc(px + sw, py - 4, 12, 0, 7); ctx.fill(); }
     else if (n.kind === 'farm') {}
     else if (n.kind === 'fish') { const t = (world.time || 0) + n.id * 1.7, k = Math.sin(t * 1.3), fx = Math.round(px + k * 6), fy = Math.round(py + Math.cos(t * 0.9) * 3), d = Math.cos(t * 1.3) >= 0 ? 1 : -1;
       ctx.strokeStyle = 'rgba(220,240,255,0.6)'; ctx.lineWidth = 1; const r = 5 + ((t * 6) % 8); ctx.beginPath(); ctx.ellipse(px, py + 2, r, r * 0.45, 0, 0, 7); ctx.stroke();
@@ -130,9 +131,11 @@ export function render(ctx, world, cam, ui = {}, fog = null) {
       ctx.strokeStyle = '#fff'; ctx.lineWidth = 2; ctx.beginPath(); ctx.ellipse(px, py + 6, 11, 6, 0, 0, 7); ctx.stroke(); ctx.lineWidth = 1; }
     { let res = null, kind = null; if (u.type === 'villager' && u.target != null && !u.carry.amount) { const n = world.resources.find(r => r.id === u.target); if (n) { res = n.res; kind = n.kind; } }
       const act = unitAction(u, world, world.time || 0); // villagers: sprite sheet only for hammer work (build/repair) and death; otherwise procedural with the right tool
+      const P = A && A.pose(u, act); if (P) { ctx.save(); ctx.translate(px, py + 6 - P.dy); ctx.rotate(P.rot); ctx.scale(P.sx, P.sy); ctx.translate(-px, -(py + 6)); } // idle fidget (visual)
       if (u.type === 'villager' && act.tool !== 'hammer' && act.action !== 'death' && drawVillagerArt(ctx, u, px, py, world.time || 0, TEAM[u.owner] || TEAM.player, act)) {}
       else if (u.type === 'villager' && act.tool !== 'hammer' && act.action !== 'death') drawInu(ctx, u, px, py, world.time || 0, { res, kind, act, attacking: act.action === 'attack' });
-      else if (!drawUnitArt(ctx, u, px, py, world.time || 0, TEAM[u.owner] || TEAM.player, u.lastAttackAt != null && world.time - u.lastAttackAt < 0.6)) drawInu(ctx, u, px, py, world.time || 0, { res, kind, act, attacking: u.lastAttackAt != null && world.time - u.lastAttackAt < 0.6 }); }
+      else if (!drawUnitArt(ctx, u, px, py, world.time || 0, TEAM[u.owner] || TEAM.player, u.lastAttackAt != null && world.time - u.lastAttackAt < 0.6)) drawInu(ctx, u, px, py, world.time || 0, { res, kind, act, attacking: u.lastAttackAt != null && world.time - u.lastAttackAt < 0.6 });
+      if (P) ctx.restore(); }
     { const civ = world.players?.[u.owner]?.civ, L = civ && CIV_LOOK[civ]; // clan skin: back-banner in the clan palette with its accent stripe
       if (L) { const d = u.face && u.face[0] < -0.05 ? 1 : -1, bx = px + d * 7; ctx.fillStyle = '#2a1a10'; ctx.fillRect(bx, py - 26, 1.5, 16);
         ctx.fillStyle = L.primary; ctx.fillRect(bx + (d > 0 ? 1.5 : -7), py - 26, 7, 7); ctx.fillStyle = L.accent; ctx.fillRect(bx + (d > 0 ? 1.5 : -7), py - 22, 7, 1.5); } }
@@ -141,6 +144,7 @@ export function render(ctx, world, cam, ui = {}, fog = null) {
   D.sort((a, b) => a[0] - b[0]); for (const d of D) d[1]();
   for (const p of world.projectiles || []) { if (fog && !fog.visible[Math.floor(p.y) * world.width + Math.floor(p.x)]) continue; const x = p.x * TILE, y = p.y * TILE, a = p.dir ? Math.atan2(p.dir[1], p.dir[0]) : 0;
     ctx.strokeStyle = '#3a2410'; ctx.lineWidth = 2; ctx.beginPath(); ctx.moveTo(x - Math.cos(a) * 8, y - Math.sin(a) * 8); ctx.lineTo(x, y); ctx.stroke(); ctx.lineWidth = 1; }
+  if (A) A.drawWorld(ctx); // fauna, walkers, particles, cloud shadows (under fog, so hidden areas stay hidden)
   const lo = world.lastOrder; if (lo && world.time - lo.t < 0.8) { const k = 1 - (world.time - lo.t) / 0.8, x = lo.x * TILE, y = lo.y * TILE;
     ctx.strokeStyle = lo.kind === 'attack' ? `rgba(255,50,50,${k})` : `rgba(80,255,80,${k})`; ctx.lineWidth = 2; ctx.beginPath(); ctx.ellipse(x, y, 14 * (1.5 - k / 2), 7 * (1.5 - k / 2), 0, 0, 7); ctx.stroke();
     if (lo.kind === 'attack') { ctx.beginPath(); ctx.moveTo(x - 6, y - 6); ctx.lineTo(x + 6, y + 6); ctx.moveTo(x + 6, y - 6); ctx.lineTo(x - 6, y + 6); ctx.stroke(); } ctx.lineWidth = 1; }
@@ -152,6 +156,7 @@ export function render(ctx, world, cam, ui = {}, fog = null) {
     ctx.fillRect(g.tx * TILE, g.ty * TILE, g.size * TILE, g.size * TILE); ctx.strokeRect(g.tx * TILE, g.ty * TILE, g.size * TILE, g.size * TILE);
     ctx.strokeStyle = '#ffa500'; ctx.lineWidth = 3; for (const [x, y] of g.units || []) ctx.strokeRect(x * TILE + 2, y * TILE + 2, TILE - 4, TILE - 4); ctx.lineWidth = 1; }
   ctx.restore();
+  if (A) A.drawScreen(ctx, world, c); // day/night tint, night glows, rain, chatter bubbles
   if (ui.box) { const b = ui.box; ctx.strokeStyle = '#fff'; ctx.fillStyle = '#ffffff20'; ctx.fillRect(b.x0, b.y0, b.x1 - b.x0, b.y1 - b.y0); ctx.strokeRect(b.x0 + 0.5, b.y0 + 0.5, b.x1 - b.x0, b.y1 - b.y0); }
 }
 

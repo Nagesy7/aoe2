@@ -23,6 +23,10 @@ const canvas = document.getElementById('game'), ctx = canvas.getContext('2d');
 const params = new URLSearchParams(location.search);
 const UI_VARIANT = params.get('ui') === 'a' ? 'a' : 'b'; // clan cards: default b (trait-first, picked Oct 18); ?ui=a keeps the old art card for comparison
 SFX.install();
+try { SFX.setMuted(JSON.parse(localStorage.getItem('inu-alive') || '{}').sound === false); } catch {} // remembered mute (✨ panel)
+// Alive layer (src/alive.js, docs/ALIVE.md): lazy-loaded when a match starts so the title stays light. Presentation only.
+let alive = null, aliveP = null;
+const loadAlive = () => aliveP ||= import('./alive.js').then(m => { alive = m.createAlive({ params, sfx: SFX, onChange: syncAlivePanel }); syncAlivePanel(); return alive; }).catch(e => { console.warn('alive layer unavailable', e); });
 window.BUILD_ID = document.querySelector('meta[name=build-id]')?.content || 'dev'; // stamped with the commit at deploy (scripts/ctl.mjs deploy)
 const $ = id => document.getElementById(id);
 let world = null, cam = { x: 0, y: 0 }, ui = createUi(), net = null, fog = null;
@@ -45,7 +49,7 @@ canvas.addEventListener('contextmenu', e => e.preventDefault());
 const toWorld = (sx, sy) => screenToWorld(sx / Z, sy / Z, cam);
 const viewer = () => (world && world.viewer) || 'player';
 const isFoe = o => !!o.owner && o.owner !== viewer();
-const seen = o => !fog || fog.sees(o);
+const seen = o => !fog || !fog.sees || fog.sees(o); // spectator fog stub has no sees()
 
 // ---- commands: every gameplay action goes through here ----
 // Single player applies the command at the current tick boundary (recorded for replay); multiplayer queues it in the
@@ -171,6 +175,14 @@ setInterval(syncQb, 250);
 const qbToggle = $('qb-toggle'); const setQbCollapsed = c => { qbEl.classList.toggle('collapsed', c); qbToggle.textContent = c ? '›' : '‹'; qbToggle.setAttribute('aria-expanded', String(!c)); try { localStorage.setItem('inu-qb-collapsed', c ? '1' : '0'); } catch {} };
 qbToggle.addEventListener('click', () => setQbCollapsed(!qbEl.classList.contains('collapsed'))); try { setQbCollapsed(localStorage.getItem('inu-qb-collapsed') === '1'); } catch {}
 const touchTips = installTouchTips();
+// ✨ panel: Sound / Life & effects / Weather & day-night (remembered; works before the alive module has loaded)
+const fxBtn = $('fx-open'), fxPanel = $('alive-panel');
+const aliveSettings = () => alive ? alive.settings : (() => { try { const o = JSON.parse(localStorage.getItem('inu-alive') || '{}'); return { fx: o.fx !== false, weather: o.weather !== false, sound: o.sound !== false }; } catch { return { fx: true, weather: true, sound: true }; } })();
+function syncAlivePanel() { const o = aliveSettings(); $('opt-sound').checked = o.sound; $('opt-fx').checked = o.fx; $('opt-weather').checked = o.weather; }
+fxBtn.addEventListener('click', () => { const open = fxPanel.hidden; fxPanel.hidden = !open; fxBtn.setAttribute('aria-expanded', String(open)); fxBtn.classList.toggle('active', open); syncAlivePanel(); });
+for (const k of ['sound', 'fx', 'weather']) $('opt-' + k).addEventListener('change', e => { const v = e.target.checked;
+  if (alive) alive.set({ [k]: v }); else { const o = { ...aliveSettings(), [k]: v }; try { localStorage.setItem('inu-alive', JSON.stringify(o)); } catch {} if (k === 'sound') SFX.setMuted(!v); } });
+canvas.addEventListener('pointerdown', () => { if (!fxPanel.hidden) { fxPanel.hidden = true; fxBtn.setAttribute('aria-expanded', 'false'); fxBtn.classList.remove('active'); } });
 // ---- HUD / panels ----
 const bannerEl = $('banner'), hud = $('hud'), infoEl = $('info'), cmdEl = $('commands'), msgEl = $('msg'), netEl = $('net'), stallEl = $('stall'), desyncEl = $('desync');
 let lastCmd = '';
@@ -273,6 +285,7 @@ function startGame({ mp = false, seed = 1, me = 0, cfg = {}, session = null, ai 
   // One Inu Score: a signed start ticket now (signed-in players only), the recorded inputs at the end; kibble-pay replays them.
   if (matchRep.mode === 'ai') matchRep.ticketP = startTicket(kibblePay(), { mode: 'ai', seed, civ: ai.civ, enemy: ai.enemy });
   else if (mp) matchRep.ticketP = startTicket(kibblePay(), { mode: 'mp', seed, civs: cfg.civs || [null, null], me });
+  loadAlive();
   requestAnimationFrame(frame);
 }
 const minimap = createMinimap($('minimap'), { getWorld: () => world, getFog: () => (net || (world && world.computers && !world.spectate) ? fog : null),
@@ -316,14 +329,14 @@ function frame(now) {
     else if (n) net.stallMs = 0;
     fog = computeFog(world, viewer(), fog); window.game.fog = fog;
   }
-  if (ui.placing) refreshGhost(); if (mouse.inside) updateCursor(); ui.lerp = { prev: prevPos, a: Math.max(0, Math.min(1, acc / TICK_DT)) }; render(ctx, world, cam, ui, net || (world.computers && !world.spectate) ? fog : null); updateHud(); SFX.watch(world, viewer()); minimap.draw(now); requestAnimationFrame(frame);
+  if (ui.placing) refreshGhost(); if (mouse.inside) updateCursor(); ui.lerp = { prev: prevPos, a: Math.max(0, Math.min(1, acc / TICK_DT)) }; const vfog = net || (world.computers && !world.spectate) ? fog : null; if (alive) { ui.alive = alive; alive.update(world, cam, canvas, vfog, real); } render(ctx, world, cam, ui, vfog); updateHud(); SFX.watch(world, viewer()); minimap.draw(now); requestAnimationFrame(frame);
 }
 // Automation hook: read-only state access + time advance in single player (proof scripts must not use it to issue orders).
 window.game = { sim: SIM, world: null, cam, ui, selectionInfo, pickAt, toScreen: (x, y) => { const q = worldToScreen(x, y, cam); return { x: q.x * Z, y: q.y * Z }; }, zoom: () => Z, toWorld,
   tick: (s) => { if (net) throw new Error('no fast-forward in multiplayer'); const n = Math.round(s / TICK_DT); for (let i = 0; i < n; i++) { stepTick(world); noteWin(); } render(ctx, world, cam, ui); updateHud(); },
   matchRep: () => matchRep,
   stateHash: () => world && stateHash(world),
-  getSelected: () => getSelected(world), sfx: SFX, minimap, touchTips, loop, touch: { ...touchUi }, buildTabOf: t => Object.keys(BUILD_TABS).find(k => BUILD_TABS[k].items.includes(t)) || null };
+  getSelected: () => getSelected(world), sfx: SFX, get alive() { return alive; }, loadAlive, minimap, touchTips, loop, touch: { ...touchUi }, buildTabOf: t => Object.keys(BUILD_TABS).find(k => BUILD_TABS[k].items.includes(t)) || null };
 
 // ---- main menu / lobby ----
 let session = null;
