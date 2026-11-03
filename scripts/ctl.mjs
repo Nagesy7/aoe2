@@ -50,6 +50,8 @@ export async function newPage({ phone = false, video = process.env.RECORD, ctxOp
   const b = await browser(); const opts = { ...(phone ? PHONE : DESKTOP), ...ctxOpts };
   if (video) { mkdirSync(video, { recursive: true }); opts.recordVideo = { dir: video, size: opts.viewport }; }
   const ctx = await b.newContext(opts); const p = await ctx.newPage(); p.errors = []; p.phone = phone;
+  // Vercel's preview-only comment toolbar (<vercel-live-feedback>, never on production) floats over the right edge and eats taps there: hide it
+  await ctx.addInitScript(() => { const css = 'vercel-live-feedback{display:none!important}'; const add = () => { const s = document.createElement('style'); s.textContent = css; (document.head || document.documentElement).appendChild(s); }; if (document.documentElement) add(); else document.addEventListener('DOMContentLoaded', add); });
   // protected Vercel previews: CTL_SHARE_FILE holds a _vercel_share link (from the Vercel MCP get_access_to_vercel_url); opening it sets the auth cookie. Never printed.
   if (process.env.CTL_SHARE_FILE && existsSync(process.env.CTL_SHARE_FILE)) await p.goto(readFileSync(process.env.CTL_SHARE_FILE, 'utf8').trim(), { waitUntil: 'domcontentloaded' });
   p.on('pageerror', e => p.errors.push(String(e)));
