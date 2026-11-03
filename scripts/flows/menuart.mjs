@@ -1,5 +1,5 @@
 // Pixel-art menu proof (src/menuart.js, art/menu/*): first screen = one flattened WebP, parallax layers load after idle and
-// move (clouds drift in 4 art-px steps), reduced motion stays static on the flat picture, ?art=0 = old procedural title,
+// move (clouds drift in 4 art-px steps), reduced motion keeps the scene still (layers load, nothing moves), ?art=0 = old procedural title,
 // logo/buttons/icons/panels/cards drawn nearest-neighbour, home column clear of the footer / wallet / mood banner at 3 sizes.
 //   ctl run menuart [--url <preview>]   -> proof/menuart.log
 import { join } from 'node:path'; import { writeFileSync } from 'node:fs';
@@ -42,6 +42,8 @@ export default async function (argv) {
     const st = await p.S(() => { const pg = getComputedStyle(document.getElementById('pg-store')), n = document.querySelector('#store-foot .kshop-note'), r = n.getBoundingClientRect();
       return { src: pg.borderImageSource, rep: pg.borderImageRepeat, note: r.width > 0 && r.bottom <= innerHeight && getComputedStyle(n).color }; });
     c(/panel-parchment/.test(st.src) && st.rep === 'repeat' && st.note, `${n}: Store = parchment 9-slice (centre repeats), risk note on screen (${st.note})`);
+    { const g = await p.S(() => { const t = window.game.titleArt || {}; return { gx: t.groupX, col: t.colRight, W: innerWidth, sc: t.scale }; });
+      c(g.gx >= g.col - 1 && g.gx < g.W * 0.75, `${n}: left Inu group clear of the button column (group x ${Math.round(g.gx)} >= column right ${Math.round(g.col)}, scale ${g.sc?.toFixed(3)})`); }
     await menuTo(p, 'settings'); await p.waitForTimeout(300);
     const se = await p.S(() => { const pg = getComputedStyle(document.getElementById('pg-settings')); return { src: pg.borderImageSource, rep: pg.borderImageRepeat, icons: [...document.querySelectorAll('.msets h3 .si')].filter(i => i.naturalWidth === 64).length }; });
     c(/panel-wood/.test(se.src) && se.rep === 'repeat' && se.icons === 3, `${n}: Settings = wood 9-slice (centre repeats), 3 section icons`);
@@ -49,7 +51,8 @@ export default async function (argv) {
   }
   { const p = await newPage({ phone: true, ctxOpts: { reducedMotion: 'reduce' } }), got = []; p.on('request', r => { if (/\/art\/menu\/title-/.test(r.url())) got.push(r.url().split('/').pop()); });
     await openTitle(p, srv.url); await p.waitForTimeout(3500); const a = await art(p);
-    c(a.mode === 'flat' && !got.some(f => /^title-(sky|clouds|far|mid|front)-/.test(f)) && !a.tf.replace(/;/g, ''), `reduced motion: static flattened picture, no parallax layers fetched (${got.join(', ')})`);
+    const cx = () => p.S(() => document.querySelectorAll('#title-art .lyr')[1]?.style.backgroundPositionX || ''); const x0 = await cx(); await p.waitForTimeout(1500); const x1 = await cx();
+    c(!a.tf.replace(/;/g, '') && x0 === x1, `reduced motion: layers load for the framed scene but never move (no parallax, clouds still ${JSON.stringify(x0)} = ${JSON.stringify(x1)}; ${got.length} files)`);
     await p.context().close(); }
   { const p = await newPage({ phone: true }); await openTitle(p, srv.url, '?art=0'); await p.waitForTimeout(800); const a = await art(p);
     const wm = await p.S(() => getComputedStyle(document.querySelector('#pg-home .wm')).display);

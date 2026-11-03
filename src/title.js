@@ -36,23 +36,23 @@ function fire(ctx, x, y, s, t) { ctx.fillStyle = '#3a2412'; ctx.fillRect(x - 14 
   for (let k = 0; k < 5; k++) { const h = (14 + 8 * Math.sin(t * 9 + k * 1.7)) * s; ctx.fillStyle = k % 2 ? '#ffb030' : '#ff6a20'; ctx.beginPath(); ctx.moveTo(x - 10 * s + k * 5 * s, y + 3 * s); ctx.lineTo(x - 7 * s + k * 5 * s, y - h); ctx.lineTo(x - 4 * s + k * 5 * s, y + 3 * s); ctx.fill(); }
   const g = ctx.createRadialGradient(x, y, 2, x, y, 90 * s); g.addColorStop(0, 'rgba(255,150,60,0.35)'); g.addColorStop(1, 'rgba(255,120,40,0)'); ctx.fillStyle = g; ctx.fillRect(x - 90 * s, y - 90 * s, 180 * s, 180 * s); }
 function cloud(ctx, cx, cy, w, col) { ctx.fillStyle = col; for (let k = 0; k < 5; k++) { ctx.beginPath(); ctx.ellipse(cx - w / 2 + k * w / 4, cy + Math.sin(k * 2) * w * 0.05, w * 0.22, w * 0.11, 0, 0, 7); ctx.fill(); } }
-function moodSky(ctx, W, H, t, mood, sc) {
+function moodSky(ctx, W, H, t, mood, sc, at = null) {
   const L = MOOD_LOOK[mood] || MOOD_LOOK.chill; if (L.tint) { ctx.fillStyle = L.tint; ctx.fillRect(0, 0, W, H); }
-  if (mood === 'grumpy' || mood === 'doghouse') { const cx = W * 0.86, cy = H * 0.6, w = W * (mood === 'doghouse' ? 0.34 : 0.28);
+  if (mood === 'grumpy' || mood === 'doghouse') { const cx = at ? at.cx : W * 0.86, cy = at ? at.cy : H * 0.6, w = at ? at.w * (mood === 'doghouse' ? 1.2 : 1) : W * (mood === 'doghouse' ? 0.34 : 0.28);
     if (mood === 'doghouse' && Math.sin(t * 1.7) > 0.985) { ctx.fillStyle = 'rgba(230,235,255,0.35)'; ctx.fillRect(0, 0, W, H); }
     ctx.strokeStyle = 'rgba(170,200,255,0.55)'; ctx.lineWidth = 1.2; for (let i = 0; i < (mood === 'doghouse' ? 90 : 50); i++) { const x = cx - w / 2 + ((i * 53.7) % w), y = cy + ((t * 260 + i * 37) % (H * 0.35));
       ctx.beginPath(); ctx.moveTo(x, y); ctx.lineTo(x - 3, y + 9); ctx.stroke(); }
     cloud(ctx, cx, cy, w, mood === 'doghouse' ? '#23233aee' : '#59607add'); }
-  if (mood === 'doghouse') { const bw = Math.min(W * 0.2, 220), bx = W * 0.89 - bw / 2, by = H * 0.70; ctx.fillStyle = '#5a1a1aee'; ctx.fillRect(bx, by, bw, 30 * sc * 0.9); ctx.strokeStyle = '#f6e6c8'; ctx.strokeRect(bx + 0.5, by + 0.5, bw - 1, 30 * sc * 0.9 - 1);
+  if (mood === 'doghouse') { const bw = Math.min(W * 0.2, 220), bx = (at ? at.cx : W * 0.89) - bw / 2, by = at ? at.cy + H * 0.12 : H * 0.70; ctx.fillStyle = '#5a1a1aee'; ctx.fillRect(bx, by, bw, 30 * sc * 0.9); ctx.strokeStyle = '#f6e6c8'; ctx.strokeRect(bx + 0.5, by + 0.5, bw - 1, 30 * sc * 0.9 - 1);
     ctx.fillStyle = '#f6e6c8'; ctx.font = `bold ${Math.round(15 * sc * 0.7)}px serif`; ctx.textAlign = 'center'; ctx.fillText('HOLD THE LINE', bx + bw / 2, by + 20 * sc * 0.9); ctx.textAlign = 'start'; }
   if (mood === 'zoomies') { for (let i = 0; i < 26; i++) { const x = (i * 97 + t * 40) % W, y = ((i * 61 + t * (90 + i * 7)) % (H * 0.9)), a = t * 3 + i; ctx.save(); ctx.translate(x, y); ctx.rotate(a);
       ctx.fillStyle = ['#ffd84a', '#f6e6c8', '#ff8ab0', '#8ad8ff'][i % 4]; ctx.fillRect(-6, -1.5, 12, 3); ctx.beginPath(); ctx.arc(-6, -2, 2.2, 0, 7); ctx.arc(-6, 2, 2.2, 0, 7); ctx.arc(6, -2, 2.2, 0, 7); ctx.arc(6, 2, 2.2, 0, 7); ctx.fill(); ctx.restore(); }
-    for (let i = 0; i < 8; i++) { const k = (t * 2 + i / 8) % 1, x = W * 0.76 + Math.cos(i * 1.3) * H * 0.12, y = H * 0.5 + Math.sin(i * 2.1) * H * 0.1; ctx.fillStyle = `rgba(255,230,120,${1 - k})`; ctx.fillRect(x - 1, y - 6 * k - 1, 3, 3); } }
+    for (let i = 0; i < 8; i++) { const k = (t * 2 + i / 8) % 1, x = (at ? at.cx : W * 0.76) + Math.cos(i * 1.3) * H * 0.12, y = (at ? at.cy : H * 0.5) + Math.sin(i * 2.1) * H * 0.1; ctx.fillStyle = `rgba(255,230,120,${1 - k})`; ctx.fillRect(x - 1, y - 6 * k - 1, 3, 3); } }
 }
 // art = true: the pixel-art title layers (src/menuart.js) are the backdrop, so the canvas is cleared to transparent and only the
 // live bits are painted on top: the Kibble Mood army (in the open grass at bottom centre) and the mood weather/tint.
 export function paintTitle(ctx, W, H, t, mood = 'chill', art = false) {
-  if (art) return paintOverlay(ctx, W, H, t, mood);
+  if (art) return paintOverlay(ctx, W, H, t, mood, art.scene);
   const sky = ctx.createLinearGradient(0, 0, 0, H); sky.addColorStop(0, '#1d1840'); sky.addColorStop(0.35, '#7a3466'); sky.addColorStop(0.6, '#f07a3e'); sky.addColorStop(0.75, '#ffc66a');
   ctx.fillStyle = sky; ctx.fillRect(0, 0, W, H);
   const r = rng(7); ctx.fillStyle = '#ffffffb0'; for (let i = 0; i < 90; i++) { const x = r() * W, y = r() * H * 0.3; ctx.globalAlpha = 0.3 + 0.5 * Math.abs(Math.sin(t + i)); ctx.fillRect(x, y, 1.6, 1.6); } ctx.globalAlpha = 1;
@@ -79,12 +79,13 @@ export function paintTitle(ctx, W, H, t, mood = 'chill', art = false) {
   for (let i = 0; i < 40; i++) { const x = (i * 131 + t * 20 * (1 + i % 3)) % W, y = H - ((i * 71 + t * 30 * (1 + i % 4)) % (H * 0.6)); ctx.fillStyle = `rgba(255,${160 + (i % 5) * 15},80,${0.35 + 0.3 * Math.sin(t * 3 + i)})`; ctx.fillRect(x, y, 2, 2); }
   const vg = ctx.createRadialGradient(W / 2, H / 2, H * 0.3, W / 2, H / 2, H); vg.addColorStop(0, '#0000'); vg.addColorStop(1, '#000a'); ctx.fillStyle = vg; ctx.fillRect(0, 0, W, H);
 }
-function paintOverlay(ctx, W, H, t, mood) {
+function paintOverlay(ctx, W, H, t, mood, sc0) {
   ctx.clearRect(0, 0, W, H);
-  // the art's Inu groups stand at the outer edges and the menu column is on the left: the army marches in the open centre grass
-  const sc = H / 340, n = 12, x0 = W * 0.42, span = Math.min(W * 0.34, H * 1.1);
-  army(ctx, W, H, t, mood, { x0, dx: span / n, y: H * 0.93, sc, pit: { x: x0 + span * 0.5, y: H * 0.9 } });
-  moodSky(ctx, W, H, t, mood, sc);
+  // the army marches in the open grass between the art's two Inu groups (scene from src/menuart.js; fallback: centre grass)
+  const g = sc0 || { gapL: W * 0.42, gapR: W * 0.76, rightL: W * 0.72, rightR: W, groundY: H * 0.93, sc: H / 780 }, n = 12, span = Math.max(60, g.gapR - g.gapL - 12);
+  const sc = Math.min(H / 340, Math.max(0.8, span / n / 10)), x0 = g.gapL + 6;
+  army(ctx, W, H, t, mood, { x0, dx: span / n, y: Math.min(H * 0.95, g.groundY + 8 * sc), sc, pit: { x: x0 + span * 0.5, y: g.groundY } });
+  moodSky(ctx, W, H, t, mood, sc, { cx: (g.rightL + g.rightR) / 2, cy: g.top + (g.groundY - g.top) * 0.35, w: Math.min(W * 0.3, g.rightR - g.rightL) });
   const vg = ctx.createLinearGradient(0, 0, W * 0.5, 0); vg.addColorStop(0, '#0007'); vg.addColorStop(1, '#0000'); ctx.fillStyle = vg; ctx.fillRect(0, 0, W * 0.5, H); // keeps the left menu column readable
 }
 function army(ctx, W, H, t, mood, o) {
