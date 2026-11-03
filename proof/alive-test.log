@@ -1,0 +1,11 @@
+alive test 2026-11-03T02:06:55.111Z
+PASS: stateHash identical with the alive layer running every frame for 3600 ticks (first mismatch -1)
+PASS: particles emitted (941, peak 21)
+PASS: particle cap respected (peak 21 <= 240)
+PASS: chatter bubbles shown (3)
+PASS: idle Worker Pups fidget (1109 posed unit-frames over 15 s), world hash unchanged
+PASS: ambient sounds requested sparingly (9 in 60 s: birds,rain)
+PASS: effects + weather off clears particles, rain and bubbles (0/0/0)
+PASS: chatter lines are original (34 lines, no trademarked phrases)
+
+8 passed, 0 failed

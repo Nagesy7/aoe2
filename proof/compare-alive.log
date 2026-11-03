@@ -1,0 +1,17 @@
+base 4831507 (4831507): simulating 4 seeds x 30 min ...
+head HEAD (9aeea76): simulating 4 seeds x 30 min ...
+
+per-clan win rate (4 vs 4 seeds, 30/30 min)   base 4831507  ->  head 9aeea76
+shiba      37.5%  ->  37.5%   +0.0   <-- OUTSIDE 45-55%
+akita      50.0%  ->  50.0%   +0.0
+kishu      52.5%  ->  52.5%   +0.0
+shikoku    42.5%  ->  42.5%   +0.0   <-- OUTSIDE 45-55%
+hokkaido   57.5%  ->  57.5%   +0.0   <-- OUTSIDE 45-55%
+kai        60.0%  ->  60.0%   +0.0   <-- OUTSIDE 45-55%
+
+flipped matchups (0):
+
+FLAGGED (outside 45-55%): shiba, shikoku, hokkaido, kai
+
+wrote proof/compare-alive.json
+EXIT 1

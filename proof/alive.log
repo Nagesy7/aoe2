@@ -1,0 +1,26 @@
+PASS: alive layer loaded and running (363 frames, low=true phone-landscape)
+PASS: particles: smoke/dust emitted (128, peak 94 <= cap 110)
+PASS: ambient birds spawned (1)
+PASS: town bustle walkers scale with economy (3/3, cap 4)
+PASS: chatter bubble shown (["Paws are bored"]), capped at 2
+PASS: ✨ quick-bar button opens the Sound / Life / Weather panel
+PASS: Life & effects off -> particles/bubbles cleared (0, 0)
+PASS: Weather off -> no tint, no rain (a=0)
+PASS: Sound off -> sfx muted, ambient refused
+PASS: settings remembered ({"fx":false,"weather":false,"sound":false})
+PASS: all three back on by tap
+PASS: tapping the map closes the panel
+PASS: night tint stays readable (alpha 0.28 <= 0.3)
+PASS: rain shower draws drops (45)
+PASS: no page errors / console errors on phone ()
+PASS: ?alive=0 runs with the layer fully off
+PASS: effects ON: browser hash at tick 9725 == Node replay (5143291b)
+PASS: effects OFF: browser hash at tick 9725 == Node replay (5143291b)
+PASS: off page already past tick 9725; both matched the replay
+PASS: no errors with effects off
+PASS: desktop full mode (457 particles, 3 birds, 1 butterflies)
+PASS: sandbox: smoke, forge sparks and fire on a damaged Den Hut (42 live particles)
+PASS: fish jump in visible water (9)
+PASS: no errors on desktop ()
+PASS: 750x342 phone: running in low-power (phone-landscape), ✨ button and panel fit on screen, no errors
+ALL PASS

@@ -1,0 +1,230 @@
+{
+ "before": {
+  "at": "2026-11-03T01:56:11.332Z",
+  "root": "/tmp/inu-before",
+  "query": "",
+  "phone": {
+   "viewport": "844x390",
+   "cpuThrottle": 4,
+   "titleInteractiveMs": {
+    "runs": [
+     1097,
+     487,
+     483
+    ],
+    "median": 487
+   },
+   "fps": 59.8,
+   "frameMs": {
+    "median": 16.7,
+    "p95": 16.8,
+    "max": 33.3
+   },
+   "frames": 359,
+   "busyMsPerFrame": {
+    "task": 8.6,
+    "script": 3.24
+   },
+   "alive": null,
+   "errors": []
+  },
+  "desktop": {
+   "viewport": "1366x768",
+   "cpuThrottle": 1,
+   "titleInteractiveMs": {
+    "runs": [
+     859,
+     417,
+     347
+    ],
+    "median": 417
+   },
+   "fps": 60,
+   "frameMs": {
+    "median": 16.7,
+    "p95": 16.8,
+    "max": 16.8
+   },
+   "frames": 360,
+   "busyMsPerFrame": {
+    "task": 3.27,
+    "script": 0.9
+   },
+   "alive": null,
+   "errors": []
+  }
+ },
+ "after": {
+  "at": "2026-11-03T02:36:51.374Z",
+  "root": "working tree",
+  "query": "",
+  "phone": {
+   "viewport": "844x390",
+   "cpuThrottle": 4,
+   "titleInteractiveMs": {
+    "runs": [
+     1202,
+     527,
+     552
+    ],
+    "median": 552
+   },
+   "fps": 60,
+   "frameMs": {
+    "median": 16.7,
+    "p95": 16.7,
+    "max": 16.8
+   },
+   "frames": 360,
+   "busyMsPerFrame": {
+    "task": 9.17,
+    "script": 2.76
+   },
+   "alive": {
+    "settings": {
+     "fx": true,
+     "weather": true,
+     "sound": true
+    },
+    "low": true,
+    "lowWhy": "phone-landscape",
+    "frameEmaMs": 16.67,
+    "phase": 0.139,
+    "tint": {
+     "c": [
+      0,
+      0,
+      0
+     ],
+     "a": 0,
+     "night": 0
+    },
+    "rain": 0,
+    "wind": 0.25,
+    "particles": 11,
+    "birds": 4,
+    "butterflies": 0,
+    "critters": 2,
+    "fish": 0,
+    "walkers": 3,
+    "bustleTarget": 3,
+    "clouds": 2,
+    "drops": 0,
+    "bubbles": [],
+    "poses": 0,
+    "caps": {
+     "particles": 110,
+     "birds": 4,
+     "butterflies": 0,
+     "critters": 2,
+     "fish": 1,
+     "rain": 45,
+     "bubbles": 2,
+     "walkers": 4,
+     "clouds": 2
+    },
+    "counts": {
+     "bubbles": 10,
+     "particlesPeak": 99,
+     "emitted": 159,
+     "birds": 4,
+     "butterflies": 0,
+     "critters": 2,
+     "fishJumps": 2,
+     "walkers": 3,
+     "ambient": 0,
+     "events": {
+      "built": 10
+     }
+    },
+    "frames": 544
+   },
+   "errors": []
+  },
+  "desktop": {
+   "viewport": "1366x768",
+   "cpuThrottle": 1,
+   "titleInteractiveMs": {
+    "runs": [
+     867,
+     341,
+     346
+    ],
+    "median": 346
+   },
+   "fps": 60,
+   "frameMs": {
+    "median": 16.7,
+    "p95": 16.7,
+    "max": 16.8
+   },
+   "frames": 360,
+   "busyMsPerFrame": {
+    "task": 3.82,
+    "script": 0.9
+   },
+   "alive": {
+    "settings": {
+     "fx": true,
+     "weather": true,
+     "sound": true
+    },
+    "low": false,
+    "lowWhy": "",
+    "frameEmaMs": 16.66,
+    "phase": 0.139,
+    "tint": {
+     "c": [
+      0,
+      0,
+      0
+     ],
+     "a": 0,
+     "night": 0
+    },
+    "rain": 0,
+    "wind": 0.25,
+    "particles": 30,
+    "birds": 5,
+    "butterflies": 1,
+    "critters": 1,
+    "fish": 0,
+    "walkers": 2,
+    "bustleTarget": 3,
+    "clouds": 3,
+    "drops": 0,
+    "bubbles": [
+     "♪"
+    ],
+    "poses": 0,
+    "caps": {
+     "particles": 240,
+     "birds": 7,
+     "butterflies": 5,
+     "critters": 4,
+     "fish": 2,
+     "rain": 110,
+     "bubbles": 3,
+     "walkers": 8,
+     "clouds": 3
+    },
+    "counts": {
+     "bubbles": 10,
+     "particlesPeak": 104,
+     "emitted": 266,
+     "birds": 5,
+     "butterflies": 1,
+     "critters": 1,
+     "fishJumps": 2,
+     "walkers": 3,
+     "ambient": 0,
+     "events": {
+      "built": 10
+     }
+    },
+    "frames": 543
+   },
+   "errors": []
+  }
+ }
+}
