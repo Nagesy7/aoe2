@@ -11,7 +11,7 @@ const $ = id => document.getElementById(id);
 const PAGES = ['home', 'setup', 'store', 'settings'];
 const MODES = { campaign: { title: '📜 Campaign', step: 'Choose your clan, then a scenario' }, skirmish: { title: '⚔ Skirmish', step: 'Choose your clan and your opponent' },
   multiplayer: { title: '🌐 Multiplayer', step: 'Choose your clan, then host or join a 1v1' } };
-const STORE_TABS = { tier: 'Free & tier unlocks', kennel: 'Kennel rewards', skins: 'Skins & shield finishes' };
+const STORE_TABS = { tier: 'Free & tier unlocks', shop: '🦴 Kibble shop', kennel: 'Kennel rewards' }; // shop = the $KIBBLE panel's shop, moved here unchanged (src/kibble-ui.js renderShop)
 // api: kibble() -> state, equip(id) -> bool, tier() -> kennel tier id|null, openKibble(tab), alive() -> {sound,fx,weather}, setAlive(k,v),
 //      pad() -> gamepad instance|null, padSettings() -> {deadzone}, setDeadzone(v), onPage(page)
 export function initMenu(api) {
@@ -81,11 +81,17 @@ export function initMenu(api) {
   function renderStore() { const tabs = Object.entries(STORE_TABS).map(([k, l]) => `<button type="button" class="stab${k === st.storeTab ? ' on' : ''}" data-stab="${k}">${l}</button>`).join('');
     const items = storeItems(st.storeTab).map(i => `<div class="sitem${i.on ? ' on' : ''}${i.soon ? ' soon' : ''}" data-item="${i.id}"><b>${i.name}</b><small>${i.kind}${i.desc ? ' · ' + i.desc : ''}</small><span class="sst">${i.status}</span>${i.action ? `<button type="button" data-equip="${i.id}">Equip</button>` : ''}</div>`).join('');
     const foot = st.storeTab === 'kennel' ? `<button type="button" id="store-kennel">🐾 Open my Kibble Kennel</button>` : st.storeTab === 'tier' ? `<span class="hint">Tiers come from holding $KIBBLE in a connected wallet (Settings ▸ Wallet).</span>` : `<span class="hint">Buying skins in this Store: coming soon.</span>`;
-    $('store-tabs').innerHTML = tabs; $('store-items').innerHTML = items; $('store-foot').innerHTML = foot; }
+    const grid = $('store-items'); $('store-tabs').innerHTML = tabs; grid.dataset.shop = st.storeTab === 'shop' ? '1' : '';
+    if (st.storeTab === 'shop') api.renderShop(grid, $('store-foot')); else { grid.innerHTML = items; $('store-foot').innerHTML = foot; } }
   $('pg-store').addEventListener('click', e => { const b = e.target.closest('button'); if (!b) return;
     if (b.dataset.stab) { st.storeTab = b.dataset.stab; renderStore(); requestAnimationFrame(() => $('pg-store').querySelector(`[data-stab=${st.storeTab}]`)?.focus()); }
     else if (b.dataset.equip) { api.equip(b.dataset.equip); renderStore(); }
-    else if (b.id === 'store-kennel') api.openKibble('kennel'); });
+    else if (b.id === 'store-kennel') api.openKibble('kennel');
+    else if (st.storeTab === 'shop' && b.closest('#store-items')) { const id = b.dataset.buy || b.dataset.eq, kb = st.kbd || st.pad; api.shopClick(e); // the original buy / equip handler
+      // the grid re-renders: keep keyboard / controller focus on the same item
+      if (id && kb) requestAnimationFrame(() => { const n = $('store-items').querySelector(`[data-buy="${id}"],[data-eq="${id}"]`); if (n && document.activeElement !== n) n.focus(); }); } });
+  // the $KIBBLE panel's "Kibble shop ▸ Store" link
+  addEventListener('empires:store', e => { st.storeTab = e.detail?.tab || 'shop'; show('store'); });
   // ---- Settings (only settings that already exist) ----
   function renderSettings() { const a = api.alive(), dz = api.padSettings().deadzone;
     $('set-sound').checked = a.sound; $('set-fx').checked = a.fx; $('set-weather').checked = a.weather;

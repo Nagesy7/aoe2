@@ -11,7 +11,7 @@ import { NetSession, TabsBus, RelayBus, HttpBus, httpRelayBase, defaultRelayUrl,
 import { CIVS, CIV_IDS } from './civs.js';
 import { setupComputers } from './ai.js';
 import { initMenu } from './menu.js';
-import { initKibble, equipCosmetic, openKibblePanel, kibbleState, kibblePay, tierNow, myLoadout, loadoutWire, loadoutFromWire } from './kibble-ui.js';
+import { initKibble, equipCosmetic, openKibblePanel, renderShop, shopClick, kibbleState, kibblePay, tierNow, myLoadout, loadoutWire, loadoutFromWire } from './kibble-ui.js';
 import { initRaid, openRaid } from './raid-ui.js';
 import { startTicket, submitMatch, resultText } from './score.js';
 import { mountCivCards } from './civcards.js';
@@ -430,7 +430,7 @@ loadShared().then(fn => { if (fn) { moodClient.useShared(fn); moodState.shared =
 window.game.mood = { get: () => moodState.mood, state: moodState, client: moodClient, screen: moodScreen };
 // Title menu: Campaign · Skirmish · Multiplayer · Store · Settings (src/menu.js; UI only)
 const padStore = () => { try { const o = JSON.parse(localStorage.getItem('inu-pad') || '{}'); return { deadzone: Number.isFinite(+o.deadzone) && o.deadzone != null ? +o.deadzone : 0.18 }; } catch { return { deadzone: 0.18 }; } };
-window.game.menu = initMenu({ kibble: () => kibbleState(), equip: id => equipCosmetic(id), tier: () => tierNow(), openKibble: tab => openKibblePanel(tab), alive: () => aliveSettings(), setAlive: setAliveOpt,
+window.game.menu = initMenu({ kibble: () => kibbleState(), equip: id => equipCosmetic(id), renderShop, shopClick, tier: () => tierNow(), openKibble: tab => openKibblePanel(tab), alive: () => aliveSettings(), setAlive: setAliveOpt,
   pad: () => pad, padSettings: () => pad ? pad.settings : padStore(), setDeadzone: v => { if (pad) pad.set({ deadzone: v }); else try { localStorage.setItem('inu-pad', JSON.stringify({ ...padStore(), deadzone: v })); } catch {} } });
 // Legacy / direct single-player URLs (?enemy=, ?scenario=, ?raids=, ?play=sp) skip the menu.
 if (params.get('play') === 'ai' || params.get('play') === 'watch') startGame({ ai: { civ: $('civ').value, enemy: $('ai-civ').value, spectate: params.get('play') === 'watch' }, seed: +(params.get('seed') || 7) });

@@ -18,19 +18,28 @@ function apply() { const c = K.COSMETICS[s.equipped.colour]; if (c && c.value) T
   const t = s.equipped.title ? K.COSMETICS[s.equipped.title].name : null; const el = $('kid');
   el.innerHTML = `<b>[${s.me.pack}]</b> ${s.me.name}${t ? ` <i>· ${t}</i>` : ''} · ${s.me.rating} Elo · 🦴 ${s.bones}`; }
 const period = () => { const d = new Date(); return { day: d.toISOString().slice(0, 10), month: d.toISOString().slice(0, 7) }; };
+// ---- Kibble shop: shown in the main menu Store (src/menu.js), moved from this panel unchanged: same items, prices, notes, buy flow ----
+const onTitle = () => { const m = $('menu'); return !!m && m.style.display !== 'none' && getComputedStyle(m).display !== 'none'; };
+const BADGE = () => REAL ? 'LIVE · Phantom · cosmetics only' : 'SIMULATED · demo only · no real wallet or transactions';
+export const shopNote = () => `<span class="ksim">${BADGE()}</span> <span class="kh">${REAL ? `Real $KIBBLE via Phantom. Prices include the 2% split (1% President's Vault ${K.vaultLink()}, 1% prize pools). Cosmetic only: no stats, resources or build speed.` : `2% fee on every purchase: 1% to the President's Vault (${K.vaultLink()}), 0.25% daily, 0.5% weekly, 0.25% monthly prize pools.`}</span>`;
+export const shopGrid = () => REAL ? `<div class="kgrid">${K.SHOP.map(id => { const c = K.COSMETICS[id], own = s.owned.includes(id);
+    return `<div class="kitem"><b>${c.name}</b><small>${Number(c.price).toLocaleString()} $KIBBLE${c.tier !== 'none' ? ` · ${c.tier}+` : ''}</small>${own ? `<button data-eq="${id}" class="${s.equipped[c.kind] === id ? 'on' : ''}">${s.equipped[c.kind] === id ? 'Equipped' : 'Equip'}</button>` : `<button data-buy="${id}">Buy</button>`}</div>`; }).join('')}</div>` : `<div class="kgrid">${K.SHOP.map(id => { const c = K.COSMETICS[id], q = K.feeSplit(K.toU(c.price)), own = s.owned.includes(id);
+    return `<div class="kitem"><b>${c.name}</b><small>${c.price} + ${K.fmtK(q.fee)} fee = ${K.fmtK(q.total)} $KIBBLE${c.tier !== 'none' ? ` · ${c.tier}+` : ''}</small>${own ? `<button data-eq="${id}" class="${s.equipped.skin === id ? 'on' : ''}">${s.equipped.skin === id ? 'Equipped' : 'Equip'}</button>` : `<button data-buy="${id}">${REAL ? 'Buy' : 'Buy (simulated)'}</button>`}</div>`; }).join('')}</div>`;
+let shopEl = null, shopFootEl = null;
+export function renderShop(grid, foot) { shopEl = grid; shopFootEl = foot; grid.innerHTML = shopGrid(); if (foot) foot.innerHTML = `<div class="kshop-note">${shopNote()}</div><div id="kb-shop-msg" role="status"></div>`; }
+const refreshShop = () => { if (shopEl?.isConnected && shopEl.dataset.shop === '1') shopEl.innerHTML = shopGrid(); };
+export const shopClick = e => onClick(e);
 function render() {
-  const tr = K.tier(s), tab = $('kb').dataset.tab || 'wallet', B = (a, l, dis = false) => `<button data-k="${a}" ${dis ? 'disabled' : ''}>${l}</button>`;
-  const tabs = ['wallet', 'kennel', 'shop', 'ladder', 'pools', 'packs', 'cup'].map(t => `<button class="kt${t === tab ? ' on' : ''}" data-tab="${t}">${{ wallet: 'Wallet & tiers', kennel: 'Kibble Kennel', shop: 'Kibble shop', ladder: 'Ranked ladder', pools: "Pools & Vault", packs: 'Packs', cup: 'Kibble Cup' }[t]}</button>`).join('');
+  const tr = K.tier(s), tab = ($('kb').dataset.tab === 'shop' ? '' : $('kb').dataset.tab) || 'wallet', B = (a, l, dis = false) => `<button data-k="${a}" ${dis ? 'disabled' : ''}>${l}</button>`;
+  const tabs = ['wallet', 'kennel', 'ladder', 'pools', 'packs', 'cup'].map(t => `<button class="kt${t === tab ? ' on' : ''}" data-tab="${t}">${{ wallet: 'Wallet & tiers', kennel: 'Kibble Kennel', shop: 'Kibble shop', ladder: 'Ranked ladder', pools: "Pools & Vault", packs: 'Packs', cup: 'Kibble Cup' }[t]}</button>`).join('')
+    // the Kibble shop moved to the main menu Store (title only: never opened mid-match)
+    + (onTitle() ? `<button class="kt" data-k="to-store">🛍 Kibble shop ▸ Store</button>` : `<button class="kt" disabled title="Main menu ▸ Store">🛍 Kibble shop: main menu ▸ Store</button>`);
   let body = '';
   if (tab === 'wallet') body = `<p>${s.wallet ? `Connected <code>${s.wallet.address}</code> ${REAL ? '(Phantom, signed in)' : '(demo wallet, nothing on-chain)'}` : REAL ? 'Not connected. Connect Phantom to save your progress to your wallet, use your $KIBBLE cosmetics and get your holder tier.' : 'Not connected.'}</p>
     <p>Balance: <b>${K.fmtK(s.kibbleU)} $KIBBLE</b> ${REAL ? '(on-chain)' : '(demo)'} · Tier: <b id="kb-tier">${tr.name}</b> · Bones (free, never cashed out): ${s.bones}</p>
     ${s.wallet ? B('disconnect', 'Disconnect') : B('connect', REAL ? '🔗 Connect Wallet (Phantom)' : 'Connect wallet (simulated)')}
     <p class="kh">Tiers: ${K.TIERS.slice(1).map(t => `${t.name} ≥ ${t.min.toLocaleString()}`).join(' · ')}. Tiers unlock cosmetics only: skins, banners, team colours, titles. Never stats, resources or build speed.</p>
     <div class="kgrid">${Object.entries(K.COSMETICS).filter(([, c]) => !c.price).map(([id, c]) => `<button data-eq="${id}" ${K.canUse(s, id) ? '' : 'disabled'} class="${s.equipped[c.kind] === id ? 'on' : ''}">${c.name}<small>${c.kind} · ${c.tier === 'none' ? 'free' : c.tier}</small></button>`).join('')}</div>`;
-  if (tab === 'shop') body = `<p class="kh">2% fee on every purchase: 1% to the President's Vault (${K.vaultLink()}), 0.25% daily, 0.5% weekly, 0.25% monthly prize pools.</p><div class="kgrid">${K.SHOP.map(id => { const c = K.COSMETICS[id], q = K.feeSplit(K.toU(c.price)), own = s.owned.includes(id);
-    return `<div class="kitem"><b>${c.name}</b><small>${c.price} + ${K.fmtK(q.fee)} fee = ${K.fmtK(q.total)} $KIBBLE${c.tier !== 'none' ? ` · ${c.tier}+` : ''}</small>${own ? `<button data-eq="${id}" class="${s.equipped.skin === id ? 'on' : ''}">${s.equipped.skin === id ? 'Equipped' : 'Equip'}</button>` : `<button data-buy="${id}">${REAL ? 'Buy' : 'Buy (simulated)'}</button>`}</div>`; }).join('')}</div><div id="kb-msg"></div>`;
-  if (tab === 'shop' && REAL) body = `<p class="kh">Real $KIBBLE via Phantom. Prices include the 2% split (1% President's Vault ${K.vaultLink()}, 1% prize pools). Cosmetic only: no stats, resources or build speed.</p><div class="kgrid">${K.SHOP.map(id => { const c = K.COSMETICS[id], own = s.owned.includes(id);
-    return `<div class="kitem"><b>${c.name}</b><small>${Number(c.price).toLocaleString()} $KIBBLE${c.tier !== 'none' ? ` · ${c.tier}+` : ''}</small>${own ? `<button data-eq="${id}" class="${s.equipped[c.kind] === id ? 'on' : ''}">${s.equipped[c.kind] === id ? 'Equipped' : 'Equip'}</button>` : `<button data-buy="${id}">Buy</button>`}</div>`; }).join('')}</div><div id="kb-msg"></div>`;
   if (tab === 'ladder') { const rows = K.rank([s.me, ...K.RIVALS]);
     body = `<p class="kh">Elo (K=${K.K}). Ranked by rating; ties go to more wins, then fewer minutes per win. Free to play; no wallet needed for ranked.</p>
     <table><tr><th>#</th><th>Player</th><th>Elo</th><th>W-L</th><th>min/win</th></tr>${rows.map((p, i) => `<tr class="${p === s.me ? 'me' : ''}"><td>${i + 1}</td><td>[${p.pack}] ${p.name}</td><td>${p.rating}</td><td>${p.wins}-${p.losses}</td><td>${p.wins ? (p.minutesWon / p.wins).toFixed(1) : '-'}</td></tr>`).join('')}</table>
@@ -50,17 +59,24 @@ function render() {
   if (tab === 'cup') body = `<p><b>Kibble Cup</b>, ${period().month} (stub). Free monthly holder tournament: any tier may enter, no entry fee. The bracket runs on the future server.</p>
     ${B('cup', 'Enter Kibble Cup (free)')}<div id="kb-msg"></div><p>Entrants: ${s.cup.month === period().month ? s.cup.entrants.join(', ') || 'none yet' : 'none yet'}</p>`;
   if (tab === 'kennel') body = kennelBody();
-  $('kb-body').innerHTML = `<div class="ktabs">${tabs}</div>${body}`;
+  $('kb-body').innerHTML = `<div class="ktabs">${tabs}</div>${body}`; refreshShop();
 }
-function msg(t) { const m = $('kb-msg'); if (m) m.textContent = t; }
+function msg(t) { const kb = $('kb'), m = (kb?.style.display === 'flex' && kb.querySelector('#kb-msg')) || $('kb-shop-msg') || $('kb-msg'); if (m) m.textContent = t; }
 export function initKibble() {
-  document.body.insertAdjacentHTML('beforeend', `<div id="kid"></div><div id="kb" class="kb" data-tab="wallet"><div class="kpanel"><div class="khead"><b>$KIBBLE network</b> <span class="ksim">${REAL ? 'LIVE · Phantom · cosmetics only' : 'SIMULATED · demo only · no real wallet or transactions'}</span><button id="kb-close">✕</button></div><div id="kb-body"></div></div></div>`);
+  document.body.insertAdjacentHTML('beforeend', `<div id="kid"></div><div id="kb" class="kb" data-tab="wallet"><div class="kpanel"><div class="khead"><b>$KIBBLE network</b> <span class="ksim">${BADGE()}</span><button id="kb-close">✕</button></div><div id="kb-body"></div></div></div>`);
   for (const id of ['btn-kibble', 'kb-open']) $(id)?.addEventListener('click', () => { $('kb').style.display = 'flex'; render(); });
   $('kb-close').onclick = () => { $('kb').style.display = 'none'; };
-  $('kb').addEventListener('click', e => { const b = e.target.closest('button'); if (!b || b.disabled) return;
+  $('kb').addEventListener('click', onClick);
+  $('kb').addEventListener('input', kennelInput);
+  initKennel(s, KENNEL_OPTS());
+  apply();
+  if (REAL) bootReal();
+}
+function onClick(e) { const b = e.target.closest('button'); if (!b || b.disabled) return;
     if (b.dataset.tab) $('kb').dataset.tab = b.dataset.tab;
     if (kennelClick(b)) return;
     const k = b.dataset.k;
+    if (k === 'to-store') { $('kb').style.display = 'none'; dispatchEvent(new CustomEvent('empires:store', { detail: { tab: 'shop' } })); return; }
     if (REAL && k === 'connect') { msg('Approve the sign-in message in Phantom…'); walletUi?.connect(); return; }
     if (REAL && k === 'disconnect') { KP?.disconnect().then(() => { K.applyWallet(s, {}); save(); apply(); render(); walletUi?.el && location.reload(); }); return; }
     if (REAL && b.dataset.buy) { buyReal(b.dataset.buy, b); return; }
@@ -73,17 +89,13 @@ export function initKibble() {
     let note = '';
     if (b.dataset.buy) { const r = K.buy(s, b.dataset.buy); note = r.ok ? `Bought (simulated). Fee ${K.fmtK(r.q.fee)}: ${K.fmtK(r.q.owner)} to the President's Vault, ${K.fmtK(r.q.daily + r.q.weekly + r.q.monthly)} to pools.` : r.reason; }
     if (k === 'cup') { const r = K.joinCup(s, period().month); note = r.ok ? 'Entered (free).' : r.reason; }
-    save(); apply(); render(); if (note) msg(note); });
-  $('kb').addEventListener('input', kennelInput);
-  initKennel(s, { real: REAL, kp: () => KP, connect: () => walletUi?.connect(), wallet: () => s.wallet?.address || null, balance: () => s.wallet ? Number(s.kibbleU || 0) / 1e6 : Infinity,
+    save(); apply(); render(); if (note) msg(note); }
+const KENNEL_OPTS = () => ({ real: REAL, kp: () => KP, connect: () => walletUi?.connect(), wallet: () => s.wallet?.address || null, balance: () => s.wallet ? Number(s.kibbleU || 0) / 1e6 : Infinity,
     onChange: persist => { if (persist) save(); if ($('kb')?.style.display === 'flex' && $('kb').dataset.tab === 'kennel') render(); try { dispatchEvent(new CustomEvent('empires:kennel', { detail: myLoadout() })); } catch {} } });
-  apply();
-  if (REAL) bootReal();
-}
 async function syncWallet(w) { // on connect / restore: on-chain balance -> tier, server inventory -> owned items
   if (!w?.address) { K.applyWallet(s, {}); } else { const inv = await KP.inventory(GAME).catch(() => ({})); K.applyWallet(s, { address: w.address, units: w.units ?? (await KP.balance().catch(() => ({ units: 0 }))).units, inventory: inv }); }
   refreshKennel().catch(() => {});
-  save(); apply(); if ($('kb')?.style.display === 'flex') render(); try { dispatchEvent(new CustomEvent('empires:wallet', { detail: { owned: s.owned, tier: K.tier(s) } })); } catch {}
+  save(); apply(); if ($('kb')?.style.display === 'flex') render(); else refreshShop(); try { dispatchEvent(new CustomEvent('empires:wallet', { detail: { owned: s.owned, tier: K.tier(s) } })); } catch {}
 }
 async function buyReal(id, b) {
   if (!KP || !KP.live) return msg('$KIBBLE payments are offline right now.');
@@ -104,6 +116,6 @@ async function bootReal() {
       onWallet: w => syncWallet(w).catch(() => {}) });
   } catch (e) { console.warn('kibble-pay unavailable', e); }
 }
-// Title Store / Settings hooks (src/menu.js): same equip rule as the panel's Equip button (K.canUse), no buying here.
-export function equipCosmetic(id) { const ok = K.equip(s, id); if (ok) { save(); apply(); if ($('kb')?.style.display === 'flex') render(); } return ok; }
+// Title Store / Settings hooks (src/menu.js): same equip rule as the panel's Equip button (K.canUse); buying goes through renderShop / shopClick above.
+export function equipCosmetic(id) { const ok = K.equip(s, id); if (ok) { save(); apply(); if ($('kb')?.style.display === 'flex') render(); else refreshShop(); } return ok; }
 export function openKibblePanel(tab = 'wallet') { const kb = $('kb'); if (!kb) return; kb.dataset.tab = tab; kb.style.display = 'flex'; render(); requestAnimationFrame(() => kb.querySelector(`[data-tab="${tab}"]`)?.focus?.()); }
