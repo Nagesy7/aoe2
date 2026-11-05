@@ -1,11 +1,11 @@
-lockstep-tabs browser proof 2026-10-14T10:21:19.807Z base=https://aoe2-ashen.vercel.app/ mode=BroadcastChannel (two tabs, one browser) speed=4x
+lockstep-tabs browser proof 2026-11-05T05:22:30.427Z base=https://aoe2-ashen.vercel.app/ mode=BroadcastChannel (two tabs, one browser) speed=4x
   saved proof/lockstep-tabs-01-menu.png
-  room code RXDK
+  room code LQCP
 PASS: host lobby: both players connected
   saved proof/lockstep-tabs-02-lobby-guest.png
 PASS: guest sees host Ready
 PASS: roles: host = player 1 (player), guest = player 2 (enemy)
-PASS: same map seed on both (888902374)
+PASS: same map seed on both (1032180732)
 PASS: mirrored bases: host TC at (20,20), guest TC at (64,64); each camera starts on its own TC
   guest: gather berries #68, gold #110, house at (61,65), 2 villagers queued; commands issued 5
   host: gather berries #5, gold #47, house at (26,21), 2 villagers queued; commands issued 5
@@ -17,24 +17,24 @@ PASS: both houses completed
 PASS: both barracks completed
   saved proof/lockstep-tabs-05-host-militia.png
 PASS: host selected 1 militia
-PASS: host right-click on the enemy Town Center = attack order (crosshair target)
+PASS: host right-click on the enemy Den Hall = attack order on it (local marker: attack)
 PASS: combat happened (1 hits logged)
   saved proof/lockstep-tabs-06-host-attacking.png
   saved proof/lockstep-tabs-07-guest-under-attack.png
   saved proof/lockstep-tabs-08-stall-indicator.png
-PASS: host stalls while guest is frozen: "Waiting for opponent… (1.5 s)", advanced only 3 ticks in 1.5 s at 4x
+PASS: host stalls while guest is frozen: "Waiting for opponent… (0.3 s)", advanced only 4 ticks while frozen at 4x
 PASS: host resumes after guest is back; indicator hidden
   running to tick 2400 (120 s of game time)...
 PASS: no desync on either client (host: none, guest: none)
-PASS: 148 hash checkpoints (every 20 ticks) compared offline: 0 mismatches
-PASS: live hash exchange confirmed 148 (host) / 148 (guest) matches
+PASS: 147 hash checkpoints (every 20 ticks) compared offline: 0 mismatches
+PASS: live hash exchange confirmed 147 (host) / 147 (guest) matches
 PASS: commands from real input: host 9, guest 9
-  last checkpoint: tick 2960 host f53d6418 guest f53d6418
-  host HUD: Ping 659 ms · Delay 3 ticks (150 ms) · Tick 2974 · sync ✓ 148 · same-browser tabs · room RXDK
-  guest HUD: Ping 2 ms · Delay 3 ticks (150 ms) · Tick 2977 · sync ✓ 148 · same-browser tabs · room RXDK
-  total stall time: host 2467 ms, guest 333 ms
-  host  view: {"tick":2976,"units":"ememevevevevevpmpmpvpvpvpvpv","buildings":6,"p1":{"food":70,"wood":0,"gold":160,"stone":100},"p2":{"food":70,"wood":0,"gold":160,"stone":100},"deaths":0}
-  guest view: {"tick":2977,"units":"ememevevevevevpmpmpvpvpvpvpv","buildings":6,"p1":{"food":70,"wood":0,"gold":160,"stone":100},"p2":{"food":70,"wood":0,"gold":160,"stone":100},"deaths":0}
+  last checkpoint: tick 2940 host 53a058ee guest 53a058ee
+  host HUD: Ping 458 ms · Delay 3 ticks (150 ms) · Tick 2957 · sync ✓ 147 · same-browser tabs · room LQCP
+  guest HUD: Ping 1 ms · Delay 3 ticks (150 ms) · Tick 2959 · sync ✓ 147 · same-browser tabs · room LQCP
+  total stall time: host 3200 ms, guest 883 ms
+  host  view: {"tick":2959,"units":"ememevevevevevpmpvpvpvpvpv","buildings":6,"p1":{"food":20,"wood":0,"gold":100,"stone":100},"p2":{"food":20,"wood":0,"gold":100,"stone":100},"deaths":1}
+  guest view: {"tick":2960,"units":"ememevevevevevpmpvpvpvpvpv","buildings":6,"p1":{"food":20,"wood":0,"gold":100,"stone":100},"p2":{"food":20,"wood":0,"gold":100,"stone":100},"deaths":1}
   saved proof/lockstep-tabs-09-host-final.png
   saved proof/lockstep-tabs-10-guest-final.png
 PASS: host notices the guest leaving: "Opponent disconnected — waiting for them to return…"
