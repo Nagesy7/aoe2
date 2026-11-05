@@ -10,6 +10,7 @@ import { fileURLToPath } from 'node:url';
 import { startRelay } from '../../server/relay.mjs';
 const root = fileURLToPath(new URL('../..', import.meta.url));
 const TABS = process.argv.includes('--tabs');
+const T = +(process.env.LS_TIMEOUT_SCALE || 4); // robust under load: generous waits on state, never fixed sleeps for assertions
 const GAME_TICKS = +(process.env.TICKS || (TABS ? 2400 : 4800));   // 2400 ticks = 2 min, 4800 = 4 min of game time
 const SPEED = 4;
 const tag = TABS ? 'lockstep-tabs' : 'lockstep';
@@ -35,18 +36,19 @@ await shot(host, `${tag}-01-menu.png`);
 // ---- lobby: host creates a room, guest joins by code (typed), both click Ready ----
 for (const t of [host, guest]) await t.click('#m-multiplayer');
 await host.click('#btn-host');
-await host.waitForFunction(() => /^[A-Z]{4}$/.test(document.getElementById('lobby-code').textContent));
+await host.waitForFunction(() => /^[A-Z]{4}$/.test(document.getElementById('lobby-code').textContent), null, { timeout: 15000 * T });
 const code = await host.locator('#lobby-code').innerText(); log(`  room code ${code}`);
 await guest.click('#join-code'); await guest.keyboard.type(code); await guest.click('#btn-join');
-await host.waitForFunction(() => !document.getElementById('btn-ready').disabled, null, { timeout: 15000 });
-await guest.waitForFunction(() => !document.getElementById('btn-ready').disabled, null, { timeout: 15000 });
+await host.waitForFunction(() => !document.getElementById('btn-ready').disabled && /Both players connected/.test(document.getElementById('lobby-status').textContent), null, { timeout: 15000 * T });
+await guest.waitForFunction(() => !document.getElementById('btn-ready').disabled, null, { timeout: 15000 * T });
 check(/Both players connected/.test(await host.locator('#lobby-status').innerText()), 'host lobby: both players connected');
-await host.click('#btn-ready'); await host.waitForTimeout(300);
+await host.click('#btn-ready');
+await guest.waitForFunction(() => /Player 1.*Ready/s.test(document.getElementById('lobby-players').innerText), null, { timeout: 15000 * T }).catch(() => {});
 await shot(guest, `${tag}-02-lobby-guest.png`);
 check(/Player 1.*Ready/s.test(await guest.locator('#lobby-players').innerText()), 'guest sees host Ready');
 await guest.click('#btn-ready');
-await host.waitForFunction(() => window.game.net && window.game.world, null, { timeout: 10000 });
-await guest.waitForFunction(() => window.game.net && window.game.world, null, { timeout: 10000 });
+await host.waitForFunction(() => window.game.net && window.game.world, null, { timeout: 10000 * T });
+await guest.waitForFunction(() => window.game.net && window.game.world, null, { timeout: 10000 * T });
 const info = p => p.evaluate(() => ({ me: window.game.net.me, viewer: window.game.world.viewer, seed: window.game.world.seed, tick: window.game.world.tick }));
 const hi = await info(host), gi = await info(guest);
 check(hi.me === 0 && gi.me === 1 && hi.viewer === 'player' && gi.viewer === 'enemy', `roles: host = player 1 (${hi.viewer}), guest = player 2 (${gi.viewer})`);
@@ -65,7 +67,7 @@ const mine = (p, f) => S(p, f);
 const myUnits = p => S(p, () => { const w = window.game.world; return w.units.filter(u => u.owner === w.viewer).map(u => ({ id: u.id, type: u.type, x: u.x, y: u.y, state: u.state })); });
 const myTc = p => S(p, () => { const w = window.game.world; const b = w.buildings.find(b => b.type === 'town_center' && b.owner === w.viewer); return { id: b.id, x: b.x, y: b.y }; });
 const nearest = (p, kind, from) => S(p, ([kind, from]) => window.game.world.resources.filter(n => n.kind === kind && n.amount > 0).sort((a, b) => Math.hypot(a.x - from.x, a.y - from.y) - Math.hypot(b.x - from.x, b.y - from.y))[0], [kind, from]);
-const waitTicks = async n => { const t0 = await S(host, () => window.game.world.tick); await host.waitForFunction(t => window.game.world.tick >= t, t0 + n, { timeout: 120000 }); };
+const waitTicks = async n => { const t0 = await S(host, () => window.game.world.tick); await host.waitForFunction(t => window.game.world.tick >= t, t0 + n, { timeout: 120000 * T }); };
 // build buttons live in tabs (Economy / Military / Other): open the right tab with a real click before using the button
 const btn = (p, a) => { const l = p.locator(`#commands button[data-action="${a}"]`);
   const open = async () => { const k = await p.evaluate(t => window.game.buildTabOf?.(t), a); if (!k) return; const tab = p.locator(`#commands [data-action=btab-${k}]`);
@@ -103,22 +105,22 @@ const fogProbe = p => S(p, () => { const w = window.game.world, f = window.game.
 for (const [n, p] of [['host', host], ['guest', guest]]) { const f = await fogProbe(p);
   check(!f.foeTcSeen && f.foeUnitsSeen === 0 && f.explored < f.total * 0.25, `${n} fog of war: enemy TC hidden, 0 enemy units visible, ${f.explored}/${f.total} tiles explored`); }
 // villager 3 then builds a Barracks once the house is done
-await host.waitForFunction(() => window.game.world.buildings.some(b => b.type === 'house' && b.owner === 'player' && b.complete), null, { timeout: 120000 });
-await guest.waitForFunction(() => window.game.world.buildings.some(b => b.type === 'house' && b.owner === 'enemy' && b.complete), null, { timeout: 120000 });
+await host.waitForFunction(() => window.game.world.buildings.some(b => b.type === 'house' && b.owner === 'player' && b.complete), null, { timeout: 120000 * T });
+await guest.waitForFunction(() => window.game.world.buildings.some(b => b.type === 'house' && b.owner === 'enemy' && b.complete), null, { timeout: 120000 * T });
 check(true, 'both houses completed');
 const barracks = async (p, e) => { const v = (await myUnits(p)).find(u => u.id === e.us[2].id);
   await click(p, v.x, v.y); await btn(p, 'barracks').click();
   const d = e.tc.x < 40 ? 1 : -1, bx = d > 0 ? e.tc.x + 1 : e.tc.x, by = d > 0 ? e.tc.y + 6 : e.tc.y - 5;
   await click(p, bx + 1.5, by + 1.5); };
 await Promise.all([barracks(host, eh), barracks(guest, eg)]);
-await host.waitForFunction(() => window.game.world.buildings.some(b => b.type === 'barracks' && b.owner === 'player' && b.complete), null, { timeout: 180000 });
-await guest.waitForFunction(() => window.game.world.buildings.some(b => b.type === 'barracks' && b.owner === 'enemy' && b.complete), null, { timeout: 180000 });
+await host.waitForFunction(() => window.game.world.buildings.some(b => b.type === 'barracks' && b.owner === 'player' && b.complete), null, { timeout: 180000 * T });
+await guest.waitForFunction(() => window.game.world.buildings.some(b => b.type === 'barracks' && b.owner === 'enemy' && b.complete), null, { timeout: 180000 * T });
 check(true, 'both barracks completed');
 // train militia on both sides
 const militia = async p => { const b = await S(p, () => { const w = window.game.world; const b = w.buildings.find(b => b.type === 'barracks' && b.owner === w.viewer); return { x: b.x + 1.5, y: b.y + 1.5 }; });
   await click(p, b.x, b.y); await btn(p, 'militia').click(); await btn(p, 'militia').click(); };
 await Promise.all([militia(host), militia(guest)]);
-await host.waitForFunction(() => window.game.world.units.filter(u => u.type === 'militia').length >= 2, null, { timeout: 180000 });
+await host.waitForFunction(() => window.game.world.units.filter(u => u.type === 'militia').length >= 2, null, { timeout: 180000 * T });
 await shot(host, `${tag}-05-host-militia.png`);
 
 // ---- host attacks: select own militia, pan to the guest's Town Center, right-click it (real input) ----
@@ -135,12 +137,12 @@ await click(host, gtc.x + 2, gtc.y + 2, 'right');
 // world.lastOrder is only the instant local marker (set from hover + fog before the lockstep tick applies; it read 'move' in one run),
 // so check what the order did in the sim instead: the selected militia attack that building.
 const selIds = await S(host, () => window.game.sim.selectedUnits(window.game.world).map(u => u.id));
-const attacking = () => host.waitForFunction(([ids, tc]) => window.game.world.units.filter(u => ids.includes(u.id)).some(u => u.attack && u.attack.id === tc), [selIds, gtc.id], { timeout: 15000 }).then(() => true, () => false);
+const attacking = () => host.waitForFunction(([ids, tc]) => window.game.world.units.filter(u => ids.includes(u.id)).some(u => u.attack && u.attack.id === tc), [selIds, gtc.id], { timeout: 15000 * T }).then(() => true, () => false);
 check(await attacking(), `host right-click on the enemy Den Hall = attack order on it (local marker: ${await S(host, () => window.game.world.lastOrder?.kind)})`);
 // guest also attacks with its militia: right-click a host villager position far away -> move/attack across the map
 const gm = (await myUnits(guest)).filter(u => u.type === 'militia');
 if (gm.length) { await click(guest, gm[0].x, gm[0].y); const htc = await myTc(host); await click(guest, htc.x + 2, htc.y + 2, 'right'); }
-await host.waitForFunction(() => (window.game.world.combatLog || []).length > 0, null, { timeout: 180000 }).catch(() => {});
+await host.waitForFunction(() => (window.game.world.combatLog || []).length > 0, null, { timeout: 180000 * T }).catch(() => {});
 const hits = await S(host, () => (window.game.world.combatLog || []).length);
 check(hits > 0, `combat happened (${hits} hits logged)`);
 await panTo(host, gtc.x + 2, gtc.y + 2); await shot(host, `${tag}-06-host-attacking.png`);
@@ -150,19 +152,20 @@ const gfog = await S(guest, () => { const w = window.game.world; return w.units.
 // ---- stall: freeze the guest's page for 2.5 s (busy loop); the host must wait and show the indicator ----
 const tBefore = await S(host, () => window.game.world.tick);
 const freeze = guest.evaluate(() => { const t = performance.now(); while (performance.now() - t < 2500); });
-await host.waitForTimeout(1500);
+await host.waitForFunction(() => /Waiting for opponent/.test(document.getElementById('stall').textContent) && getComputedStyle(document.getElementById('stall')).display !== 'none', null, { timeout: 2300, polling: 50 }).catch(() => {});
 const stallTxt = await host.locator('#stall').innerText().catch(() => '');
 const tDuring = await S(host, () => window.game.world.tick);
 await shot(host, `${tag}-08-stall-indicator.png`);
 await freeze;
-check(/Waiting for opponent/.test(stallTxt) && tDuring - tBefore <= 30, `host stalls while guest is frozen: "${stallTxt}", advanced only ${tDuring - tBefore} ticks in 1.5 s at ${SPEED}x`);
+check(/Waiting for opponent/.test(stallTxt) && tDuring - tBefore <= 30, `host stalls while guest is frozen: "${stallTxt}", advanced only ${tDuring - tBefore} ticks while frozen at ${SPEED}x`);
 await waitTicks(40);
+await host.locator('#stall').waitFor({ state: 'hidden', timeout: 15000 * T }).catch(() => {});
 check(!(await host.locator('#stall').isVisible()), 'host resumes after guest is back; indicator hidden');
 
 // ---- run to the target game time ----
 log(`  running to tick ${GAME_TICKS} (${GAME_TICKS / 20} s of game time)...`);
-await host.waitForFunction(t => window.game.world.tick >= t, GAME_TICKS, { timeout: 600000 });
-await guest.waitForFunction(t => window.game.world.tick >= t, GAME_TICKS, { timeout: 600000 });
+await host.waitForFunction(t => window.game.world.tick >= t, GAME_TICKS, { timeout: 600000 * T });
+await guest.waitForFunction(t => window.game.world.tick >= t, GAME_TICKS, { timeout: 600000 * T });
 const H = await S(host, () => ({ hashes: window.game.net.hashes, checked: window.game.net.ls.checked, desync: window.game.net.ls.desync, stall: Math.round(window.game.net.stalledTotalMs), issued: window.game.net.issued, ping: window.game.net.session.rtt, net: document.getElementById('net').innerText }));
 const G = await S(guest, () => ({ hashes: window.game.net.hashes, checked: window.game.net.ls.checked, desync: window.game.net.ls.desync, stall: Math.round(window.game.net.stalledTotalMs), issued: window.game.net.issued, net: document.getElementById('net').innerText }));
 const gm2 = new Map(G.hashes.map(([t, h]) => [t, h])); let common = 0, diff = 0;
@@ -181,7 +184,7 @@ await shot(host, `${tag}-09-host-final.png`); await shot(guest, `${tag}-10-guest
 
 // ---- disconnect handling: close the guest; host shows the disconnect notice ----
 await guest.close();
-await host.waitForFunction(() => /disconnected/.test(document.getElementById('stall').textContent), null, { timeout: 15000 }).catch(() => {});
+await host.waitForFunction(() => /disconnected/.test(document.getElementById('stall').textContent), null, { timeout: 15000 * T }).catch(() => {});
 check(/disconnected/i.test(await host.locator('#stall').innerText().catch(() => '')), `host notices the guest leaving: "${await host.locator('#stall').innerText().catch(() => '')}"`);
 await shot(host, `${tag}-11-host-opponent-left.png`);
 

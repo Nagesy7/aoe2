@@ -130,6 +130,19 @@ export default async function (argv) {
   const t2 = await sm.locator('#pad-toast').boundingBox(); await sm.S(() => window.__pad.tap(9)); const m2 = await sm.locator('#pad-menu').boundingBox();
   c(t2.x >= 0 && t2.x + t2.width <= 750 && t2.y + t2.height <= 342 && m2.y >= 0 && m2.y + m2.height <= 342, `750x342: toast ${Math.round(t2.width)}x${Math.round(t2.height)} and menu ${Math.round(m2.width)}x${Math.round(m2.height)} fit`);
   if (shots) await shot(sm, join(SHOTS, 'gamepad-menu-750x342.png'));
+  // ---- R1/RB: next military unit (own page; test-only militia/archer clones so the main page's replay is untouched) ----
+  { const q = await newPage({ phone: true }); await q.addInitScript(MOCK); await openTitle(q, url); await startSandbox(q);
+    await q.S(id => window.__pad.connect(id), PS_ID); await q.waitForFunction(() => window.game.pad); await q.waitForTimeout(200);
+    const ids = await q.S(() => { const w = window.game.world, v = w.units.find(u => u.owner === 'player' && u.type === 'villager'), out = [];
+      for (const [t, dx, st] of [['militia', 3, undefined], ['archer', 6, 'garrisoned'], ['archer', 9, undefined]]) { const u = JSON.parse(JSON.stringify(v)); u.id = w.nextId++; u.type = t; u.x += dx; u.state = st || 'idle'; u.task = null; w.units.push(u); if (!st) out.push(u.id); }
+      window.game.sim.selectUnits(w, [v]); return out; });
+    const rb = async () => { const cam0 = await q.S(() => ({ ...window.game.cam })); await q.S(B => window.__pad.tap(B.rb), B); await q.waitForTimeout(120);
+      return q.S(c0 => { const s = window.game.sim.selectedUnits(window.game.world); return { ids: s.map(u => u.id), moved: window.game.cam.x !== c0.x || window.game.cam.y !== c0.y }; }, cam0); };
+    const r1 = await rb(), r2 = await rb(), r3 = await rb();
+    c(r1.ids.length === 1 && r1.ids[0] === ids[0], `R1 from a selected villager -> first military unit (#${r1.ids})`);
+    c(r2.ids[0] === ids[1] && r3.ids[0] === ids[0], `R1 cycles military units, skipping the garrisoned one and villagers (#${r2.ids} then #${r3.ids})`);
+    c(r1.moved || r2.moved, 'R1 centres the camera on the unit');
+    await q.context().close(); }
   await closeAll(); srv.close();
   mkdirSync(join(ROOT, 'proof'), { recursive: true }); writeFileSync(join(ROOT, 'proof/gamepad.log'), c.lines.join('\n') + `\n${c.fails ? 'SOME FAILED' : 'ALL PASS'}\n`);
   console.log(c.fails ? `RESULT: ${c.fails} FAILED` : 'RESULT: ALL PASS'); return c.fails ? 1 : 0;

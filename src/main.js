@@ -31,7 +31,8 @@ try { SFX.setMuted(JSON.parse(localStorage.getItem('inu-alive') || '{}').sound =
 let alive = null, aliveP = null;
 // Controller (src/gamepad.js): lazy-loaded on the first gamepadconnected; input only, same command path as the mouse.
 let pad = null, padP = null;
-const loadPad = gp => (padP ||= import('./gamepad.js').then(m => { pad = m.createGamepad(padApi(), { params }); window.game.pad = pad; return pad; })).then(p => { p.connected(gp); return p; });
+let padMod = null; // lazy gamepad module (nextMilitary for RB)
+const loadPad = gp => (padP ||= import('./gamepad.js').then(m => { padMod = m; pad = m.createGamepad(padApi(), { params }); window.game.pad = pad; return pad; })).then(p => { p.connected(gp); return p; });
 addEventListener('gamepadconnected', e => { loadPad(e.gamepad).catch(err => console.warn('controller support unavailable', err)); });
 function padApi() {
   const own = o => o && o.owner === viewer();
@@ -45,8 +46,7 @@ function padApi() {
       if (b && own(b) && b.trains && b.trains.length && b.complete) return !u && !hb; return false; },
     cancel: () => { if (ui.placing) { cancelPlacing(ui); return; } if (qb.amove) { qb.amove = false; syncQb(); return; } world.selection = null; world.selected = null; },
     idle: () => idleVillager(), army: () => selectArmy(), amove: () => { qb.amove = !qb.amove; syncQb(); },
-    nextUnit: () => { const us = mineU().filter(u => u.type !== 'villager' && u.type !== 'sheep' && u.state !== 'garrisoned'); if (!us.length) return; const cu = selectedUnits(world);
-      const i = cu.length === 1 ? us.findIndex(u => u.id === cu[0].id) : -1; const u = us[(i + 1) % us.length]; SIM.selectUnits(world, [u]); centerOn(u); },
+    nextUnit: () => { const u = padMod?.nextMilitary(world.units, viewer(), selectedUnits(world).map(q => q.id)); if (!u) return; SIM.selectUnits(world, [u]); centerOn(u); },
     pan: (dx, dy) => { cam.x += dx / Z; cam.y += dy / Z; clampCamera(cam, canvas.width, canvas.height, world); },
     openCommands: () => { if (getComputedStyle(cmdTab).display !== 'none' && !document.body.classList.contains('cmd-open')) cmdTab.click(); },
     focusables: () => [...document.querySelectorAll('#commands button')].filter(b => !b.disabled && b.offsetParent),
@@ -331,8 +331,9 @@ const minimap = createMinimap($('minimap'), { getWorld: () => world, getFog: () 
   jump: (x, y) => { cam.x = x * TILE - canvas.width / 2; cam.y = y * TILE - canvas.height / 2; clampCamera(cam, canvas.width, canvas.height, world); } });
 // One Inu Score: capture the winning step (tick + state hash, read-only), then send the inputs once. See src/score.js.
 let matchRep = null;
+// guest prompt is shown 700 ms after the win, once the 'Not scored' line (#msg) is up, so inu-profile.js places it clear (#msg is in InuProfileConfig.avoid)
 const inuPrompted = new WeakSet(); // guest end-of-match prompt (kibble-pay /inu-profile.js), once per match
-const noteWin = () => { if (world.winner && !inuPrompted.has(world)) { inuPrompted.add(world); try { globalThis.InuProfile?.gameOver?.(); } catch {} } if (world.winner && matchRep && !matchRep.win) matchRep.win = { tick: world.tick, hash: stateHash(world), winner: world.winner, winTime: world.winTime }; };
+const noteWin = () => { if (world.winner && !inuPrompted.has(world)) { inuPrompted.add(world); setTimeout(() => { try { globalThis.InuProfile?.gameOver?.(); } catch {} }, 700); } if (world.winner && matchRep && !matchRep.win) matchRep.win = { tick: world.tick, hash: stateHash(world), winner: world.winner, winTime: world.winTime }; };
 function maybeReport() { if (!world || !matchRep?.win || matchRep.done) return; matchRep.done = true;
   const rep = { ...matchRep, commands: world.commandLog || [], desync: !!net?.ls?.desync };
   submitMatch(kibblePay(), rep).then(r => { window.game.lastScore = r; const t = resultText(r); if (t && world) world.message = { text: t, until: world.time + 10 }; }); }

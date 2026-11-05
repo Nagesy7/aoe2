@@ -25,6 +25,10 @@ export function loadSettings(params) {
 }
 // api (from main.js): inGame(), move(x,y), primaryDown(x,y), primaryUp(x,y), secondary(x,y), smartCommand(x,y) -> bool,
 // cancel() -> bool, idle(), nextUnit(), army(), amove(), pan(dx,dy), focusables() -> [button], el(id), onFocusChange()
+// RB 'next military unit': own non-villager, non-sheep, non-garrisoned units in world order; cycles from the single selected one
+// (anything else selected -> the first). Pure, so tests/gamepad.test.mjs checks it headless. Returns the unit or null.
+export function nextMilitary(units, owner, selIds = []) { const us = units.filter(u => u.owner === owner && u.type !== 'villager' && u.type !== 'sheep' && u.state !== 'garrisoned' && !(u.hp <= 0));
+  if (!us.length) return null; const i = selIds.length === 1 ? us.findIndex(u => u.id === selIds[0]) : -1; return us[(i + 1) % us.length]; }
 export function createGamepad(api, opts = {}) { const { params } = opts;
   const S = loadSettings(params);
   const st = { index: null, id: '', kind: 'generic', prev: [], cursor: { x: innerWidth / 2, y: innerHeight / 2 }, active: false, aDown: null, focus: -1, menu: false, menuIdx: 0,
