@@ -73,7 +73,7 @@ PASS: 844x390 default: main menu = Campaign · Skirmish · Multiplayer · Store 
 PASS: 844x390 default: all five entries on screen without scrolling (lowest 336 <= 390)
 PASS: 844x390 default: campaign start button #btn-sp above the fold (bottom 186 <= 390, longest clan line)
 PASS: 844x390 default: skirmish start button #btn-ai above the fold (bottom 172 <= 390, longest clan line)
-PASS: 844x390 default: multiplayer start button #btn-host above the fold (bottom 204 <= 390, longest clan line)
+PASS: 844x390 default: multiplayer start button #btn-host above the fold (bottom 172 <= 390, longest clan line)
 PASS: 844x390 default: all 15 buttons on 6 menu pages reachable
 PASS: 844x390 default: no page errors 
 PASS: 844x390 a: title on screen at load (h1 top 8, tag bottom 24, panel top 8, panel h 353, menu scrollTop 0)
@@ -81,7 +81,7 @@ PASS: 844x390 a: main menu = Campaign · Skirmish · Multiplayer · Store · Set
 PASS: 844x390 a: all five entries on screen without scrolling (lowest 336 <= 390)
 PASS: 844x390 a: campaign start button #btn-sp above the fold (bottom 193 <= 390, longest clan line)
 PASS: 844x390 a: skirmish start button #btn-ai above the fold (bottom 191 <= 390, longest clan line)
-PASS: 844x390 a: multiplayer start button #btn-host above the fold (bottom 223 <= 390, longest clan line)
+PASS: 844x390 a: multiplayer start button #btn-host above the fold (bottom 191 <= 390, longest clan line)
 PASS: 844x390 a: all 15 buttons on 6 menu pages reachable
 PASS: 844x390 a: no page errors 
 PASS: 750x342 default: title on screen at load (h1 top 5, tag bottom 21, panel top 5, panel h 306, menu scrollTop 0)
@@ -89,7 +89,7 @@ PASS: 750x342 default: main menu = Campaign · Skirmish · Multiplayer · Store 
 PASS: 750x342 default: all five entries on screen without scrolling (lowest 288 <= 342)
 PASS: 750x342 default: campaign start button #btn-sp above the fold (bottom 139 <= 342, longest clan line)
 PASS: 750x342 default: skirmish start button #btn-ai above the fold (bottom 136 <= 342, longest clan line)
-PASS: 750x342 default: multiplayer start button #btn-host above the fold (bottom 168 <= 342, longest clan line)
+PASS: 750x342 default: multiplayer start button #btn-host above the fold (bottom 136 <= 342, longest clan line)
 PASS: 750x342 default: all 15 buttons on 6 menu pages reachable
 PASS: 750x342 default: no page errors 
 PASS: 750x342 a: title on screen at load (h1 top 5, tag bottom 21, panel top 5, panel h 306, menu scrollTop 0)
@@ -97,7 +97,7 @@ PASS: 750x342 a: main menu = Campaign · Skirmish · Multiplayer · Store · Set
 PASS: 750x342 a: all five entries on screen without scrolling (lowest 288 <= 342)
 PASS: 750x342 a: campaign start button #btn-sp above the fold (bottom 164 <= 342, longest clan line)
 PASS: 750x342 a: skirmish start button #btn-ai above the fold (bottom 161 <= 342, longest clan line)
-PASS: 750x342 a: multiplayer start button #btn-host above the fold (bottom 193 <= 342, longest clan line)
+PASS: 750x342 a: multiplayer start button #btn-host above the fold (bottom 161 <= 342, longest clan line)
 PASS: 750x342 a: all 15 buttons on 6 menu pages reachable
 PASS: 750x342 a: no page errors 
 PASS: 568x320 default: title on screen at load (h1 top 5, tag bottom 21, panel top 5, panel h 306, menu scrollTop 0)
@@ -105,7 +105,7 @@ PASS: 568x320 default: main menu = Campaign · Skirmish · Multiplayer · Store 
 PASS: 568x320 default: all five entries on screen without scrolling (lowest 288 <= 320)
 PASS: 568x320 default: campaign start button #btn-sp above the fold (bottom 114 <= 320, longest clan line)
 PASS: 568x320 default: skirmish start button #btn-ai above the fold (bottom 111 <= 320, longest clan line)
-PASS: 568x320 default: multiplayer start button #btn-host above the fold (bottom 143 <= 320, longest clan line)
+PASS: 568x320 default: multiplayer start button #btn-host above the fold (bottom 111 <= 320, longest clan line)
 PASS: 568x320 default: all 15 buttons on 6 menu pages reachable
 PASS: 568x320 default: no page errors 
 PASS: 568x320 a: title on screen at load (h1 top 5, tag bottom 21, panel top 5, panel h 306, menu scrollTop 0)
@@ -113,7 +113,7 @@ PASS: 568x320 a: main menu = Campaign · Skirmish · Multiplayer · Store · Set
 PASS: 568x320 a: all five entries on screen without scrolling (lowest 288 <= 320)
 PASS: 568x320 a: campaign start button #btn-sp above the fold (bottom 153 <= 320, longest clan line)
 PASS: 568x320 a: skirmish start button #btn-ai above the fold (bottom 150 <= 320, longest clan line)
-PASS: 568x320 a: multiplayer start button #btn-host above the fold (bottom 182 <= 320, longest clan line)
+PASS: 568x320 a: multiplayer start button #btn-host above the fold (bottom 150 <= 320, longest clan line)
 PASS: 568x320 a: all 15 buttons on 6 menu pages reachable
 PASS: 568x320 a: no page errors 
 PASS: 863x360 default: title on screen at load (h1 top 5, tag bottom 21, panel top 5, panel h 306, menu scrollTop 0)
@@ -121,7 +121,7 @@ PASS: 863x360 default: main menu = Campaign · Skirmish · Multiplayer · Store 
 PASS: 863x360 default: all five entries on screen without scrolling (lowest 288 <= 360)
 PASS: 863x360 default: campaign start button #btn-sp above the fold (bottom 160 <= 360, longest clan line)
 PASS: 863x360 default: skirmish start button #btn-ai above the fold (bottom 157 <= 360, longest clan line)
-PASS: 863x360 default: multiplayer start button #btn-host above the fold (bottom 189 <= 360, longest clan line)
+PASS: 863x360 default: multiplayer start button #btn-host above the fold (bottom 157 <= 360, longest clan line)
 PASS: 863x360 default: all 15 buttons on 6 menu pages reachable
 PASS: 863x360 default: no page errors 
 PASS: 863x360 a: title on screen at load (h1 top 5, tag bottom 21, panel top 5, panel h 306, menu scrollTop 0)
@@ -129,7 +129,7 @@ PASS: 863x360 a: main menu = Campaign · Skirmish · Multiplayer · Store · Set
 PASS: 863x360 a: all five entries on screen without scrolling (lowest 288 <= 360)
 PASS: 863x360 a: campaign start button #btn-sp above the fold (bottom 179 <= 360, longest clan line)
 PASS: 863x360 a: skirmish start button #btn-ai above the fold (bottom 176 <= 360, longest clan line)
-PASS: 863x360 a: multiplayer start button #btn-host above the fold (bottom 208 <= 360, longest clan line)
+PASS: 863x360 a: multiplayer start button #btn-host above the fold (bottom 176 <= 360, longest clan line)
 PASS: 863x360 a: all 15 buttons on 6 menu pages reachable
 PASS: 863x360 a: no page errors 
 PASS: 667x375 default: title on screen at load (h1 top 8, tag bottom 24, panel top 8, panel h 353, menu scrollTop 0)
@@ -137,7 +137,7 @@ PASS: 667x375 default: main menu = Campaign · Skirmish · Multiplayer · Store 
 PASS: 667x375 default: all five entries on screen without scrolling (lowest 336 <= 375)
 PASS: 667x375 default: campaign start button #btn-sp above the fold (bottom 127 <= 375, longest clan line)
 PASS: 667x375 default: skirmish start button #btn-ai above the fold (bottom 113 <= 375, longest clan line)
-PASS: 667x375 default: multiplayer start button #btn-host above the fold (bottom 145 <= 375, longest clan line)
+PASS: 667x375 default: multiplayer start button #btn-host above the fold (bottom 113 <= 375, longest clan line)
 PASS: 667x375 default: all 15 buttons on 6 menu pages reachable
 PASS: 667x375 default: no page errors 
 PASS: 667x375 a: title on screen at load (h1 top 8, tag bottom 24, panel top 8, panel h 353, menu scrollTop 0)
@@ -145,7 +145,7 @@ PASS: 667x375 a: main menu = Campaign · Skirmish · Multiplayer · Store · Set
 PASS: 667x375 a: all five entries on screen without scrolling (lowest 336 <= 375)
 PASS: 667x375 a: campaign start button #btn-sp above the fold (bottom 186 <= 375, longest clan line)
 PASS: 667x375 a: skirmish start button #btn-ai above the fold (bottom 177 <= 375, longest clan line)
-PASS: 667x375 a: multiplayer start button #btn-host above the fold (bottom 209 <= 375, longest clan line)
+PASS: 667x375 a: multiplayer start button #btn-host above the fold (bottom 177 <= 375, longest clan line)
 PASS: 667x375 a: all 15 buttons on 6 menu pages reachable
 PASS: 667x375 a: no page errors 
 PASS: 932x430 default: title on screen at load (h1 top 8, tag bottom 24, panel top 8, panel h 368, menu scrollTop 0)
@@ -153,7 +153,7 @@ PASS: 932x430 default: main menu = Campaign · Skirmish · Multiplayer · Store 
 PASS: 932x430 default: all five entries on screen without scrolling (lowest 351 <= 430)
 PASS: 932x430 default: campaign start button #btn-sp above the fold (bottom 213 <= 430, longest clan line)
 PASS: 932x430 default: skirmish start button #btn-ai above the fold (bottom 211 <= 430, longest clan line)
-PASS: 932x430 default: multiplayer start button #btn-host above the fold (bottom 243 <= 430, longest clan line)
+PASS: 932x430 default: multiplayer start button #btn-host above the fold (bottom 211 <= 430, longest clan line)
 PASS: 932x430 default: all 15 buttons on 6 menu pages reachable
 PASS: 932x430 default: no page errors 
 PASS: 932x430 a: title on screen at load (h1 top 8, tag bottom 24, panel top 8, panel h 368, menu scrollTop 0)
@@ -161,7 +161,7 @@ PASS: 932x430 a: main menu = Campaign · Skirmish · Multiplayer · Store · Set
 PASS: 932x430 a: all five entries on screen without scrolling (lowest 351 <= 430)
 PASS: 932x430 a: campaign start button #btn-sp above the fold (bottom 213 <= 430, longest clan line)
 PASS: 932x430 a: skirmish start button #btn-ai above the fold (bottom 211 <= 430, longest clan line)
-PASS: 932x430 a: multiplayer start button #btn-host above the fold (bottom 243 <= 430, longest clan line)
+PASS: 932x430 a: multiplayer start button #btn-host above the fold (bottom 211 <= 430, longest clan line)
 PASS: 932x430 a: all 15 buttons on 6 menu pages reachable
 PASS: 932x430 a: no page errors 
 PASS: 390x844 default: title on screen at load (h1 top 24, tag bottom 121, panel top 24, panel h 522, menu scrollTop 0)
